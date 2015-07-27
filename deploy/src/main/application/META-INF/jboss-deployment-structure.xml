@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ENABLE LOGBACK LOGGING -->
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <!-- add your project dependencies here -->
+            <module name="org.slf4j" />
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>
