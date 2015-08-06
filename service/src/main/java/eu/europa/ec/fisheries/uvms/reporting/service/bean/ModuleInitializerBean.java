@@ -48,7 +48,7 @@ public class ModuleInitializerBean {
     @PostConstruct
     protected void startup() throws IOException {
         // do something on application startup
-        Properties moduleConfigs = retrieveModuleConfigs();
+      /*  Properties moduleConfigs = retrieveModuleConfigs();
 
         Client client = ClientBuilder.newClient();
 
@@ -102,7 +102,7 @@ public class ModuleInitializerBean {
             throw new RuntimeException("Unable to deploy Reporting USM descriptor.");
         }
 
-        closeConnection(authResponse);
+        closeConnection(authResponse);*/
     }
 
     private void closeConnection(Response response) {

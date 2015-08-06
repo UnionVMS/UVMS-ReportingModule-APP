@@ -11,7 +11,11 @@ import java.io.Serializable;
 @XmlRootElement(name = "application", namespace = "deployment.domain.administration.usm.mare.ec.europa.eu")
 public class USMDeploymentDescriptor implements Serializable {
 
-    //TODO maybe add the other attributes if needed?
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4962803073285571257L;
+	//TODO maybe add the other attributes if needed?
     private String name;
     private String description;
     private String parent;

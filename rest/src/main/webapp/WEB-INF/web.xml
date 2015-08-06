@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+	
+	<!-- It is important to keep the following order of the filters  -->
+	<!-- <filter-mapping>
+		<filter-name>1_AuthMockFilter</filter-name>
+		<url-pattern>/reporting/rest/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>2_AuthenticationCheckFilter</filter-name>
+		<url-pattern>/reporting/rest/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>3_SessionInitFilter</filter-name>
+		<url-pattern>/reporting/rest/*</url-pattern>
+	</filter-mapping> -->
+
+	 <!-- Configure login to be HTTP Basic -->
+  <!--  <login-config>
+      <auth-method>BASIC</auth-method>
+      <realm-name>ApplicationRealm</realm-name>
+   </login-config> -->
+   
+   	
+  <!--  <reporting-constraint>
+   	<web-resource-collection>
+   		<web-resource-name>all</web-resource-name>
+   		<url-pattern>/*</url-pattern>
+   	</web-resource-collection>
+   	<auth-constraint>
+        <role-name>LIST_REPORTS</role-name>
+        <role-name>MODIFY_SHARED_REPORTS</role-name>
+        <role-name>SHARE_REPORTS</role-name>
+        <role-name>CREATE_REPORTS</role-name>
+    </auth-constraint>
+   	<user-data-constraint>
+   		<transport-guarantee>NONE</transport-guarantee>
+   	</user-data-constraint>
+   </reporting-constraint>
+   	<reporting-role>
+   		<role-name>LIST_REPORTS</role-name>
+   	</reporting-role>
+	<reporting-role>
+   		<role-name>MODIFY_SHARED_REPORTS</role-name>
+   	</reporting-role>
+ 	<reporting-role>
+   		<role-name>SHARE_REPORTS</role-name>
+  	</reporting-role>
+   	<reporting-role>
+        <role-name>CREATE_REPORTS</role-name>
+    </reporting-role> -->
+</web-app>

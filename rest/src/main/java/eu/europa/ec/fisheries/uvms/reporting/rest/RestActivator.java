@@ -2,6 +2,8 @@ package eu.europa.ec.fisheries.uvms.reporting.rest;
 
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
 import eu.europa.ec.fisheries.uvms.reporting.rest.resources.ReportingResource;
+import eu.europa.ec.fisheries.uvms.reporting.rest.temp.AuthMockRest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +26,7 @@ public class RestActivator extends Application {
 
     public RestActivator() {
         set.add(ReportingResource.class);
+        set.add(AuthMockRest.class);
         LOG.info(RestConstants.MODULE_NAME + " module starting up");
     }
 

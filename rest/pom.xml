@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rest</artifactId>
     <name>${project.parent.artifactId}-rest</name>
@@ -12,7 +13,7 @@
     </parent>
     
     <dependencies>
-        <dependency>
+       <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>model</artifactId>
         </dependency>
@@ -21,7 +22,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>service</artifactId>
         </dependency>
-
+<!--  
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -40,7 +41,7 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.vessel</groupId>
             <artifactId>vessel-model</artifactId>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -52,6 +53,58 @@
             <artifactId>junit</artifactId>
         </dependency>
 
+		<dependency>
+		 	<groupId>org.apache.commons</groupId>
+		 	<artifactId>commons-lang3</artifactId>
+		</dependency>
+		
+ 		<dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <version>2.2.0-beta-2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-remote</artifactId>
+            <version>1.0.0.Alpha5</version>
+            <scope>test</scope>
+            <exclusions>
+		      <exclusion>
+		        <groupId>sun.jdk</groupId>
+		        <artifactId>jconsole</artifactId>
+		      </exclusion>
+            </exclusions>
+        </dependency>
+        
+         <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+         <dependency>
+             <groupId>org.jboss.resteasy</groupId>
+             <artifactId>resteasy-jaxrs</artifactId>
+             <scope>test</scope>
+         </dependency>
+            
+         <dependency>
+             <groupId>org.jboss.resteasy</groupId>
+             <artifactId>resteasy-client</artifactId>
+             <scope>test</scope>
+         </dependency>
     </dependencies>
         
     <build>
@@ -66,6 +119,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

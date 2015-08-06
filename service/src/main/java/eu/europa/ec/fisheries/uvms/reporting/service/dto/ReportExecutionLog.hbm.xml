@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 6, 2015 11:44:30 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportExecutionLog" table="report_execution_log" optimistic-lock="version">
+        <id name="id" type="long">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="report" class="eu.europa.ec.fisheries.uvms.reporting.service.entities.Report" fetch="select">
+            <column name="report_id" not-null="true" unique="true">
+                <comment>Unique primary key of the user defined areas</comment>
+            </column>
+        </many-to-one>
+        <property name="executedBy" type="string">
+            <column name="executed_by" not-null="true">
+                <comment>The username of the user who has executed the particular report</comment>
+            </column>
+        </property>
+        <property name="executedOn" type="timestamp">
+            <column name="executed_on" length="29" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
