@@ -39,7 +39,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportExecutionLog
  * @author Hibernate Tools
  */
 @Stateless
-@Local(ReportBean.class)
+@LocalBean
 public class ReportDAO {
 
 	private static final Logger log = LoggerFactory.getLogger(ReportDAO.class);

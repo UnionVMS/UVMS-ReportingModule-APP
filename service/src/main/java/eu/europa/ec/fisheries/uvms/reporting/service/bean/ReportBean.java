@@ -17,7 +17,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
  * Session Bean implementation class ReportBean
  */
 @Stateless
-@Local
+@LocalBean
 public class ReportBean {
 
 	@EJB

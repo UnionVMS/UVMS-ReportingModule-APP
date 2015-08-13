@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 
-@Mapper (uses = {ReportExecutionLogMapper.class}, nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL)
+@Mapper (componentModel = "cdi", uses = {ReportExecutionLogMapper.class}, nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL)
 public interface ReportMapper {
  
 	ReportMapper INSTANCE = Mappers.getMapper( ReportMapper.class );

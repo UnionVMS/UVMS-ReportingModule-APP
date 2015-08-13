@@ -11,7 +11,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.ReportExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportExecutionLogEntity;
 
-@Mapper (uses = {ReportMapper.class})
+@Mapper (componentModel = "cdi", uses = {ReportMapper.class})
 public interface ReportExecutionLogMapper {
  
 	ReportExecutionLogMapper INSTANCE = Mappers.getMapper( ReportExecutionLogMapper.class );
