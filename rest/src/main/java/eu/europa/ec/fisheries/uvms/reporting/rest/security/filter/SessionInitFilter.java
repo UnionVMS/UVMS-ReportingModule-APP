@@ -17,8 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.Context;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Context;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.MockingUtils;
 
 /**

@@ -5,8 +5,12 @@
 
     <persistence-unit name="UVMS" transaction-type="JTA">
         <jta-data-source>java:/jdbc/UVMS</jta-data-source>
-        <properties>
+         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="show_sql" value="true" />
+            
+			<property name="format_sql" value="true" />
+			<property name="use_sql_comments" value="true" />
         </properties>
 
     </persistence-unit>

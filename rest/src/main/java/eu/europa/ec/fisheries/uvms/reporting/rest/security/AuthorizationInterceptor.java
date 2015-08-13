@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.Context;
+import eu.europa.ec.fisheries.uvms.reporting.model.Feature;
+import eu.europa.ec.fisheries.uvms.reporting.model.Scope;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Context;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Feature;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Scope;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.AuthMockRest;
 
 

@@ -3,11 +3,11 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.temp;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Context;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Preference;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Preferences;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Role;
-import eu.europa.ec.fisheries.uvms.reporting.rest.domain.Scope;
+import eu.europa.ec.fisheries.uvms.reporting.model.Context;
+import eu.europa.ec.fisheries.uvms.reporting.model.Preference;
+import eu.europa.ec.fisheries.uvms.reporting.model.Preferences;
+import eu.europa.ec.fisheries.uvms.reporting.model.Role;
+import eu.europa.ec.fisheries.uvms.reporting.model.Scope;
 
 public class MockingUtils {
 	

@@ -24,12 +24,12 @@
         </encoder>
     </appender>
 
-    <!-- FILE ERROR -->
-    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+   <!-- hibernate logging -->
+    <appender name="HIBERNATE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <append>true</append>
-        <file>${application.error.logfile}</file>
+        <file>C:\dev\tools\wildfly-8.2.0.Final\standalone\log\hibernate.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${application.error.logfile}.%d{yyyy-ww}.%i.zip
+            <fileNamePattern>hibernate.%d{yyyy-ww}.%i.zip
             </fileNamePattern>
             <maxHistory>30</maxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -39,9 +39,6 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{40} %X{userId}- %msg%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
     </appender>
 
     <!-- CONSOLE DEBUGGER -->
@@ -59,5 +56,13 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
+    
+   	<logger name="org.hibernate.type" level="ALL" />
+	<logger name="org.hibernate" level="DEBUG" />  
+	<logger name="eu.europa.ec.fisheries.uvms.reporting.service.dao" level="DEBUG"/>
+    <root level="DEBUG">
+    	<appender-ref ref="HIBERNATE_FILE"/>
+    </root>
+    
 
 </configuration>

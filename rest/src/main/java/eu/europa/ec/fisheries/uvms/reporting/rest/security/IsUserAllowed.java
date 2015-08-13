@@ -17,5 +17,6 @@ import javax.interceptor.InterceptorBinding;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IsUserAllowed {
 
-	@Nonbinding String[] features() default {};
+	@Nonbinding String[] allFeatures() default {};
+	@Nonbinding String[] oneOfAllFeatures() default {};
 }

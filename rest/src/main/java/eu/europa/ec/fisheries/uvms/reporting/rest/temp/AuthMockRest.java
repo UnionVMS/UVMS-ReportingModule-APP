@@ -39,7 +39,7 @@ public class AuthMockRest {
 		
 		session.setAttribute(SESSION_ATTR_ROLES, rolesSet);*/
 		
-		eu.europa.ec.fisheries.uvms.reporting.rest.domain.Context fakeContext = MockingUtils.createContext(scope);
+		eu.europa.ec.fisheries.uvms.reporting.model.Context fakeContext = MockingUtils.createContext(scope);
 		
 		session.setAttribute(RestConstants.SESSION_ATTR_ACTIVE_USER_SCOPE, fakeContext);
 		

@@ -25,6 +25,23 @@
     </appender>
 
 
+<!-- hibernate logging -->
+    <appender name="HIBERNATE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <file>C:\dev\tools\wildfly-8.2.0.Final\standalone\log\hibernate.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>hibernate.%d{yyyy-ww}.%i.zip
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>20MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{40} %X{userId}- %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <!-- CONSOLE DEBUGGER -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -35,10 +52,16 @@
         </filter>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="ERROR"/>
+  	<logger name="org.hibernate.type" level="ALL" />
+	<logger name="org.hibernate" level="DEBUG" />  
+	<logger name="eu.europa.ec.fisheries.uvms.reporting.service.dao" level="DEBUG"/>
+
+    <root level="DEBUG">
+        <!-- appender-ref ref="ERROR"/>
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE"/-->
+        <appender-ref ref="HIBERNATE_FILE"/>
     </root>
+  
 
 </configuration>
