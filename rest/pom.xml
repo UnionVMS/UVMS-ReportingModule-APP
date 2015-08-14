@@ -16,11 +16,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>model</artifactId>
-        </dependency>
+           <scope>provided</scope>
+       </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>service</artifactId>
+            <scope>provided</scope>
         </dependency>
  
         <dependency>
@@ -32,7 +34,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
-<!-- 
+
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
             <artifactId>movement-model</artifactId>
@@ -41,7 +43,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.vessel</groupId>
             <artifactId>vessel-model</artifactId>
-        </dependency> -->
+        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest;
 
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
+import eu.europa.ec.fisheries.uvms.reporting.rest.resources.MonitoringResource;
 import eu.europa.ec.fisheries.uvms.reporting.rest.resources.ReportingResource;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.AuthMockRest;
 
@@ -25,6 +26,7 @@ public class RestActivator extends Application {
     private final Set<Class<?>> set = new HashSet<>();
 
     public RestActivator() {
+        set.add(MonitoringResource.class);
         set.add(ReportingResource.class);
         set.add(AuthMockRest.class);
         LOG.info(RestConstants.MODULE_NAME + " module starting up");

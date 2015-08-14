@@ -19,8 +19,8 @@
         <mapstruct.version>1.0.0.CR1</mapstruct.version>
         <jackson.version>2.6.0</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
-        <vessel.module.version>1.0.5-SNAPSHOT</vessel.module.version>
-        <movement.model.version>1.0.2-SNAPSHOT</movement.model.version>
+        <vessel.model.version>1.0.6-SNAPSHOT</vessel.model.version>
+        <movement.model.version>1.0.3-SNAPSHOT</movement.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
@@ -62,7 +62,19 @@
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.vessel</groupId>
                 <artifactId>vessel-model</artifactId>
-                <version>${vessel.module.version}</version>
+                <version>${vessel.model.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.4</version>
             </dependency>
 
             <dependency>
