@@ -21,7 +21,7 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.temp.AuthMockRest;
 
 
 @IsUserAllowed 
-@Interceptor
+//@Interceptor
 public class AuthorizationInterceptor implements Serializable {
 	
 	final static Logger LOG = LoggerFactory.getLogger(AuthorizationInterceptor.class);

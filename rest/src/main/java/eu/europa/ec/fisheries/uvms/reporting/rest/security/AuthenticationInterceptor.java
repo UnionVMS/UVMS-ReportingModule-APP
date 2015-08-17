@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.AuthMockInterceptor;
 
 @IsUserAuthenticated
-@Interceptor
+//@Interceptor
 public class AuthenticationInterceptor implements Serializable {
 	final static Logger LOG = LoggerFactory.getLogger(AuthenticationInterceptor.class);
 	

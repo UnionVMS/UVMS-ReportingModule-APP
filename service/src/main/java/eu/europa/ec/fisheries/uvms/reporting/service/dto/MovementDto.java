@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.schema.movement.v1.MessageType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.uvms.reporting.service.serializer.MovementDtoSerializer;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,6 +15,7 @@ import java.util.Date;
  */
 @JsonSerialize(using = MovementDtoSerializer.class)
 public class MovementDto {
+
 
     private String id;
     private String connectId;

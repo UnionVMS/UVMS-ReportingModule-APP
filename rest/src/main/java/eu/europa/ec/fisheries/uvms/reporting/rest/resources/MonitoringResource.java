@@ -17,14 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * //TODO create test
@@ -35,7 +33,7 @@ public class MonitoringResource {
 
     final static Logger LOG = LoggerFactory.getLogger(MonitoringResource.class);
 
-    @EJB
+    @Inject
     MonitoringService monitoringService;
 
     @GET
@@ -47,7 +45,9 @@ public class MonitoringResource {
 
         LOG.info("Getting movement data...");
 
-        monitoringDTO = monitoringService.getMovements((Set<Integer>) Arrays.asList(1, 2, 3));
+        HashSet hashSet = new HashSet();
+        hashSet.add(1); hashSet.add(3); hashSet.add(3);
+        monitoringDTO = monitoringService.getMovements(hashSet);
 
         return new ResponseDto(monitoringDTO, ResponseCode.OK);
     }

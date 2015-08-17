@@ -33,7 +33,6 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.mapper.ReportToDTOMapper;
 import eu.europa.ec.fisheries.uvms.reporting.rest.security.IsUserAllowed;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportBean;
 
-//@Stateless
 @Path("/report")
 public class ReportingResource {
 

@@ -30,11 +30,19 @@
         <hibernate.reporting.version>4.3</hibernate.reporting.version>
         <postgres.jdbc.version>9.4-1201-jdbc41</postgres.jdbc.version>
         <postgis.jdbc.version>1.5.2</postgis.jdbc.version>
+        <uvms.commons.version>1.0-SNAPSHOT</uvms.commons.version>
     </properties>
 
     <dependencyManagement>
 
         <dependencies>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                <artifactId>uvms-commons</artifactId>
+                <version>${uvms.commons.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>service</artifactId>
