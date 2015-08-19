@@ -10,15 +10,15 @@ public class CharBooleanConverter implements
 	@Override
 	public String convertToDatabaseColumn(Boolean attribute) {
 		if (Boolean.TRUE.equals(attribute)) {
-            return "1";
+            return "Y";
         } else {
-            return "0";
+            return "N";
         }
 	}
 
 	@Override
 	public Boolean convertToEntityAttribute(String dbData) {
-		return "1".equals(dbData);
+		return "Y".equals(dbData);
 	}
 
 }
