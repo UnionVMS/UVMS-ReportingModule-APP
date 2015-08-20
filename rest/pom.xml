@@ -102,6 +102,34 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             </exclusions>
         </dependency>
         
+        <dependency>
+		  <groupId>org.jboss.arquillian.extension</groupId>
+		  <artifactId>arquillian-rest-warp-impl-resteasy</artifactId>
+		  <version>1.0.0.Alpha3</version>
+		  <scope>test</scope>
+		</dependency>
+	
+		<dependency>
+		  <groupId>org.jboss.arquillian.extension</groupId>
+		  <artifactId>arquillian-rest-client-api</artifactId>
+		  <version>1.0.0.Alpha3</version>
+		  <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-rest-client-impl-3x</artifactId>
+            <version>1.0.0.Alpha3</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-transaction-impl-base</artifactId>
+			<version>1.0.1.Final</version>
+			<scope>test</scope>
+		</dependency>
+        
          <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson-provider</artifactId>
@@ -110,9 +138,15 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
          <dependency>
              <groupId>org.jboss.resteasy</groupId>
              <artifactId>resteasy-jaxrs</artifactId>
-             <scope>test</scope>
          </dependency>
-            
+         <dependency>
+			 <groupId>org.jboss.resteasy</groupId>
+    		<artifactId>resteasy-jaxb-provider</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>jaxrs-api</artifactId>
+		</dependency>
          <dependency>
              <groupId>org.jboss.resteasy</groupId>
              <artifactId>resteasy-client</artifactId>

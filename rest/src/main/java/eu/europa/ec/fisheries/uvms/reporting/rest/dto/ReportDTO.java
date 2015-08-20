@@ -1,24 +1,29 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
-// Generated Aug 6, 2015 11:44:29 AM by Hibernate Tools 4.3.1
-
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import eu.europa.ec.fisheries.uvms.reporting.rest.util.CustomDateSerializer;
 
 /**
  */
 public class ReportDTO implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7155759726599178091L;
+	
 	private long id;
 	private String name;
 	private String desc;
 	
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
-	private Date created_on;
-	private boolean is_shared;
+	@JsonSerialize(contentUsing = CustomDateSerializer.class)
+//	@JsonProperty("createdOn")
+	private Date createdOn;
+	private boolean isShared;
 	
 	//authorization properties
 	private boolean shareable;
@@ -60,14 +65,14 @@ public class ReportDTO implements java.io.Serializable {
 
 
 
-	public Date getCreated_on() {
-		return created_on;
+	public Date getCreatedOn() {
+		return createdOn;
 	}
 
 
 
-	public void setCreated_on(Date created_on) {
-		this.created_on = created_on;
+	public void setCreatedOn(Date created_on) {
+		this.createdOn = created_on;
 	}
 
 
@@ -108,14 +113,14 @@ public class ReportDTO implements java.io.Serializable {
 
 
 
-	public boolean isIs_shared() {
-		return is_shared;
+	public boolean getIsShared() {
+		return isShared;
 	}
 
 
 
-	public void setIs_shared(boolean is_shared) {
-		this.is_shared = is_shared;
+	public void setIsShared(boolean is_shared) {
+		this.isShared = is_shared;
 	}
 
 	

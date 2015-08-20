@@ -18,12 +18,6 @@ public class RestConstants {
     
     public static final String REQUEST_PARAM_CURRENT_USER_SCOPE = "CURRENT_USER_SCOPE";
     
+    public static final String DATE_TIME_UI_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     
-    public static final String FEATURE_LIST_REPORTS = "LIST_REPORTS";
-    public static final String FEATURE_MODIFY_SHARED_REPORTS = "MODIFY_SHARED_REPORTS";
-    public static final String FEATURE_SHARE_REPORTS = "SHARE_REPORTS";
-    public static final String FEATURE_CREATE_REPORTS = "CREATE_REPORTS";
-    public static final String FEATURE_VIEW_REPORT = "VIEW_REPORT";
-    public static final String FEATURE_EXECUTE_REPORT = "EXECUTE_REPORT";
-    public static final String FEATURE_MODIFY_REPORT = "MODIFY_REPORT";
 }

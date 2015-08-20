@@ -1,10 +1,11 @@
-package eu.europa.ec.fisheries.uvms.reporting.service;
+package eu.europa.ec.fisheries.uvms.reporting.rest.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 
 public class EntityUtil {
@@ -73,5 +74,17 @@ public class EntityUtil {
 								"some filter expression",
 								"OutComponents",
 								123);
+	}
+	
+	public static ReportDetailsDTO createRandomReportDetailsDTO() {
+		Date currentDate = new Date();
+		ReportDetailsDTO reportDTO =  new ReportDetailsDTO();
+		reportDTO.setDesc("This is some bullshit description.");
+		reportDTO.setName("NonExisting Report Name " + currentDate.getTime());
+		reportDTO.setIsShared(false);
+		reportDTO.setScopeId(currentDate.getTime());
+		reportDTO.setOutComponents("OutComponents");
+		
+		return reportDTO;
 	}
 }

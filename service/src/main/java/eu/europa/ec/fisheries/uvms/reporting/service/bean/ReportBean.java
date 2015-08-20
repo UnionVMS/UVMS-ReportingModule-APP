@@ -15,6 +15,12 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 
 /**
  * Session Bean implementation class ReportBean
+ * 
+ * TODO: add Authorization
+ * TODO: add proper exception handling
+ * TODO: add XSD definition which can be used as data validation 
+ * TODO: add business validation
+ * TODO: add data type validation
  */
 @Stateless
 @LocalBean

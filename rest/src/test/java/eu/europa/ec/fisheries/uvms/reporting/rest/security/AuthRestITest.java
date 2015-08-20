@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
+import eu.europa.ec.fisheries.uvms.reporting.rest.util.ArquillianTest;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
@@ -26,27 +27,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(Arquillian.class)
-public class AuthRestITest {
+public class AuthRestITest extends ArquillianTest {
 
 //    @EJB
 //    CrudService crudService;
-	
 
-    @Deployment
-    public static WebArchive createDeployment() {
-    	WebArchive war = ShrinkWrap.create(WebArchive.class,"reporting.war").addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.rest")
-                .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
-                .addAsWebInfResource( new File( "src/main/webapp/WEB-INF/web.xml" ) )
-                .addAsResource("config.properties")
-                .addAsWebInfResource(new File("src/main/webapp/WEB-INF/beans.xml"));
-
-        File[] libs = Maven.resolver().loadPomFromFile("pom.xml").importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST).resolve().withTransitivity().asFile();
-        war = war.addAsLibraries(libs);
-
-        System.out.println(war.toString(true)); 
-        
-        return war;
-    }
 
     @Before
     public void beforeTest() {

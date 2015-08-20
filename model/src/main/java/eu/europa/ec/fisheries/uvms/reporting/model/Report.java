@@ -128,7 +128,7 @@ public class Report implements java.io.Serializable {
 		this.createdOn = createdOn;
 	}
 
-	public boolean isIsShared() {
+	public boolean getIsShared() {
 		return this.isShared;
 	}
 
@@ -136,7 +136,7 @@ public class Report implements java.io.Serializable {
 		this.isShared = isShared;
 	}
 
-	public boolean isIsDeleted() {
+	public boolean getIsDeleted() {
 		return this.isDeleted;
 	}
 

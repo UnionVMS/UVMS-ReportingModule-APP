@@ -127,6 +127,7 @@
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-transaction-jta</artifactId>
             <version>1.0.0.Alpha3</version>
+            <scope>test</scope>
         </dependency>
         
 

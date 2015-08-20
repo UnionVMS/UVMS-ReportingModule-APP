@@ -3,8 +3,8 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
 
-    <persistence-unit name="UVMS" transaction-type="JTA">
-        <jta-data-source>java:/jdbc/UVMS</jta-data-source>
+    <persistence-unit name="uvms" transaction-type="JTA">
+        <jta-data-source>java:/jdbc/uvms</jta-data-source>
          <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="show_sql" value="true" />
@@ -12,6 +12,5 @@
 			<property name="format_sql" value="true" />
 			<property name="use_sql_comments" value="true" />
         </properties>
-
     </persistence-unit>
 </persistence>
