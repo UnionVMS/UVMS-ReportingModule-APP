@@ -1,47 +1,51 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
 import org.apache.commons.lang3.StringUtils;
-import org.geojson.LngLatAlt;
-import org.geojson.Point;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
 
 public class MovementDtoSerializer extends JsonSerializer<MovementDto> {
 
-    private static final String GEOMETRY = "geometry";
     private static final String PROPERTIES = "properties";
-    private static final String FEATURE = "Feature";
-    protected static final String TYPE = "type";
-    protected static final String COORDINATES = "coordinates";
-    protected static final String POINT = "Point";
 
     @Override
     public void serialize(MovementDto value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 
-        MovementPoint position = value.getPosition();
+        SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
+        typeBuilder.setName("poi");
+        typeBuilder.setDefaultGeometry("location");
+        typeBuilder.add("location", Point.class);
+        typeBuilder.add("name", String.class);
+        typeBuilder.nillable(true).add("etc", String.class);
 
-        gen.writeStartObject();
-        gen.writeStringField(TYPE, FEATURE);
-        gen.writeFieldName(GEOMETRY);
+        SimpleFeatureType featureType = typeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
 
-        if (position != null){
-            double latitude = position.getLatitude();
-            double longitude = position.getLongitude();
-            Point point = new Point();
-            LngLatAlt coordinates = new LngLatAlt();
-            coordinates.setLatitude(latitude);
-            coordinates.setLongitude(longitude);
-            point.setCoordinates(coordinates);
-            writePoint(gen, point);
-        }
+        featureBuilder.add(new GeometryFactory().createPoint(new Coordinate(102.0, 2.0)));
+        featureBuilder.add("Hello, World");
+        featureBuilder.add(null);
+        SimpleFeature feature = featureBuilder.buildFeature("fid-1");
+        toJson(feature);
 
-        writeProperties(gen, value);
-        gen.writeEndObject();
+    }
+
+    private void toJson(SimpleFeature feature) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        //mapper.registerModule(new GeoJsonModule());
+        mapper.writer().writeValueAsString(feature);
     }
 
     private void writeProperties(JsonGenerator gen, MovementDto value) throws IOException{
@@ -64,18 +68,21 @@ public class MovementDtoSerializer extends JsonSerializer<MovementDto> {
         gen.writeEndObject();
     }
 
-    private void writePoint(JsonGenerator gen, Point p) throws IOException {
-        gen.writeStartObject();
-        gen.writeStringField(TYPE, POINT);
-        gen.writeFieldName(COORDINATES);
-        writePointCoords(gen, p);
-        gen.writeEndObject();
-    }
+    private SimpleFeature buildFeature() {
+        SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
+        typeBuilder.setName("poi");
+        typeBuilder.setDefaultGeometry("location");
+        typeBuilder.add("location", Point.class);
+        typeBuilder.add("name", String.class);
+        typeBuilder.nillable(true).add("etc", String.class);
 
-    private void writePointCoords(JsonGenerator gen, Point p) throws IOException {
-        gen.writeStartArray();
-        gen.writeNumber(p.getCoordinates().getLongitude());
-        gen.writeNumber(p.getCoordinates().getLatitude());
-        gen.writeEndArray();
-    }
+        SimpleFeatureType featureType = typeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
+
+        featureBuilder.add(new GeometryFactory().createPoint(new Coordinate(102.0, 2.0)));
+        featureBuilder.add("Hello, World");
+        featureBuilder.add(null);
+        SimpleFeature feature = featureBuilder.buildFeature("fid-1");
+        return feature;
+        }
 }

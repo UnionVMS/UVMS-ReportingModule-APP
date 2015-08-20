@@ -31,11 +31,19 @@
         <postgres.jdbc.version>9.4-1201-jdbc41</postgres.jdbc.version>
         <postgis.jdbc.version>1.5.2</postgis.jdbc.version>
         <uvms.commons.version>1.0-SNAPSHOT</uvms.commons.version>
+        <geotools.version>14-M1</geotools.version>
+
     </properties>
 
     <dependencyManagement>
 
         <dependencies>
+
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-geojson</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -71,6 +79,13 @@
                 <groupId>eu.europa.ec.fisheries.uvms.vessel</groupId>
                 <artifactId>vessel-model</artifactId>
                 <version>${vessel.model.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts</artifactId>
+                <version>1.13</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -141,7 +156,6 @@
 				<version>3.5.6-Final</version>
 				<scope>provided</scope>
 			</dependency>
-            
 
             <!-- Hibernate Spatial -->
             <dependency>
@@ -291,6 +305,22 @@
 
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>OSGEO GeoTools repo</id>
+            <url>http://download.osgeo.org/webdav/geotools</url>
+        </repository>
+        <repository>
+            <id>Hibernate Spatial repo</id>
+            <url>http://www.hibernatespatial.org/repository</url>
+        </repository>
+        <!-- add JBOSS repository for easy access to Hibernate libraries -->
+        <repository>
+            <id>JBOSS</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
     <distributionManagement>
         <repository>
             <id>hav.releases</id>
@@ -323,6 +353,7 @@
             </plugin>
         </plugins>
     </build>
+
     <modules>
         <module>rest</module>
         <module>service</module>

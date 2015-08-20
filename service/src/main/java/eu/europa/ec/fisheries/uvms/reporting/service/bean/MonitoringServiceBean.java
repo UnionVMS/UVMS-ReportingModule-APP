@@ -31,13 +31,20 @@ public class MonitoringServiceBean implements MonitoringService {
 
     private static final int LIST_SIZE = 100000;
 
-    @EJB VesselProducerBean vesselSender;
-    @EJB VesselConsumerBean vesselReceiver;
-    @EJB MovementProducerBean movementSender;
-    @EJB MovementConsumerBean movementReceiver;
+    @EJB
+    private VesselProducerBean vesselSender;
+
+    @EJB
+    private VesselConsumerBean vesselReceiver;
+
+    @EJB
+    private MovementProducerBean movementSender;
+
+    @EJB
+    private MovementConsumerBean movementReceiver;
 
     @Override
-    public MonitoringDto getMovements(final Set<Integer> vesselIds) {
+    public MonitoringDto getMonitoringData(final Set<Integer> vesselIds) {
 
         try {
 
@@ -53,6 +60,7 @@ public class MonitoringServiceBean implements MonitoringService {
             String messageId = vesselSender.sendModuleMessage(requestString, vesselSender.getDestination());
             TextMessage response = vesselReceiver.getMessage(messageId, TextMessage.class);
             List<Vessel> vessels = VesselModuleResponseMapper.mapToVesselListFromResponse(response, messageId);
+
 
             throw new NotImplementedException();
 

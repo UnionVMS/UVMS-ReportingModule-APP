@@ -1,24 +1,26 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.reporting.service.serializer.MovementDtoListSerializer;
+import org.geojson.FeatureCollection;
 
-import java.util.List;
-
-/**
- * //TODO create test
- */
 public class MonitoringDto {
 
-    @JsonSerialize(using = MovementDtoListSerializer.class)
-    private List<MovementDto> movements;
+    private FeatureCollection movements;
 
-    public List<MovementDto> getMovements() {
+    private FeatureCollection segments;
+
+    public FeatureCollection getMovements() {
         return movements;
     }
 
-    public void setMovements(List<MovementDto> movements) {
+    public void setMovements(FeatureCollection movements) {
         this.movements = movements;
     }
 
+    public FeatureCollection getSegments() {
+        return segments;
+    }
+
+    public void setSegments(FeatureCollection segments) {
+        this.segments = segments;
+    }
 }

@@ -1,25 +1,16 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.schema.movement.v1.MessageType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
-import eu.europa.ec.fisheries.uvms.reporting.service.serializer.MovementDtoSerializer;
-import org.geojson.Feature;
-import org.geojson.FeatureCollection;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- *
- */
-@JsonSerialize(using = MovementDtoSerializer.class)
 public class MovementDto {
-
 
     private String id;
     private String connectId;
-    private MovementPoint position;
+    private Geometry geometry;
     private Date positionTime;
     private String status;
     private BigDecimal measuredSpeed;
@@ -42,14 +33,6 @@ public class MovementDto {
 
     public void setConnectId(String connectId) {
         this.connectId = connectId;
-    }
-
-    public MovementPoint getPosition() {
-        return position;
-    }
-
-    public void setPosition(MovementPoint position) {
-        this.position = position;
     }
 
     public Date getPositionTime() {
@@ -106,6 +89,14 @@ public class MovementDto {
 
     public void setAsset(AssetDto asset) {
         this.asset = asset;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 }
 

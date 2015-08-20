@@ -6,5 +6,5 @@ import java.util.Set;
 
 public interface MonitoringService {
 
-    MonitoringDto getMovements(Set<Integer> vesselIds);
+    MonitoringDto getMonitoringData(Set<Integer> vesselIds);
 }

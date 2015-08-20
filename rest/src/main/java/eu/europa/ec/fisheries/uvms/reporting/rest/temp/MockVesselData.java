@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.temp;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetDto;
 import eu.europa.ec.fisheries.wsdl.vessel.types.CarrierSource;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
