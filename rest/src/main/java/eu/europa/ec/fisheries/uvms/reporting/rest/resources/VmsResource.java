@@ -8,15 +8,14 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ResponseCode;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ResponseDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJson;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.opengis.feature.type.AttributeDescriptor;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
@@ -25,7 +24,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * //TODO create test
