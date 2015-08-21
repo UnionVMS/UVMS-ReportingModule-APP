@@ -131,7 +131,7 @@ public class ReportDAO {
 		params.put("scopeId", scopeId);
 		
 		try {
-			Query query = session.createQuery("from ReportEntity r where (r.createdBy=:username and r.scopeId = :scopeId) or (r.isShared = '1' and r.scopeId = :scopeId))");
+			Query query = session.createQuery("from ReportEntity r where (r.createdBy=:username and r.scopeId = :scopeId) or (r.isShared = 'Y' and r.scopeId = :scopeId))");
 			query = query.setParameter("username", username).setParameter("scopeId", scopeId);
 			
 			Collection<ReportEntity> listReports = query.list();

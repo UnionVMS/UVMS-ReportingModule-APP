@@ -28,7 +28,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBool
  */
 @Entity
 @Table(name = "report", schema = "reporting")
-@Where(clause = "is_deleted <> '1'")
+@Where(clause = "is_deleted <> 'Y'")
 public class ReportEntity implements java.io.Serializable {
 
 	/**

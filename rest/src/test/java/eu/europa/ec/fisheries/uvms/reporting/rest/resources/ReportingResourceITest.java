@@ -5,13 +5,9 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
-import javax.ejb.EJB;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -21,8 +17,6 @@ import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 import org.jboss.arquillian.extension.rest.client.Header;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
-import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.After;
 import org.junit.Before;
@@ -104,9 +98,8 @@ public class ReportingResourceITest extends ArquillianTest {
 		response = webTarget.path("/" + report.getId()).request().get();
 		
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-		ReportDetailsDTO foundReport = response.readEntity(new GenericType(ReportDetailsDTO.class));
+		ReportDetailsDTO foundReport = response.readEntity(ReportDetailsDTO.class);
 		assertNotNull(foundReports);
-		
 		assertEquals(report.getDesc(), foundReport.getDesc());
 		assertEquals(report.getName(), foundReport.getName());
 		assertEquals(report.getId(), foundReport.getId());
