@@ -1,5 +1,6 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.temp;
+package eu.europa.ec.fisheries.uvms.reporting.service.temp;
 
+import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.wsdl.vessel.types.CarrierSource;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
@@ -25,7 +26,7 @@ public class MockVesselData {
         vesselId.setValue(id.toString());
         dto.setVesselId(vesselId);
         dto.setIrcs("IRCS-" + id);
-        dto.setLengthBetweenPerpendiculars(BigDecimal.valueOf(MockingUtils.randInt(0,3) + id));
+        dto.setLengthBetweenPerpendiculars(BigDecimal.valueOf(MockingUtils.randInt(0, 3) + id));
         dto.setLengthOverAll(BigDecimal.valueOf(MockingUtils.randInt(0,10) + id));
         dto.setName("VESSEL-" + id);
         dto.setOtherGrossTonnage(BigDecimal.valueOf(MockingUtils.randInt(0,30) + id));

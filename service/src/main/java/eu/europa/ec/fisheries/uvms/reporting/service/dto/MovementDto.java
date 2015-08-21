@@ -17,7 +17,6 @@ public class MovementDto {
     private BigDecimal calculatedSpeed;
     private int course;
     private MessageType messageType;
-    private AssetDto asset;
 
     public String getId() {
         return id;
@@ -83,14 +82,6 @@ public class MovementDto {
         this.messageType = messageType;
     }
 
-    public AssetDto getAsset() {
-        return asset;
-    }
-
-    public void setAsset(AssetDto asset) {
-        this.asset = asset;
-    }
-
     public Geometry getGeometry() {
         return geometry;
     }
@@ -98,5 +89,6 @@ public class MovementDto {
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
+
 }
 

@@ -1,14 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
 
-@JsonInclude(Include.NON_NULL)
 public class AssetDto {
 
-    @JsonUnwrapped
     private VesselId vesselId;
     private String name;
     private String ircs;
@@ -54,4 +49,5 @@ public class AssetDto {
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
+
 }

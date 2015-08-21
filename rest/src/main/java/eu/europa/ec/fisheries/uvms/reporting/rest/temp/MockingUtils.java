@@ -1,18 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.temp;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-
-
 import eu.europa.ec.fisheries.uvms.reporting.model.Context;
-import eu.europa.ec.fisheries.uvms.reporting.model.Feature;
 import eu.europa.ec.fisheries.uvms.reporting.model.Preference;
 import eu.europa.ec.fisheries.uvms.reporting.model.Preferences;
 import eu.europa.ec.fisheries.uvms.reporting.model.Role;
 import eu.europa.ec.fisheries.uvms.reporting.model.Scope;
-import eu.europa.ec.fisheries.uvms.reporting.model.UserContext;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MockingUtils {
 	
@@ -45,17 +41,4 @@ public class MockingUtils {
 		context.getRole().setFeatures(new HashSet(Arrays.asList(userFeatures)));
 		return context;
 	}
-
-    public static int randInt(int min, int max) {
-
-        // NOTE: Usually this should be a field rather than a method
-        // variable so that it is not re-seeded every call.
-        Random rand = new Random();
-
-        // nextInt is normally exclusive of the top value,
-        // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-
-        return randomNum;
-    }
 }

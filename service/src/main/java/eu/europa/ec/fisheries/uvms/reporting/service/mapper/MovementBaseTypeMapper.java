@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.mapper;
+package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -13,7 +13,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * //TODO add test
  */
-@Mapper
+@Mapper(componentModel = "cdi")
 public abstract class MovementBaseTypeMapper {
 
     public static MovementBaseTypeMapper INSTANCE = Mappers.getMapper(MovementBaseTypeMapper.class);

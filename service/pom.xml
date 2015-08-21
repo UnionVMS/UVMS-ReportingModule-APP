@@ -37,11 +37,13 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>model</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>message</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

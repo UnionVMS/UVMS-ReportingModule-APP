@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.temp;
+package eu.europa.ec.fisheries.uvms.reporting.service.temp;
 
 import eu.europa.ec.fisheries.schema.movement.mobileterminal.v1.MobileTerminalId;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
@@ -9,6 +9,8 @@ import eu.europa.ec.fisheries.schema.movement.v1.MessageType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementBaseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
+import eu.europa.ec.fisheries.uvms.common.MockingUtils;
+import org.apache.commons.lang.RandomStringUtils;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -18,14 +20,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 public class MockMovementData {
-    private static XMLGregorianCalendar positionTime;
 
-    /**
-     * Get mocked data single object
-     *
-     * @param id
-     * @return
-     */
     public static MovementBaseType getDto(Long id) {
         MovementBaseType dto = new MovementBaseType();
         dto.setId(id.toString());
@@ -37,15 +32,11 @@ public class MockMovementData {
         dto.setMobileTerminal(getMobTermId());
         dto.setPosition(getMovementPoint());
         dto.setSource(MovementSourceType.INMARSAT_C);
-        dto.setStatus("God like");
+        dto.setStatus(RandomStringUtils.random(MockingUtils.randInt(5, 30)));
         dto.setPositionTime(getPositionTime());
         return dto;
     }
 
-    /**
-     *
-     * @return
-     */
     public static MovementPoint getMovementPoint() {
         MovementPoint point = new MovementPoint();
         point.setLatitude(MockingUtils.randInt(-90,90));
@@ -53,20 +44,12 @@ public class MockMovementData {
         return point;
     }
 
-    /**
-     *
-     * @return
-     */
     public static MobileTerminalId getMobTermId() {
         MobileTerminalId id = new MobileTerminalId();
         id.setId("ABC-80+");
         return id;
     }
 
-    /**
-     *
-     * @return
-     */
     public static MovementListQuery getQuery() {
         MovementListQuery query = new MovementListQuery();
         query.getMovementSearchCriteria().add(getListCtieria());
@@ -74,10 +57,6 @@ public class MockMovementData {
         return query;
     }
 
-    /**
-     *
-     * @return
-     */
     public static ListPagination getListPagination() {
         ListPagination criteria = new ListPagination();
         criteria.setListSize(BigInteger.valueOf(10L));
@@ -85,10 +64,6 @@ public class MockMovementData {
         return criteria;
     }
 
-    /**
-     *
-     * @return
-     */
     public static ListCriteria getListCtieria() {
         ListCriteria criteria = new ListCriteria();
         criteria.setKey(SearchKey.CONNECT_ID);
@@ -96,12 +71,6 @@ public class MockMovementData {
         return criteria;
     }
 
-    /**
-     * Get mocked data as a list
-     *
-     * @param amount
-     * @return
-     */
     public static List<MovementBaseType> getDtoList(Integer amount) {
         List<MovementBaseType> dtoList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
@@ -109,7 +78,6 @@ public class MockMovementData {
         }
         return dtoList;
     }
-
 
     public static XMLGregorianCalendar getPositionTime() {
         GregorianCalendar c = new GregorianCalendar();
