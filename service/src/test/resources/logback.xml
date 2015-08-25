@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="60 seconds" debug="false">
     
-    <property resource="logging.properties" />
+    <!-- <property resource="logging.properties" /> -->
     
     <contextName>${application.name}</contextName>
     
     <jmxConfigurator />
-
+    
     <!-- FILE LOGGER -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <append>true</append>
-        <file>${application.logfile.boot}</file>
+        <file>${application.logfile}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${application.logfile.boot}.%d{yyyy-ww}.%i.zip
+            <fileNamePattern>${application.logfile}.%d{yyyy-ww}.%i.zip
             </fileNamePattern>
             <maxHistory>30</maxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -24,13 +24,32 @@
         </encoder>
     </appender>
 
-
-<!-- hibernate logging -->
-    <appender name="HIBERNATE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- FILE ERROR -->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <append>true</append>
-        <file>C:\dev\tools\wildfly-8.2.0.Final\standalone\log\hibernate.log</file>
+        <file>${application.error.logfile}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>hibernate.%d{yyyy-ww}.%i.zip
+            <fileNamePattern>${application.error.logfile}.%d{yyyy-ww}.%i.zip
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>20MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{40} %X{userId}- %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <!-- BOOT LOGGER -->
+    <appender name="BOOT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <file>${application.logfile.boot}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${application.logfile.boot}.%d{yyyy-ww}.%i.zip
             </fileNamePattern>
             <maxHistory>30</maxHistory>
             <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -47,9 +66,6 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{40} %X{userId}- %msg%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
     </appender>
 
   	<logger name="org.hibernate.type" level="ALL" />
@@ -57,10 +73,10 @@
 	<logger name="eu.europa.ec.fisheries.uvms.reporting.service.dao" level="DEBUG"/>
 
     <root level="DEBUG">
-        <!-- appender-ref ref="ERROR"/>
+        <appender-ref ref="ERROR"/>
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/-->
-        <appender-ref ref="HIBERNATE_FILE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="BOOT"/>
     </root>
   
 
