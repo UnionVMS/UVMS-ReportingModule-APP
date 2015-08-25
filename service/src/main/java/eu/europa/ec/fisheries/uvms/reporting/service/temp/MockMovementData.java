@@ -32,7 +32,7 @@ public class MockMovementData {
         dto.setMobileTerminal(getMobTermId());
         dto.setPosition(getMovementPoint());
         dto.setSource(MovementSourceType.INMARSAT_C);
-        dto.setStatus(RandomStringUtils.random(MockingUtils.randInt(5, 30)));
+        dto.setStatus(RandomStringUtils.randomAlphabetic(MockingUtils.randInt(5, 20)));
         dto.setPositionTime(getPositionTime());
         return dto;
     }

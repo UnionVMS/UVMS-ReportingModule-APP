@@ -1,53 +1,32 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
+import lombok.experimental.Delegate;
 
 public class AssetDto {
 
-    private VesselId vesselId;
-    private String name;
-    private String ircs;
-    private String cfr;
-    private String countryCode;
+    @Delegate(types = Include.class)
+    private Vessel vessel;
+    private String color;
 
-    public VesselId getVesselId() {
-        return vesselId;
+    public AssetDto(Vessel vessel){
+        this.vessel = vessel;
     }
 
-    public void setVesselId(VesselId vesselId) {
-        this.vesselId = vesselId;
+    public String getColor() {
+        return color;
     }
 
-    public String getName() {
-        return name;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    private interface Include {
+        String getCountryCode();
+        String getIrcs();
+        String getCfr();
+        String getName();
+        VesselId getVesselId();
     }
-
-    public String getIrcs() {
-        return ircs;
-    }
-
-    public void setIrcs(String ircs) {
-        this.ircs = ircs;
-    }
-
-    public String getCfr() {
-        return cfr;
-    }
-
-    public void setCfr(String cfr) {
-        this.cfr = cfr;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
 }

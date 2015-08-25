@@ -1,20 +1,37 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.temp;
+package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.wsdl.vessel.types.CarrierSource;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
+import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class MockVesselData {
+import static org.junit.Assert.assertEquals;
 
-    public static List<String> COLORS = Arrays.asList("#FF0000", "#0000FF", "#00FFFF", "#669900", "#CC66FF", "#66FFFF", "#660033", "#990000", "#663300", "#A3A385", "#3385AD");
+public class AssetDtoTest {
 
-    public static Vessel getVesselDto(Integer id) {
+    private AssetDto dto;
+
+    @Test
+    public void testDelegation(){
+
+        // given
+        Vessel vessel = getVesselDto(1);
+
+        // when
+        dto = new AssetDto(vessel);
+
+        // then
+        assertEquals(dto.getVesselId().getGuid(), "1");
+        assertEquals(dto.getCountryCode(), "SWE1");
+        assertEquals(dto.getIrcs(), "IRCS-1");
+        assertEquals(dto.getName(), "VESSEL-1");
+        assertEquals(dto.getCfr(), "CFR1");
+
+    }
+
+    private Vessel getVesselDto(Integer id) {
         Vessel dto = new Vessel();
 
         dto.setCfr("CFR" + id);
@@ -26,16 +43,16 @@ public class MockVesselData {
         dto.setHomePort("PORT" + id);
 
         VesselId vesselId = new VesselId();
-        vesselId.setValue(id.toString());
+        vesselId.setGuid(id.toString());
         dto.setVesselId(vesselId);
         dto.setIrcs("IRCS-" + id);
-        dto.setLengthBetweenPerpendiculars(BigDecimal.valueOf(MockingUtils.randInt(0, 3) + id));
-        dto.setLengthOverAll(BigDecimal.valueOf(MockingUtils.randInt(0,10) + id));
+        dto.setLengthBetweenPerpendiculars(BigDecimal.valueOf(10));
+        dto.setLengthOverAll(BigDecimal.valueOf(20));
         dto.setName("VESSEL-" + id);
-        dto.setOtherGrossTonnage(BigDecimal.valueOf(MockingUtils.randInt(0,30) + id));
-        dto.setPowerAux(BigDecimal.valueOf(MockingUtils.randInt(0,999) + id));
-        dto.setPowerMain(BigDecimal.valueOf(MockingUtils.randInt(0,999) + id));
-        dto.setSafetyGrossTonnage(BigDecimal.valueOf(MockingUtils.randInt(0,100) + id));
+        dto.setOtherGrossTonnage(BigDecimal.valueOf(100));
+        dto.setPowerAux(BigDecimal.valueOf(1000));
+        dto.setPowerMain(BigDecimal.valueOf(50));
+        dto.setSafetyGrossTonnage(BigDecimal.valueOf(55));
         dto.setSource(CarrierSource.LOCAL);
         dto.setActive(true);
 
@@ -54,13 +71,5 @@ public class MockVesselData {
         }
         dto.setVesselType("VESSEL-TYPE: " + id);
         return dto;
-    }
-
-    public static List<Vessel> getVesselDtoList(Integer amount) {
-        List<Vessel> dtoList = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            dtoList.add(getVesselDto(i));
-        }
-        return dtoList;
     }
 }
