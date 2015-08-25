@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
@@ -57,7 +58,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		
 		//###################  START CREATE TEST
 		ReportDetailsDTO reportDetailsDTO = EntityUtil.createRandomReportDetailsDTO();
-		reportDetailsDTO.setIsShared(true);
+		reportDetailsDTO.setVisibility(VisibilityEnum.SCOPE);
 		
 		Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.json(reportDetailsDTO));
 		
@@ -89,7 +90,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		assertTrue(report.getId()>0);
 		assertTrue(report.isDeletable());
 		assertTrue(report.isEditable());
-		assertTrue(report.getIsShared());
+		assertEquals(VisibilityEnum.SCOPE, report.getVisibility());
 		assertTrue(report.isShareable());
 		
 		responseList.close();
@@ -103,7 +104,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		assertEquals(report.getDesc(), foundReport.getDesc());
 		assertEquals(report.getName(), foundReport.getName());
 		assertEquals(report.getId(), foundReport.getId());
-		assertEquals(report.getIsShared(), foundReport.getIsShared());
+		assertEquals(report.getVisibility(), foundReport.getVisibility());
 		
 		response.close();
 		

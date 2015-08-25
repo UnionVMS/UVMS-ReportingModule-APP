@@ -2,19 +2,23 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.mapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
+
+
 
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Feature;
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.Context;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.ReportFeature;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
 
@@ -25,7 +29,10 @@ public abstract class ReportToDTOMapper {
 	
 	public abstract Collection<ReportDTO> reportsToReportDtos(Collection<Report> reports);
  
-	@Mapping(source = "description", target = "desc")
+	@Mappings({
+		@Mapping(source = "description", target = "desc"),
+		@Mapping(target = "lastExecTime", expression = "java(mapLastExecutionDate(report))")
+	})
 	public abstract ReportDTO reportToReportDto(Report report);
 	
 	public Collection<ReportDTO> reportsToReportDtos(Collection<Report> reports, String username, Context context) {
@@ -41,10 +48,30 @@ public abstract class ReportToDTOMapper {
 		
 		return reportDTOs;
 	}
+	
+	/**
+	 * custom mapper
+	 * @param report
+	 * @return
+	 */
+	protected Date mapLastExecutionDate(Report report) {
+		Date mappedDate = null;
+		
+		if (!report.getReportExecutionLogs().isEmpty()) {
+			mappedDate = report.getReportExecutionLogs().iterator().next().getExecutedOn();
+		}
+			
+		return mappedDate;
+	}
 	 
 
 	public ReportDTO reportToReportDto(Report report, String username, Context context) {
 		ReportDTO reportDTO = this.reportToReportDto(report);
+		
+		if (!report.getReportExecutionLogs().isEmpty()) {
+			reportDTO.setLastExecTime(report.getReportExecutionLogs().iterator().next().getExecutedOn());
+		}
+		
 		Set<Feature> grantedFeatures = context.getRole().getFeatures();
 		
 		if (report!= null && grantedFeatures != null) {
@@ -59,10 +86,12 @@ public abstract class ReportToDTOMapper {
     	boolean isEditable = false;
 		
     	if (report.getCreatedBy().equals(username)) {
-    		if (grantedFeatures.contains(ReportFeature.MODIFY_REPORT)) {
+    		if (grantedFeatures.contains(ReportFeature.MODIFY_PRIVATE_REPORT)) {
     			isEditable = true;
     		}
-    	} else if (report.getIsShared() && grantedFeatures.contains(ReportFeature.MODIFY_SHARED_REPORTS)) {
+    	} else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.MODIFY_SCOPE_REPORT)) {
+    		isEditable = true;
+    	} else if ((report.getVisibility() == VisibilityEnum.GLOBAL) && grantedFeatures.contains(ReportFeature.MODIFY_GLOBAL_REPORT)) {
     		isEditable = true;
     	}
 
@@ -76,18 +105,24 @@ public abstract class ReportToDTOMapper {
 			if (grantedFeatures.contains(ReportFeature.DELETE_REPORT)) {
 				isDeletable = true;
 			}
-		} else if (report.getIsShared() && grantedFeatures.contains(ReportFeature.DELETE_SHARED_REPORT)) {
+		} else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.DELETE_SCOPE_REPORT)) {
 			isDeletable = true;
-    	}
+    	} else if ((report.getVisibility() == VisibilityEnum.GLOBAL) && grantedFeatures.contains(ReportFeature.DELETE_GLOBAL_REPORT)) {
+    		isDeletable = true;
+    	} 
 		
 		return isDeletable;
 	}
 
 	private boolean isShareable(Report report, String username, Set<Feature> grantedFeatures) {
 		boolean isShareable = false;
-		if (report.getCreatedBy().equals(username) && grantedFeatures.contains(ReportFeature.SHARE_REPORTS)) {
+		if (report.getCreatedBy().equals(username) ) {
+			if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_SCOPE) || grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
+				isShareable = true;
+			}
+		} else if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
 			isShareable = true;
-		}
+		} 
 		return isShareable;
 	}
 

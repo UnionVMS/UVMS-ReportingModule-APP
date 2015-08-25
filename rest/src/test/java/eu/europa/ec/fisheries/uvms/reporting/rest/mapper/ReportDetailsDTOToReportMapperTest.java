@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.EntityUtil;
 
@@ -27,7 +28,7 @@ public class ReportDetailsDTOToReportMapperTest {
 		ReportDetailsDTO detailsDTO = EntityUtil.createRandomReportDetailsDTO();
 		detailsDTO.setDesc("56385673456342614252345");
 		detailsDTO.setId(7345334);
-		detailsDTO.setIsShared(true);
+		detailsDTO.setVisibility(VisibilityEnum.SCOPE);
 		detailsDTO.setName("234565645235456754");
 		detailsDTO.setOutComponents("1453452365376523423");
 		detailsDTO.setScopeId(543535);
@@ -39,7 +40,7 @@ public class ReportDetailsDTOToReportMapperTest {
 		assertEquals(detailsDTO.getName(), report.getName());
 		assertEquals(detailsDTO.getOutComponents(), report.getOutComponents());
 		assertEquals(detailsDTO.getScopeId(), report.getScopeId());
-		assertEquals(detailsDTO.getIsShared(), report.getIsShared());
+		assertEquals(detailsDTO.getVisibility(), report.getVisibility());
 	}
 
 	@Test
@@ -47,7 +48,7 @@ public class ReportDetailsDTOToReportMapperTest {
 		Report report = EntityUtil.createRandomReport();
 		report.setDescription("56385673456342614252345");
 		report.setId(7345334);
-		report.setIsShared(true);
+		report.setVisibility(VisibilityEnum.SCOPE);
 		report.setName("234565645235456754");
 		report.setOutComponents("1453452365376523423");
 		report.setScopeId(543535);
@@ -59,7 +60,7 @@ public class ReportDetailsDTOToReportMapperTest {
 		assertEquals(report.getName(), detailsDTO.getName());
 		assertEquals(report.getOutComponents(), detailsDTO.getOutComponents());
 		assertEquals(report.getScopeId(), detailsDTO.getScopeId());
-		assertEquals(report.getIsShared(), detailsDTO.getIsShared());
+		assertEquals(report.getVisibility(), detailsDTO.getVisibility());
 	}
 
 }

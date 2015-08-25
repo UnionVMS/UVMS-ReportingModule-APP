@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReportDetailsDTO implements Serializable {
 
@@ -15,7 +17,7 @@ public class ReportDetailsDTO implements Serializable {
 	private long id;
 	private String name;
 	private String desc;
-	private boolean isShared;
+	private VisibilityEnum visibility;
 	private long scopeId;
 	private String outComponents;
 	
@@ -38,12 +40,7 @@ public class ReportDetailsDTO implements Serializable {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
-	public boolean getIsShared() {
-		return isShared;
-	}
-	public void setIsShared(boolean isShared) {
-		this.isShared = isShared;
-	}
+
 	public long getScopeId() {
 		return scopeId;
 	}
@@ -61,6 +58,18 @@ public class ReportDetailsDTO implements Serializable {
 	 */
 	public void setOutComponents(String outComponents) {
 		this.outComponents = outComponents;
+	}
+	/**
+	 * @return the visibility
+	 */
+	public VisibilityEnum getVisibility() {
+		return visibility;
+	}
+	/**
+	 * @param visibility the visibility to set
+	 */
+	public void setVisibility(VisibilityEnum visibility) {
+		this.visibility = visibility;
 	}
 	
 	

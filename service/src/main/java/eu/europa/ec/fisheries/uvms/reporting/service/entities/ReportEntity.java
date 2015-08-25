@@ -9,6 +9,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +23,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Where;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
 
 /**
@@ -63,9 +66,9 @@ public class ReportEntity implements java.io.Serializable {
 	@Column(name = "created_on", nullable = false, length = 29)
 	private Date createdOn;
 	
-	@Convert(converter=CharBooleanConverter.class)
-	@Column(name = "is_shared", nullable = false, length=1)
-	private Boolean isShared = false;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "visibility", nullable = false)
+	private VisibilityEnum visibility = VisibilityEnum.PRIVATE;
 	
 	@Convert(converter=CharBooleanConverter.class)
 	@Column(name = "is_deleted", nullable = true, length=1)
@@ -87,7 +90,7 @@ public class ReportEntity implements java.io.Serializable {
 
 	public ReportEntity(long id, String name, String filterExpression,
 			String outComponents, long scopeId,
-			String createdBy, Date createdOn, Boolean isShared,
+			String createdBy, Date createdOn, VisibilityEnum visibility,
 			Boolean isDeleted) {
 		this.id = id;
 		this.name = name;
@@ -96,13 +99,13 @@ public class ReportEntity implements java.io.Serializable {
 		this.scopeId = scopeId;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
-		this.isShared = isShared;
+		this.setVisibility(visibility);
 		this.isDeleted = isDeleted;
 	}
 
 	public ReportEntity(long id, String name, String description,
 			String filterExpression, String outComponents,
-			long scopeId, String createdBy, Date createdOn, Boolean isShared,
+			long scopeId, String createdBy, Date createdOn, VisibilityEnum visibility,
 			Boolean isDeleted, Date deletedOn, String deletedBy,
 			Set<ReportExecutionLogEntity> reportExecutionLogs) {
 		this.id = id;
@@ -113,7 +116,7 @@ public class ReportEntity implements java.io.Serializable {
 		this.scopeId = scopeId;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
-		this.isShared = isShared;
+		this.setVisibility(visibility);
 		this.isDeleted = isDeleted;
 		this.deletedOn = deletedOn;
 		this.deletedBy = deletedBy;
@@ -187,14 +190,6 @@ public class ReportEntity implements java.io.Serializable {
 		this.createdOn = createdOn;
 	}
 
-	public Boolean isIsShared() {
-		return this.isShared;
-	}
-	
-	public void setIsShared(Boolean isShared) {
-		this.isShared = isShared;
-	}
-
 	public Boolean isIsDeleted() {
 		return this.isDeleted;
 	}
@@ -226,6 +221,20 @@ public class ReportEntity implements java.io.Serializable {
 	public void setReportExecutionLogs(
 			Set<ReportExecutionLogEntity> reportExecutionLogs) {
 		this.reportExecutionLogs = reportExecutionLogs;
+	}
+
+	/**
+	 * @return the visibility
+	 */
+	public VisibilityEnum getVisibility() {
+		return visibility;
+	}
+
+	/**
+	 * @param visibility the visibility to set
+	 */
+	public void setVisibility(VisibilityEnum visibility) {
+		this.visibility = visibility;
 	}
 
 }

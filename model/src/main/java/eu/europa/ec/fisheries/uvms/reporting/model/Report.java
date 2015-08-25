@@ -18,7 +18,7 @@ public class Report implements java.io.Serializable {
 	private long scopeId;
 	private String createdBy;
 	private Date createdOn;
-	private boolean isShared;
+	private VisibilityEnum visibility;
 	private boolean isDeleted;
 	private Date deletedOn;
 	private String deletedBy;
@@ -30,7 +30,7 @@ public class Report implements java.io.Serializable {
 
 	public Report(long id, String name, String filterExpression,
 			String outComponents, boolean isActive, long scopeId,
-			String createdBy, Date createdOn, boolean isShared,
+			String createdBy, Date createdOn, VisibilityEnum visibility,
 			boolean isDeleted) {
 		this.id = id;
 		this.name = name;
@@ -39,13 +39,13 @@ public class Report implements java.io.Serializable {
 		this.scopeId = scopeId;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
-		this.isShared = isShared;
+		this.setVisibility(visibility);
 		this.isDeleted = isDeleted;
 	}
 
 	public Report(long id, String name, String description,
 			String filterExpression, String outComponents, boolean isActive,
-			long scopeId, String createdBy, Date createdOn, boolean isShared,
+			long scopeId, String createdBy, Date createdOn, VisibilityEnum visibility,
 			boolean isDeleted, Date deletedOn, String deletedBy,
 			Set<ReportExecutionLog> reportExecutionLogs) {
 		this.id = id;
@@ -56,7 +56,7 @@ public class Report implements java.io.Serializable {
 		this.scopeId = scopeId;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
-		this.isShared = isShared;
+		this.setVisibility(visibility);
 		this.isDeleted = isDeleted;
 		this.deletedOn = deletedOn;
 		this.deletedBy = deletedBy;
@@ -128,14 +128,6 @@ public class Report implements java.io.Serializable {
 		this.createdOn = createdOn;
 	}
 
-	public boolean getIsShared() {
-		return this.isShared;
-	}
-
-	public void setIsShared(boolean isShared) {
-		this.isShared = isShared;
-	}
-
 	public boolean getIsDeleted() {
 		return this.isDeleted;
 	}
@@ -167,6 +159,20 @@ public class Report implements java.io.Serializable {
 	public void setReportExecutionLogs(
 			Set<ReportExecutionLog> reportExecutionLogs) {
 		this.reportExecutionLogs = reportExecutionLogs;
+	}
+
+	/**
+	 * @return the visibility
+	 */
+	public VisibilityEnum getVisibility() {
+		return visibility;
+	}
+
+	/**
+	 * @param visibility the visibility to set
+	 */
+	public void setVisibility(VisibilityEnum visibility) {
+		this.visibility = visibility;
 	}
 
 }

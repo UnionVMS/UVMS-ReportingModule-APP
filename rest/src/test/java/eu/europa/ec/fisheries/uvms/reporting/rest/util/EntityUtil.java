@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashSet;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportExecutionLog;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 
@@ -46,8 +48,8 @@ public class EntityUtil {
 		entity.setFilterExpression(filterExpression);
 		entity.setName(name);
 		entity.setOutComponents(outComponents);
-		entity.setReportExecutionLogs(new HashSet());
 		entity.setScopeId(scopeId);
+		entity.setReportExecutionLogs(new HashSet<ReportExecutionLog>());
 		
 		return entity;
 	}
@@ -81,7 +83,7 @@ public class EntityUtil {
 		ReportDetailsDTO reportDTO =  new ReportDetailsDTO();
 		reportDTO.setDesc("This is some bullshit description.");
 		reportDTO.setName("NonExisting Report Name " + currentDate.getTime());
-		reportDTO.setIsShared(false);
+		reportDTO.setVisibility(VisibilityEnum.PRIVATE);;
 		reportDTO.setScopeId(currentDate.getTime());
 		reportDTO.setOutComponents("OutComponents");
 		

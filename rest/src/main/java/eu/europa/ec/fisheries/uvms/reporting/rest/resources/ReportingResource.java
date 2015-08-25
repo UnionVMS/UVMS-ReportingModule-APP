@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.ReportFeature;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
@@ -69,7 +70,13 @@ public class ReportingResource {
     	Collection<eu.europa.ec.fisheries.uvms.reporting.model.Report> reportsList = reportService.findReports(username, scopeId);
     	
     	//eu.europa.ec.fisheries.uvms.reporting.model.Context userContext = (eu.europa.ec.fisheries.uvms.reporting.model.Context) request.getSession().getAttribute(RestConstants.SESSION_ATTR_ACTIVE_USER_SCOPE);
-    	eu.europa.ec.fisheries.uvms.reporting.model.Context userContext = MockingUtils.createContext("someScope", ReportFeature.LIST_REPORTS, ReportFeature.DELETE_REPORT, ReportFeature.CREATE_REPORTS, ReportFeature.SHARE_REPORTS, ReportFeature.MODIFY_REPORT);
+    	eu.europa.ec.fisheries.uvms.reporting.model.Context userContext = MockingUtils.createContext("someScope", 
+    			ReportFeature.LIST_REPORTS, 
+    			ReportFeature.DELETE_REPORT, 
+    			ReportFeature.CREATE_REPORTS, 
+    			ReportFeature.SHARE_REPORTS_GLOBAL,
+    			ReportFeature.SHARE_REPORTS_SCOPE,
+    			ReportFeature.MODIFY_PRIVATE_REPORT);
     	
     	return createResponse(HttpServletResponse.SC_OK, mapper.reportsToReportDtos(reportsList, username, userContext));
     }
@@ -117,7 +124,7 @@ public class ReportingResource {
     @PUT
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
+    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response modifyReport(@Context HttpServletRequest request, 
     				@Context HttpServletResponse response, ReportDetailsDTO report) {
     	
@@ -133,7 +140,7 @@ public class ReportingResource {
     @POST
    	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
+    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response createReport(@Context HttpServletRequest request, 
    				@Context HttpServletResponse response, ReportDetailsDTO report) {
    	
@@ -151,18 +158,18 @@ public class ReportingResource {
     }
     
     @PUT
-    @Path("/share/{id}/{boolean}")
+    @Path("/share/{id}/{visibility}")
    	@Produces(MediaType.APPLICATION_JSON)
-    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
+    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response shareReport(@Context HttpServletRequest request, 
-   				@Context HttpServletResponse response, @PathParam("id") Long id, @PathParam("boolean") Boolean isShared) {
+   				@Context HttpServletResponse response, @PathParam("id") Long id, @PathParam("visibility") String visibility) {
    	
     	String username = "georgi"; //request.getRemoteUser() should return the username
    	
-    	LOG.info(username + " is requesting shareReport(...), with a ID=" + id + " with isShared=" + isShared);
+    	LOG.info(username + " is requesting shareReport(...), with a ID=" + id + " with isShared=" + visibility);
    	
     	Report reportToUpdate = reportService.findById(id);
-    	reportToUpdate.setIsShared(isShared);
+    	reportToUpdate.setVisibility(VisibilityEnum.valueOf(visibility));
     	reportService.update(reportToUpdate);
     	
     	return  createResponse(HttpServletResponse.SC_OK, "success");
@@ -172,7 +179,7 @@ public class ReportingResource {
     @GET
     @Path("/execute/{id}")
    	@Produces(MediaType.APPLICATION_JSON)
-    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
+    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response runReport(@Context HttpServletRequest request, 
    				@Context HttpServletResponse response, @PathParam("id") Long id) {
    	

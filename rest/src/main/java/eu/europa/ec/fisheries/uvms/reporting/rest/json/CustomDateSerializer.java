@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.util;
+package eu.europa.ec.fisheries.uvms.reporting.rest.json;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

@@ -129,9 +129,27 @@ public class ReportDAO {
 		Map<String, Object> params = new HashMap<>();
 		params.put("username", username);
 		params.put("scopeId", scopeId);
+		//TODO 
+		/*
+		 * SELECT 
+		  report.id
+		FROM 
+		  reporting.report
+		  left join reporting.report_execution_log
+		  on report.id = report_execution_log.report_id
+		WHERE 
+		  reporting.report.scope_id = 123 
+		  and report_execution_log.executed_by = 'georgi'
+		  and report_execution_log.executed_on =(SELECT MAX(report_execution_log.executed_on)
+		              FROM reporting.report_execution_log
+		              WHERE report_execution_log.executed_by = 'georgi');
+*/
 		
 		try {
-			Query query = session.createQuery("from ReportEntity r where (r.createdBy=:username and r.scopeId = :scopeId) or (r.isShared = 'Y' and r.scopeId = :scopeId))");
+			Query query = session.createQuery("from ReportEntity r where "
+					+ "(r.createdBy=:username and r.scopeId = :scopeId) "
+					+ "or (r.visibility = 'SCOPE' and r.scopeId = :scopeId) "
+					+ "or r.visibility = 'GLOBAL'");
 			query = query.setParameter("username", username).setParameter("scopeId", scopeId);
 			
 			Collection<ReportEntity> listReports = query.list();

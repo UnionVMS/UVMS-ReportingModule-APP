@@ -15,7 +15,9 @@ public class ArquillianTest {
     	WebArchive war = ShrinkWrap.create(WebArchive.class,"reporting.war").addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.rest")
                 //.addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource( new File( "src/main/webapp/WEB-INF/web.xml" ) )
+                .addAsManifestResource(new File( "src/main/resources/META-INF/jboss-deployment-structure.xml"))
                 .addAsResource("config.properties")
+                .addAsResource("logback.xml")
                 .addAsWebInfResource(new File("src/main/webapp/WEB-INF/beans.xml"));
 
         File[] libs = Maven.resolver().loadPomFromFile("pom.xml").importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST).resolve().withTransitivity().asFile();

@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.EntityUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportExecutionLogEntity;
@@ -111,11 +112,11 @@ public class ReportDAOITest {
 		
 		ReportEntity reportEntity = EntityUtil.createRandomReportEntity();
 		reportEntity.setCreatedBy("georgiTestttt12");
-		reportEntity.setScopeId(356456731);
+		reportEntity.setScopeId(945563456);
 		reportDAO.persist(reportEntity);
 		
 		
-		Collection<ReportEntity> reports = reportDAO.findByUsernameAndScope("georgiTestttt12", 356456731);
+		Collection<ReportEntity> reports = reportDAO.findByUsernameAndScope("georgiTestttt12", 945563456);
 		
 		assertNotNull(reports);
 		assertTrue(!reports.isEmpty());
@@ -127,22 +128,32 @@ public class ReportDAOITest {
 		assertNotNull(reports);
 		assertTrue(reports.isEmpty());
 		
+		reports = reportDAO.findByUsernameAndScope("nonexistinguser", 123456);
+		
+		assertNotNull(reports);
+		assertTrue(reports.isEmpty());
+		
 		ReportEntity reportEntity2 = EntityUtil.createRandomReportEntity();
 		reportEntity2.setScopeId(58437239);
-		reportEntity2.setIsShared(true);
+		reportEntity2.setVisibility(VisibilityEnum.SCOPE);
 		reportDAO.persist(reportEntity2);
+		
+		ReportEntity reportEntity3 = EntityUtil.createRandomReportEntity();
+		reportEntity3.setVisibility(VisibilityEnum.GLOBAL);
+		reportDAO.persist(reportEntity3);
 		
 		
 		reports = reportDAO.findByUsernameAndScope("nonexistinguser", 58437239);
 		
 		assertNotNull(reports);
 		assertTrue(!reports.isEmpty());
-		assertEquals(1, reports.size());
+		assertEquals(2, reports.size());
 		
 		reports = reportDAO.findByUsernameAndScope("nonexistinguser", 123456);
 		
 		assertNotNull(reports);
-		assertTrue(reports.isEmpty());
+		assertEquals(1, reports.size());
+		assertEquals(VisibilityEnum.GLOBAL, reports.iterator().next().getVisibility());
 		
 	}
 	

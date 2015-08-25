@@ -5,7 +5,9 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import eu.europa.ec.fisheries.uvms.reporting.rest.util.CustomDateSerializer;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.rest.json.CustomDateSerializer;
+import eu.europa.ec.fisheries.uvms.reporting.rest.json.VisibilitySerializer;
 
 /**
  */
@@ -23,7 +25,10 @@ public class ReportDTO implements java.io.Serializable {
 	@JsonSerialize(contentUsing = CustomDateSerializer.class)
 //	@JsonProperty("createdOn")
 	private Date createdOn;
-	private boolean isShared;
+	private String createdBy;
+	private VisibilityEnum visibility;
+	@JsonSerialize(contentUsing = CustomDateSerializer.class)
+	private Date lastExecTime;
 	
 	//authorization properties
 	private boolean shareable;
@@ -113,16 +118,59 @@ public class ReportDTO implements java.io.Serializable {
 
 
 
-	public boolean getIsShared() {
-		return isShared;
+	/**
+	 * @return the visibility
+	 */
+	public VisibilityEnum getVisibility() {
+		return visibility;
 	}
 
 
 
-	public void setIsShared(boolean is_shared) {
-		this.isShared = is_shared;
+	/**
+	 * @param visibility the visibility to set
+	 */
+	public void setVisibility(VisibilityEnum visibility) {
+		this.visibility = visibility;
 	}
 
-	
+
+
+	/**
+	 * @return the createdBy
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+
+
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+
+
+	/**
+	 * @return the lastExecTime
+	 */
+	public Date getLastExecTime() {
+		return lastExecTime;
+	}
+
+
+
+	/**
+	 * @param lastExecTime the lastExecTime to set
+	 */
+	public void setLastExecTime(Date lastExecTime) {
+		this.lastExecTime = lastExecTime;
+	}
+
+
+
 
 }
