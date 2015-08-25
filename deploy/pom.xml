@@ -74,7 +74,7 @@
         </dependency>
     </dependencies>
 
-    <!-- USE following command to run this profile: mvn clean install -P wildfly-deploy wildfly:deploy -Dhostname=127.0.0.1 -Dport=9990 -Dusername=admin -Dpassword=asdf  -->
+    <!-- USE following command to run this profile: mvn clean install -P wildfly-deploy wildfly:deploy -Dhostname=127.0.0.1 -Dport=9990 -Dusername=wildfly -Dpassword=password  -->
     <profiles>
         <profile>
             <id>wildfly-deploy</id>
@@ -84,6 +84,26 @@
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
                         <version>1.0.2.Final</version>
+                        <executions>
+                            <!-- Undeploy the application on clean -->
+		                    <execution>
+		                        <id>undeploy</id>
+		                        <phase>clean</phase>
+		                        <goals>
+		                            <goal>undeploy</goal>
+		                        </goals>
+		                        <configuration>
+		                            <ignoreMissingDeployment>true</ignoreMissingDeployment>
+		                        </configuration>
+                    		</execution>
+                    		<execution>
+		                        <id>deploy</id>
+		                        <phase>install</phase>
+		                        <goals>
+		                            <goal>deploy</goal>
+		                        </goals>
+                    		</execution>
+                        </executions>
                         <configuration>
                             <filename>${project.build.finalName}.${project.packaging}</filename>
                             <targetDir>${project.build.directory}</targetDir>
