@@ -43,10 +43,10 @@ public class ReportDAOITest {
   	WebArchive war = ShrinkWrap.create(WebArchive.class,"reporting-service.war").addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.service")
               .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
               .addAsResource("config.properties")
-              .addAsResource("log4j.xml")
+              .addAsResource("logback.xml")
               .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
-      File[] libs = Maven.resolver().loadPomFromFile("pom.xml").importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST).resolve().withTransitivity().asFile();
+      File[] libs = Maven.resolver().loadPomFromFile("pom.xml").importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST, ScopeType.PROVIDED).resolve().withTransitivity().asFile();
       war = war.addAsLibraries(libs);
 
       System.out.println(war.toString(true)); 
@@ -183,5 +183,66 @@ public class ReportDAOITest {
 		
 	}
 	
+	
+
+	@SuppressWarnings("deprecation")
+	@Test
+	@Transactional(value = TransactionMode.ROLLBACK)
+	public void testLatestReportExecLog () {
+		ReportEntity reportEntity = EntityUtil.createRandomReportEntity();
+		reportEntity.setCreatedBy("georgiTestttt12");
+		reportEntity.setScopeId(356456731);
+		reportEntity.setVisibility(VisibilityEnum.PRIVATE);
+		
+		ReportExecutionLogEntity repExecLog = new ReportExecutionLogEntity();
+		repExecLog.setExecutedBy("georgiTestttt12");
+		repExecLog.setExecutedOn(new Date());
+		repExecLog.setReport(reportEntity);
+
+		ReportExecutionLogEntity repExecLog2 = new ReportExecutionLogEntity();
+		repExecLog2.setExecutedBy("georgiTestttt12");
+		repExecLog2.setExecutedOn(new Date());
+		repExecLog2.setReport(reportEntity);
+		
+		ReportExecutionLogEntity repExecLog3 = new ReportExecutionLogEntity();
+		repExecLog3.setExecutedBy("georgiTestttt12");
+		repExecLog3.setExecutedOn(new Date());
+		repExecLog3.setReport(reportEntity);
+		
+		
+		ReportExecutionLogEntity repExecLog4 = new ReportExecutionLogEntity();
+		repExecLog4.setExecutedBy("georgiTestttt12adsasda");
+		repExecLog4.setExecutedOn(new Date());
+		repExecLog4.setReport(reportEntity);
+		
+		
+		assertNotNull(reportEntity.getReportExecutionLogs());
+		reportEntity.getReportExecutionLogs().add(repExecLog);
+		reportEntity.getReportExecutionLogs().add(repExecLog2);
+		reportEntity.getReportExecutionLogs().add(repExecLog3);
+		reportEntity.getReportExecutionLogs().add(repExecLog4);
+		
+		
+		reportDAO.persist(reportEntity);
+		
+		Collection<ReportEntity> results = reportDAO.findByUsernameAndScope("georgiTestttt12", 356456731);
+		
+		assertNotNull(results);
+		assertTrue(results.size()>0);
+		
+		ReportEntity foundPrivateEntity = null;
+		
+		for (ReportEntity entity : results) {
+			if (entity.getVisibility().equals(VisibilityEnum.PRIVATE)) {
+				foundPrivateEntity = entity;
+				break;
+			}
+		}
+		
+		assertNotNull(foundPrivateEntity.getReportExecutionLogs());
+		assertEquals(1, foundPrivateEntity.getReportExecutionLogs().size());
+		assertEquals(repExecLog3.getExecutedOn(), reportEntity.getReportExecutionLogs().iterator().next().getExecutedOn());
+		
+	}
 
 }

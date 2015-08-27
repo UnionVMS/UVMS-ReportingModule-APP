@@ -2,10 +2,15 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 // Generated Aug 6, 2015 11:44:30 AM by Hibernate Tools 4.3.1
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.ejb.Local;
@@ -20,14 +25,19 @@ import javax.persistence.TypedQuery;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.impl.QueryImpl;
+import org.hibernate.transform.ResultTransformer;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportExecutionLog;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ModuleInitializerBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
@@ -126,33 +136,43 @@ public class ReportDAO {
 	public Collection<ReportEntity> findByUsernameAndScope(String username, long scopeId) {
 		log.debug("Searching for ReportEntity instances with username: " + username + " and scopeID:" + scopeId);
 		
-		Map<String, Object> params = new HashMap<>();
-		params.put("username", username);
-		params.put("scopeId", scopeId);
-		//TODO 
-		/*
-		 * SELECT 
-		  report.id
-		FROM 
-		  reporting.report
-		  left join reporting.report_execution_log
-		  on report.id = report_execution_log.report_id
-		WHERE 
-		  reporting.report.scope_id = 123 
-		  and report_execution_log.executed_by = 'georgi'
-		  and report_execution_log.executed_on =(SELECT MAX(report_execution_log.executed_on)
-		              FROM reporting.report_execution_log
-		              WHERE report_execution_log.executed_by = 'georgi');
-*/
-		
+	
 		try {
-			Query query = session.createQuery("from ReportEntity r where "
-					+ "(r.createdBy=:username and r.scopeId = :scopeId) "
-					+ "or (r.visibility = 'SCOPE' and r.scopeId = :scopeId) "
-					+ "or r.visibility = 'GLOBAL'");
+			Query query = session.createSQLQuery("select * from reporting.report as r "
+					+ "left outer join (select report_id, executed_by, max(executed_on) as executed_on from reporting.report_execution_log where executed_by = :username group by executed_by, report_id) as l "
+					+ "on r.id = l.report_id "
+					+ "where (r.is_deleted <> 'Y') and ((r.scope_id = :scopeId and (r.created_by = :username or r.visibility = 'SCOPE') ) or r.visibility = 'GLOBAL') "
+					+ "order by r.id;"); 
 			query = query.setParameter("username", username).setParameter("scopeId", scopeId);
 			
-			Collection<ReportEntity> listReports = query.list();
+			List<Object[]> resultSet = query.list();
+			Collection<ReportEntity> listReports = new ArrayList<ReportEntity>(resultSet.size());
+			
+			for (Object[] result : resultSet) {
+				ReportEntity entity = new ReportEntity();
+				ReportExecutionLogEntity logEntity = new ReportExecutionLogEntity();
+				Set<ReportExecutionLogEntity> logSet = new HashSet<ReportExecutionLogEntity>(); 
+				
+				entity.setId(((BigInteger) result[0]).longValue());
+				entity.setName((String) result[1]);
+				entity.setDescription(result[2]!= null?(String)result[2]:null);
+				entity.setFilterExpression((String) result[3]);
+				entity.setOutComponents(result[4]!= null?(String)result[4]:null);
+				entity.setScopeId(result[5]!= null?((BigInteger) result[5]).longValue():null);
+				entity.setCreatedBy((String) result[6]);
+				entity.setCreatedOn((Date) result[7]);
+				entity.setVisibility(VisibilityEnum.valueOf((String) result[11]));
+				
+				if (result[12] != null) { //then we have a execution log
+					logEntity.setExecutedBy((String) result[13]);
+					logEntity.setExecutedOn((Date) result[14]);
+					logSet.add(logEntity);
+				}
+				
+				entity.setReportExecutionLogs(logSet);
+				
+				listReports.add(entity);
+			}
 		
 			log.debug("get successful");
 			return listReports;
