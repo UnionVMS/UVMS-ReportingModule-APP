@@ -2,22 +2,25 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ResponseCode;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ResponseDto;
+
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
+import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
+
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.SchemaException;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,6 +66,6 @@ public class VmsResource {
         rootNode.set("segments", segmentsNode);
         rootNode.set("tracks", null);
 
-        return new ResponseDto(rootNode, ResponseCode.OK);
+        return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
     }
 }
