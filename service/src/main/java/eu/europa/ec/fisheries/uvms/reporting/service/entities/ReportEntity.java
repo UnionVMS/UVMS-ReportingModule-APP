@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -31,6 +33,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBool
  */
 @Entity
 @Table(name = "report", schema = "reporting")
+@NamedQueries({
+	  @NamedQuery(name="ReportEntity.GetReportById", query="Select RE from ReportEntity RE WHERE RE.id = :id")
+	})
 @Where(clause = "is_deleted <> 'Y'")
 public class ReportEntity implements java.io.Serializable {
 
