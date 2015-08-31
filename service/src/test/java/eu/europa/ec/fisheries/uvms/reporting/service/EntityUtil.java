@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 
 public class EntityUtil {
@@ -36,7 +37,8 @@ public class EntityUtil {
 			String description,
 			String filterExpression,
 			String outComponents,
-			long scopeId) {
+			long scopeId,
+			VisibilityEnum visibilityEnum) {
 		Report entity = new Report();
 		
 		entity.setCreatedBy(createdBy);
@@ -47,6 +49,7 @@ public class EntityUtil {
 		entity.setOutComponents(outComponents);
 		entity.setReportExecutionLogs(new HashSet());
 		entity.setScopeId(scopeId);
+		entity.setVisibility(visibilityEnum);
 		
 		return entity;
 	}
@@ -72,6 +75,7 @@ public class EntityUtil {
 								"This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate),
 								"some filter expression",
 								"OutComponents",
-								123);
+								123,
+								VisibilityEnum.SCOPE);
 	}
 }
