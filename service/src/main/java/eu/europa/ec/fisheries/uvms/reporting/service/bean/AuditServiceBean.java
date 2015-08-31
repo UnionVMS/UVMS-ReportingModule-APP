@@ -12,7 +12,7 @@ import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.AuditProducerBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.constants.ReportingServiceConstants;
 
 @Stateless
@@ -25,7 +25,7 @@ public class AuditServiceBean implements AuditService {
 	private AuditProducerBean auditProducerBean;
 
 	@Override
-	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId) throws ReportingException {
+	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId) throws ReportingServiceException {
 		
 		LOG.info("Audit report request received for : " + auditActionEnum.getAuditType());
 		try {
@@ -35,10 +35,10 @@ public class AuditServiceBean implements AuditService {
 			
 		} catch (MessageException e) {
 			LOG.error("Exception in Sending Message to Audit Queue", e);
-			throw new ReportingException(e);
+			throw new ReportingServiceException(e);
 		} catch (AuditModelMarshallException e) {
 			LOG.error("Audit model marshal exception", e);
-			throw new ReportingException(e);
+			throw new ReportingServiceException(e);
 		}
 	}
 }

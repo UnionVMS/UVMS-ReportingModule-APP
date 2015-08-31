@@ -34,6 +34,8 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.ArquillianTest;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.EntityUtil;
+import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
+import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
 
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -122,6 +124,23 @@ public class ReportingResourceITest extends ArquillianTest {
 		response = webTarget.path("/" + report.getId()).request().get();
 		
 		assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+		
+		response.close();
+		
+	}
+	
+	
+	@Test
+	@Header(name="connection", value = "Keep-Alive")
+	public void testDeleteNonExisting(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws JsonParseException, JsonMappingException, IOException {
+		
+		//###################### TEST DELETE
+		Response response = webTarget.path("/99999998" ).request().delete();
+		
+		assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response.getStatus());
+		
+		ResponseDto resultMsg = response.readEntity(ResponseDto.class);
+		assertEquals(ErrorCodes.DELETE_FAILED, resultMsg.getMsg());
 		
 		response.close();
 		

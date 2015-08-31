@@ -68,7 +68,7 @@ public class ReportDAOITest {
 	
 	@Test
 	@Transactional(value = TransactionMode.ROLLBACK)
-	public void testRemove() {
+	public void testRemove() throws Exception{
 		ReportEntity reportEntity = EntityUtil.createRandomReportEntity();
 		reportEntity.setName("RemoveTest");
 		reportDAO.persist(reportEntity);

@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ModuleInitializerBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
@@ -94,7 +95,8 @@ public class ReportDAO {
 	 */
 	@Transactional
 	public void remove(ReportEntity persistentInstance) {
-		String username = context.getCallerPrincipal().getName();
+		//String username = context.getCallerPrincipal().getName();
+		String username = "georgi"; //TODO remove the hardcoded username and use the caller principal instead
 		
 		log.debug(username + " is removing ReportEntity instance");
 		try {
@@ -115,8 +117,11 @@ public class ReportDAO {
 	 * @param entityId
 	 */
 	@Transactional
-	public void remove(long entityId) {
+	public void remove(long entityId) throws ReportingServiceException{
 			ReportEntity persistentInstance = this.findById(entityId);
+			if (persistentInstance == null) {
+				throw new ReportingServiceException("Non existing report entity cannot be deleted.");
+			}
 			
 			this.remove(persistentInstance);
 	}

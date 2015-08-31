@@ -22,12 +22,11 @@ public class ReportDTO implements java.io.Serializable {
 	private String name;
 	private String desc;
 	
-	@JsonSerialize(contentUsing = CustomDateSerializer.class)
-//	@JsonProperty("createdOn")
+	@JsonSerialize(using = CustomDateSerializer.class)
 	private Date createdOn;
 	private String createdBy;
 	private VisibilityEnum visibility;
-	@JsonSerialize(contentUsing = CustomDateSerializer.class)
+	@JsonSerialize(using = CustomDateSerializer.class)
 	private Date lastExecTime;
 	
 	//authorization properties

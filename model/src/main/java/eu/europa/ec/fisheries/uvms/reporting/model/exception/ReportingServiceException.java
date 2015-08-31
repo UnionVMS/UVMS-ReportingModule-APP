@@ -10,15 +10,19 @@ import org.slf4j.LoggerFactory;
  * @see {@link Exception}
  *
  */
-public final class ReportingException extends Exception {
+public final class ReportingServiceException extends Exception {
 	
 	private static final long serialVersionUID = -5238088781317596825L;
 	
-	private static Logger LOG = LoggerFactory.getLogger(ReportingException.class.getName());
-	
-	public ReportingException(Exception e) {
+	public ReportingServiceException(Throwable e) {
 		super(e);
-		LOG.error("Exception Caught", e);
 	}
 
+	public ReportingServiceException(String msg) {
+		super(msg);
+	}
+	
+	public ReportingServiceException(String msg, Throwable e) {
+		super(msg, e);
+	}
 }

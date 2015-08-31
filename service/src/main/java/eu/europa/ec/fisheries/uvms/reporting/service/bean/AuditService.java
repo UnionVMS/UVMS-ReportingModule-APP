@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 
 /**
  * Audit Service interface to provide entry point methods for all the services related to Audit module
@@ -16,6 +16,6 @@ public interface AuditService {
 	 * @param objectId {@link String}
 	 * @throws ReportingException {@link ReportingException}
 	 */
-	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId) throws ReportingException;
+	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId) throws ReportingServiceException;
 
 }

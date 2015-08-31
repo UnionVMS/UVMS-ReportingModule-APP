@@ -2,14 +2,9 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -32,18 +28,20 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.ReportFeature;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
+import eu.europa.ec.fisheries.uvms.reporting.rest.json.JsonResponseInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.rest.mapper.ReportDetailsDTOToReportMapper;
 import eu.europa.ec.fisheries.uvms.reporting.rest.mapper.ReportToDTOMapper;
-import eu.europa.ec.fisheries.uvms.reporting.rest.security.IsUserAllowed;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.MockingUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportBean;
+import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
+import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 
 @Path("/report")
-public class ReportingResource {
+public class ReportingResource extends UnionVMSResource {
 
     final static Logger LOG = LoggerFactory.getLogger(ReportingResource.class);
     
@@ -78,7 +76,7 @@ public class ReportingResource {
     			ReportFeature.SHARE_REPORTS_SCOPE,
     			ReportFeature.MODIFY_PRIVATE_REPORT);
     	
-    	return createResponse(HttpServletResponse.SC_OK, mapper.reportsToReportDtos(reportsList, username, userContext));
+    	return createSuccessResponse(mapper.reportsToReportDtos(reportsList, username, userContext));
     }
     
     @GET
@@ -97,9 +95,9 @@ public class ReportingResource {
     	Response restResponse = null;
     	
     	if (report != null) {
-	    	restResponse = createResponse(HttpServletResponse.SC_OK, reportDetailsMapper.reportToReportDetailsDto(report));
+	    	restResponse = createSuccessResponse(reportDetailsMapper.reportToReportDetailsDto(report));
     	} else {
-    		restResponse = createResponse(HttpServletResponse.SC_NOT_FOUND, "report not found");
+    		restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
     	}
     	
     	return restResponse;
@@ -109,15 +107,21 @@ public class ReportingResource {
     @Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(allFeatures = { ReportFeature.VIEW_REPORT})
+    @Interceptors(value = {JsonResponseInterceptor.class})
     public Response deleteReport(@Context HttpServletRequest request, 
-    				@Context HttpServletResponse response, @PathParam("id") Long id) {
+    				@Context HttpServletResponse response, @PathParam("id") Long id) throws ReportingServiceException{
     	
     	String username = "georgi"; //request.getRemoteUser() should return the username
     	
     	LOG.info(username + " is requesting deleteReport(...), with a ID=" + id );
     	
-    	reportService.delete(id);
-    	return createResponse(HttpServletResponse.SC_OK, "success");
+    	try {
+    		reportService.delete(id);
+    	} catch (ReportingServiceException exc) {
+    		throw new ProcessingException(ErrorCodes.DELETE_FAILED);
+    	}
+    	
+    	return createSuccessResponse();
     }
 
     
@@ -134,7 +138,7 @@ public class ReportingResource {
     	
     	reportService.update(reportDetailsMapper.reportDetailsDtoToReport(report));//TODO handle better merge because we pass not all the fields directly from the front-end
     	
-    	return createResponse(HttpServletResponse.SC_OK, "success");
+    	return createSuccessResponse();
     }
     
     @POST
@@ -154,7 +158,7 @@ public class ReportingResource {
 	   	newReport.setFilterExpression("To be implemented");
 
 	   	reportService.create(newReport);
-	   	return createResponse(HttpServletResponse.SC_OK, "success");
+	   	return createSuccessResponse();
     }
     
     @PUT
@@ -172,7 +176,7 @@ public class ReportingResource {
     	reportToUpdate.setVisibility(VisibilityEnum.valueOf(visibility));
     	reportService.update(reportToUpdate);
     	
-    	return  createResponse(HttpServletResponse.SC_OK, "success");
+    	return  createSuccessResponse();
     }
     
     
@@ -187,15 +191,7 @@ public class ReportingResource {
    	
     	LOG.info(username + " is requesting shareReport(...), with a ID=" + id);
     	//TODO 
-    	return null;
-    }
-    
-    /**
-     * use Resteasy to put the provided HTTP status code and to convert the object into proper JSON response
-     */
-    private Response createResponse(int code, Object data) {
-    	return Response.status(code).entity(data).build();
-    	
+    	return createSuccessResponse();
     }
     
 }

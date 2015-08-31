@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
@@ -54,7 +55,7 @@ public class ReportBean {
 		reportDAO.persist(reportEntity);
 	}
 	
-	public void delete(Long reportId) {
+	public void delete(Long reportId) throws ReportingServiceException{
 		reportDAO.remove(reportId);
 	}
 	
