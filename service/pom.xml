@@ -56,11 +56,6 @@
             <artifactId>uvms-commons</artifactId>
         </dependency>
 
-      	<dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
