@@ -3,6 +3,8 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 
@@ -19,6 +21,8 @@ public class ReportDetailsDTO implements Serializable {
 	private String desc;
 	private VisibilityEnum visibility;
 	private long scopeId;
+	
+	@JsonRawValue
 	private String outComponents;
 	
 	

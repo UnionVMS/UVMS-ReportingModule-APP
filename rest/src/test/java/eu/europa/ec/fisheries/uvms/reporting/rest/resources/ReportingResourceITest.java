@@ -66,7 +66,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		
 		assertNotNull(response);
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-		assertEquals("success", response.readEntity(String.class));
+		assertEquals("{\"code\":200}", response.readEntity(String.class));
 		
 		response.close();
 		
@@ -116,7 +116,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		
 		String resultMsg = response.readEntity(String.class);
-		assertEquals("success", resultMsg);
+		assertEquals("{\"code\":200}", resultMsg);
 		
 		response.close();
 		
