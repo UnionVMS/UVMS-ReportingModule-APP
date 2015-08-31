@@ -12,7 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.AuditProducerBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuditServiceBeanTest {
@@ -34,7 +34,7 @@ public class AuditServiceBeanTest {
 			auditServiceBean.sendAuditReport(AuditActionEnum.CREATE, "123");
 			auditServiceBean.sendAuditReport(AuditActionEnum.MODIFY, "123");
 			auditServiceBean.sendAuditReport(AuditActionEnum.DELETE, "123");
-		} catch (ReportingException e) {
+		} catch (ReportingServiceException e) {
 			assertNull(e);
 		}
 		

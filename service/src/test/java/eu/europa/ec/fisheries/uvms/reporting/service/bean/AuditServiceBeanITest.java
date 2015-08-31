@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 
@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
@@ -62,7 +62,7 @@ public class AuditServiceBeanITest {
 				auditService.sendAuditReport(AuditActionEnum.CREATE, "123");
 				auditService.sendAuditReport(AuditActionEnum.MODIFY, "123");
 				auditService.sendAuditReport(AuditActionEnum.DELETE, "123");
-			} catch (ReportingException e) {
+			} catch (ReportingServiceException e) {
 				assertNull(e);
 			}
 		}		

@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.EntityUtil;
 
 @RunWith(Arquillian.class)
@@ -59,7 +60,7 @@ public class ReportBeanITest {
 		
 		@Test
 		@Transactional(TransactionMode.ROLLBACK)
-		public void testInterceptor() {	
+		public void testInterceptor() throws ReportingServiceException {	
 			Report report = reportBean.create(EntityUtil.createRandomReport());			
 			assertNotNull(report);			
 			

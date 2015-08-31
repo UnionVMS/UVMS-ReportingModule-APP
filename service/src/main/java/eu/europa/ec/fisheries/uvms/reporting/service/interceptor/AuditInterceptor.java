@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
@@ -67,7 +67,7 @@ public class AuditInterceptor implements Serializable {
 		try {
 			LOG.info("Audit type received is : " + auditAction.getAuditType() + " ID : " + id);
 			auditService.sendAuditReport(auditAction, id.toString());
-		} catch (ReportingException e) {
+		} catch (ReportingServiceException e) {
 			LOG.error("Exception Occured while executing interceptor", e);
 		}				
 	}
