@@ -7,11 +7,14 @@ import javax.ejb.Local;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
+import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 
 /**
@@ -40,6 +43,7 @@ public class ReportBean {
         // TODO Auto-generated constructor stub
     }
     
+    @IAuditInterceptor(auditActionType=AuditActionEnum.CREATE)
     public Report create(Report report) {
     	ReportEntity reportEntity = mapper.reportDtoToReport(report);
 		reportEntity = reportDAO.persist(reportEntity);
@@ -50,11 +54,17 @@ public class ReportBean {
 		return mapper.reportToReportDto(reportDAO.findById(id));
 	}
 	
+/*	public Report getReportById(long id) {
+		return mapper.reportToReportDto(reportDAO.GetReportById(id));
+	}*/
+	
+	@IAuditInterceptor(auditActionType=AuditActionEnum.MODIFY)
 	public void update(Report report) {
 		ReportEntity reportEntity = mapper.reportDtoToReport(report);
 		reportDAO.persist(reportEntity);
 	}
 	
+	@IAuditInterceptor(auditActionType=AuditActionEnum.DELETE)
 	public void delete(Long reportId) throws ReportingServiceException{
 		reportDAO.remove(reportId);
 	}
