@@ -126,6 +126,7 @@ public class ReportDAO {
 			this.remove(persistentInstance);
 	}
 
+	@Transactional
 	public ReportEntity findById(long id) {
 		log.debug("getting ReportEntity instance with id: " + id);
 		try {
@@ -137,6 +138,13 @@ public class ReportDAO {
 			throw re;
 		}
 	}
+	
+/*	public ReportEntity GetReportById(long id) {
+		log.info("Get report entiry by Id : " + id);
+		Query query = session.getNamedQuery("ReportEntity.GetReportById").setParameter("id", id);
+		ReportEntity instance = (ReportEntity) query.uniqueResult();
+		return instance;
+	}*/
 	
 	public Collection<ReportEntity> findByUsernameAndScope(String username, long scopeId) {
 		log.debug("Searching for ReportEntity instances with username: " + username + " and scopeID:" + scopeId);
