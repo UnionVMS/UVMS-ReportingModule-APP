@@ -6,10 +6,12 @@ public class VmsDto {
 
     private List<MovementDto> movements;
     private List<SegmentDto> segments;
+    private List<TrackDto> tracks;
 
-    public VmsDto(List<MovementDto> movements, List<SegmentDto> segments) {
+    public VmsDto(List<MovementDto> movements, List<SegmentDto> segments, List<TrackDto> tracks) {
         this.segments = segments;
         this.movements = movements;
+        this.tracks = tracks;
     }
 
     public List<MovementDto> getMovements() {
@@ -26,5 +28,13 @@ public class VmsDto {
 
     public void setSegments(List<SegmentDto> segments) {
         this.segments = segments;
+    }
+
+    public List<TrackDto> getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(List<TrackDto> tracks) {
+        this.tracks = tracks;
     }
 }

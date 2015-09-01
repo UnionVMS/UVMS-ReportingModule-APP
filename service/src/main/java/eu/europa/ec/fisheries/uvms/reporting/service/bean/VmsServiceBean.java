@@ -1,7 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.schema.movement.v1.MovementBaseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.consumer.bean.MovementConsumerBean;
@@ -10,10 +11,10 @@ import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.MovementProdu
 import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.VesselProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.temp.MockMovementData;
-import eu.europa.ec.fisheries.uvms.reporting.service.temp.MockMovementSegmentData;
-import eu.europa.ec.fisheries.uvms.reporting.service.temp.MockVesselData;
+import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
+import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleResponseMapper;
@@ -79,22 +80,37 @@ public class VmsServiceBean implements VmsService {
     @Override
     public VmsDto getVmsMockData(Set<Integer> vesselIds) {
 
-        int totalMovements = 100, totalVessels = 50, totalSegments = 100;
-        List<MovementBaseType> movementBaseTypeList = MockMovementData.getDtoList(totalMovements);
-        List<MovementSegment> segmentList = MockMovementSegmentData.getDtoList(totalSegments);
-        List<Vessel> assetList = MockVesselData.getVesselDtoList(totalVessels);
+        MockPointsReader mockPointsReader = new MockPointsReader();
+        List <MovementSegment> segmentList = mockPointsReader.segmentList;
+        List <MovementType> movementList = mockPointsReader.movementTypeList;
+        List <MovementTrack> movementTrackList = mockPointsReader.movementTrackList;
+        List<Vessel> vesselDtoList = MockVesselData.getVesselDtoList(2);
         List<MovementDto> movements = new ArrayList<>();
         List<SegmentDto> segments = new ArrayList<>();
-        for (Vessel vessel : assetList){
-            for (int i=0;i< MockingUtils.randInt(1,10); i++){
-                movements.add(new MovementDto(movementBaseTypeList.get(MockingUtils.randInt(0, totalMovements-1)), vessel));
-            }
-            for (int i=0;i< MockingUtils.randInt(1,10); i++){
-                segments.add(new SegmentDto(segmentList.get(MockingUtils.randInt(0, totalSegments-1)), vessel));
-            }
-        }
+        List<TrackDto> tracks = new ArrayList<>();
 
-        return new VmsDto(movements, segments);
+        for (Vessel vessel : vesselDtoList){
+            int r = MockingUtils.randIntOdd(0, movementList.size());
+            List<MovementType> subList = movementList.subList(0, r);
+            for(MovementType movementType : subList){
+                movements.add(new MovementDto(movementType, vessel));
+            }
+            int i = r / 2;
+            List<MovementSegment> segmentList1 = segmentList.subList(0, i);
+            for(MovementSegment segment : segmentList1){
+                segments.add(new SegmentDto(segment, vessel));
+            }
+
+            List<MovementTrack> movementTracks = movementTrackList.subList(0, vesselDtoList.size());
+            for (MovementTrack movementTrack : movementTracks){
+                tracks.add(new TrackDto(movementTrack, vessel));
+            }
+
+            movementTrackList.removeAll(movementTracks);
+            movementList.removeAll(subList);
+            segmentList.removeAll(segmentList1);
+        }
+        return new VmsDto(movements, segments, tracks);
     }
 
     private VesselListCriteria createVesselListCriteria(final Set<Integer> vesselIds){

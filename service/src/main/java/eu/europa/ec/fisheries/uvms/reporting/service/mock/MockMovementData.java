@@ -1,14 +1,14 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.temp;
+package eu.europa.ec.fisheries.uvms.reporting.service.mock;
 
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.WKTWriter;
 import eu.europa.ec.fisheries.schema.movement.mobileterminal.v1.MobileTerminalId;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementListQuery;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MessageType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementBaseType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -17,44 +17,34 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.UUID;
 
 public class MockMovementData {
 
-    public static MovementBaseType getDto(Long id) {
-        MovementBaseType dto = new MovementBaseType();
-        dto.setId(id.toString());
+    static WKTWriter writer = new WKTWriter();
+    static int counter = 0;
+    public static MovementType getDto(Point point) {
+        MovementType dto = new MovementType();
+        dto.setId(String.valueOf(++counter));
         dto.setConnectId(UUID.randomUUID().toString());
-        dto.setCalculatedSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50) + id));
+        dto.setCalculatedSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
         dto.setCourse(MockingUtils.randInt(1, 20));
-        dto.setMeasuredSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50) + id));
+        dto.setMeasuredSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
         dto.setMessageType(MessageType.ENT);
         dto.setMobileTerminal(getMobTermId());
-        dto.setPosition(getMovementPoint());
         dto.setSource(MovementSourceType.INMARSAT_C);
         dto.setStatus(RandomStringUtils.randomAlphabetic(MockingUtils.randInt(5, 20)));
         dto.setPositionTime(getPositionTime());
+        dto.setWkt(writer.write(point));
         return dto;
-    }
-
-    public static MovementPoint getMovementPoint() {
-        MovementPoint point = new MovementPoint();
-        point.setLatitude(MockingUtils.randInt(-90,90));
-        point.setLongitude(MockingUtils.randInt(-180,180));
-        return point;
     }
 
     public static MobileTerminalId getMobTermId() {
         MobileTerminalId id = new MobileTerminalId();
         id.setId("ABC-80+");
         return id;
-    }
-
-    public static MovementListQuery getQuery() {
-        MovementListQuery query = new MovementListQuery();
-        query.getMovementSearchCriteria().add(getListCtieria());
-        query.setPagination(getListPagination());
-        return query;
     }
 
     public static ListPagination getListPagination() {
@@ -69,14 +59,6 @@ public class MockMovementData {
         criteria.setKey(SearchKey.CONNECT_ID);
         criteria.setValue("value");
         return criteria;
-    }
-
-    public static List<MovementBaseType> getDtoList(Integer amount) {
-        List<MovementBaseType> dtoList = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            dtoList.add(getDto(Long.valueOf(i)));
-        }
-        return dtoList;
     }
 
     public static XMLGregorianCalendar getPositionTime() {

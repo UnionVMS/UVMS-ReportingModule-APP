@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.temp;
+package eu.europa.ec.fisheries.uvms.reporting.service.mock;
 
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.wsdl.vessel.types.CarrierSource;

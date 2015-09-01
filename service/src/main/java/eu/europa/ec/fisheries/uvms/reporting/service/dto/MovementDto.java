@@ -1,14 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MessageType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementBaseType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
-import eu.europa.ec.fisheries.uvms.reporting.service.temp.MockVesselData;
+import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -22,22 +22,22 @@ import java.math.BigDecimal;
 
 public class MovementDto {
 
-    public static final SimpleFeatureType MOVEMENT = build();
+    public static final SimpleFeatureType MOVEMENT = buildFeatueType();
 
     @Delegate(types = Include.class)
-    private MovementBaseType movementBaseType;
+    private MovementType movementType;
 
     private AssetDto asset;
 
     private String positionTime;
 
-    public MovementDto(MovementBaseType movementBaseType, Vessel vessel){
-        this.movementBaseType = movementBaseType;
+    public MovementDto(MovementType movementType, Vessel vessel){
+        this.movementType = movementType;
         asset = new AssetDto(vessel);
         asset.setColor(MockVesselData.COLORS.get(MockingUtils.randInt(0, 9)));// FIXME only for mock
     }
 
-    private static SimpleFeatureType build() {
+    private static SimpleFeatureType buildFeatueType() {
         SimpleFeatureTypeBuilder sb = new SimpleFeatureTypeBuilder();
         sb.setName("Movement");
         sb.setCRS(DefaultGeographicCRS.WGS84);
@@ -61,7 +61,7 @@ public class MovementDto {
     public SimpleFeature toFeature(){
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENT);
         featureBuilder.add(getGeometry());
-        featureBuilder.add(DateUtils.UI_FORMATTER.print(new DateTime(getPositionTime())));
+        featureBuilder.add(DateUtils.UI_FORMATTER.print(new DateTime(getPositionTime())));// FIXME
         featureBuilder.add(getMeasuredSpeed());
         featureBuilder.add(getConnectId());
         featureBuilder.add(getStatus());
@@ -85,6 +85,7 @@ public class MovementDto {
         BigDecimal getMeasuredSpeed();
         BigDecimal getCalculatedSpeed();
         int getCourse();
+        String getWkt();
         MessageType getMessageType();
     }
 
@@ -92,13 +93,14 @@ public class MovementDto {
         return positionTime;
     }
 
-    public void setPositionTime(String positionTime) {
-        this.positionTime = positionTime;
-    }
-
     public Geometry getGeometry() {
-        Coordinate coordinate = new Coordinate(movementBaseType.getPosition().getLongitude(), movementBaseType.getPosition().getLatitude());
-        return new GeometryFactory().createPoint(coordinate);
+        WKTReader wktReader = new WKTReader(); // FIXME check if wktReader is thread safe?
+        try {
+            return wktReader.read(getWkt());
+        } catch (ParseException e) {
+            e.printStackTrace(); // FIXME
+        }
+        return null;
     }
 }
 
