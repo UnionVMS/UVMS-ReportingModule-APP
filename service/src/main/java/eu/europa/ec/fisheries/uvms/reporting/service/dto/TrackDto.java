@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -8,25 +9,21 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
-import eu.europa.ec.fisheries.uvms.common.MockingUtils;
-import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.experimental.Delegate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * //TODO create test
- */
 
 public class TrackDto {
 
     @Delegate(types = Include.class)
-    @JsonIgnore
     private MovementTrack track;
 
     private AssetDto asset;
+    private BigDecimal distance;
+    private BigDecimal duration;
 
     @JsonIgnore
     private Geometry geometry;
@@ -38,7 +35,6 @@ public class TrackDto {
     public TrackDto(MovementTrack track, Vessel vessel){
         this.track = track;
         asset = new AssetDto(vessel);
-        asset.setColor(MockVesselData.COLORS.get(MockingUtils.randInt(0,6)));// FIXME mock
         geometry = toGeometry();
         computeEnvelope();
         computerNearestPoint();
@@ -69,10 +65,10 @@ public class TrackDto {
     private void computeEnvelope() {
         extent = new ArrayList<>();
         Envelope internal = geometry.getEnvelopeInternal();
-        extent.add(internal.getMaxX());
-        extent.add(internal.getMaxY());
         extent.add(internal.getMinX());
         extent.add(internal.getMinY());
+        extent.add(internal.getMaxX());
+        extent.add(internal.getMaxY());
     }
 
     public List<Double> getNearestPoint() {
@@ -85,6 +81,16 @@ public class TrackDto {
 
     public List<Double> getExtent() {
         return extent;
+    }
+
+    @JsonProperty("dur")
+    public BigDecimal getDuration(){
+        return BigDecimal.valueOf(Double.parseDouble(track.getDuration()));
+    }
+
+    @JsonProperty("dist")
+    public BigDecimal getDistance(){
+        return BigDecimal.valueOf(Double.parseDouble(track.getDistance()));
     }
 
 }

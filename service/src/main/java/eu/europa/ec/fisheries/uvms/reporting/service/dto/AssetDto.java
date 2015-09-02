@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
@@ -11,6 +12,7 @@ public class AssetDto {
 
     @Delegate(types = Include.class)
     private Vessel vessel;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String color;
     private String guid;
 
