@@ -45,6 +45,7 @@ public class SegmentDto {
         sb.add("ircs", String.class);
         sb.add("name", String.class);
         sb.add("guid", String.class);
+        sb.add("color", String.class);
         return sb.buildFeatureType();
     }
 
@@ -60,6 +61,7 @@ public class SegmentDto {
         featureBuilder.add(asset.getIrcs());
         featureBuilder.add(asset.getName());
         featureBuilder.add(asset.getVesselId().getGuid());
+        featureBuilder.add(asset.getColor());
         return featureBuilder.buildFeature(String.valueOf(getId()));
     }
 
