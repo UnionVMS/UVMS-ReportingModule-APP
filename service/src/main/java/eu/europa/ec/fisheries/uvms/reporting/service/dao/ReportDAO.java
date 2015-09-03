@@ -63,14 +63,40 @@ public class ReportDAO {
 
 	@Transactional
 	public ReportEntity persist(ReportEntity transientInstance) {
-		log.debug("persisting ReportEntity instance");
-		try {
-			session.saveOrUpdate(transientInstance);
-			session.flush();
-			log.debug("persist successful");
-		} catch (RuntimeException re) {
-			log.error("persist failed", re);
-			throw re;
+		//check whether it's an update or create
+		if (transientInstance.getId() > 0) {
+			log.debug("update ReportEntity instance");
+			ReportEntity oldEntity = findById(transientInstance.getId());
+		
+			if (oldEntity != null) {
+				oldEntity.setDescription(transientInstance.getDescription());
+				oldEntity.setFilterExpression(transientInstance.getFilterExpression());
+				oldEntity.setName(transientInstance.getName());
+				oldEntity.setOutComponents(transientInstance.getOutComponents());
+				oldEntity.setVisibility(transientInstance.getVisibility());
+				
+				try {
+					session.update(oldEntity);
+					session.flush();
+					log.debug("update successful");
+				} catch (RuntimeException re) {
+					log.error("update failed", re);
+					throw re;
+				}
+			} else {
+				log.error("updating non-existing report entity with ID=" + transientInstance.getId());
+				throw new RuntimeException("updating non-existing report entity");
+			}
+		} else {
+			log.debug("persisting ReportEntity instance");
+			try {
+				session.save(transientInstance);
+				session.flush();
+				log.debug("persist successful");
+			} catch (RuntimeException re) {
+				log.error("persist failed", re);
+				throw re;
+			}
 		}
 		
 		return transientInstance;
@@ -103,7 +129,7 @@ public class ReportDAO {
 			persistentInstance.setDeletedBy(username);
 			persistentInstance.setDeletedOn(new Date());
 			persistentInstance.setIsDeleted(true);
-			this.persist(persistentInstance);
+			session.update(persistentInstance);
 			session.flush();
 			log.debug("remove successful");
 		} catch (RuntimeException re) {

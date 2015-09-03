@@ -30,7 +30,6 @@ public class ReportDetailsDTOToReportMapperTest {
 		detailsDTO.setId(7345334);
 		detailsDTO.setVisibility(VisibilityEnum.SCOPE);
 		detailsDTO.setName("234565645235456754");
-		detailsDTO.setOutComponents("1453452365376523423");
 		detailsDTO.setScopeId(543535);
 		
 		Report report = mapper.reportDetailsDtoToReport(detailsDTO);
@@ -38,9 +37,10 @@ public class ReportDetailsDTOToReportMapperTest {
 		assertEquals(detailsDTO.getDesc(), report.getDescription());
 		assertEquals(detailsDTO.getId(), report.getId());
 		assertEquals(detailsDTO.getName(), report.getName());
-		assertEquals(detailsDTO.getOutComponents(), report.getOutComponents());
+		assertEquals(detailsDTO.getOutComponents().toString(), report.getOutComponents());
 		assertEquals(detailsDTO.getScopeId(), report.getScopeId());
 		assertEquals(detailsDTO.getVisibility(), report.getVisibility());
+		assertEquals(detailsDTO.getFilterExpression().toString(), report.getFilterExpression());
 	}
 
 	@Test
@@ -50,7 +50,6 @@ public class ReportDetailsDTOToReportMapperTest {
 		report.setId(7345334);
 		report.setVisibility(VisibilityEnum.SCOPE);
 		report.setName("234565645235456754");
-		report.setOutComponents("1453452365376523423");
 		report.setScopeId(543535);
 		
 		ReportDetailsDTO detailsDTO = mapper.reportToReportDetailsDto(report);
@@ -58,9 +57,10 @@ public class ReportDetailsDTOToReportMapperTest {
 		assertEquals(report.getDescription(), detailsDTO.getDesc());
 		assertEquals(report.getId(), detailsDTO.getId());
 		assertEquals(report.getName(), detailsDTO.getName());
-		assertEquals(report.getOutComponents(), detailsDTO.getOutComponents());
+		assertEquals(report.getOutComponents(), detailsDTO.getOutComponents().toString());
 		assertEquals(report.getScopeId(), detailsDTO.getScopeId());
 		assertEquals(report.getVisibility(), detailsDTO.getVisibility());
+		assertEquals(report.getFilterExpression(), detailsDTO.getFilterExpression().toString());
 	}
 
 }

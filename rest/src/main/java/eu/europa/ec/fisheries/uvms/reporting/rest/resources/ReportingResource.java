@@ -128,9 +128,10 @@ public class ReportingResource extends UnionVMSResource {
     @PUT
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
     //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response modifyReport(@Context HttpServletRequest request, 
-    				@Context HttpServletResponse response, ReportDetailsDTO report) {
+    				@Context HttpServletResponse response, ReportDetailsDTO report,@PathParam("id") Long id) {
     	
     	String username = "georgi"; //request.getRemoteUser() should return the username
     	

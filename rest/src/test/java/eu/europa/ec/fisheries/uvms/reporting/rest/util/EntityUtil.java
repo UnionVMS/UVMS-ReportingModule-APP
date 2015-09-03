@@ -61,8 +61,8 @@ public class EntityUtil {
 								"georgi",
 								currentDate,
 								"This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate),
-								"some filter expression",
-								"OutComponents",
+								"{\"startDate\":\"2015-08-31 15:45:00\",\"endDate\":\"2015-08-31 15:45:00\",\"positionSelector\":\"all\",\"vessels\":[{\"id\":1,\"name\":\"Vessel 1\",\"type\":\"vessel\"},{\"id\":2,\"name\":\"Vessel 2\",\"type\":\"vessel\"}],\"vms\":{\"positions\":{\"active\":false},\"segments\":{\"active\":false},\"tracks\":{\"active\":false}}}",
+								"{\"map\":true,\"vms\":true}",
 								123);
 	}
 	
@@ -73,8 +73,8 @@ public class EntityUtil {
 								"georgi",
 								currentDate,
 								"This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate),
-								"some filter expression",
-								"OutComponents",
+								"{\"startDate\":\"2015-08-31 15:45:00\",\"endDate\":\"2015-08-31 15:45:00\",\"positionSelector\":\"all\",\"vessels\":[{\"id\":1,\"name\":\"Vessel 1\",\"type\":\"vessel\"},{\"id\":2,\"name\":\"Vessel 2\",\"type\":\"vessel\"}],\"vms\":{\"positions\":{\"active\":false},\"segments\":{\"active\":false},\"tracks\":{\"active\":false}}}",
+								"{\"map\":true,\"vms\":true}",
 								123);
 	}
 	
@@ -85,7 +85,9 @@ public class EntityUtil {
 		reportDTO.setName("NonExisting Report Name " + currentDate.getTime());
 		reportDTO.setVisibility(VisibilityEnum.PRIVATE);;
 		reportDTO.setScopeId(currentDate.getTime());
-		reportDTO.setOutComponents("OutComponents");
+		reportDTO.setOutComponents("{\"map\":true,\"vms\":true}");
+		String filter = "{\"startDate\":\"2015-08-31 15:45:00\",\"endDate\":\"2015-08-31 15:45:00\",\"positionSelector\":\"all\",\"vessels\":[{\"id\":1,\"name\":\"Vessel 1\",\"type\":\"vessel\"},{\"id\":2,\"name\":\"Vessel 2\",\"type\":\"vessel\"}],\"vms\":{\"positions\":{\"active\":false},\"segments\":{\"active\":false},\"tracks\":{\"active\":false}}}";
+		reportDTO.setFilterExpression(filter);
 		
 		return reportDTO;
 	}

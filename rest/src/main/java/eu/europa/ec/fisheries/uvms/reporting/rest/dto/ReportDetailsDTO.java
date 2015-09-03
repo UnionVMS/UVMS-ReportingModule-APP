@@ -2,9 +2,17 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
 import java.io.Serializable;
 
+
+
+
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 
@@ -22,7 +30,10 @@ public class ReportDetailsDTO implements Serializable {
 	private VisibilityEnum visibility;
 	private long scopeId;
 	
-	@JsonRawValue
+	//@JsonRawValue
+	private String filterExpression;
+	
+	//@JsonRawValue
 	private String outComponents;
 	
 	
@@ -51,18 +62,7 @@ public class ReportDetailsDTO implements Serializable {
 	public void setScopeId(long scopeId) {
 		this.scopeId = scopeId;
 	}
-	/**
-	 * @return the outComponents
-	 */
-	public String getOutComponents() {
-		return outComponents;
-	}
-	/**
-	 * @param outComponents the outComponents to set
-	 */
-	public void setOutComponents(String outComponents) {
-		this.outComponents = outComponents;
-	}
+	
 	/**
 	 * @return the visibility
 	 */
@@ -74,6 +74,30 @@ public class ReportDetailsDTO implements Serializable {
 	 */
 	public void setVisibility(VisibilityEnum visibility) {
 		this.visibility = visibility;
+	}
+	/**
+	 * @return the filterExpression
+	 */
+	public String getFilterExpression() {
+		return filterExpression;
+	}
+	/**
+	 * @param filterExpression the filterExpression to set
+	 */
+	public void setFilterExpression(String filterExpression) {
+		this.filterExpression = filterExpression;
+	}
+	/**
+	 * @return the outComponents
+	 */
+	public String getOutComponents() {
+		return outComponents;
+	}
+	/**
+	 * @param outComponents the outComponents to set
+	 */
+	public void setOutComponents(String outComponents) {
+		this.outComponents = outComponents;
 	}
 	
 	
