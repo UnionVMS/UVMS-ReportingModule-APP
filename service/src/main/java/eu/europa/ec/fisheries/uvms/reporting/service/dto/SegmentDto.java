@@ -46,6 +46,7 @@ public class SegmentDto {
         sb.add("name", String.class);
         sb.add("guid", String.class);
         sb.add("color", String.class);
+        sb.add("trackId", String.class);
         return sb.buildFeatureType();
     }
 
@@ -62,6 +63,7 @@ public class SegmentDto {
         featureBuilder.add(asset.getName());
         featureBuilder.add(asset.getVesselId().getGuid());
         featureBuilder.add(asset.getColor());
+        featureBuilder.add(getTrackId());
         return featureBuilder.buildFeature(String.valueOf(getId()));
     }
 
@@ -71,6 +73,7 @@ public class SegmentDto {
         BigDecimal getSpeedOverGround();
         BigDecimal getDuration();
         BigDecimal getDistance();
+        String getTrackId();
     }
 
     private Geometry toGeometry(final MovementSegment segment) {
