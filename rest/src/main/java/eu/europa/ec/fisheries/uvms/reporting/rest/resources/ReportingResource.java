@@ -92,7 +92,7 @@ public class ReportingResource extends UnionVMSResource {
     	
     	Report report = reportService.findById(id); 
     	
-    	Response restResponse = null;
+    	Response restResponse;
     	
     	if (report != null) {
 	    	restResponse = createSuccessResponse(reportDetailsMapper.reportToReportDetailsDto(report));
@@ -191,7 +191,8 @@ public class ReportingResource extends UnionVMSResource {
     	String username = "georgi"; //request.getRemoteUser() should return the username
    	
     	LOG.info(username + " is requesting shareReport(...), with a ID=" + id);
-    	//TODO 
+		//TODO implement the filter parser and the actual search execution
+    	reportService.executeReport(username, id);
     	return createSuccessResponse();
     }
     

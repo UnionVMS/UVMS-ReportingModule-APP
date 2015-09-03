@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -14,6 +15,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportExecutionLogEntity;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 
@@ -78,8 +80,19 @@ public class ReportBean {
 	public Collection<Report> findReports(String username, long scopeID) {
 		Collection<ReportEntity> reports = reportDAO.findByUsernameAndScope(username, scopeID);
 		
-		Collection<Report> reportDTOs = mapper.reportsToReportDtos(reports);
-		return reportDTOs;
+		return mapper.reportsToReportDtos(reports);
 	}
+
+	public void executeReport(String username, long reportId) {
+		ReportEntity entity = reportDAO.findById(reportId);
+
+		ReportExecutionLogEntity logEntity = new ReportExecutionLogEntity();
+		logEntity.setExecutedBy(username);
+		logEntity.setExecutedOn(new Date());
+		logEntity.setReport(entity);
+
+		reportDAO.persist(logEntity);
+	}
+
 
 }

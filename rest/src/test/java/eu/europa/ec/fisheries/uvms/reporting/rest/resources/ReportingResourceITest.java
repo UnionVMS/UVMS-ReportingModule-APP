@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -136,18 +138,8 @@ public class ReportingResourceITest extends ArquillianTest {
 		response.close();
 		
 		//############ TEST LIST
-		Response responseList = webTarget.path("/list").queryParam(RestConstants.REQUEST_PARAM_CURRENT_USER_SCOPE, reportDetailsDTO.getScopeId()).request().get();
 		
-		assertNotNull(responseList);
-		
-		assertEquals(HttpServletResponse.SC_OK, responseList.getStatus());
-		String foundReports = responseList.readEntity(String.class);
-		assertNotNull(foundReports);
-		
-		ObjectMapper mapper = new ObjectMapper();  
-		ReportResponseTESTDto responseDTO = mapper.readValue(foundReports, ReportResponseTESTDto.class);
-		
-		Collection<ReportDTO> reports = responseDTO.getData();
+		Collection<ReportDTO> reports = callListRESTAPI(webTarget, reportDetailsDTO.getScopeId());
 		
 		
 		assertEquals(1, reports.size());
@@ -162,8 +154,6 @@ public class ReportingResourceITest extends ArquillianTest {
 		assertTrue(report.isEditable());
 		assertEquals(VisibilityEnum.SCOPE, report.getVisibility());
 		assertTrue(report.isShareable());
-		
-		responseList.close();
 		
 		//###################### TEST READ
 		response = webTarget.path("/" + report.getId()).request().get();
@@ -218,4 +208,75 @@ public class ReportingResourceITest extends ArquillianTest {
 	}
 	
 
+	@Test
+//	@Header(name="connection", value = "Keep-Alive")
+	public void testLogExecute(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws JsonParseException, JsonMappingException, IOException {
+		
+		/*
+		 * 1. list reports
+		 * 2. keep the last execution datetime of the first report in the list
+		 * 3. call the REST execute API with the ID of the particular report
+		 * 4. List the reports again
+		 * 5. find the same report 
+		 * 6. compare if the datetime was modified to a later one
+		 * */
+		
+		//1. 
+		Collection<ReportDTO> reports = callListRESTAPI(webTarget, 123);
+		assertFalse(reports.isEmpty());
+		
+		//2.
+		ReportDTO fstReport = reports.iterator().next();
+		
+		//3.
+		ResponseDto responseExec = callExecuteRESTAPI(webTarget, fstReport.getId());
+		
+		//4.
+		reports = callListRESTAPI(webTarget, 123);
+		assertFalse(reports.isEmpty());
+		
+		//5.
+		ReportDTO updatedReport = null;
+		
+		for (ReportDTO reportDTO : reports) {
+			if (reportDTO.getId() == fstReport.getId()) {
+				updatedReport = reportDTO;
+				break;
+			}
+		}
+		
+		assertNotNull(updatedReport);
+
+		//6.
+		assertTrue(fstReport.getLastExecTime().before(updatedReport.getLastExecTime()));
+	}
+	
+	
+	private Collection<ReportDTO> callListRESTAPI(ResteasyWebTarget webTarget, long scopeId) throws JsonParseException, JsonMappingException, IOException {
+		Response responseList = webTarget.path("/list").queryParam(RestConstants.REQUEST_PARAM_CURRENT_USER_SCOPE, scopeId).request().get();
+		
+		assertNotNull(responseList);
+		
+		assertEquals(HttpServletResponse.SC_OK, responseList.getStatus());
+		String foundReports = responseList.readEntity(String.class);
+		assertNotNull(foundReports);
+		
+		ObjectMapper mapper = new ObjectMapper();  
+		ReportResponseTESTDto responseDTO = mapper.readValue(foundReports, ReportResponseTESTDto.class);
+		
+		responseList.close();
+		return responseDTO.getData();
+	}
+	
+	private ResponseDto callExecuteRESTAPI(ResteasyWebTarget webTarget, long reportId) throws JsonParseException, JsonMappingException, IOException {
+		Response response = webTarget.path("/execute/"+reportId).request().get();
+		
+		assertNotNull(response);
+		
+		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+		ResponseDto responseDto = response.readEntity(ResponseDto.class);
+		assertNotNull(responseDto);
+		response.close();
+		return responseDto;
+	}
 }

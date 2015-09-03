@@ -13,10 +13,14 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.SchemaException;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.HashSet;
@@ -32,11 +36,15 @@ public class VmsResource {
     @EJB
     private VmsService vmsService;
 
+    @Inject
+    private ReportingResource reportingResource;
+
     @GET
     @Produces(value = { MediaType.APPLICATION_JSON })
-    @Path("/mock")
+    @Path("/mock/{id}")
     @SuppressWarnings("unchecked")
-    public ResponseDto getVmsData() throws SchemaException, IOException {
+    public ResponseDto getVmsData(@Context HttpServletRequest request,
+                                  @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
 
         Set<Integer> vesselIds = new HashSet<>();
         vesselIds.add(1);vesselIds.add(2);
@@ -61,6 +69,7 @@ public class VmsResource {
         rootNode.set("segments", segmentsNode);
         rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
 
+        reportingResource.runReport(request, response, id);
         return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
     }
 }
