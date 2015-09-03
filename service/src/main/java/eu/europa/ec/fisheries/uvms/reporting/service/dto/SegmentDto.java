@@ -5,6 +5,8 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
+import eu.europa.ec.fisheries.uvms.common.MockingUtils;
+import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -27,6 +29,7 @@ public class SegmentDto {
 
     public SegmentDto(MovementSegment segment, Vessel vessel) {
         asset = new AssetDto(vessel);
+        asset.setColor(MockVesselData.COLORS.get(MockingUtils.randInt(0, 9)));// FIXME only for mock
         geometry = toGeometry(segment);
         this.segment = segment;
     }
