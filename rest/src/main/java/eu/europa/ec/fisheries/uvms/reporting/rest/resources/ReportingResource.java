@@ -156,7 +156,6 @@ public class ReportingResource extends UnionVMSResource {
 	   	Report newReport = reportDetailsMapper.reportDetailsDtoToReport(report);
 	   	newReport.setCreatedOn(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
 	   	newReport.setCreatedBy(username);
-	   	newReport.setFilterExpression("To be implemented");
 
 	   	reportService.create(newReport);
 	   	return createSuccessResponse();
