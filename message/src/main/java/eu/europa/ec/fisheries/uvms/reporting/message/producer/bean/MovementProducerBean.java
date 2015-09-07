@@ -19,6 +19,11 @@ public class MovementProducerBean extends AbstractProducer {
     private Destination movementModuleQ;
 
     @Override
+    protected String getModuleName() {
+        return "reporting";
+    }
+
+    @Override
     public Destination getDestination() {
         return movementModuleQ;
     }

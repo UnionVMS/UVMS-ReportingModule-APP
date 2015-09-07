@@ -19,6 +19,11 @@ public class VesselProducerBean extends AbstractProducer {
     private Destination vesselModuleQ;
 
     @Override
+    protected String getModuleName() {
+        return "reporting";
+    }
+
+    @Override
     public Destination getDestination() {
         return vesselModuleQ;
     }

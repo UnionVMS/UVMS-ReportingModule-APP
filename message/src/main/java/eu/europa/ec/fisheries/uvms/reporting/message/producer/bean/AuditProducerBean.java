@@ -21,8 +21,13 @@ public class AuditProducerBean extends AbstractProducer {
 
 	@Resource(mappedName = MessageConstants.QUEUE_MODULE_AUDIT)
     private Destination auditModuleQueue;
-	
-	@Override
+
+    @Override
+    protected String getModuleName() {
+        return "reporting";
+    }
+
+    @Override
 	public Destination getDestination() {
 		return auditModuleQueue;
 	}
