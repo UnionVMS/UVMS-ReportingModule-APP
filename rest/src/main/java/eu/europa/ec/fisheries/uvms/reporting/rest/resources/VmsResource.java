@@ -46,9 +46,7 @@ public class VmsResource {
     public ResponseDto getVmsData(@Context HttpServletRequest request,
                                   @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
 
-        Set<String> vesselGuids = new HashSet<>();
-        vesselGuids.add("563beb54-d547-1592-30dd-4f6759ec63c4");
-        VmsDto vmsDto = vmsService.getVmsData(vesselGuids);
+        VmsDto vmsDto = vmsService.getVmsDataByReportId(id);
         DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDto.MOVEMENT);
         for (MovementDto movementDto : vmsDto.getMovements()) {
             movementFeatureCollection.add(movementDto.toFeature());
