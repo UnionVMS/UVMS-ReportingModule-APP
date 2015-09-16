@@ -15,10 +15,13 @@ import eu.europa.ec.fisheries.uvms.reporting.message.consumer.bean.MovementConsu
 import eu.europa.ec.fisheries.uvms.reporting.message.consumer.bean.VesselConsumerBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.MovementProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.VesselProducerBean;
+import eu.europa.ec.fisheries.uvms.reporting.model.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
@@ -49,6 +52,9 @@ public class VmsServiceBean implements VmsService {
     private VesselProducerBean vesselSender;
 
     @EJB
+    private ReportDAO reportDAO;
+
+    @EJB
     private VesselConsumerBean vesselReceiver;
 
     @EJB
@@ -58,19 +64,21 @@ public class VmsServiceBean implements VmsService {
     private MovementConsumerBean movementReceiver;
 
     @Override
-    public VmsDto getVmsData(final Set<String> vesselIds) {
-
+    public VmsDto getVmsDataByReportId(final Long id) {
         try {
 
+            final ReportEntity byId = reportDAO.findById(id);
+            String filterExpression = byId.getFilterExpression();
+
             VesselListQuery query = new VesselListQuery();
-            query.setVesselSearchCriteria(createVesselListCriteria(vesselIds));
+            query.setVesselSearchCriteria(createVesselListCriteria());
             VesselListPagination pagination = new VesselListPagination();
             pagination.setPage(BigInteger.valueOf(1));
             pagination.setListSize(BigInteger.valueOf(LIST_SIZE));
             query.setPagination(pagination);
 
             String requestString = VesselModuleRequestMapper.createVesselListModuleRequest(query);
-            String messageId = vesselSender.sendModuleMessage(requestString, vesselSender.getDestination());
+            String messageId = vesselSender.sendModuleMessage(requestString, vesselReceiver.getDestination());
             TextMessage response = vesselReceiver.getMessage(messageId, TextMessage.class);
             List<Vessel> vessels = VesselModuleResponseMapper.mapToVesselListFromResponse(response, messageId);
 
@@ -84,7 +92,7 @@ public class VmsServiceBean implements VmsService {
             throw new NotImplementedException("");
 
         } catch (VesselModelMapperException | MessageException | ModelMarshallException e) {
-          e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
@@ -128,16 +136,14 @@ public class VmsServiceBean implements VmsService {
         return new VmsDto(movements, segments, tracks);
     }
 
-    private VesselListCriteria createVesselListCriteria(final Set<String> vesselIds){
+    private VesselListCriteria createVesselListCriteria(){
 
         VesselListCriteria vesselListCriteria = new VesselListCriteria();
-
-        for (String next : vesselIds) {
+        vesselListCriteria.setIsDynamic(false);
             VesselListCriteriaPair vesselListCriteriaPair = new VesselListCriteriaPair();
-            vesselListCriteriaPair.setKey(ConfigSearchField.GUID);
+            vesselListCriteriaPair.setKey(ConfigSearchField.CFR);
             vesselListCriteria.getCriterias().add(vesselListCriteriaPair);
-            vesselListCriteriaPair.setValue(String.valueOf(next));
-        }
+            vesselListCriteriaPair.setValue(String.valueOf("SWE000007116"));
 
         return vesselListCriteria;
     }

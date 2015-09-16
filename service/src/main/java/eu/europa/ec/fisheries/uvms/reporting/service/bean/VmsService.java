@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface VmsService {
 
-    VmsDto getVmsData(Set<String> vesselIds);
+    VmsDto getVmsDataByReportId(Long id);
 
     VmsDto getVmsMockData(Set<String> vesselIds);
 
