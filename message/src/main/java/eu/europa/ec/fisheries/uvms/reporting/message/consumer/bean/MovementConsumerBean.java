@@ -9,9 +9,6 @@ import javax.ejb.Stateless;
 import javax.jms.Destination;
 import javax.jms.Queue;
 
-/**
- * //TODO create test
- */
 @Stateless
 @LocalBean
 public class MovementConsumerBean extends AbstractConsumer {
@@ -20,7 +17,7 @@ public class MovementConsumerBean extends AbstractConsumer {
     private Queue movementModuleQ;
 
     @Override
-    protected Destination getDestination() {
+    public Destination getDestination() {
         return movementModuleQ;
     }
 }
