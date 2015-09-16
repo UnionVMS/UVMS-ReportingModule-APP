@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.message.producer.bean;
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
@@ -21,6 +22,14 @@ public class AuditProducerBean extends AbstractProducer {
 
 	@Resource(mappedName = MessageConstants.QUEUE_MODULE_AUDIT)
     private Destination auditModuleQueue;
+
+    @Resource(lookup = MessageConstants.CONNECTION_FACTORY)
+    private ConnectionFactory connectionFactory;
+
+    @Override
+    protected ConnectionFactory getConnectionFactory() {
+        return connectionFactory;
+    }
 
     @Override
     protected String getModuleName() {

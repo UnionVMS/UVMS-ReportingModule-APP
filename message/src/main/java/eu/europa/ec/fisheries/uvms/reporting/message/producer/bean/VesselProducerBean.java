@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
 /**
@@ -17,6 +18,14 @@ public class VesselProducerBean extends AbstractProducer {
 
     @Resource(mappedName = MessageConstants.QUEUE_VESSEL_EVENT)
     private Destination vesselModuleQ;
+
+    @Resource(lookup = MessageConstants.CONNECTION_FACTORY)
+    private ConnectionFactory connectionFactory;
+
+    @Override
+    protected ConnectionFactory getConnectionFactory() {
+        return connectionFactory;
+    }
 
     @Override
     protected String getModuleName() {
