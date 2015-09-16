@@ -6,9 +6,9 @@ import eu.europa.ec.fisheries.schema.movement.mobileterminal.v1.MobileTerminalId
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.schema.movement.v1.MessageType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -27,12 +27,12 @@ public class MockMovementData {
     static int counter = 0;
     public static MovementType getDto(Point point) {
         MovementType dto = new MovementType();
-        dto.setId(String.valueOf(++counter));
+        dto.setConnectId(String.valueOf(++counter));
         dto.setConnectId(UUID.randomUUID().toString());
         dto.setCalculatedSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
         dto.setCourse(MockingUtils.randInt(1, 20));
         dto.setMeasuredSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
-        dto.setMessageType(MessageType.ENT);
+        dto.setMovementType(MovementTypeType.ENT);
         dto.setMobileTerminal(getMobTermId());
         dto.setSource(MovementSourceType.INMARSAT_C);
         dto.setStatus(RandomStringUtils.randomAlphabetic(MockingUtils.randInt(5, 20)));

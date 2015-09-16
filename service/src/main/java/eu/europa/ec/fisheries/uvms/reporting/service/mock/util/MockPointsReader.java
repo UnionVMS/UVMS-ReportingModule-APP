@@ -88,8 +88,8 @@ public class MockPointsReader {
                 LineString lineString1 = geomFac.createLineString(lsc);
                 MovementTrack movementTrack = new MovementTrack();
                 movementTrack.setWkt(wktWriter.write(lineString1));
-                movementTrack.setDistance(String.valueOf(MockingUtils.randInt(0, 50)));
-                movementTrack.setDuration(String.valueOf(MockingUtils.randInt(0, 50)));
+                movementTrack.setDistance(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
+                movementTrack.setDuration(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
                 movementTrack.setId(String.valueOf(i));
                 movementTrackList.add(movementTrack);
             }

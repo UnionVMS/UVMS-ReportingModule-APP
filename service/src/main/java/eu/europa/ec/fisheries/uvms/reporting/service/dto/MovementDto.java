@@ -4,8 +4,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import eu.europa.ec.fisheries.schema.movement.v1.MessageType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
@@ -66,7 +66,7 @@ public class MovementDto {
         featureBuilder.add(getConnectId());
         featureBuilder.add(getStatus());
         featureBuilder.add(getCourse());
-        featureBuilder.add(getMessageType());
+        featureBuilder.add(getMovementType().value());
         featureBuilder.add(getCalculatedSpeed());
         featureBuilder.add(asset.getCfr());
         featureBuilder.add(asset.getCountryCode());
@@ -74,19 +74,19 @@ public class MovementDto {
         featureBuilder.add(asset.getName());
         featureBuilder.add(asset.getVesselId().getGuid());
         featureBuilder.add(asset.getColor());
-        return featureBuilder.buildFeature(getId());
+        return featureBuilder.buildFeature(getGuid());
     }
 
     private interface Include {
-        String getId();
-        void setId(String id);
+        String getGuid();
+        void setGuid(String id);
         String getConnectId();
         String getStatus();
         BigDecimal getMeasuredSpeed();
         BigDecimal getCalculatedSpeed();
         int getCourse();
         String getWkt();
-        MessageType getMessageType();
+        MovementTypeType getMovementType();
     }
 
     public String getPositionTime() {

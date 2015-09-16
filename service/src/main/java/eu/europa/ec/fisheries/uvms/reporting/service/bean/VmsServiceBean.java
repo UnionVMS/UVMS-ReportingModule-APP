@@ -58,7 +58,7 @@ public class VmsServiceBean implements VmsService {
     private MovementConsumerBean movementReceiver;
 
     @Override
-    public VmsDto getVmsData(final Set<Integer> vesselIds) {
+    public VmsDto getVmsData(final Set<String> vesselIds) {
 
         try {
 
@@ -90,7 +90,7 @@ public class VmsServiceBean implements VmsService {
     }
 
     @Override
-    public VmsDto getVmsMockData(Set<Integer> vesselIds) {
+    public VmsDto getVmsMockData(Set<String> vesselIds) {
 
         MockPointsReader mockPointsReader = new MockPointsReader();
         List <MovementSegment> segmentList = mockPointsReader.segmentList;
@@ -128,13 +128,13 @@ public class VmsServiceBean implements VmsService {
         return new VmsDto(movements, segments, tracks);
     }
 
-    private VesselListCriteria createVesselListCriteria(final Set<Integer> vesselIds){
+    private VesselListCriteria createVesselListCriteria(final Set<String> vesselIds){
 
         VesselListCriteria vesselListCriteria = new VesselListCriteria();
 
-        for (Integer next : vesselIds) {
+        for (String next : vesselIds) {
             VesselListCriteriaPair vesselListCriteriaPair = new VesselListCriteriaPair();
-            vesselListCriteriaPair.setKey(ConfigSearchField.IRCS);
+            vesselListCriteriaPair.setKey(ConfigSearchField.GUID);
             vesselListCriteria.getCriterias().add(vesselListCriteriaPair);
             vesselListCriteriaPair.setValue(String.valueOf(next));
         }

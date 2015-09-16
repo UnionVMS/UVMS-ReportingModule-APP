@@ -85,12 +85,12 @@ public class TrackDto {
 
     @JsonProperty("dur")
     public BigDecimal getDuration(){
-        return BigDecimal.valueOf(Double.parseDouble(track.getDuration()));
+        return track.getDuration();
     }
 
     @JsonProperty("dist")
     public BigDecimal getDistance(){
-        return BigDecimal.valueOf(Double.parseDouble(track.getDistance()));
+        return track.getDistance();
     }
 
 }
