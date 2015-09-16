@@ -2,6 +2,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 // Generated Aug 6, 2015 11:44:29 AM by Hibernate Tools 4.3.1
 
+import lombok.Builder;
+
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -24,6 +26,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "report_execution_log", uniqueConstraints = @UniqueConstraint(columnNames = "report_id"), schema = "reporting")
+@Builder
 public class ReportExecutionLogEntity implements java.io.Serializable {
 
 	@Id

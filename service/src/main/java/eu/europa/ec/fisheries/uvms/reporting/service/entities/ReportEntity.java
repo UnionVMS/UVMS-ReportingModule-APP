@@ -22,6 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Builder;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Where;
 
@@ -37,6 +38,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBool
 	  @NamedQuery(name="ReportEntity.GetReportById", query="Select RE from ReportEntity RE WHERE RE.id = :id")
 	})
 @Where(clause = "is_deleted <> 'Y'")
+@Builder
 public class ReportEntity implements java.io.Serializable {
 
 	/**
