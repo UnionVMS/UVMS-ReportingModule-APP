@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import eu.europa.ec.fisheries.schema.movement.module.v1.GetMovementMapByQueryResponse;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -10,12 +10,10 @@ import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.consumer.bean.MovementConsumerBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.consumer.bean.VesselConsumerBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.MovementProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.VesselProducerBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDto;
@@ -46,7 +44,7 @@ import java.util.Set;
 @Local(value = VmsService.class)
 public class VmsServiceBean implements VmsService {
 
-    private static final int LIST_SIZE = 100000;
+    private static final int LIST_SIZE = 1000;
 
     @EJB
     private VesselProducerBean vesselSender;
@@ -86,10 +84,10 @@ public class VmsServiceBean implements VmsService {
             movementQuery.getMovementSearchCriteria().addAll(createMovementListCriteria(vessels));
             String movementRequestString = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
 
-            String movementMessageId = movementSender.sendModuleMessage(movementRequestString, movementSender.getDestination());
-            List<MovementMapResponseType> movementResponse = movementReceiver.getMessage(movementMessageId, List.class);
+            String movementMessageId = movementSender.sendModuleMessage(movementRequestString, movementReceiver.getDestination());
+            GetMovementMapByQueryResponse mapByQueryResponse = movementReceiver.getMessage(movementMessageId, GetMovementMapByQueryResponse.class);
 
-            throw new NotImplementedException("");
+            throw new NotImplementedException("wait a bit");
 
         } catch (VesselModelMapperException | MessageException | ModelMarshallException e) {
             e.printStackTrace();
