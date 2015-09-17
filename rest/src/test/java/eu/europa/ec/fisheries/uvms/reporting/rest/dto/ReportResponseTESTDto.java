@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.service.dto;
+package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
 import java.util.Collection;
 import java.util.Objects;
