@@ -15,6 +15,8 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsResponseTESTDto;
+import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportResponseTESTDto;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 import org.jboss.arquillian.extension.rest.client.Header;
@@ -39,8 +41,6 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.util.ArquillianTest;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.EntityUtil;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
-import eu.europe.ec.fisheries.uvms.reporting.rest.service.dto.ReportDetailsResponseTESTDto;
-import eu.europe.ec.fisheries.uvms.reporting.rest.service.dto.ReportResponseTESTDto;
 
 @RunWith(Arquillian.class)
 @RunAsClient
