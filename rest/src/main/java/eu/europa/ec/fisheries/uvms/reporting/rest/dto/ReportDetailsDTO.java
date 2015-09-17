@@ -1,20 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
-import java.io.Serializable;
-
-
-
-
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
-
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+
+import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReportDetailsDTO implements Serializable {

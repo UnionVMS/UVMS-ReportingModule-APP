@@ -2,12 +2,10 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.json.CustomDateSerializer;
-import eu.europa.ec.fisheries.uvms.reporting.rest.json.VisibilitySerializer;
 
 /**
  */

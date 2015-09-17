@@ -91,7 +91,7 @@ public abstract class ReportToDTOMapper {
     		}
     	} else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.MODIFY_SCOPE_REPORT)) {
     		isEditable = true;
-    	} else if ((report.getVisibility() == VisibilityEnum.GLOBAL) && grantedFeatures.contains(ReportFeature.MODIFY_GLOBAL_REPORT)) {
+    	} else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.MODIFY_GLOBAL_REPORT)) {
     		isEditable = true;
     	}
 
@@ -107,7 +107,7 @@ public abstract class ReportToDTOMapper {
 			}
 		} else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.DELETE_SCOPE_REPORT)) {
 			isDeletable = true;
-    	} else if ((report.getVisibility() == VisibilityEnum.GLOBAL) && grantedFeatures.contains(ReportFeature.DELETE_GLOBAL_REPORT)) {
+    	} else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.DELETE_GLOBAL_REPORT)) {
     		isDeletable = true;
     	} 
 		

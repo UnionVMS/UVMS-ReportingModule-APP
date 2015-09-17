@@ -4,6 +4,6 @@ public enum VisibilityEnum {
 	
 	PRIVATE, 
 	SCOPE,
-	GLOBAL;
+	PUBLIC;
 
 }

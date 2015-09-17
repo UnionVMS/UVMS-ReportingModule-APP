@@ -139,7 +139,7 @@ public class ReportDAOITest {
 		reportDAO.persist(reportEntity2);
 		
 		ReportEntity reportEntity3 = EntityUtil.createRandomReportEntity();
-		reportEntity3.setVisibility(VisibilityEnum.GLOBAL);
+		reportEntity3.setVisibility(VisibilityEnum.PUBLIC);
 		reportDAO.persist(reportEntity3);
 		
 		
@@ -153,7 +153,7 @@ public class ReportDAOITest {
 		
 		assertNotNull(reports);
 		assertEquals(1, reports.size());
-		assertEquals(VisibilityEnum.GLOBAL, reports.iterator().next().getVisibility());
+		assertEquals(VisibilityEnum.PUBLIC, reports.iterator().next().getVisibility());
 		
 	}
 	

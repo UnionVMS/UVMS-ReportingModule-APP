@@ -180,7 +180,7 @@ public class ReportDAO {
 			Query query = session.createSQLQuery("select * from reporting.report as r "
 					+ "left outer join (select report_id, executed_by, max(executed_on) as executed_on from reporting.report_execution_log where executed_by = :username group by executed_by, report_id) as l "
 					+ "on r.id = l.report_id "
-					+ "where (r.is_deleted <> 'Y') and ((r.scope_id = :scopeId and (r.created_by = :username or r.visibility = 'SCOPE') ) or r.visibility = 'GLOBAL') "
+					+ "where (r.is_deleted <> 'Y') and ((r.scope_id = :scopeId and (r.created_by = :username or r.visibility = 'SCOPE') ) or r.visibility = 'PUBLIC') "
 					+ "order by r.id;"); 
 			query = query.setParameter("username", username).setParameter("scopeId", scopeId);
 			

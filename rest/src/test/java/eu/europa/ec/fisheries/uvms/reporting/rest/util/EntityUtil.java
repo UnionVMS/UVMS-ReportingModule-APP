@@ -83,7 +83,7 @@ public class EntityUtil {
 		ReportDetailsDTO reportDTO =  new ReportDetailsDTO();
 		reportDTO.setDesc("This is some bullshit description.");
 		reportDTO.setName("NonExisting Report Name " + currentDate.getTime());
-		reportDTO.setVisibility(VisibilityEnum.PRIVATE);;
+		reportDTO.setVisibility(VisibilityEnum.PRIVATE);
 		reportDTO.setScopeId(currentDate.getTime());
 		reportDTO.setOutComponents("{\"map\":true,\"vms\":true}");
 		String filter = "{\"startDate\":\"2015-08-31 15:45:00\",\"endDate\":\"2015-08-31 15:45:00\",\"positionSelector\":\"all\",\"vessels\":[{\"id\":1,\"name\":\"Vessel 1\",\"type\":\"vessel\"},{\"id\":2,\"name\":\"Vessel 2\",\"type\":\"vessel\"}],\"vms\":{\"positions\":{\"active\":false},\"segments\":{\"active\":false},\"tracks\":{\"active\":false}}}";

@@ -2,11 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.mapper;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-
-import javax.inject.Inject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -109,7 +105,7 @@ public class ReportToDTOMapperTest {
 		
 		report = EntityUtil.createRandomReport();
 		report.setCreatedBy("hugo");
-		report.setVisibility(VisibilityEnum.GLOBAL);
+		report.setVisibility(VisibilityEnum.PUBLIC);
 		context = MockingUtils.createContext("someScope", ReportFeature.MODIFY_GLOBAL_REPORT);
 		reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
@@ -155,7 +151,7 @@ public class ReportToDTOMapperTest {
 		
 		report = EntityUtil.createRandomReport();
 		report.setCreatedBy("hugo");
-		report.setVisibility(VisibilityEnum.GLOBAL);
+		report.setVisibility(VisibilityEnum.PUBLIC);
 		context = MockingUtils.createContext("someScope", ReportFeature.MODIFY_SCOPE_REPORT);
 		reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
@@ -183,7 +179,7 @@ public class ReportToDTOMapperTest {
 		
 		report = EntityUtil.createRandomReport();
 		report.setCreatedBy("hugo");
-		report.setVisibility(VisibilityEnum.GLOBAL);
+		report.setVisibility(VisibilityEnum.PUBLIC);
 		context = MockingUtils.createContext("someScope", ReportFeature.DELETE_GLOBAL_REPORT);
 		reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
@@ -225,7 +221,7 @@ public class ReportToDTOMapperTest {
 		
 		report = EntityUtil.createRandomReport();
 		report.setCreatedBy("hugo");
-		report.setVisibility(VisibilityEnum.GLOBAL);
+		report.setVisibility(VisibilityEnum.PUBLIC);
 		context = MockingUtils.createContext("someScope", ReportFeature.DELETE_REPORT);
 		reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
@@ -234,7 +230,7 @@ public class ReportToDTOMapperTest {
 		
 		report = EntityUtil.createRandomReport();
 		report.setCreatedBy("hugo");
-		report.setVisibility(VisibilityEnum.GLOBAL);
+		report.setVisibility(VisibilityEnum.PUBLIC);
 		context = MockingUtils.createContext("someScope", ReportFeature.DELETE_SCOPE_REPORT);
 		reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
