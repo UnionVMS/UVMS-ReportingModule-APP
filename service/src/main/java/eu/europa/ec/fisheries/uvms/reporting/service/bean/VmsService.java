@@ -8,6 +8,6 @@ public interface VmsService {
 
     VmsDto getVmsDataByReportId(Long id);
 
-    VmsDto getVmsMockData(Set<String> vesselIds);
+    VmsDto getVmsMockData(Long id);
 
 }

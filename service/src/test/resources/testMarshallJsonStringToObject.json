@@ -1,0 +1,28 @@
+{
+    "startDate": "2015-08-31 15:45:00",
+    "endDate": "2015-08-31 15:50:00",
+    "positionSelector": "all",
+    "vessels": [
+        {
+            "guid": "34252bbc-03bf-9c30-5121-de7d3cfccde0",
+            "name": "Vessel 1",
+            "type": "vessel"
+        },
+        {
+            "guid": "f0938867-b8fe-f707-7a3e-5117bbb7c40a",
+            "name": "Vessel 2",
+            "type": "vessel"
+        }
+    ],
+    "vms": {
+        "positions": {
+            "active": false
+        },
+        "segments": {
+            "active": false
+        },
+        "tracks": {
+            "active": false
+        }
+    }
+}

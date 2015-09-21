@@ -1,40 +1,38 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.schema.movement.module.v1.GetMovementMapByQueryResponse;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMarshallException;
-import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.consumer.bean.MovementConsumerBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.consumer.bean.VesselConsumerBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.MovementProducerBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.producer.bean.VesselProducerBean;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelMarshallException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportingJSONMarshaller;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
-import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleResponseMapper;
-import eu.europa.ec.fisheries.wsdl.vessel.types.*;
-import org.apache.commons.lang3.NotImplementedException;
+import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import org.geotools.feature.DefaultFeatureCollection;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.jms.TextMessage;
-import java.math.BigInteger;
+import javax.jms.JMSException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -44,67 +42,56 @@ import java.util.Set;
 @Local(value = VmsService.class)
 public class VmsServiceBean implements VmsService {
 
-    private static final int LIST_SIZE = 1000;
-
     @EJB
-    private VesselProducerBean vesselSender;
+    private VesselMessageServiceBean vesselModule;
 
     @EJB
     private ReportDAO reportDAO;
 
     @EJB
-    private VesselConsumerBean vesselReceiver;
+    private MovementMessageServiceBean movementModule;
 
-    @EJB
-    private MovementProducerBean movementSender;
+    private ReportingJSONMarshaller marshaller;
 
-    @EJB
-    private MovementConsumerBean movementReceiver;
-
-    @Override
-    public VmsDto getVmsDataByReportId(final Long id) {
-        try {
-
-            final ReportEntity byId = reportDAO.findById(id);
-            String filterExpression = byId.getFilterExpression();
-
-            VesselListQuery query = new VesselListQuery();
-            query.setVesselSearchCriteria(createVesselListCriteria());
-            VesselListPagination pagination = new VesselListPagination();
-            pagination.setPage(BigInteger.valueOf(1));
-            pagination.setListSize(BigInteger.valueOf(LIST_SIZE));
-            query.setPagination(pagination);
-
-            String requestString = VesselModuleRequestMapper.createVesselListModuleRequest(query);
-            String messageId = vesselSender.sendModuleMessage(requestString, vesselReceiver.getDestination());
-            TextMessage response = vesselReceiver.getMessage(messageId, TextMessage.class);
-            List<Vessel> vessels = VesselModuleResponseMapper.mapToVesselListFromResponse(response, messageId);
-
-            MovementQuery movementQuery = new MovementQuery();
-            movementQuery.getMovementSearchCriteria().addAll(createMovementListCriteria(vessels));
-            String movementRequestString = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
-
-            String movementMessageId = movementSender.sendModuleMessage(movementRequestString, movementReceiver.getDestination());
-            GetMovementMapByQueryResponse mapByQueryResponse = movementReceiver.getMessage(movementMessageId, GetMovementMapByQueryResponse.class);
-
-            throw new NotImplementedException("wait a bit");
-
-        } catch (VesselModelMapperException | MessageException | ModelMarshallException e) {
-            e.printStackTrace();
-        }
-        return null;
+    @PostConstruct
+    public void init(){
+        marshaller = new ReportingJSONMarshaller();
     }
 
     @Override
-    public VmsDto getVmsMockData(Set<String> vesselIds) {
+    public VmsDto getVmsDataByReportId(final Long id) {
 
+        VmsDto vmsDto = null;
+
+        try {
+
+            ReportEntity byId = reportDAO.findById(id);
+            FilterExpression filter = marshaller.marshall(byId.getFilterExpression(), FilterExpression.class);
+
+            Map<String, Vessel> vesselMapByGuid = vesselModule.getStringVesselMapByGuid(filter.getVessels());
+
+            MovementQuery movementQuery = filter.createMovementQuery(filter);
+            List<MovementMapResponseType> mapResponseTypes = movementModule.getMovementMap(movementQuery);
+
+            vmsDto = VmsDto.getVmsDto(vesselMapByGuid, mapResponseTypes);
+
+        } catch (VesselModelMapperException | MessageException | ReportingModelMarshallException | ModelMapperException | JMSException e) {
+            e.printStackTrace(); // TODO throw exception
+        }
+
+        return vmsDto;
+    }
+
+    @Override
+    public VmsDto getVmsMockData(Long id) {
+
+        DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDto.MOVEMENT);
+        DefaultFeatureCollection segmentsFeatureCollection = new DefaultFeatureCollection(null, SegmentDto.SEGMENT);
         MockPointsReader mockPointsReader = new MockPointsReader();
         List <MovementSegment> segmentList = mockPointsReader.segmentList;
         List <MovementType> movementList = mockPointsReader.movementTypeList;
         List <MovementTrack> movementTrackList = mockPointsReader.movementTrackList;
         List<Vessel> vesselDtoList = MockVesselData.getVesselDtoList(2);
-        List<MovementDto> movements = new ArrayList<>();
-        List<SegmentDto> segments = new ArrayList<>();
         List<TrackDto> tracks = new ArrayList<>();
         int trackid = 1;
 
@@ -112,13 +99,13 @@ public class VmsServiceBean implements VmsService {
             int r = MockingUtils.randIntOdd(0, movementList.size());
             List<MovementType> subList = movementList.subList(0, r);
             for(MovementType movementType : subList){
-                movements.add(new MovementDto(movementType, vessel));
+                movementFeatureCollection.add(new MovementDto(movementType, vessel).toFeature());
             }
             int i = r / 2;
             List<MovementSegment> segmentList1 = segmentList.subList(0, i);
             for(MovementSegment segment : segmentList1){
                 segment.setTrackId(String.valueOf(trackid));
-                segments.add(new SegmentDto(segment, vessel));
+                segmentsFeatureCollection.add(new SegmentDto(segment, vessel).toFeature());
             }
 
             List<MovementTrack> movementTracks = movementTrackList.subList(0, vesselDtoList.size());
@@ -131,24 +118,7 @@ public class VmsServiceBean implements VmsService {
             movementList.removeAll(subList);
             segmentList.removeAll(segmentList1);
         }
-        return new VmsDto(movements, segments, tracks);
-    }
-
-    private VesselListCriteria createVesselListCriteria(){
-
-        VesselListCriteria vesselListCriteria = new VesselListCriteria();
-        vesselListCriteria.setIsDynamic(false);
-            VesselListCriteriaPair vesselListCriteriaPair = new VesselListCriteriaPair();
-            vesselListCriteriaPair.setKey(ConfigSearchField.CFR);
-            vesselListCriteria.getCriterias().add(vesselListCriteriaPair);
-            vesselListCriteriaPair.setValue(String.valueOf("SWE000007116"));
-
-        return vesselListCriteria;
-    }
-
-    private List<ListCriteria> createMovementListCriteria(List<Vessel> vessels){
-        List<ListCriteria> listCriterias = new ArrayList<>();
-        return listCriterias;
+        return new VmsDto(movementFeatureCollection, segmentsFeatureCollection, tracks);
     }
 
 }

@@ -30,6 +30,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
             <artifactId>movement-model</artifactId>
         </dependency>
@@ -42,13 +47,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>model</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>message</artifactId>
-          <scope>provided</scope>
         </dependency>
         
         <dependency>

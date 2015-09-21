@@ -41,27 +41,41 @@ public class VmsResource {
 
     @GET
     @Produces(value = { MediaType.APPLICATION_JSON })
-    @Path("/mock/{id}")
+    @Path("/{id}")
     @SuppressWarnings("unchecked")
     public ResponseDto getVmsData(@Context HttpServletRequest request,
                                   @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
 
         VmsDto vmsDto = vmsService.getVmsDataByReportId(id);
-        DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDto.MOVEMENT);
-        for (MovementDto movementDto : vmsDto.getMovements()) {
-            movementFeatureCollection.add(movementDto.toFeature());
-        }
-
-        DefaultFeatureCollection segmentsFeatureCollection = new DefaultFeatureCollection(null, SegmentDto.SEGMENT);
-        for (SegmentDto segmentDto : vmsDto.getSegments()) {
-            segmentsFeatureCollection.add(segmentDto.toFeature());
-        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode rootNode = objectMapper.createObjectNode();
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(movementFeatureCollection));
-        ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(segmentsFeatureCollection));
+        ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
+        ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
+
+        rootNode.set("movements", movementsNode);
+        rootNode.set("segments", segmentsNode);
+        rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
+
+        reportingResource.runReport(request, response, id);
+        return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
+    }
+
+    @GET
+    @Produces(value = { MediaType.APPLICATION_JSON })
+    @Path("/mock/{id}")
+    @SuppressWarnings("unchecked")
+    public ResponseDto getVmsMockData(@Context HttpServletRequest request,
+                                  @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
+
+        VmsDto vmsDto = vmsService.getVmsMockData(id);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode rootNode = objectMapper.createObjectNode();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
+        ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
 
         rootNode.set("movements", movementsNode);
         rootNode.set("segments", segmentsNode);
