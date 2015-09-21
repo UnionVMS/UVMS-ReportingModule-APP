@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportingJSONMarshaller;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,6 +41,7 @@ public class VmsServiceBeanTest {
     private ReportingJSONMarshaller marshaller;
 
     @Test
+    @Ignore
     public void testGetVmsDataByReportId() throws ReportingModelMarshallException, VesselModelMapperException, MessageException, ModelMapperException, JMSException {
 
         Long reportId = 1L;
