@@ -31,50 +31,18 @@ public class ReportMapper {
         this.filters = filters;
     }
 
-    private boolean isShareable(final String username, final Set<Feature> grantedFeatures, final Report report) {
-        boolean isShareable = false;
-        if (report.getCreatedBy().equals(username) ) {
-            if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_SCOPE) || grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
-                isShareable = true;
-            }
-        } else if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
-            isShareable = true;
-        }
-        return isShareable;
+    public void merge(Report incoming, Report existing){
+        existing.setId( incoming.getId() );
+        existing.setName( incoming.getName() );
+        existing.setDescription( incoming.getDescription() );
+        existing.setOutComponents( incoming.getOutComponents() );
+        existing.setScopeId( incoming.getScopeId() );
+        existing.setCreatedBy( incoming.getCreatedBy() );
+        existing.setIsDeleted( incoming.isIsDeleted() );
+        existing.setDeletedOn( incoming.getDeletedOn() );
+        existing.setDeletedBy( incoming.getDeletedBy() );
+        existing.setVisibility( incoming.getVisibility() );
     }
-
-    private boolean isEditable(Report report, String username, Set<Feature> grantedFeatures) {
-        boolean isEditable = false;
-
-        if (report.getCreatedBy().equals(username)) {
-            if (grantedFeatures.contains(ReportFeature.MODIFY_PRIVATE_REPORT)) {
-                isEditable = true;
-            }
-        } else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.MODIFY_SCOPE_REPORT)) {
-            isEditable = true;
-        } else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.MODIFY_GLOBAL_REPORT)) {
-            isEditable = true;
-        }
-
-        return isEditable;
-    }
-
-    private boolean isDeletable(Report report, String username, Set<Feature> grantedFeatures) {
-        boolean isDeletable = false;
-
-        if (report.getCreatedBy().equals(username)) {
-            if (grantedFeatures.contains(ReportFeature.DELETE_REPORT)) {
-                isDeletable = true;
-            }
-        } else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.DELETE_SCOPE_REPORT)) {
-            isDeletable = true;
-        } else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.DELETE_GLOBAL_REPORT)) {
-            isDeletable = true;
-        }
-
-        return isDeletable;
-    }
-
     public ReportDTO reportToReportDto(final Report report) {
         if ( report == null ) {
             return null;
@@ -170,6 +138,50 @@ public class ReportMapper {
         }
 
         return set_;
+    }
+
+    private boolean isShareable(final String username, final Set<Feature> grantedFeatures, final Report report) {
+        boolean isShareable = false;
+        if (report.getCreatedBy().equals(username) ) {
+            if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_SCOPE) || grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
+                isShareable = true;
+            }
+        } else if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
+            isShareable = true;
+        }
+        return isShareable;
+    }
+
+    private boolean isEditable(Report report, String username, Set<Feature> grantedFeatures) {
+        boolean isEditable = false;
+
+        if (report.getCreatedBy().equals(username)) {
+            if (grantedFeatures.contains(ReportFeature.MODIFY_PRIVATE_REPORT)) {
+                isEditable = true;
+            }
+        } else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.MODIFY_SCOPE_REPORT)) {
+            isEditable = true;
+        } else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.MODIFY_GLOBAL_REPORT)) {
+            isEditable = true;
+        }
+
+        return isEditable;
+    }
+
+    private boolean isDeletable(Report report, String username, Set<Feature> grantedFeatures) {
+        boolean isDeletable = false;
+
+        if (report.getCreatedBy().equals(username)) {
+            if (grantedFeatures.contains(ReportFeature.DELETE_REPORT)) {
+                isDeletable = true;
+            }
+        } else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.DELETE_SCOPE_REPORT)) {
+            isDeletable = true;
+        } else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.DELETE_GLOBAL_REPORT)) {
+            isDeletable = true;
+        }
+
+        return isDeletable;
     }
 }
 

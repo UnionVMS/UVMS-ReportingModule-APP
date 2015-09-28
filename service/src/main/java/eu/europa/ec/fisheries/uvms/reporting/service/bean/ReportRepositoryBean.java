@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.merger.ReportMerger;
 import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
@@ -18,6 +19,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @Stateless
@@ -31,18 +35,18 @@ public class ReportRepositoryBean extends AbstractCrudService implements ReportR
 
     private FilterMerger filterMerger;
 
+    private ReportMerger reportMerger;
+
     @PersistenceContext(unitName = "reportingPU")
     private EntityManager em;
-
-    @Resource
-    private SessionContext context;
 
     @PostConstruct
     public void postContruct(){
         reportDAO = new ReportDAO(em);
         filterDAO = new FilterDAO(em);
         executionLogDAO = new ExecutionLogDAO(em);
-        filterMerger = new FilterMerger(filterDAO);
+        filterMerger = new FilterMerger(em);
+        reportMerger = new ReportMerger(em);
     }
 
     @Override
@@ -58,13 +62,20 @@ public class ReportRepositoryBean extends AbstractCrudService implements ReportR
 
     @Override
     @Transactional
-    public Report saveOrUpdate(final ReportDTO reportDTO) {
+    public boolean update(final ReportDTO reportDTO) {
+
+        boolean merge;
+
         try {
-            boolean merge = filterMerger.merge(reportDTO.getFilters());
+            reportMerger.merge(Arrays.asList(reportDTO));
+            filterMerger.merge(reportDTO.getFilters());
+            merge = true;
         } catch (ReportingServiceException e) {
             e.printStackTrace();
+            merge = false;
         }
-        return null;
+
+        return merge;
     }
 
 

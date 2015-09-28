@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.visitor.DTOToFilterVisitor;
 
+import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,12 +23,12 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     private FilterDAO filterDAO;
 
-    public FilterMerger(FilterDAO filterDAO) {
-        this.filterDAO = filterDAO;
+    public FilterMerger(final EntityManager em) {
+        this.filterDAO = new FilterDAO(em);
     }
 
     @Override
-    protected Object getUniqKey(Filter item) throws ReportingServiceException {
+    protected Object getUniqKey(final Filter item) throws ReportingServiceException {
         return item.getId();
     }
 

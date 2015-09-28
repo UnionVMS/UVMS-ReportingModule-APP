@@ -59,9 +59,9 @@ public class ReportDAO extends AbstractCrudService {
 
                 session.save(report);
                 session.flush();
-                log.debug("saveOrUpdate successful");
+                log.debug("update successful");
             } catch (RuntimeException re) {
-                log.error("saveOrUpdate failed", re);
+                log.error("update failed", re);
                 throw re;
             }
         }
@@ -76,9 +76,9 @@ public class ReportDAO extends AbstractCrudService {
 
             session.saveOrUpdate(transientInstance);
             session.flush();
-            log.debug("saveOrUpdate successful");
+            log.debug("update successful");
         } catch (RuntimeException re) {
-            log.error("saveOrUpdate failed", re);
+            log.error("update failed", re);
             throw re;
         }
     }

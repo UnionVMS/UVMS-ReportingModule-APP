@@ -27,7 +27,7 @@ import static javax.persistence.CascadeType.ALL;
         @NamedQuery(name = Report.FIND_BY_ID ,query = "SELECT r FROM Report r WHERE r.id = :reportID AND r.isDeleted <> 'Y'")
 })
 @Where(clause = "is_deleted <> 'Y'")
-@EqualsAndHashCode(exclude = {"executionLogs", "filters"})
+@EqualsAndHashCode(exclude = {"executionLogs", "filters", "audit"})
 @ToString
 public class Report implements Serializable {
 

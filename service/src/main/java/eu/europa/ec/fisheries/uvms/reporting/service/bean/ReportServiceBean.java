@@ -53,12 +53,8 @@ public class ReportServiceBean {
 	
 	@IAuditInterceptor(auditActionType=AuditActionEnum.MODIFY)
     @SuppressWarnings("unchecked")
-    public void update(ReportDTO report) {
-//        Report entityById = repository.findReportByReportId(report.getId());
-//        ReportMapper mapper = reportMapperBuilder().filters(true).build();
-//		Report reportEntity = mapper.merge(entityById, report);
-//        repository.updateEntity(reportEntity);
-        repository.saveOrUpdate(report);
+    public boolean update(ReportDTO report) {
+        return repository.update(report);
     }
 	
 	@IAuditInterceptor(auditActionType=AuditActionEnum.DELETE)

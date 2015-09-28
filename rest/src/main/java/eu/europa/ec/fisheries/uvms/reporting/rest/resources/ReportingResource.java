@@ -131,9 +131,17 @@ public class ReportingResource extends UnionVMSResource {
     	
     	LOG.info(username + " is requesting updateReport(...), with a ID=" + report.getId());
 
-        reportService.update(report);
+        boolean update = reportService.update(report);
 
-    	return createSuccessResponse();
+        Response restResponse;
+
+        if (update){
+            restResponse = createSuccessResponse();
+        }
+        else {
+            restResponse = createErrorResponse(ErrorCodes.UPDATE_FAILED);
+        }
+        return restResponse;
     }
     
     @POST

@@ -12,7 +12,7 @@ public interface ReportRepository extends CrudService {
 
     public Report saveOrUpdate(Report transientInstance);
 
-    public Report saveOrUpdate(ReportDTO reportDTO);
+    public boolean update(ReportDTO reportDTO);
 
     public Report findReportByReportId(Long reportId);
 

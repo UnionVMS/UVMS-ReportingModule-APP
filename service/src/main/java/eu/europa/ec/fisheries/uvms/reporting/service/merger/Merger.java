@@ -123,12 +123,12 @@ public abstract class Merger<I,O> {
     /**
      * Merge 2 items
      *
-     * @param incomming new item - not saved
+     * @param incoming new item - not saved
      * @param existing existing item - will be saved
      * @return true if an update was done
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract boolean merge(final O incomming, final O existing) throws ReportingServiceException;
+    protected abstract boolean merge(final O incoming, final O existing) throws ReportingServiceException;
 
 
     /**
