@@ -19,7 +19,7 @@ public class ReportMapper {
     private final ObjectFactory factory = new ObjectFactory();
     private final FilterMapper filterMapper =  new FilterMapper();
     private final AuditMapper auditMapper = new AuditMapperImpl();
-    private final ExecutionLogFilterMapper executionLogFilterMapper = new ExecutionLogFilterMapperImpl() ;
+    private final ExecutionLogMapper executionLogMapper = new ExecutionLogMapperImpl() ;
     private final Set<Feature> features;
     private final boolean filters;
     private String currentUser;
@@ -32,9 +32,9 @@ public class ReportMapper {
     }
 
     public void merge(Report incoming, Report existing){
-        existing.setId( incoming.getId() );
-        existing.setName( incoming.getName() );
-        existing.setDescription( incoming.getDescription() );
+        existing.setId(incoming.getId());
+        existing.setName(incoming.getName());
+        existing.setDescription(incoming.getDescription());
         existing.setOutComponents( incoming.getOutComponents() );
         existing.setScopeId( incoming.getScopeId() );
         existing.setCreatedBy( incoming.getCreatedBy() );
@@ -84,7 +84,7 @@ public class ReportMapper {
 
         Set<ExecutionLogDTO> set_ = new HashSet<>();
         for ( ExecutionLog log : set ) {
-            set_.add( executionLogFilterMapper.executionLogFilterToExecutionLogFilterDTO( log ) );
+            set_.add(executionLogMapper.executionLogFilterToExecutionLogFilterDTO(log));
         }
 
         return set_;

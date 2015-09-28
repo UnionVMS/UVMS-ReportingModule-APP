@@ -9,9 +9,9 @@ import org.mapstruct.factory.Mappers;
  * //TODO create test
  */
 @Mapper
-public interface ExecutionLogFilterMapper {
+public interface ExecutionLogMapper {
 
-    ExecutionLogFilterMapper INSTANCE = Mappers.getMapper(ExecutionLogFilterMapper.class);
+    ExecutionLogMapper INSTANCE = Mappers.getMapper(ExecutionLogMapper.class);
 
     ExecutionLogDTO executionLogFilterToExecutionLogFilterDTO(ExecutionLog executionLog);
 
