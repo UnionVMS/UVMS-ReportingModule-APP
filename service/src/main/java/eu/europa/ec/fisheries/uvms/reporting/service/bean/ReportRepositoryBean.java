@@ -1,9 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
@@ -41,8 +41,8 @@ public class ReportRepositoryBean extends AbstractCrudService implements ReportR
     public void postContruct(){
         reportDAO = new ReportDAO(em);
         filterDAO = new FilterDAO(em);
+        executionLogDAO = new ExecutionLogDAO(em);
         filterMerger = new FilterMerger(filterDAO);
-        // FIXME add executionLogDao
     }
 
     @Override
