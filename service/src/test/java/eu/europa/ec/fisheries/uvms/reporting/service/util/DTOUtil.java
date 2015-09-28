@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service;
+package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,7 +8,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 
-public class EntityUtil {
+public class DTOUtil {
 
     public static ReportDTO createReport(String name,
                                          String createdBy,

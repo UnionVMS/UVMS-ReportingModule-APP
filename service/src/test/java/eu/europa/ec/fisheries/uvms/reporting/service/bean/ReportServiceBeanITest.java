@@ -7,6 +7,7 @@ import java.io.File;
 
 import javax.ejb.EJB;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -22,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.EntityUtil;
 
 @RunWith(Arquillian.class)
 @Transactional
@@ -60,7 +60,7 @@ public class ReportServiceBeanITest {
     @Test
     @Transactional(TransactionMode.ROLLBACK)
     public void testInterceptor() throws ReportingServiceException {
-        ReportDTO report = reportBean.create(EntityUtil.createRandomReport());
+        ReportDTO report = reportBean.create(DTOUtil.createRandomReport());
         assertNotNull(report);
 
         reportBean.delete(report.getId());
