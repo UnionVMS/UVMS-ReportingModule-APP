@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.constants;
+package eu.europa.ec.fisheries.uvms.reporting.model;
 
 public interface ReportFeature {
 

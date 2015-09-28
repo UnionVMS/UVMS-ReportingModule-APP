@@ -4,16 +4,15 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Context;
-import eu.europa.ec.fisheries.uvms.reporting.model.Report;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.rest.constants.ReportFeature;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeature;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.MockingUtils;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.EntityUtil;
 
@@ -31,32 +30,32 @@ public class ReportToDTOMapperTest {
 	
 	@Test
 	public void testLastExecDate () {
-		Report report = EntityUtil.createRandomReport();
-		ReportExecutionLog log = new ReportExecutionLog();
+		ReportDTO report = EntityUtil.createRandomReport();
+		ExecutionLogDTO log = new ExecutionLogDTO();
 		log.setExecutedBy("zsdfgasdfdasf");
 		log.setExecutedOn(new Date());
-		report.getReportExecutionLogs().add(log);
+		report.getExecutionLogs().add(log);
 		
-		ReportDTO dto = mapper.reportToReportDto(report);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO dto = mapper.reportToReportDto(report);
 		assertNotNull(dto);
 		assertEquals(log.getExecutedOn(), dto.getLastExecTime());
 	}
 	
 	@Test
 	public void testNoLastExecDate () {
-		Report report = EntityUtil.createRandomReport();
+		ReportDTO report = EntityUtil.createRandomReport();
 		
-		ReportDTO dto = mapper.reportToReportDto(report);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO dto = mapper.reportToReportDto(report);
 		assertNotNull(dto);
 		assertNull(dto.getLastExecTime());
 	}
 
 	@Test
 	public void testShareable() {
-		Report report = EntityUtil.createRandomReport();
+		ReportDTO report = EntityUtil.createRandomReport();
 		report.setCreatedBy("georgi");
 		Context  context = MockingUtils.createContext("someScope", ReportFeature.SHARE_REPORTS_GLOBAL);
-		ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertTrue(reportDTO.isShareable());
 		
@@ -66,32 +65,29 @@ public class ReportToDTOMapperTest {
 		reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertTrue(reportDTO.isShareable());
-		assertEquals(report.getCreatedOn(), reportDTO.getCreatedOn());
 		assertEquals(report.getCreatedBy(), reportDTO.getCreatedBy());
 	}
 	
 	@Test
 	public void testShareableNegative() {
-		Report report = EntityUtil.createRandomReport();
+		ReportDTO report = EntityUtil.createRandomReport();
 		report.setCreatedBy("hugo");
 		Context  context = MockingUtils.createContext("someScope", ReportFeature.SHARE_REPORTS_SCOPE);
-		ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertFalse(reportDTO.isShareable());
-		assertEquals(report.getCreatedOn(), reportDTO.getCreatedOn());
 		assertEquals(report.getCreatedBy(), reportDTO.getCreatedBy());
 		
 	}
 	
 	@Test
 	public void testEditable() {
-		Report report = EntityUtil.createRandomReport();
+		ReportDTO report = EntityUtil.createRandomReport();
 		report.setCreatedBy("georgi");
 		Context  context = MockingUtils.createContext("someScope", ReportFeature.MODIFY_PRIVATE_REPORT);
-		ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertTrue(reportDTO.isEditable());
-		assertEquals(report.getCreatedOn(), reportDTO.getCreatedOn());
 		assertEquals(report.getCreatedBy(), reportDTO.getCreatedBy());
 		
 		//if a user is allowed to edit shared reports
@@ -110,16 +106,15 @@ public class ReportToDTOMapperTest {
 		reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertTrue(reportDTO.isEditable());
-		assertEquals(report.getCreatedOn(), reportDTO.getCreatedOn());
 		assertEquals(report.getCreatedBy(), reportDTO.getCreatedBy());
 	}
 	
 	@Test
 	public void testEditableNegative() {
-		Report report = EntityUtil.createRandomReport();
+		ReportDTO report = EntityUtil.createRandomReport();
 		report.setCreatedBy("georgi");
 		Context  context = MockingUtils.createContext("someScope");
-		ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertFalse(reportDTO.isEditable());
 		
@@ -160,10 +155,10 @@ public class ReportToDTOMapperTest {
 	
 	@Test
 	public void testDeletable() {
-		Report report = EntityUtil.createRandomReport();
+		ReportDTO report = EntityUtil.createRandomReport();
 		report.setCreatedBy("georgi");
 		Context  context = MockingUtils.createContext("someScope", ReportFeature.DELETE_REPORT);
-		ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertTrue(reportDTO.isDeletable());
 		
@@ -188,10 +183,10 @@ public class ReportToDTOMapperTest {
 	
 	@Test
 	public void testDeletableNegative() {
-		Report report = EntityUtil.createRandomReport();
+		ReportDTO report = EntityUtil.createRandomReport();
 		report.setCreatedBy("georgi");
 		Context  context = MockingUtils.createContext("someScope");
-		ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportDTO = mapper.reportToReportDto(report, "georgi",  context);
 		assertNotNull(report);
 		assertFalse(reportDTO.isDeletable());
 		

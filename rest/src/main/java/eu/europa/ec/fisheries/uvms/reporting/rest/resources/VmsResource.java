@@ -3,13 +3,11 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
 import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
-import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.SchemaException;
 
 import javax.ejb.EJB;
@@ -23,8 +21,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * //TODO create test
@@ -46,7 +42,7 @@ public class VmsResource {
     public ResponseDto getVmsData(@Context HttpServletRequest request,
                                   @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
 
-        VmsDto vmsDto = vmsService.getVmsDataByReportId(id);
+        VmsDTO vmsDto = vmsService.getVmsDataByReportId(id);
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode rootNode = objectMapper.createObjectNode();
@@ -69,7 +65,7 @@ public class VmsResource {
     public ResponseDto getVmsMockData(@Context HttpServletRequest request,
                                   @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
 
-        VmsDto vmsDto = vmsService.getVmsMockData(id);
+        VmsDTO vmsDto = vmsService.getVmsMockData(id);
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode rootNode = objectMapper.createObjectNode();

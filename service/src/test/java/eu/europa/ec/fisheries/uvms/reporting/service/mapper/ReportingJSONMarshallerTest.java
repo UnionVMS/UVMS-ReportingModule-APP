@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelMarshallException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpressionDTO;
 import junit.framework.TestCase;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -29,7 +29,7 @@ public class ReportingJSONMarshallerTest {
     public void testMarshall() throws IOException, ReportingModelMarshallException {
         URL url = Resources.getResource("testMarshallJsonStringToObject.json");
         String json = Resources.toString(url, Charsets.UTF_8);
-        FilterExpression filter = marshaller.marshall(json, FilterExpression.class);
+        FilterExpressionDTO filter = marshaller.marshall(json, FilterExpressionDTO.class);
         assertEquals("2015-08-31 15:45:00", DateUtils.FILTER_FORMATTER.print(new DateTime(filter.getStartDate(), DateTimeZone.UTC)));
         assertEquals("2015-08-31 15:50:00", DateUtils.FILTER_FORMATTER.print(new DateTime(filter.getEndDate(), DateTimeZone.UTC)));
         TestCase.assertEquals("Vessel 1", filter.getVessels().get(0).getName());

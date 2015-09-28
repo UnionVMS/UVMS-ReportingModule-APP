@@ -1,13 +1,11 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDto;
-
-import java.util.Set;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 
 public interface VmsService {
 
-    VmsDto getVmsDataByReportId(Long id);
+    VmsDTO getVmsDataByReportId(Long id);
 
-    VmsDto getVmsMockData(Long id);
+    VmsDTO getVmsMockData(Long id);
 
 }

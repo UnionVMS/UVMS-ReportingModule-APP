@@ -48,17 +48,7 @@ public class ReportingResourceITest extends ArquillianTest {
 	
     @ArquillianResource
     URL contextPath;
-    
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	
 	@Test
 	@Header(name="connection", value = "Keep-Alive")
 	public void testUpdate(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws JsonParseException, JsonMappingException, IOException {
@@ -89,7 +79,6 @@ public class ReportingResourceITest extends ArquillianTest {
 		ReportDetailsDTO dto = mapper.readValue(payload, ReportDetailsDTO.class);
 		
 		assertNotNull(dto);
-		assertNotNull(dto.getFilterExpression());
 		assertNotNull(dto.getOutComponents());
 		assertNotNull(dto.getVisibility());
 		
@@ -108,7 +97,6 @@ public class ReportingResourceITest extends ArquillianTest {
 		ReportDetailsResponseTESTDto detailsResponseDTO = response.readEntity(ReportDetailsResponseTESTDto.class);
 		assertNotNull(detailsResponseDTO);
 		ReportDetailsDTO detailsDto = detailsResponseDTO.getData();
-		assertEquals("{\"startDate\":\"2015-09-02 18:20:00\",\"endDate\":\"2015-09-02 18:20:00\",\"positionSelector\":\""+date+"\",\"vessels\":[{\"id\":1,\"name\":\"Vessel 1\",\"type\":\"vessel\"},{\"id\":2,\"name\":\"Vessel 2\",\"type\":\"vessel\"}],\"vms\":{\"positions\":{\"active\":false},\"segments\":{\"active\":false},\"tracks\":{\"active\":false}}}", detailsDto.getFilterExpression());
 		assertEquals("Report Name"+date, detailsDto.getName());
 		assertEquals("Some description"+date, detailsDto.getDesc());
 		assertEquals(VisibilityEnum.SCOPE, detailsDto.getVisibility());

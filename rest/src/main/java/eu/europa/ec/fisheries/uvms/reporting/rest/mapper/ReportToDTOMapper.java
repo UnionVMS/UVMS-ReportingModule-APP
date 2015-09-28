@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 
-
-
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ObjectFactory;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,32 +16,30 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.Feature;
-import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.Context;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.rest.constants.ReportFeature;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeature;
 
-@Mapper
+@Mapper(uses = ObjectFactory.class)
 public abstract class ReportToDTOMapper {
  
 	public static ReportToDTOMapper INSTANCE = Mappers.getMapper( ReportToDTOMapper.class );
 	
-	public abstract Collection<ReportDTO> reportsToReportDtos(Collection<Report> reports);
+	public abstract Collection<eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO> reportsToReportDtos(Collection<ReportDTO> reports);
  
 	@Mappings({
 		@Mapping(source = "description", target = "desc"),
 		@Mapping(target = "lastExecTime", expression = "java(mapLastExecutionDate(report))")
 	})
-	public abstract ReportDTO reportToReportDto(Report report);
+	public abstract eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportToReportDto(ReportDTO report);
 	
-	public Collection<ReportDTO> reportsToReportDtos(Collection<Report> reports, String username, Context context) {
-		List<ReportDTO> reportDTOs  = null; 
+	public Collection<eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO> reportsToReportDtos(Collection<ReportDTO> reports, String username, Context context) {
+		List<eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO> reportDTOs  = null;
 		
 		if (reports != null) {
-			reportDTOs = new ArrayList<ReportDTO>(reports.size());
+			reportDTOs = new ArrayList<>(reports.size());
 			
-			for (Report report : reports) {
+			for (ReportDTO report : reports) {
 				reportDTOs.add(this.reportToReportDto(report, username, context));
 			}
 		}
@@ -54,22 +52,22 @@ public abstract class ReportToDTOMapper {
 	 * @param report
 	 * @return
 	 */
-	protected Date mapLastExecutionDate(Report report) {
+	protected Date mapLastExecutionDate(ReportDTO report) {
 		Date mappedDate = null;
 		
-		if (!report.getReportExecutionLogs().isEmpty()) {
-			mappedDate = report.getReportExecutionLogs().iterator().next().getExecutedOn();
+		if (!report.getExecutionLogs().isEmpty()) {
+			mappedDate = report.getExecutionLogs().iterator().next().getExecutedOn();
 		}
 			
 		return mappedDate;
 	}
 	 
 
-	public ReportDTO reportToReportDto(Report report, String username, Context context) {
-		ReportDTO reportDTO = this.reportToReportDto(report);
+	public eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportToReportDto(ReportDTO report, String username, Context context) {
+		eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO reportDTO = this.reportToReportDto(report);
 		
-		if (!report.getReportExecutionLogs().isEmpty()) {
-			reportDTO.setLastExecTime(report.getReportExecutionLogs().iterator().next().getExecutedOn());
+		if (!report.getExecutionLogs().isEmpty()) {
+			reportDTO.setLastExecTime(report.getExecutionLogs().iterator().next().getExecutedOn());
 		}
 		
 		Set<Feature> grantedFeatures = context.getRole().getFeatures();
@@ -82,7 +80,7 @@ public abstract class ReportToDTOMapper {
 		return reportDTO;
 	}
     
-    private boolean isEditable(Report report, String username, Set<Feature> grantedFeatures) {
+    private boolean isEditable(ReportDTO report, String username, Set<Feature> grantedFeatures) {
     	boolean isEditable = false;
 		
     	if (report.getCreatedBy().equals(username)) {
@@ -98,7 +96,7 @@ public abstract class ReportToDTOMapper {
     	return isEditable;
 	}
 
-	private boolean isDeletable(Report report, String username, Set<Feature> grantedFeatures) {
+	private boolean isDeletable(ReportDTO report, String username, Set<Feature> grantedFeatures) {
 		boolean isDeletable = false;
 		
 		if (report.getCreatedBy().equals(username)) {
@@ -114,7 +112,7 @@ public abstract class ReportToDTOMapper {
 		return isDeletable;
 	}
 
-	private boolean isShareable(Report report, String username, Set<Feature> grantedFeatures) {
+	private boolean isShareable(ReportDTO report, String username, Set<Feature> grantedFeatures) {
 		boolean isShareable = false;
 		if (report.getCreatedBy().equals(username) ) {
 			if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_SCOPE) || grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
@@ -127,10 +125,10 @@ public abstract class ReportToDTOMapper {
 	}
 
 	@InheritInverseConfiguration
-    public abstract Collection<Report> reportDtosToReports(Collection<ReportDTO> reports);
+    public abstract Collection<ReportDTO> reportDtosToReports(Collection<eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO> reports);
     
     @InheritInverseConfiguration
     @Mapping(source = "desc", target = "description")
-    public abstract Report reportDtoToReport(ReportDTO report);
+    public abstract ReportDTO reportDtoToReport(eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO report);
     
 }

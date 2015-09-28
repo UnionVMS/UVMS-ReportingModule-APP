@@ -1,8 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.TimeZone;
+import java.util.*;
 
 import javax.ejb.EJB;
 import javax.interceptor.Interceptors;
@@ -23,20 +21,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.rest.constants.ReportFeature;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeature;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.json.JsonResponseInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.rest.mapper.ReportDetailsDTOToReportMapper;
 import eu.europa.ec.fisheries.uvms.reporting.rest.mapper.ReportToDTOMapper;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.MockingUtils;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportBean;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 
@@ -49,7 +47,7 @@ public class ReportingResource extends UnionVMSResource {
 	private UriInfo context;
 	
     @EJB
-    private ReportBean reportService;
+    private ReportServiceBean reportService;
     
     private ReportToDTOMapper mapper = ReportToDTOMapper.INSTANCE;
     
@@ -61,22 +59,26 @@ public class ReportingResource extends UnionVMSResource {
     //@IsUserAllowed(allFeatures = { ReportFeature.LIST_REPORTS })
     public Response listReports(@Context HttpServletRequest request, 
     				@Context HttpServletResponse response, @QueryParam(RestConstants.REQUEST_PARAM_CURRENT_USER_SCOPE) long scopeId) {
-    	String username = "georgi"; //request.getRemoteUser() should return the username
+    	final String username = "georgi"; //request.getRemoteUser() should return the username
     	
     	LOG.info(username + " is requesting listReports(...), with a scopeId=" + scopeId);
 
-    	Collection<eu.europa.ec.fisheries.uvms.reporting.model.Report> reportsList = reportService.findReports(username, scopeId);
-    	
-    	//eu.europa.ec.fisheries.uvms.reporting.model.Context userContext = (eu.europa.ec.fisheries.uvms.reporting.model.Context) request.getSession().getAttribute(RestConstants.SESSION_ATTR_ACTIVE_USER_SCOPE);
-    	eu.europa.ec.fisheries.uvms.reporting.model.Context userContext = MockingUtils.createContext("someScope", 
-    			ReportFeature.LIST_REPORTS, 
-    			ReportFeature.DELETE_REPORT, 
-    			ReportFeature.CREATE_REPORTS, 
-    			ReportFeature.SHARE_REPORTS_GLOBAL,
-    			ReportFeature.SHARE_REPORTS_SCOPE,
-    			ReportFeature.MODIFY_PRIVATE_REPORT);
-    	
-    	return createSuccessResponse(mapper.reportsToReportDtos(reportsList, username, userContext));
+        //eu.europa.ec.fisheries.uvms.reporting.model.Context userContext = (eu.europa.ec.fisheries.uvms.reporting.model.Context) request.getSession().getAttribute(RestConstants.SESSION_ATTR_ACTIVE_USER_SCOPE);
+        eu.europa.ec.fisheries.uvms.reporting.model.Context userContext = MockingUtils.createContext("someScope",
+                ReportFeature.LIST_REPORTS,
+                ReportFeature.DELETE_REPORT,
+                ReportFeature.CREATE_REPORTS,
+                ReportFeature.SHARE_REPORTS_GLOBAL,
+                ReportFeature.SHARE_REPORTS_SCOPE,
+                ReportFeature.MODIFY_PRIVATE_REPORT);
+
+        Collection<ReportDTO> reportsList = reportService.listByUsernameAndScope(userContext.getRole().getFeatures(), username, scopeId);
+
+        for(ReportDTO report: reportsList){
+            report.setExecutionLogs(report.filterLogsByUser(username));
+        }
+
+    	return createSuccessResponse((reportsList));
     }
     
     @GET
@@ -90,12 +92,12 @@ public class ReportingResource extends UnionVMSResource {
     	
     	LOG.info(username + " is requesting getReport(...), with an ID=" + id );
     	
-    	Report report = reportService.findById(id); 
+    	ReportDTO report = reportService.findById(id);
     	
     	Response restResponse;
     	
     	if (report != null) {
-	    	restResponse = createSuccessResponse(reportDetailsMapper.reportToReportDetailsDto(report));
+	    	restResponse = createSuccessResponse(report);
     	} else {
     		restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
     	}
@@ -128,17 +130,16 @@ public class ReportingResource extends UnionVMSResource {
     @PUT
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{id}")
-    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
-    public Response modifyReport(@Context HttpServletRequest request, 
-    				@Context HttpServletResponse response, ReportDetailsDTO report,@PathParam("id") Long id) {
+    //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS})
+    public Response updateReport(@Context HttpServletRequest request,
+                                 @Context HttpServletResponse response, ReportDTO report) {
     	
     	String username = "georgi"; //request.getRemoteUser() should return the username
     	
-    	LOG.info(username + " is requesting modifyReport(...), with a ID=" + report.getId());
-    	
-    	reportService.update(reportDetailsMapper.reportDetailsDtoToReport(report));//TODO handle better merge because we pass not all the fields directly from the front-end
-    	
+    	LOG.info(username + " is requesting updateReport(...), with a ID=" + report.getId());
+
+        reportService.update(report);
+
     	return createSuccessResponse();
     }
     
@@ -153,8 +154,8 @@ public class ReportingResource extends UnionVMSResource {
 	   	
 	   	LOG.info(username + " is requesting createReport(...), with a ID=" + report.getId());
 
-	   	Report newReport = reportDetailsMapper.reportDetailsDtoToReport(report);
-	   	newReport.setCreatedOn(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+	   	ReportDTO newReport = reportDetailsMapper.reportDetailsDtoToReport(report);
+	   	//newReport.setCreatedOn(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
 	   	newReport.setCreatedBy(username);
 
 	   	reportService.create(newReport);
@@ -172,7 +173,7 @@ public class ReportingResource extends UnionVMSResource {
    	
     	LOG.info(username + " is requesting shareReport(...), with a ID=" + id + " with isShared=" + visibility);
    	
-    	Report reportToUpdate = reportService.findById(id);
+    	ReportDTO reportToUpdate = reportService.findById(id);
     	reportToUpdate.setVisibility(VisibilityEnum.valueOf(visibility));
     	reportService.update(reportToUpdate);
     	
