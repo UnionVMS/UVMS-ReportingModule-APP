@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.constants;
+package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 public interface ReportingServiceConstants {
 
