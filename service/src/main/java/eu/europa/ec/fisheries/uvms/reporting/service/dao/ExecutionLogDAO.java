@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.reporsitory;
+package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.service.AbstractCrudService;
