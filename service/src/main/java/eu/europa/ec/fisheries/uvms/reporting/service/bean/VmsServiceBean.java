@@ -12,7 +12,8 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageServ
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportingJSONMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
@@ -27,6 +28,7 @@ import javax.jms.JMSException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * //TODO create test
@@ -44,11 +46,9 @@ public class VmsServiceBean implements VmsService {
     @EJB
     private MovementMessageServiceBean movementModule;
 
-    private ReportingJSONMarshaller marshaller;
-
     @PostConstruct
     public void init(){
-        marshaller = new ReportingJSONMarshaller();
+
     }
 
     @Override
@@ -58,13 +58,12 @@ public class VmsServiceBean implements VmsService {
 
         try {
 
-            eu.europa.ec.fisheries.uvms.reporting.service.entities.Report byId = repository.findReportByReportId(id);
-            //byId.getFilters();
-            FilterExpressionDTO filter = null; //marshaller.marshall(byId.getFilter(), FilterExpression.class); // FIXME
+            Report byId = repository.findReportByReportId(id);
+            Set<Filter> filters = byId.getFilters();
 
-            Map<String, Vessel> vesselMapByGuid = vesselModule.getStringVesselMapByGuid(filter.getVessels());
+            Map<String, Vessel> vesselMapByGuid = vesselModule.getStringVesselMapByGuid(null); // FIXME
 
-            MovementQuery movementQuery = filter.createMovementQuery(filter);
+            MovementQuery movementQuery = null; //filter.createMovementQuery(filter);
             List<MovementMapResponseType> mapResponseTypes = movementModule.getMovementMap(movementQuery);
 
             vmsDto = VmsDTO.getVmsDto(vesselMapByGuid, mapResponseTypes);

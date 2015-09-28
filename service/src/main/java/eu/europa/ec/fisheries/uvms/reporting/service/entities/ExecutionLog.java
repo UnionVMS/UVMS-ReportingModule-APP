@@ -4,6 +4,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,18 +23,18 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "report_execution_log", uniqueConstraints = @UniqueConstraint(columnNames = "report_id"))
 @Builder
-public class ReportExecutionLog implements java.io.Serializable {
+public class ExecutionLog implements Serializable {
 
 	private long id;
 	private Report report;
 	private String executedBy;
 	private Date executedOn;
 
-	public ReportExecutionLog() {
+	public ExecutionLog() {
 	}
 
-	public ReportExecutionLog(long id, Report report, String executedBy,
-			Date executedOn) {
+	public ExecutionLog(long id, Report report, String executedBy,
+                        Date executedOn) {
 		this.id = id;
 		this.report = report;
 		this.executedBy = executedBy;

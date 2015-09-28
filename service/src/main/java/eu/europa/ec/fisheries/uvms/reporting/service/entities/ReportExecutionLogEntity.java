@@ -6,16 +6,13 @@ import lombok.Builder;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,9 +31,9 @@ public class ReportExecutionLogEntity implements java.io.Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private long id;
 	
-	@ManyToOne(targetEntity = ReportEntity.class)
+	@ManyToOne(targetEntity = Report.class)
 	@JoinColumn(name = "report_id", unique = true, nullable = false)
-	private ReportEntity report;
+	private Report report;
 	
 	@Column(name = "executed_by", nullable = false)
 	private String executedBy;
@@ -48,7 +45,7 @@ public class ReportExecutionLogEntity implements java.io.Serializable {
 	public ReportExecutionLogEntity() {
 	}
 
-	public ReportExecutionLogEntity(long id, ReportEntity report, String executedBy,
+	public ReportExecutionLogEntity(long id, Report report, String executedBy,
 			Date executedOn) {
 		this.id = id;
 		this.report = report;
@@ -65,11 +62,11 @@ public class ReportExecutionLogEntity implements java.io.Serializable {
 	}
 
 
-	public ReportEntity getReport() {
+	public Report getReport() {
 		return this.report;
 	}
 
-	public void setReport(ReportEntity report) {
+	public void setReport(Report report) {
 		this.report = report;
 	}
 

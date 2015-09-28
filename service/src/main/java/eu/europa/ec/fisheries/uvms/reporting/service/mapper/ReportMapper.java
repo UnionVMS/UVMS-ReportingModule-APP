@@ -75,26 +75,6 @@ public class ReportMapper {
         return isDeletable;
     }
 
-    public Report merge(Report report, final ReportDTO dto) {
-        report.setId(dto.getId());
-        report.setName(dto.getName());
-        report.setDescription(dto.getDescription());
-        report.setOutComponents(dto.getOutComponents());
-        report.setScopeId(dto.getScopeId());
-        report.setCreatedBy( dto.getCreatedBy() );
-        if ( report.isIsDeleted() != null ) {
-            report.setIsDeleted( report.isIsDeleted() );
-        }
-        report.setDeletedOn( dto.getDeletedOn() );
-        report.setDeletedBy( dto.getDeletedBy() );
-        report.setVisibility( dto.getVisibility() );
-        if (filters){ // FIXME merge filters?
-            report.setFilters( filterDTOSetToFilterSet( dto.getFilters() , report) );
-        }
-
-        return report;
-    }
-
     public ReportDTO reportToReportDto(final Report report) {
         if ( report == null ) {
             return null;
@@ -122,7 +102,9 @@ public class ReportMapper {
         reportDTO.setDeletedOn( report.getDeletedOn() );
         reportDTO.setDeletedBy( report.getDeletedBy() );
         reportDTO.setVisibility( report.getVisibility() );
-        reportDTO.setFilters( filterSetToFilterDTOSet(report.getFilters()) );//TODO TEst
+        if (filters) {
+            reportDTO.setFilters( filterSetToFilterDTOSet(report.getFilters()) );//TODO TEst
+        }
 
         return reportDTO;
     }

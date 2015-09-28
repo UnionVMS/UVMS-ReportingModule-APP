@@ -1,15 +1,11 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import java.util.Collection;
 import java.util.Set;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportExecutionLog;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportExecutionLogEntity;
 
 //@Mapper (componentModel = "cdi", uses = {ReportMapper.class})

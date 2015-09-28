@@ -37,7 +37,6 @@ public class ReportServiceBean {
 
     private FilterMerger merger;
 
-
     @IAuditInterceptor(auditActionType=AuditActionEnum.CREATE)
     @SuppressWarnings("unchecked")
     public ReportDTO create(ReportDTO report) {

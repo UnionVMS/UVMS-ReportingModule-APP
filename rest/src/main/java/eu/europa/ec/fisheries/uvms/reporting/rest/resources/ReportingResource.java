@@ -30,10 +30,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeature;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.json.JsonResponseInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.rest.mapper.ReportDetailsDTOToReportMapper;
-import eu.europa.ec.fisheries.uvms.reporting.rest.mapper.ReportToDTOMapper;
 import eu.europa.ec.fisheries.uvms.reporting.rest.temp.MockingUtils;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
@@ -48,11 +45,7 @@ public class ReportingResource extends UnionVMSResource {
 	
     @EJB
     private ReportServiceBean reportService;
-    
-    private ReportToDTOMapper mapper = ReportToDTOMapper.INSTANCE;
-    
-    private ReportDetailsDTOToReportMapper reportDetailsMapper = ReportDetailsDTOToReportMapper.INSTANCE;
-     
+
     @GET
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -148,17 +141,16 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response createReport(@Context HttpServletRequest request, 
-   				@Context HttpServletResponse response, ReportDetailsDTO report) {
+   				@Context HttpServletResponse response, ReportDTO report) {
    	
 	   	String username = "georgi"; //request.getRemoteUser() should return the username
 	   	
 	   	LOG.info(username + " is requesting createReport(...), with a ID=" + report.getId());
 
-	   	ReportDTO newReport = reportDetailsMapper.reportDetailsDtoToReport(report);
 	   	//newReport.setCreatedOn(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
-	   	newReport.setCreatedBy(username);
+        report.setCreatedBy(username);
 
-	   	reportService.create(newReport);
+	   	reportService.create(report);
 	   	return createSuccessResponse();
     }
     

@@ -1,12 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ExecutionLogDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.FilterMerger;
 import eu.europa.ec.fisheries.uvms.service.AbstractCrudService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,6 @@ public class ReportRepositoryBean extends AbstractCrudService implements ReportR
 
     private ReportDAO reportDAO;
     private FilterDAO filterDAO;
-
     private ExecutionLogDAO executionLogDAO;
 
     private FilterMerger filterMerger;

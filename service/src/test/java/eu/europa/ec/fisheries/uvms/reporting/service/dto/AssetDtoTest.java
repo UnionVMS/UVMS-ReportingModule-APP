@@ -11,8 +11,6 @@ import static org.junit.Assert.assertEquals;
 
 public class AssetDtoTest {
 
-    private AssetDto dto;
-
     @Test
     public void testDelegation(){
 
@@ -20,7 +18,7 @@ public class AssetDtoTest {
         Vessel vessel = getVesselDto(1);
 
         // when
-        dto = new AssetDto(vessel);
+        AssetDTO dto = new AssetDTO(vessel);
 
         // then
         assertEquals(dto.getVesselId().getGuid(), "1");
