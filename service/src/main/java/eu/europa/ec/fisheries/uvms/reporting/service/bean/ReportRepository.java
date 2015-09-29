@@ -5,11 +5,10 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.service.DAO;
 
 import java.util.List;
 
-public interface ReportRepository extends DAO {
+public interface ReportRepository {
 
     public Report saveOrUpdate(Report transientInstance) throws ServiceException;
 
@@ -19,8 +18,11 @@ public interface ReportRepository extends DAO {
 
     public List<Report> listByUsernameAndScope(String username, long scopeId) throws ServiceException;
 
-    public void persist(ExecutionLog transientInstance); // FIXME move to ExecutionLog Dao
+    public void persist(ExecutionLog transientInstance) throws ServiceException; // FIXME move to ExecutionLog Dao
 
-    public void remove(Long reportId) throws ReportingServiceException, ServiceException;
+    public void remove(Long reportId) throws ServiceException;
 
+    Report createEntity(Report reportEntity) throws ServiceException;
+
+    void deleteEntity(Report report, Long id) throws ServiceException;
 }

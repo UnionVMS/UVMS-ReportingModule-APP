@@ -221,7 +221,7 @@ public class ReportRepositoryIT {
         Set<ExecutionLog> executionLogs = foundReport.getExecutionLogs();
         assertEquals(2, executionLogs.size());
 
-        repository.deleteEntity(Report.class, savedReport.getId());
+        repository.deleteEntity(savedReport, savedReport.getId());
     }
 
     @Test(expected = Exception.class)

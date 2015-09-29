@@ -1,34 +1,29 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.merger.ReportMerger;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.FilterMerger;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.merger.ReportMerger;
 import lombok.extern.slf4j.Slf4j;
+
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.ejb.Local;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 @Stateless
 @Local(ReportRepository.class)
 @Slf4j
-public class ReportRepositoryBean extends AbstractDAO implements ReportRepository {
+public class ReportRepositoryBean implements ReportRepository {
 
     private ReportDAO reportDAO;
     private FilterDAO filterDAO;
@@ -48,11 +43,6 @@ public class ReportRepositoryBean extends AbstractDAO implements ReportRepositor
         executionLogDAO = new ExecutionLogDAO(em);
         filterMerger = new FilterMerger(em);
         reportMerger = new ReportMerger(em);
-    }
-
-    @Override
-    public EntityManager getEntityManager() {
-        return em;
     }
 
     @Override
@@ -88,7 +78,7 @@ public class ReportRepositoryBean extends AbstractDAO implements ReportRepositor
 
     @Override
     @Transactional
-    public void persist(final ExecutionLog transientInstance) {
+    public void persist(final ExecutionLog transientInstance) throws ServiceException {
         reportDAO.persist(transientInstance);
     }
 
@@ -96,5 +86,15 @@ public class ReportRepositoryBean extends AbstractDAO implements ReportRepositor
     @Transactional
     public void remove(final Long reportId) throws ServiceException {
         reportDAO.remove(reportId);
+    }
+
+    @Override
+    public Report createEntity(Report reportEntity) throws ServiceException {
+        return reportDAO.createEntity(reportEntity);
+    }
+
+    @Override
+    public void deleteEntity(Report report, Long id) throws ServiceException {
+        reportDAO.deleteEntity(report, id);
     }
 }

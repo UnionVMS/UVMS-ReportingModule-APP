@@ -69,7 +69,7 @@ public class ReportDAO extends AbstractDAO<Report> {
         return report;
     }
 
-    public void persist(ExecutionLog transientInstance) {
+    public void persist(ExecutionLog transientInstance) throws ServiceException {
         log.debug("persisting ReportExecutionLogEntity instance");
         try {
             Session session = em.unwrap(Session.class);
@@ -87,7 +87,7 @@ public class ReportDAO extends AbstractDAO<Report> {
      * does logical/soft delete
      * @param report
      */
-    public void remove(Report report) {
+    public void remove(Report report) throws ServiceException {
         //String username = context.getCallerPrincipal().getName();
         String username = "georgi"; //TODO remove the hardcoded username and use the caller principal instead
 
@@ -149,7 +149,7 @@ public class ReportDAO extends AbstractDAO<Report> {
      * @param persistentInstance
      */
     @Transactional
-    public void delete(Report persistentInstance) {
+    public void delete(Report persistentInstance) throws ServiceException {
         log.debug("deleting ReportEntity instance with id: " + persistentInstance.getId());
         try {
             Session session = em.unwrap(Session.class);
