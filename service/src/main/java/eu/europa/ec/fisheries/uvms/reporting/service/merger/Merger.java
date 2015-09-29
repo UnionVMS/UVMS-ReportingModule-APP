@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 
 import java.util.Collection;
@@ -26,7 +27,7 @@ public abstract class Merger<I,O> {
      * @return
      * @throws ReportingServiceException
      */
-    public boolean merge(final Collection<I> inputs) throws ReportingServiceException {
+    public boolean merge(final Collection<I> inputs) throws ServiceException {
         Map<Object, FlaggedEntry> incommingRecords = createIncomming(inputs);
         Map<Object, FlaggedEntry> currentRecords = createCurrent(inputs, incommingRecords);
 
@@ -35,7 +36,7 @@ public abstract class Merger<I,O> {
         return save(currentRecords);
     }
 
-    private boolean save(final Map<Object, Merger<I, O>.FlaggedEntry> current) throws ReportingServiceException {
+    private boolean save(final Map<Object, Merger<I, O>.FlaggedEntry> current) throws ServiceException {
         boolean updated=false;
         for (Merger<I, O>.FlaggedEntry flaggedItem : current.values()) {
             if (flaggedItem.created) {
@@ -52,13 +53,13 @@ public abstract class Merger<I,O> {
         return updated;
     }
 
-    private void merge(final Map<Object, Merger<I, O>.FlaggedEntry> incomming, final Map<Object, Merger<I, O>.FlaggedEntry> current) throws ReportingServiceException {
+    private void merge(final Map<Object, Merger<I, O>.FlaggedEntry> incomming, final Map<Object, Merger<I, O>.FlaggedEntry> current) throws ServiceException {
         for (Merger<I, O>.FlaggedEntry flaggedItem : incomming.values()) {
             merge(flaggedItem, current);
         }
     }
 
-    private void merge(final Merger<I, O>.FlaggedEntry incommingItem, final Map<Object, Merger<I, O>.FlaggedEntry> current) throws ReportingServiceException {
+    private void merge(final Merger<I, O>.FlaggedEntry incommingItem, final Map<Object, Merger<I, O>.FlaggedEntry> current) throws ServiceException {
         Object key=getUniqKey(incommingItem.item);
         Merger<I, O>.FlaggedEntry currentItem = current.get(key);
         if (currentItem == null) {
@@ -70,7 +71,7 @@ public abstract class Merger<I,O> {
     }
 
     private Map<Object, Merger<I, O>.FlaggedEntry> createCurrent(final Collection<I> input,
-                                                                 final Map<Object, Merger<I, O>.FlaggedEntry> incomming) throws ReportingServiceException {
+                                                                 final Map<Object, Merger<I, O>.FlaggedEntry> incomming) throws ServiceException {
         Map<Object, Merger<I, O>.FlaggedEntry> current=new HashMap<>();
 
         for (O item: loadCurrents(input)) {
@@ -83,7 +84,7 @@ public abstract class Merger<I,O> {
         return current;
     }
 
-    private Map<Object, FlaggedEntry> createIncomming(final Collection<I> inputs) throws ReportingServiceException {
+    private Map<Object, FlaggedEntry> createIncomming(final Collection<I> inputs) throws ServiceException {
         Map<Object, FlaggedEntry> incomming = new HashMap<>();
         for (I input : inputs) {
             for (O convertedItem : convert(input)) {
@@ -100,7 +101,7 @@ public abstract class Merger<I,O> {
      * @return unique key - must implement equal/hash correctly
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract Object getUniqKey(final O item) throws ReportingServiceException;
+    protected abstract Object getUniqKey(final O item) throws ServiceException;
 
     /**
      * Convert an item
@@ -109,7 +110,7 @@ public abstract class Merger<I,O> {
      * @return resulting converted items
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract Collection<O> convert(final I input) throws ReportingServiceException;
+    protected abstract Collection<O> convert(final I input) throws ServiceException;
 
     /**
      * retrieve current items
@@ -118,7 +119,7 @@ public abstract class Merger<I,O> {
      * @return items to merge
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract Collection<O> loadCurrents(final Collection<I> input) throws ReportingServiceException;
+    protected abstract Collection<O> loadCurrents(final Collection<I> input) throws ServiceException;
 
     /**
      * Merge 2 items
@@ -128,7 +129,7 @@ public abstract class Merger<I,O> {
      * @return true if an update was done
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract boolean merge(final O incoming, final O existing) throws ReportingServiceException;
+    protected abstract boolean merge(final O incoming, final O existing) throws ServiceException;
 
 
     /**
@@ -137,7 +138,7 @@ public abstract class Merger<I,O> {
      * @param item item to insert
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract void insert(final O item) throws ReportingServiceException;
+    protected abstract void insert(final O item) throws ServiceException;
 
     /**
      * Update an existing record
@@ -145,7 +146,7 @@ public abstract class Merger<I,O> {
      * @param item
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract void update(final O item) throws ReportingServiceException;
+    protected abstract void update(final O item) throws ServiceException;
 
     /**
      * delete an existing record
@@ -153,5 +154,5 @@ public abstract class Merger<I,O> {
      * @param item
      * @throws ReportingServiceException exception during processing
      */
-    protected abstract void delete(final O item) throws ReportingServiceException;
+    protected abstract void delete(final O item) throws ServiceException;
 }

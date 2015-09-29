@@ -1,9 +1,9 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.reporsitory;
+package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.service.AbstractCrudService;
+import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
 
-public class ReportDAO extends AbstractCrudService {
+public class ReportDAO extends AbstractDAO<Report> {
 
     private static final Logger log = LoggerFactory.getLogger(ReportDAO.class);
 
@@ -25,7 +25,7 @@ public class ReportDAO extends AbstractCrudService {
         this.em = em;
     }
 
-    public Report saveOrUpdate(Report report) {
+    public Report saveOrUpdate(Report report) throws ServiceException {
         //check whether it's an update or create
         if (report.getId() > 0) {
             log.debug("update ReportEntity instance");
@@ -110,18 +110,17 @@ public class ReportDAO extends AbstractCrudService {
      * does logical/soft delete
      * @param entityId
      */
-    public void remove(long entityId) throws ReportingServiceException{
+    public void remove(long entityId) throws ServiceException{
         Report persistentInstance = this.findReportByReportId(entityId);
         if (persistentInstance == null) {
-            throw new ReportingServiceException("Non existing report entity cannot be deleted.");
+            throw new ServiceException("Non existing report entity cannot be deleted.");
         }
 
         this.remove(persistentInstance);
     }
 
     @Transactional
-    @SuppressWarnings("unchecked")
-    public Report findReportByReportId(final Long id) {
+    public Report findReportByReportId(final Long id) throws ServiceException {
         Report result = null;
         List<Report> reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).parameters(), 1);
         if (reports != null && reports.size() > 0){
@@ -130,8 +129,7 @@ public class ReportDAO extends AbstractCrudService {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Report> listByUsernameAndScope(String username, long scopeId) {
+    public List<Report> listByUsernameAndScope(String username, long scopeId) throws ServiceException {
         log.debug("Searching for ReportEntity instances with username: " + username + " and scopeID:" + scopeId);
 
         try {

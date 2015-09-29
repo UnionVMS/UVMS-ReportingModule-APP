@@ -2,13 +2,12 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
 import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
-import org.geotools.feature.SchemaException;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -40,21 +39,28 @@ public class VmsResource {
     @Path("/{id}")
     @SuppressWarnings("unchecked")
     public ResponseDto getVmsData(@Context HttpServletRequest request,
-                                  @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
+                                  @Context HttpServletResponse response, @PathParam("id") Long id) {
 
-        VmsDTO vmsDto = vmsService.getVmsDataByReportId(id);
-
+        VmsDTO vmsDto = null;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode rootNode = objectMapper.createObjectNode();
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
-        ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
 
-        rootNode.set("movements", movementsNode);
-        rootNode.set("segments", segmentsNode);
-        rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
+        try {
+            vmsDto = vmsService.getVmsDataByReportId(id);
 
-        reportingResource.runReport(request, response, id);
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
+            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
+
+            rootNode.set("movements", movementsNode);
+            rootNode.set("segments", segmentsNode);
+            rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
+
+            reportingResource.runReport(request, response, id);
+
+        } catch (ServiceException | IOException e) {
+            e.printStackTrace();
+        }
         return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
     }
 
@@ -63,21 +69,28 @@ public class VmsResource {
     @Path("/mock/{id}")
     @SuppressWarnings("unchecked")
     public ResponseDto getVmsMockData(@Context HttpServletRequest request,
-                                  @Context HttpServletResponse response, @PathParam("id") Long id) throws SchemaException, IOException {
-
-        VmsDTO vmsDto = vmsService.getVmsMockData(id);
+                                      @Context HttpServletResponse response, @PathParam("id") Long id) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode rootNode = objectMapper.createObjectNode();
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
-        ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
 
-        rootNode.set("movements", movementsNode);
-        rootNode.set("segments", segmentsNode);
-        rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
+        try {
 
-        reportingResource.runReport(request, response, id);
+            VmsDTO vmsDto = vmsService.getVmsMockData(id);
+
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
+            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
+
+            rootNode.set("movements", movementsNode);
+            rootNode.set("segments", segmentsNode);
+            rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
+
+            reportingResource.runReport(request, response, id);
+
+        } catch (ServiceException | IOException e) {
+            e.printStackTrace();
+        }
         return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
     }
 }

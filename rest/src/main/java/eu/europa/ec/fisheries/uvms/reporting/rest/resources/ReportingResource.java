@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class ReportingResource extends UnionVMSResource {
 	@Produces(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(allFeatures = { ReportFeature.LIST_REPORTS })
     public Response listReports(@Context HttpServletRequest request, 
-    				@Context HttpServletResponse response, @QueryParam(RestConstants.REQUEST_PARAM_CURRENT_USER_SCOPE) long scopeId) {
+    				@Context HttpServletResponse response, @QueryParam(RestConstants.REQUEST_PARAM_CURRENT_USER_SCOPE) long scopeId) throws ServiceException {
     	final String username = "georgi"; //request.getRemoteUser() should return the username
     	
     	LOG.info(username + " is requesting listReports(...), with a scopeId=" + scopeId);
@@ -79,7 +80,7 @@ public class ReportingResource extends UnionVMSResource {
 	@Produces(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(allFeatures = { ReportFeature.VIEW_REPORT})
     public Response getReport(@Context HttpServletRequest request, 
-    				@Context HttpServletResponse response, @PathParam("id") Long id) {
+    				@Context HttpServletResponse response, @PathParam("id") Long id) throws ServiceException {
     	
     	String username = "georgi"; //request.getRemoteUser() should return the username
     	
@@ -104,7 +105,7 @@ public class ReportingResource extends UnionVMSResource {
     //@IsUserAllowed(allFeatures = { ReportFeature.VIEW_REPORT})
     @Interceptors(value = {JsonResponseInterceptor.class})
     public Response deleteReport(@Context HttpServletRequest request, 
-    				@Context HttpServletResponse response, @PathParam("id") Long id) throws ReportingServiceException{
+    				@Context HttpServletResponse response, @PathParam("id") Long id) throws ReportingServiceException, ServiceException {
     	
     	String username = "georgi"; //request.getRemoteUser() should return the username
     	
@@ -115,7 +116,7 @@ public class ReportingResource extends UnionVMSResource {
     	} catch (ReportingServiceException exc) {
     		throw new ProcessingException(ErrorCodes.DELETE_FAILED);
     	}
-    	
+
     	return createSuccessResponse();
     }
 
@@ -125,7 +126,7 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS})
     public Response updateReport(@Context HttpServletRequest request,
-                                 @Context HttpServletResponse response, ReportDTO report) {
+                                 @Context HttpServletResponse response, ReportDTO report) throws ServiceException {
     	
     	String username = "georgi"; //request.getRemoteUser() should return the username
     	
@@ -149,7 +150,7 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response createReport(@Context HttpServletRequest request, 
-   				@Context HttpServletResponse response, ReportDTO report) {
+   				@Context HttpServletResponse response, ReportDTO report) throws ServiceException {
    	
 	   	String username = "georgi"; //request.getRemoteUser() should return the username
 	   	
@@ -167,7 +168,7 @@ public class ReportingResource extends UnionVMSResource {
    	@Produces(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response shareReport(@Context HttpServletRequest request, 
-   				@Context HttpServletResponse response, @PathParam("id") Long id, @PathParam("visibility") String visibility) {
+   				@Context HttpServletResponse response, @PathParam("id") Long id, @PathParam("visibility") String visibility) throws ServiceException {
    	
     	String username = "georgi"; //request.getRemoteUser() should return the username
    	
@@ -186,7 +187,7 @@ public class ReportingResource extends UnionVMSResource {
    	@Produces(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response runReport(@Context HttpServletRequest request, 
-   				@Context HttpServletResponse response, @PathParam("id") Long id) {
+   				@Context HttpServletResponse response, @PathParam("id") Long id) throws ServiceException {
    	
     	String username = "georgi"; //request.getRemoteUser() should return the username
    	

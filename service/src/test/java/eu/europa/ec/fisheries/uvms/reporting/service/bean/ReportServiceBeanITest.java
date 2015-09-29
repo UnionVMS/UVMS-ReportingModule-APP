@@ -7,6 +7,7 @@ import java.io.File;
 
 import javax.ejb.EJB;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -59,7 +60,7 @@ public class ReportServiceBeanITest {
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)
-    public void testInterceptor() throws ReportingServiceException {
+    public void testInterceptor() throws ReportingServiceException, ServiceException {
         ReportDTO report = reportBean.create(DTOUtil.createRandomReport());
         assertNotNull(report);
 

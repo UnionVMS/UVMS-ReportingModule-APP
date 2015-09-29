@@ -1,15 +1,16 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.ReportMerger;
-import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.FilterMerger;
-import eu.europa.ec.fisheries.uvms.service.AbstractCrudService;
+import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -27,7 +28,7 @@ import java.util.List;
 @Stateless
 @Local(ReportRepository.class)
 @Slf4j
-public class ReportRepositoryBean extends AbstractCrudService implements ReportRepository {
+public class ReportRepositoryBean extends AbstractDAO implements ReportRepository {
 
     private ReportDAO reportDAO;
     private FilterDAO filterDAO;
@@ -56,24 +57,19 @@ public class ReportRepositoryBean extends AbstractCrudService implements ReportR
 
     @Override
     @Transactional
-    public Report saveOrUpdate(final Report report) {
+    public Report saveOrUpdate(final Report report) throws ServiceException {
         return reportDAO.saveOrUpdate(report);
     }
 
     @Override
     @Transactional
-    public boolean update(final ReportDTO reportDTO) {
+    public boolean update(final ReportDTO reportDTO) throws ServiceException {
 
         boolean merge;
 
-        try {
-            reportMerger.merge(Arrays.asList(reportDTO));
-            filterMerger.merge(reportDTO.getFilters());
-            merge = true;
-        } catch (ReportingServiceException e) {
-            e.printStackTrace();
-            merge = false;
-        }
+        reportMerger.merge(Arrays.asList(reportDTO));
+        filterMerger.merge(reportDTO.getFilters());
+        merge = true;
 
         return merge;
     }
@@ -81,12 +77,12 @@ public class ReportRepositoryBean extends AbstractCrudService implements ReportR
 
     @Override
     @Transactional
-    public Report findReportByReportId(final Long id) {
+    public Report findReportByReportId(final Long id) throws ServiceException {
         return reportDAO.findReportByReportId(id);
     }
 
     @Override
-    public List<Report> listByUsernameAndScope(final String username, final long scopeId) {
+    public List<Report> listByUsernameAndScope(final String username, final long scopeId) throws ServiceException {
         return reportDAO.listByUsernameAndScope(username, scopeId);
     }
 
@@ -98,7 +94,7 @@ public class ReportRepositoryBean extends AbstractCrudService implements ReportR
 
     @Override
     @Transactional
-    public void remove(final Long reportId) throws ReportingServiceException {
+    public void remove(final Long reportId) throws ServiceException {
         reportDAO.remove(reportId);
     }
 }

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.Feature;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
@@ -38,28 +39,26 @@ public class ReportServiceBean {
     private FilterMerger merger;
 
     @IAuditInterceptor(auditActionType=AuditActionEnum.CREATE)
-    @SuppressWarnings("unchecked")
-    public ReportDTO create(ReportDTO report) {
+    public ReportDTO create(ReportDTO report) throws ServiceException {
         ReportMapper mapper = reportMapperBuilder().filters(true).build();
     	Report reportEntity = mapper.reportDtoToReport(report);
 		reportEntity = (Report) repository.createEntity(reportEntity);
     	return mapper.reportToReportDto(reportEntity);
     }
 	
-	public ReportDTO findById(long id) {
+	public ReportDTO findById(long id) throws ServiceException {
         ReportMapper mapper = reportMapperBuilder().filters(true).build();
 		return mapper.reportToReportDto(repository.findReportByReportId(id));
 	}
 	
 	@IAuditInterceptor(auditActionType=AuditActionEnum.MODIFY)
-    @SuppressWarnings("unchecked")
-    public boolean update(ReportDTO report) {
+    public boolean update(ReportDTO report) throws ServiceException {
         return repository.update(report);
     }
 	
 	@IAuditInterceptor(auditActionType=AuditActionEnum.DELETE)
     @Transactional
-    public void delete(Long reportId) throws ReportingServiceException{
+    public void delete(Long reportId) throws ReportingServiceException, ServiceException {
 		repository.remove(reportId);
 	}
 	
@@ -68,7 +67,7 @@ public class ReportServiceBean {
 		return null;
 	}
 
-	public Collection<ReportDTO> listByUsernameAndScope(final Set<Feature> features, final String username, final long scopeID) {
+	public Collection<ReportDTO> listByUsernameAndScope(final Set<Feature> features, final String username, final long scopeID) throws ServiceException {
         ReportMapper mapper = reportMapperBuilder().features(features).currentUser(username).build();
 		List<Report> reports = repository.listByUsernameAndScope(username, scopeID);
         List<ReportDTO> toReportDTOs = new ArrayList<>();
@@ -78,7 +77,7 @@ public class ReportServiceBean {
         return toReportDTOs;
 	}
 
-	public void executeReport(String username, long reportId) {
+	public void executeReport(String username, long reportId) throws ServiceException {
 		Report entity = repository.findReportByReportId(reportId);
         Date date = new Date();
 		ExecutionLog logEntity = new ExecutionLog();

@@ -1,12 +1,11 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ReportDAO;
 
 import javax.persistence.EntityManager;
 import java.util.Arrays;
@@ -25,19 +24,19 @@ public class ReportMerger extends Merger<ReportDTO, Report> {
     }
 
     @Override
-    protected Object getUniqKey(Report item) throws ReportingServiceException {
+    protected Object getUniqKey(Report item) throws ServiceException {
         return item.getId();
     }
 
     @Override
-    protected Collection<Report> convert(ReportDTO input) throws ReportingServiceException {
+    protected Collection<Report> convert(ReportDTO input) throws ServiceException {
         ReportMapper build = ReportMapper.reportMapperBuilder().filters(true).build();
         return Arrays.asList(build.reportDtoToReport(input));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<Report> loadCurrents(Collection<ReportDTO> input) throws ReportingServiceException {
+    protected Collection<Report> loadCurrents(Collection<ReportDTO> input) throws ServiceException {
 
         Iterator<ReportDTO> iterator = input.iterator();
         Long reportId = null;
@@ -54,7 +53,7 @@ public class ReportMerger extends Merger<ReportDTO, Report> {
     }
 
     @Override
-    protected boolean merge(Report incoming, Report existing) throws ReportingServiceException {
+    protected boolean merge(Report incoming, Report existing) throws ServiceException {
 
         boolean merge = !existing.equals(incoming);
 
@@ -68,18 +67,18 @@ public class ReportMerger extends Merger<ReportDTO, Report> {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void insert(Report item) throws ReportingServiceException {
+    protected void insert(Report item) throws ServiceException {
         dao.createEntity(item);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void update(Report item) throws ReportingServiceException {
+    protected void update(Report item) throws ServiceException {
         dao.updateEntity(item);
     }
 
     @Override
-    protected void delete(Report item) throws ReportingServiceException {
+    protected void delete(Report item) throws ServiceException {
         dao.remove(item.getId());
     }
 }

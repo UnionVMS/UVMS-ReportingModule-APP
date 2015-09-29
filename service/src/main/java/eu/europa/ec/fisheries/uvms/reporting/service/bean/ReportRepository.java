@@ -1,25 +1,26 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.service.CrudService;
+import eu.europa.ec.fisheries.uvms.service.DAO;
 
 import java.util.List;
 
-public interface ReportRepository extends CrudService {
+public interface ReportRepository extends DAO {
 
-    public Report saveOrUpdate(Report transientInstance);
+    public Report saveOrUpdate(Report transientInstance) throws ServiceException;
 
-    public boolean update(ReportDTO reportDTO);
+    public boolean update(ReportDTO reportDTO) throws ServiceException;
 
-    public Report findReportByReportId(Long reportId);
+    public Report findReportByReportId(Long reportId) throws ServiceException;
 
-    public List<Report> listByUsernameAndScope(String username, long scopeId);
+    public List<Report> listByUsernameAndScope(String username, long scopeId) throws ServiceException;
 
     public void persist(ExecutionLog transientInstance); // FIXME move to ExecutionLog Dao
 
-    public void remove(Long reportId) throws ReportingServiceException;
+    public void remove(Long reportId) throws ReportingServiceException, ServiceException;
 
 }

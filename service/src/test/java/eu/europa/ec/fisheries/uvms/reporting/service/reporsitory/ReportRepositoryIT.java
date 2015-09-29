@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.reporsitory;
 
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
@@ -101,7 +102,7 @@ public class ReportRepositoryIT {
     @Test
     @Transactional(value = TransactionMode.ROLLBACK)
     @SuppressWarnings("unchecked")
-    public void testFindReportByReportId() {
+    public void testFindReportByReportId() throws ServiceException {
         repository.createEntity(report);
         Report reportByReportId = repository.findReportByReportId(report.getId());
         assertTrue(reportByReportId.getId() > 0);
@@ -111,7 +112,7 @@ public class ReportRepositoryIT {
     @Test
     @Transactional(TransactionMode.ROLLBACK)
     @SuppressWarnings("unchecked")
-    public void testFindByUsernameAndScope() {
+    public void testFindByUsernameAndScope() throws ServiceException {
 
         report.setCreatedBy("georgiTestttt12");
         report.setScopeId(945563456);
@@ -159,7 +160,7 @@ public class ReportRepositoryIT {
     @SuppressWarnings("unchecked")
     @Test
     @Transactional(value = TransactionMode.ROLLBACK)
-    public void testAddReportExecLog () {
+    public void testAddReportExecLog () throws ServiceException {
 
         report.setCreatedBy("georgiTestttt12");
         report.setScopeId(356456731);
@@ -184,7 +185,7 @@ public class ReportRepositoryIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testLatestReportExecLog () {
+    public void testLatestReportExecLog () throws ServiceException {
 
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
@@ -226,7 +227,7 @@ public class ReportRepositoryIT {
     @Test(expected = Exception.class)
     @Transactional(value = TransactionMode.ROLLBACK)
     @SuppressWarnings("unchecked")
-    public void testUniqueLogByUser () {
+    public void testUniqueLogByUser () throws ServiceException {
 
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
@@ -247,7 +248,7 @@ public class ReportRepositoryIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testCreateFilters () {
+    public void testCreateFilters () throws ServiceException {
 
         Set<Filter> expectedCollection = new HashSet();
 

@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -9,7 +9,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.visitor.DTOToFilterVisitor;
-
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,12 +27,12 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
     }
 
     @Override
-    protected Object getUniqKey(final Filter item) throws ReportingServiceException {
+    protected Object getUniqKey(final Filter item) throws ServiceException {
         return item.getId();
     }
 
     @Override
-    protected Collection<Filter> convert(FilterDTO input) throws ReportingServiceException {
+    protected Collection<Filter> convert(FilterDTO input) throws ServiceException {
         Filter accept = input.accept(new DTOToFilterVisitor());
         Set<Filter> filterSet = new HashSet<>(1);
         filterSet.add(accept);
@@ -41,7 +40,7 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
     }
 
     @Override
-    protected Collection<Filter> loadCurrents(Collection<FilterDTO> input) throws ReportingServiceException {
+    protected Collection<Filter> loadCurrents(Collection<FilterDTO> input) throws ServiceException {
         Iterator<FilterDTO> iterator = input.iterator();
         Long reportId = null;
         while (iterator.hasNext()){
@@ -55,7 +54,7 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
     }
 
     @Override
-    protected boolean merge(Filter incoming, Filter existing) throws ReportingServiceException {
+    protected boolean merge(Filter incoming, Filter existing) throws ServiceException {
 
         boolean merge = !existing.equals(incoming);
 
@@ -84,19 +83,19 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void insert(Filter item) throws ReportingServiceException {
+    protected void insert(Filter item) throws ServiceException {
         filterDAO.createEntity(item);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void update(Filter item) throws ReportingServiceException {
+    protected void update(Filter item) throws ServiceException {
         filterDAO.updateEntity(item);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void delete(Filter item) throws ReportingServiceException {
-        filterDAO.deleteEntity(Filter.class, item.getId());
+    protected void delete(Filter item) throws ServiceException {
+        filterDAO.deleteEntity(item, item.getId());
     }
 }

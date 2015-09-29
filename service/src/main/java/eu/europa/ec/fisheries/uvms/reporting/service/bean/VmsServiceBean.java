@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageServiceBean;
@@ -52,7 +53,7 @@ public class VmsServiceBean implements VmsService {
     }
 
     @Override
-    public VmsDTO getVmsDataByReportId(final Long id) {
+    public VmsDTO getVmsDataByReportId(final Long id) throws ServiceException {
 
         VmsDTO vmsDto = null;
 
