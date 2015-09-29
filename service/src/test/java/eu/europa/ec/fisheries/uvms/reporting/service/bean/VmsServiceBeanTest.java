@@ -6,7 +6,6 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageServ
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelMarshallException;
 import eu.europa.ec.fisheries.uvms.reporting.service.reporsitory.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportingJSONMarshaller;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,9 +32,6 @@ public class VmsServiceBeanTest {
 
     @Mock
     private MovementMessageServiceBean movementModule;
-
-    @Mock
-    private ReportingJSONMarshaller marshaller;
 
     @Test
     @Ignore
