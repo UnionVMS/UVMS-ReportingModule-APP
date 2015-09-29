@@ -42,7 +42,7 @@ public class ReportServiceBean {
     public ReportDTO create(ReportDTO report) throws ServiceException {
         ReportMapper mapper = reportMapperBuilder().filters(true).build();
     	Report reportEntity = mapper.reportDtoToReport(report);
-		reportEntity = (Report) repository.createEntity(reportEntity);
+		reportEntity = repository.createEntity(reportEntity);
     	return mapper.reportToReportDto(reportEntity);
     }
 	
