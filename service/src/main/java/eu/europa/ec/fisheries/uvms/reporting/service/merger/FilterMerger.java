@@ -9,6 +9,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.visitor.DTOToFilterVisitor;
+import eu.europa.ec.fisheries.uvms.service.Merger;
+
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.HashSet;
