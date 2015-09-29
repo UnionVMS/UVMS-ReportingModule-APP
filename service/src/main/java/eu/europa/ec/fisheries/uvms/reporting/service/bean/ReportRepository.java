@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
