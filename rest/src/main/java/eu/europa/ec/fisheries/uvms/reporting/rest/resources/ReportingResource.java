@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
+import java.io.IOException;
 import java.util.*;
 
 import javax.ejb.EJB;
@@ -21,9 +22,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
+import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
+import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +53,9 @@ public class ReportingResource extends UnionVMSResource {
 	
     @EJB
     private ReportServiceBean reportService;
+
+    @EJB
+    private VmsService vmsService;
 
     @GET
 	@Path("/list")
@@ -192,9 +202,28 @@ public class ReportingResource extends UnionVMSResource {
     	String username = "georgi"; //request.getRemoteUser() should return the username
    	
     	LOG.info(username + " is requesting shareReport(...), with a ID=" + id);
-		//TODO implement the filter parser and the actual search execution
-    	reportService.executeReport(username, id);
-    	return createSuccessResponse();
+
+        VmsDTO vmsDto;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode rootNode = objectMapper.createObjectNode();
+
+        try {
+            vmsDto = vmsService.getVmsDataByReportId(username, id);
+
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
+            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
+
+            rootNode.set("movements", movementsNode);
+            rootNode.set("segments", segmentsNode);
+            rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
+
+
+        } catch (ServiceException | IOException e) {
+            e.printStackTrace();
+        }
+
+    	return createSuccessResponse(rootNode);
     }
-    
+
 }

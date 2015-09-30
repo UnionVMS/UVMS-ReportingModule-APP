@@ -1,6 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
+import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -10,7 +12,7 @@ import java.util.Date;
 @Entity
 @DiscriminatorValue("POS")
 @EqualsAndHashCode(callSuper = true)
-public class PositionFilter extends Filter {
+public class DateTimeFilter extends Filter {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "START_DATE")
@@ -20,11 +22,13 @@ public class PositionFilter extends Filter {
     @Column(name = "END_DATE")
     private Date endDate;
 
-    PositionFilter() {
+    DateTimeFilter() {
+        super(FilterType.DATETIME);
     }
 
     @Builder
-    public PositionFilter(Date startDate, Date endDate) {
+    public DateTimeFilter(Date startDate, Date endDate) {
+        super(FilterType.DATETIME);
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -49,4 +53,5 @@ public class PositionFilter extends Filter {
     public <T> T accept(FilterVisitor<T> visitor) {
         return visitor.visitPositionFilter(this);
     }
+
 }

@@ -1,7 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -9,6 +16,8 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +27,6 @@ import static javax.persistence.CascadeType.ALL;
 @Entity
 @Table(name = "report", schema = "reporting")
 @NamedQueries({
-        @NamedQuery(name = "ReportEntity.GetReportById", query = "SELECT RE FROM Report RE WHERE RE.id = :id"),
         @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
                         "WHERE ((r.scopeId = :scopeId AND (r.createdBy = :username OR r.visibility = 'SCOPE') ) OR r.visibility = 'PUBLIC') " +
@@ -95,6 +103,31 @@ public class Report implements Serializable {
 
     Report(){
 
+    }
+
+    public ExecutionLog getExecutionLogByUser(final String username) throws ServiceException {
+
+        ExecutionLog result = null;
+        Collection<ExecutionLog> filter = null;
+
+        if (getExecutionLogs() != null){
+            Predicate<ExecutionLog> isUserPredicate = new Predicate<ExecutionLog>() {
+                public boolean apply(ExecutionLog p) {
+                    return p != null && username.equals(p.getExecutedBy());
+                }
+            };
+            filter = Collections2.filter(executionLogs, isUserPredicate);
+        }
+
+        if (filter != null && filter.size() > 1){
+            throw new ServiceException("Error: more then one execution log for the same user");
+        }
+
+        if (filter != null && filter.size() == 1){
+            result = filter.iterator().next();
+        }
+
+        return result;
     }
 
     @PrePersist
@@ -202,4 +235,5 @@ public class Report implements Serializable {
     public Audit getAudit() {
         return audit;
     }
+
 }

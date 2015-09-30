@@ -3,11 +3,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.visitor.DTOToFilterVisitor;
 import eu.europa.ec.fisheries.uvms.service.Merger;
 
@@ -70,9 +67,9 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
                 ((VesselGroupFilter)existing).setUserName(((VesselGroupFilter) incoming).getUserName());
                 ((VesselGroupFilter)existing).setGroupId(((VesselGroupFilter) incoming).getGroupId());
             }
-            else if (existing instanceof PositionFilter){
-                ((PositionFilter) existing).setEndDate(((PositionFilter) incoming).getEndDate());
-                ((PositionFilter) existing).setStartDate(((PositionFilter) incoming).getStartDate());
+            else if (existing instanceof DateTimeFilter){
+                ((DateTimeFilter) existing).setEndDate(((DateTimeFilter) incoming).getEndDate());
+                ((DateTimeFilter) existing).setStartDate(((DateTimeFilter) incoming).getStartDate());
             }
             else if (existing instanceof VmsPositionFilter){
                 ((VmsPositionFilter) existing).setMaximumSpeed(((VmsPositionFilter) incoming).getMaximumSpeed());

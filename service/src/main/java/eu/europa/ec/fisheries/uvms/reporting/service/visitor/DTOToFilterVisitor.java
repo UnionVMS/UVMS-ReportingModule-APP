@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.visitor;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.PositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
@@ -11,7 +11,7 @@ public class DTOToFilterVisitor implements FilterDTOVisitor<Filter> {
 
     @Override
     public Filter visitPositionFilterDTO(PositionFilterDTO positionFilterDTO) {
-        return PositionFilterMapper.INSTANCE.positionFilterDTOToPositionFilter(positionFilterDTO);
+        return DateTimeFilterMapper.INSTANCE.positionFilterDTOToPositionFilter(positionFilterDTO);
     }
 
     @Override

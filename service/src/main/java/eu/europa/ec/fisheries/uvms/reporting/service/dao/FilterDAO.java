@@ -3,13 +3,15 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.service.DAO;
+
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.LIST_BY_REPORT_ID;
 import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
 
-public class FilterDAO extends AbstractDAO<Filter> {
+public class FilterDAO extends AbstractDAO<Filter> implements DAO<Filter> {
 
     private EntityManager em;
 

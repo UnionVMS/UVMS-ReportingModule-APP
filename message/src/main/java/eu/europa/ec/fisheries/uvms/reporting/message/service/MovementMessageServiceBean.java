@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.VesselMessageMapper;
 
 import static eu.europa.ec.fisheries.uvms.reporting.model.constants.ModuleConstants.*;
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
@@ -20,6 +21,7 @@ import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import java.util.List;
+import java.util.Set;
 
 /**
  * //TODO create test
@@ -68,5 +70,4 @@ public class MovementMessageServiceBean extends AbstractMessageService {
     protected String getModuleName() {
         return MODULE_NAME;
     }
-
 }

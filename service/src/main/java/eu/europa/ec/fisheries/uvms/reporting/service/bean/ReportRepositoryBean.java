@@ -78,23 +78,18 @@ public class ReportRepositoryBean implements ReportRepository {
 
     @Override
     @Transactional
-    public void persist(final ExecutionLog transientInstance) throws ServiceException {
-        reportDAO.persist(transientInstance);
-    }
-
-    @Override
-    @Transactional
     public void remove(final Long reportId) throws ServiceException {
         reportDAO.remove(reportId);
     }
 
     @Override
-    public Report createEntity(Report reportEntity) throws ServiceException {
-        return reportDAO.createEntity(reportEntity);
+    public void deleteEntity(Report report, Long id) throws ServiceException {
+        reportDAO.deleteEntity(report, id);
     }
 
     @Override
-    public void deleteEntity(Report report, Long id) throws ServiceException {
-        reportDAO.deleteEntity(report, id);
+    @Transactional
+    public Report createEntity(Report report) throws ServiceException {
+        return reportDAO.createEntity(report);
     }
 }

@@ -17,7 +17,6 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "report_execution_log", uniqueConstraints = @UniqueConstraint(columnNames = "report_id"))
-@Builder
 public class ExecutionLog implements Serializable {
 
 	private long id;
@@ -28,12 +27,12 @@ public class ExecutionLog implements Serializable {
 	public ExecutionLog() {
 	}
 
-	public ExecutionLog(long id, Report report, String executedBy,
-                        Date executedOn) {
+    @Builder
+	public ExecutionLog(long id, Report report, String executedBy) {
 		this.id = id;
 		this.report = report;
 		this.executedBy = executedBy;
-		this.executedOn = executedOn;
+		this.executedOn = new Date();
 	}
 
 	@Id

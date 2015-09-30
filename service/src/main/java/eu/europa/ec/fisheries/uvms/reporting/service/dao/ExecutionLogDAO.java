@@ -2,12 +2,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.service.DAO;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityManager;
 
 @Slf4j
-public class ExecutionLogDAO extends AbstractDAO<ExecutionLog> {
+public class ExecutionLogDAO extends AbstractDAO<ExecutionLog> implements DAO<ExecutionLog> {
 
     private EntityManager em;
 

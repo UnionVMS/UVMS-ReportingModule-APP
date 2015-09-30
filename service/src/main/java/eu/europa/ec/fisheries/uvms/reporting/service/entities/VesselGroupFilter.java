@@ -18,6 +18,10 @@ public class VesselGroupFilter extends Filter implements Serializable {
 
     private String userName;
 
+    public VesselGroupFilter() {
+        super(FilterType.VGROUP);
+    }
+
     @Override
     public <T> T accept(FilterVisitor<T> visitor) {
         return visitor.visitVesselGroupFilter(this);

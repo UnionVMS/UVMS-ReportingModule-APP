@@ -1,10 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "filter", schema = "reporting")
@@ -17,6 +19,11 @@ import java.io.Serializable;
 public abstract class Filter implements Serializable {
 
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
+
+    @Transient
+    final private FilterType type;
+
+    public Filter(FilterType type) { this.type = type; }
 
     @Id
     @Column(name = "filter_id")
@@ -45,4 +52,7 @@ public abstract class Filter implements Serializable {
         this.id = id;
     }
 
+    public FilterType getType() {
+        return type;
+    }
 }

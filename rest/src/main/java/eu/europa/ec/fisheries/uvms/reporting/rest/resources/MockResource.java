@@ -26,43 +26,13 @@ import java.io.IOException;
  */
 @Path("/vms")
 @Slf4j
-public class VmsResource {
+public class MockResource {
 
     @EJB
     private VmsService vmsService;
 
     @Inject
-    private ReportingResource reportingResource;
-
-    @GET
-    @Produces(value = { MediaType.APPLICATION_JSON })
-    @Path("/{id}")
-    @SuppressWarnings("unchecked")
-    public ResponseDto getVmsData(@Context HttpServletRequest request,
-                                  @Context HttpServletResponse response, @PathParam("id") Long id) {
-
-        VmsDTO vmsDto = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode rootNode = objectMapper.createObjectNode();
-
-        try {
-            vmsDto = vmsService.getVmsDataByReportId(id);
-
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
-            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
-
-            rootNode.set("movements", movementsNode);
-            rootNode.set("segments", segmentsNode);
-            rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
-
-            reportingResource.runReport(request, response, id);
-
-        } catch (ServiceException | IOException e) {
-            e.printStackTrace();
-        }
-        return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
-    }
+    private ReportingResource reportingResource; // FIXME remove
 
     @GET
     @Produces(value = { MediaType.APPLICATION_JSON })

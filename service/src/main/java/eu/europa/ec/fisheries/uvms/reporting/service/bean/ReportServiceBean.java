@@ -5,6 +5,7 @@ import java.util.*;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
@@ -12,10 +13,9 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.Feature;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.merger.FilterMerger;
+import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper.*;
@@ -35,8 +35,6 @@ public class ReportServiceBean {
 
     @EJB
     private ReportRepository repository;
-
-    private FilterMerger merger;
 
     @IAuditInterceptor(auditActionType=AuditActionEnum.CREATE)
     public ReportDTO create(ReportDTO report) throws ServiceException {
@@ -61,11 +59,6 @@ public class ReportServiceBean {
     public void delete(Long reportId) throws ReportingServiceException, ServiceException {
 		repository.remove(reportId);
 	}
-	
-	public Collection runReport(Long reportId) {
-		//TODO don't forget to add a new execution log entry !!!!
-		return null;
-	}
 
 	public Collection<ReportDTO> listByUsernameAndScope(final Set<Feature> features, final String username, final long scopeID) throws ServiceException {
         ReportMapper mapper = reportMapperBuilder().features(features).currentUser(username).build();
@@ -76,17 +69,5 @@ public class ReportServiceBean {
         }
         return toReportDTOs;
 	}
-
-	public void executeReport(String username, long reportId) throws ServiceException {
-		Report entity = repository.findReportByReportId(reportId);
-        Date date = new Date();
-		ExecutionLog logEntity = new ExecutionLog();
-		logEntity.setExecutedBy(username);
-		logEntity.setExecutedOn(date);
-		logEntity.setReport(entity);
-
-        repository.persist(logEntity);
-	}
-
 
 }

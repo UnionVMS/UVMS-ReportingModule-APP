@@ -1,6 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
+import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
@@ -14,6 +16,10 @@ public class VesselFilter extends Filter implements Serializable {
     private String guid;
 
     private String name;
+
+    public VesselFilter() {
+        super(FilterType.VESSEL);
+    }
 
     @Override
     public <T> T accept(FilterVisitor<T> visitor) {
@@ -34,5 +40,12 @@ public class VesselFilter extends Filter implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public VesselListCriteriaPair vesselListCriteriaPair(){
+        VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
+        criteriaPair.setKey(ConfigSearchField.GUID);
+        criteriaPair.setValue(guid);
+        return criteriaPair;
     }
 }

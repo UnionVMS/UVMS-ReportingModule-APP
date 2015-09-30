@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.service.DAO;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
 
-public class ReportDAO extends AbstractDAO<Report> {
+public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
 
     private static final Logger log = LoggerFactory.getLogger(ReportDAO.class);
 

@@ -5,7 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 
 public interface VmsService {
 
-    VmsDTO getVmsDataByReportId(Long id) throws ServiceException;
+    VmsDTO getVmsDataByReportId(String username, Long id) throws ServiceException;
 
     VmsDTO getVmsMockData(Long id);
 

@@ -36,11 +36,11 @@ public class MockVesselData {
         dto.setPowerAux(BigDecimal.valueOf(MockingUtils.randInt(0,999) + id));
         dto.setPowerMain(BigDecimal.valueOf(MockingUtils.randInt(0,999) + id));
         dto.setSafetyGrossTonnage(BigDecimal.valueOf(MockingUtils.randInt(0,100) + id));
-        dto.setSource(CarrierSource.LOCAL);
+        //dto.setSource(CarrierSource.LOCAL);
         dto.setActive(true);
 
         if (id % 3 == 0) {
-            dto.setSource(CarrierSource.LOCAL);
+            //dto.setSource(CarrierSource.LOCAL);
             dto.setActive(true);
         }
         if (id % 2 == 0) {
