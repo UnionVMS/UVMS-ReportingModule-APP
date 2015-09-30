@@ -1,7 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterDTOVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
 
 @JsonTypeName("vgroup")
 public class VesselGroupFilterDTO extends FilterDTO {
@@ -35,7 +36,7 @@ public class VesselGroupFilterDTO extends FilterDTO {
     }
 
     @Override
-    public <T> T accept(FilterDTOVisitor<T> visitor) {
-        return visitor.visitVesselGroupFilterDTO(this);
+    public Filter convertToFilter() {
+        return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterDTOToVesselGroupFilter(this);
     }
 }

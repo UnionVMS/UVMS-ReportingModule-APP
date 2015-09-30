@@ -1,12 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "filter", schema = "reporting")
@@ -34,7 +32,9 @@ public abstract class Filter implements Serializable {
     @JoinColumn(name = "report_id", nullable = false)
     private Report report;
 
-    public abstract <T> T accept(FilterVisitor<T> visitor);
+    public abstract FilterDTO convertToDTO();
+
+    public abstract void merge(Filter filter);
 
     public Report getReport() {
         return report;

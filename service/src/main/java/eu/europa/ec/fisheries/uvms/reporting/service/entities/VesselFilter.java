@@ -1,11 +1,13 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.io.Serializable;
 
 @Entity
@@ -22,8 +24,15 @@ public class VesselFilter extends Filter implements Serializable {
     }
 
     @Override
-    public <T> T accept(FilterVisitor<T> visitor) {
-        return visitor.visitVesselFilter(this);
+    public FilterDTO convertToDTO() {
+        return VesselFilterMapper.INSTANCE.vesselFilterToVesselFilterDTO(this);
+    }
+
+    @Override
+    public void merge(Filter filter) {
+        VesselFilter incoming = (VesselFilter) filter;
+        this.setGuid(incoming.getGuid());
+        this.setName(incoming.getName());
     }
 
     public String getGuid() {
@@ -48,4 +57,5 @@ public class VesselFilter extends Filter implements Serializable {
         criteriaPair.setValue(guid);
         return criteriaPair;
     }
+
 }

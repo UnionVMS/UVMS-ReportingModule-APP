@@ -1,8 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
-import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -50,8 +49,14 @@ public class DateTimeFilter extends Filter {
     }
 
     @Override
-    public <T> T accept(FilterVisitor<T> visitor) {
-        return visitor.visitPositionFilter(this);
+    public FilterDTO convertToDTO() {
+        return DateTimeFilterMapper.INSTANCE.positionFilterToPositionFilterDTO(this);
     }
 
+    @Override
+    public void merge(Filter filter) {
+        DateTimeFilter incoming = (DateTimeFilter) filter;
+        this.setEndDate(incoming.getEndDate());
+        this.setStartDate(incoming.getStartDate());
+    }
 }

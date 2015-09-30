@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterDTOVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 
 import static com.fasterxml.jackson.annotation.JsonSubTypes.*;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.*;
@@ -21,7 +21,7 @@ public abstract class FilterDTO {
     private Long reportId; // FIXME try using ReportDTO
     private Long id;
 
-    public abstract <T> T accept(FilterDTOVisitor<T> visitor);
+    public abstract Filter convertToFilter();
 
     public Long getReportId() {
         return reportId;

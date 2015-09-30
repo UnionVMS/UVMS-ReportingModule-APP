@@ -2,14 +2,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.EqualsAndHashCode;
-import org.omg.PortableServer.ServantActivator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -43,11 +42,6 @@ public class VmsPositionFilter extends Filter implements Serializable {
         this.maximumSpeed = maximumSpeed;
     }
 
-    @Override
-    public <T> T accept(FilterVisitor<T> visitor) {
-        return visitor.visitVmsPositionFilter(this);
-    }
-
     public List<ListCriteria> movementListCriteria() {
         List<ListCriteria> listCriterias = new ArrayList<>();
         ListCriteria listCriteria = new ListCriteria();
@@ -59,5 +53,17 @@ public class VmsPositionFilter extends Filter implements Serializable {
         listCriteria.setValue(minimumSpeed);
         listCriterias.add(listCriteria);
         return listCriterias;
+    }
+
+    @Override
+    public FilterDTO convertToDTO() {
+        return VmsPositionFilterMapper.INSTANCE.vmsPositionFilterToVmsPositionFilterDTO(this);
+    }
+
+    @Override
+    public void merge(Filter filter) {
+        VmsPositionFilter incoming = (VmsPositionFilter) filter;
+        this.setMaximumSpeed(incoming.getMaximumSpeed());
+        this.setMinimumSpeed(incoming.getMinimumSpeed());
     }
 }

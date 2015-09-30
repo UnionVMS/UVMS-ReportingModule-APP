@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.reporting.message.mapper.VesselMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.impl.VesselMessageMapperImpl;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessgeService;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
@@ -47,7 +48,7 @@ public class VmsServiceBean implements VmsService {
     private static final int LIST_SIZE = 1000;
 
     @EJB
-    private VesselMessageServiceBean vesselModule;
+    private VesselMessgeService vesselModule;
 
     @EJB
     private ReportRepository repository;

@@ -3,9 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.DTOToFilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.service.Merger;
 
 import javax.persistence.EntityManager;
@@ -32,9 +30,9 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     @Override
     protected Collection<Filter> convert(FilterDTO input) throws ServiceException {
-        Filter accept = input.accept(new DTOToFilterVisitor());
+        Filter filter = input.convertToFilter();
         Set<Filter> filterSet = new HashSet<>(1);
-        filterSet.add(accept);
+        filterSet.add(filter);
         return filterSet;
     }
 
@@ -58,23 +56,7 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
         boolean merge = !existing.equals(incoming);
 
         if (merge){
-            if(existing instanceof VesselFilter){
-                ((VesselFilter) existing).setGuid(((VesselFilter) incoming).getGuid());
-                ((VesselFilter)existing).setName(((VesselFilter) incoming).getName());
-            }
-            else if (existing instanceof VesselGroupFilter){
-                ((VesselGroupFilter) existing).setGuid(((VesselGroupFilter) incoming).getGuid());
-                ((VesselGroupFilter)existing).setUserName(((VesselGroupFilter) incoming).getUserName());
-                ((VesselGroupFilter)existing).setGroupId(((VesselGroupFilter) incoming).getGroupId());
-            }
-            else if (existing instanceof DateTimeFilter){
-                ((DateTimeFilter) existing).setEndDate(((DateTimeFilter) incoming).getEndDate());
-                ((DateTimeFilter) existing).setStartDate(((DateTimeFilter) incoming).getStartDate());
-            }
-            else if (existing instanceof VmsPositionFilter){
-                ((VmsPositionFilter) existing).setMaximumSpeed(((VmsPositionFilter) incoming).getMaximumSpeed());
-                ((VmsPositionFilter) existing).setMinimumSpeed(((VmsPositionFilter) incoming).getMinimumSpeed());
-            }
+           existing.merge(incoming);
         }
 
         return merge;

@@ -17,7 +17,6 @@ import java.util.Set;
 public class ReportMapper {
 
     private final ObjectFactory factory = new ObjectFactory();
-    private final FilterMapper filterMapper =  new FilterMapper();
     private final AuditMapper auditMapper = new AuditMapperImpl();
     private final ExecutionLogMapper executionLogMapper = new ExecutionLogMapperImpl() ;
     private final Set<Feature> features;
@@ -119,7 +118,7 @@ public class ReportMapper {
 
         Set<FilterDTO> set_ = new HashSet<>();
         for ( Filter filter : set ) {
-            set_.add( filterMapper.filtersDTOToFilter( filter ) );
+            set_.add( filter.convertToDTO() );
         }
 
         return set_;
@@ -132,7 +131,7 @@ public class ReportMapper {
 
         Set<Filter> set_ = new HashSet<Filter>();
         for ( FilterDTO filterDTO : set ) {
-            Filter filter = filterMapper.filterToFilterDTO(filterDTO);
+            Filter filter = filterDTO.convertToFilter();
             filter.setReport(report);
             set_.add( filter );
         }

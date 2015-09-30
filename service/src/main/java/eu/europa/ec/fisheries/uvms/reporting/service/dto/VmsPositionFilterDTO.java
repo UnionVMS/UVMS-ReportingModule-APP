@@ -1,7 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterDTOVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 
 @JsonTypeName("vmsposition")
 public class VmsPositionFilterDTO extends FilterDTO {
@@ -26,7 +27,7 @@ public class VmsPositionFilterDTO extends FilterDTO {
     }
 
     @Override
-    public <T> T accept(FilterDTOVisitor<T> visitor) {
-        return visitor.visitVmsPositionFilterDTO(this);
+    public Filter convertToFilter() {
+        return VmsPositionFilterMapper.INSTANCE.vmsPositionFilterDTOToVmsPositionFilter(this);
     }
 }

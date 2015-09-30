@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.visitor.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
@@ -22,10 +23,6 @@ public class VesselGroupFilter extends Filter implements Serializable {
         super(FilterType.VGROUP);
     }
 
-    @Override
-    public <T> T accept(FilterVisitor<T> visitor) {
-        return visitor.visitVesselGroupFilter(this);
-    }
 
     public String getGuid() {
         return guid;
@@ -49,5 +46,18 @@ public class VesselGroupFilter extends Filter implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Override
+    public FilterDTO convertToDTO() {
+        return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroupFilterDTO(this);
+    }
+
+    @Override
+    public void merge(Filter filter) {
+        VesselGroupFilter incoming = (VesselGroupFilter) filter;
+        this.setGuid(incoming.getGuid());
+        this.setUserName(incoming.getUserName());
+        this.setGroupId(incoming.getGroupId());
     }
 }
