@@ -51,11 +51,9 @@ public class AssetDtoTest {
         dto.setPowerAux(BigDecimal.valueOf(1000));
         dto.setPowerMain(BigDecimal.valueOf(50));
         dto.setSafetyGrossTonnage(BigDecimal.valueOf(55));
-        dto.setSource(CarrierSource.LOCAL);
         dto.setActive(true);
 
         if (id % 3 == 0) {
-            dto.setSource(CarrierSource.LOCAL);
             dto.setActive(true);
         }
         if (id % 2 == 0) {
