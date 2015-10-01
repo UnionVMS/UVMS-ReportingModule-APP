@@ -5,7 +5,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.FilterMerger;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.ReportMerger;
@@ -79,7 +78,7 @@ public class ReportRepositoryBean implements ReportRepository {
     @Override
     @Transactional
     public void remove(final Long reportId) throws ServiceException {
-        reportDAO.remove(reportId);
+        reportDAO.softDelete(reportId);
     }
 
     @Override

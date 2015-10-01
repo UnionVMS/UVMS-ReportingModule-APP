@@ -32,7 +32,7 @@ public class MockResource {
     private VmsService vmsService;
 
     @Inject
-    private ReportingResource reportingResource; // FIXME remove
+    private ReportingResource reportingResource; // FIXME softDelete
 
     @GET
     @Produces(value = { MediaType.APPLICATION_JSON })

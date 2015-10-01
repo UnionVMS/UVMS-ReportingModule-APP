@@ -1,10 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
@@ -12,31 +11,29 @@ import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.VesselMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.impl.VesselMessageMapperImpl;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessgeService;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupQueryMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselQueryMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
-import eu.europa.ec.fisheries.wsdl.vessel.types.*;
+import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import org.geotools.feature.DefaultFeatureCollection;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * //TODO create test
@@ -48,22 +45,13 @@ public class VmsServiceBean implements VmsService {
     private static final int LIST_SIZE = 1000;
 
     @EJB
-    private VesselMessgeService vesselModule;
+    private VesselMessageService vesselModule;
 
     @EJB
     private ReportRepository repository;
 
     @EJB
-    private MovementMessageServiceBean movementModule;
-
-    private VesselQueryMapper vesselQueryMapper;
-    private VesselGroupQueryMapper vesselGroupQueryMapper;
-
-    @PostConstruct
-    public void init(){
-        vesselQueryMapper = new VesselQueryMapper();
-        vesselGroupQueryMapper = new VesselGroupQueryMapper();
-    }
+    private MovementMessageService movementModule;
 
     @Override
     @Transactional
@@ -74,58 +62,48 @@ public class VmsServiceBean implements VmsService {
         try {
 
             Report reportByReportId = repository.findReportByReportId(id);
-            final Set<Filter> filters = reportByReportId.getFilters();
+            VmsQueryMapper mapper = VmsQueryMapper.buildVmsQuery().filters(reportByReportId.getFilters()).build();
 
-            for (Filter next : filters) {
-                switch (next.getType()) {
-                    case VESSEL:
-                        vesselQueryMapper.addCriteria(next);
-                        break;
-                    case VGROUP:
-                        vesselGroupQueryMapper.addCriteria(next);
-                        break;
-                    case DATETIME:
-                        break;
-                    case VMSPOS:
-                        break;
-                    default:
-                        break;
+            if(mapper.hasVesselsOrVesselGroups()){
+
+                Set<Vessel> vesselList = new HashSet<>();
+                if (mapper.getVesselListCriteriaPairs() != null) {
+                    List<Vessel> vesselsByVesselListQuery = vesselModule.getVesselsByVesselListQuery(mapper.getVesselListQuery());
+                    if (vesselsByVesselListQuery != null) {
+                        vesselList.addAll(vesselsByVesselListQuery);
+                    }
                 }
+
+                if (mapper.getVesselGroupList() != null) {
+                    List<Vessel> vesselsByVesselGroups = vesselModule.getVesselsByVesselGroups(mapper.getVesselGroupList());
+                    if (vesselsByVesselGroups != null) {
+                        vesselList.addAll(vesselsByVesselGroups);
+                    }
+                }
+
+                ImmutableMap<String, Vessel> stringVesselMapByGuid = getStringVesselMapByGuid(vesselList);
+
+                List<MovementMapResponseType> movementMap = movementModule.getMovementMap(mapper.getMovementQuery());
+
+                vmsDto = VmsDTO.getVmsDto(stringVesselMapByGuid, movementMap);
+                reportByReportId.updateExecutionLog(username);
             }
-
-            VesselListQuery vesselQuery = vesselQueryMapper.getQuery();
-            Map<String, Vessel> vesselMapByGuid;
-            if (vesselQuery != null){
-                vesselMapByGuid = vesselModule.getStringVesselMapByGuid(vesselQueryMapper.getQuery());
-            }
-
-            vesselGroupQueryMapper.getQuery();
-
-//            MovementQuery movementQuery = createMovementQuery(positionFilters, vmsPositionFilters);
-//            List<MovementMapResponseType> mapResponseTypes = movementModule.getMovementMap(movementQuery);
-//
-//            vmsDto = VmsDTO.getVmsDto(vesselMapByGuid, mapResponseTypes);
-
-            ExecutionLog executionLogByUser = reportByReportId.getExecutionLogByUser(username);
-
-            if(executionLogByUser != null){
-                executionLogByUser.setExecutedOn(new Date());
-            }
-            else {
-                ExecutionLog executionLog = ExecutionLog.builder().executedBy(username).build();
-                reportByReportId.getExecutionLogs().add(executionLog);
-            }
-
 
         } catch (VesselModelMapperException | MessageException  e) {
             throw new ServiceException("", e);
+        } catch (ModelMapperException | JMSException e) {
+            e.printStackTrace();
         }
 
         return vmsDto;
     }
 
-    private MovementQuery createMovementQuery(Set<DateTimeFilter> positionFilters, Set<VmsPositionFilter> vmsPositionFilters) {
-        return null;
+    private ImmutableMap<String, Vessel> getStringVesselMapByGuid(Set<Vessel> vesselList) {
+        return Maps.uniqueIndex(vesselList, new Function<Vessel, String>() {
+            public String apply(Vessel from) {
+                return from.getVesselId().getGuid();
+            }
+        });
     }
 
     @Override

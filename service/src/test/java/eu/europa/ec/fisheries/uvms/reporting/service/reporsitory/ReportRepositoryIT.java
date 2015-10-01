@@ -247,10 +247,9 @@ public class ReportRepositoryIT {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testCreateFilters () throws ServiceException {
 
-        Set<Filter> expectedCollection = new HashSet();
+        Set<Filter> expectedCollection = new HashSet<>();
 
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
@@ -278,24 +277,32 @@ public class ReportRepositoryIT {
         VesselGroupFilter filter4 = new VesselGroupFilter();
         filter4.setReport(report);
         filter4.setGroupId("1");
-        filter4.setGuid("516161");
         filter4.setUserName("ffsdfsdfds");
         expectedCollection.add(filter4);
 
         VesselGroupFilter filter5 = new VesselGroupFilter();
         filter5.setReport(report);
         filter5.setGroupId("2");
-        filter5.setGuid("4546");
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
+
+        DateTimeFilter filter6 = DateTimeFilter.builder().build();
+        filter6.setReport(report);
+        PositionSelector positionSelector = new PositionSelector();
+        positionSelector.setPosition(Position.HOURS);
+        positionSelector.setSelector(Selector.LAST);
+        positionSelector.setValue(24L);
+        filter6.setPositionSelector(positionSelector);
+        expectedCollection.add(filter6);
 
         report.getFilters().add(filter1);
         report.getFilters().add(filter2);
         report.getFilters().add(filter3);
         report.getFilters().add(filter4);
         report.getFilters().add(filter5);
+        report.getFilters().add(filter6);
 
-        Report savedReport = (Report) repository.createEntity(report);
+        Report savedReport = repository.createEntity(report);
         Report byId = repository.findReportByReportId(savedReport.getId());
 
         Set<Filter> filters = byId.getFilters();

@@ -66,19 +66,17 @@ public class ReportMerger extends Merger<ReportDTO, Report> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void insert(Report item) throws ServiceException {
         dao.createEntity(item);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void update(Report item) throws ServiceException {
         dao.updateEntity(item);
     }
 
     @Override
     protected void delete(Report item) throws ServiceException {
-        dao.remove(item.getId());
+        dao.softDelete(item.getId());
     }
 }

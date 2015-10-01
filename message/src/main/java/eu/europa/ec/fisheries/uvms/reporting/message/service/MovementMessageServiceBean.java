@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.VesselMessageMapper;
@@ -13,6 +14,7 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.Local;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
@@ -27,8 +29,8 @@ import java.util.Set;
  * //TODO create test
  */
 @Stateless
-@LocalBean
-public class MovementMessageServiceBean extends AbstractMessageService {
+@Local(MovementMessageService.class)
+public class MovementMessageServiceBean extends AbstractMessageService implements MovementMessageService {
 
     @Resource(mappedName = COMPONENT_RESPONSE_QUEUE)
     private Queue response;
@@ -44,7 +46,7 @@ public class MovementMessageServiceBean extends AbstractMessageService {
 
     }
 
-    public List<MovementMapResponseType> getMovementMap(MovementQuery movementQuery) throws JMSException, MessageException, eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException {
+    public List<MovementMapResponseType> getMovementMap(MovementQuery movementQuery) throws JMSException, MessageException, ModelMapperException {
         String movementRequestString = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
         String movementMessageId = sendModuleMessage(movementRequestString);
         TextMessage movementReceiverMessage = getMessage(movementMessageId, TextMessage.class);

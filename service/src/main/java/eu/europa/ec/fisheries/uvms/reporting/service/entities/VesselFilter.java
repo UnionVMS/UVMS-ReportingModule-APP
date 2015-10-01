@@ -8,12 +8,11 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.io.Serializable;
 
 @Entity
 @DiscriminatorValue("VESSEL")
 @EqualsAndHashCode(callSuper = true)
-public class VesselFilter extends Filter implements Serializable {
+public class VesselFilter extends Filter {
 
     private String guid;
 

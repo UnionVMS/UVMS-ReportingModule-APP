@@ -105,6 +105,19 @@ public class Report implements Serializable {
 
     }
 
+    public Report updateExecutionLog(final String username) throws ServiceException {
+        ExecutionLog executionLogByUser = getExecutionLogByUser(username);
+
+        if(executionLogByUser != null){
+            executionLogByUser.setExecutedOn(new Date());
+        }
+        else {
+            ExecutionLog executionLog = ExecutionLog.builder().executedBy(username).build();
+            getExecutionLogs().add(executionLog);
+        }
+        return this;
+    }
+
     public ExecutionLog getExecutionLogByUser(final String username) throws ServiceException {
 
         ExecutionLog result = null;

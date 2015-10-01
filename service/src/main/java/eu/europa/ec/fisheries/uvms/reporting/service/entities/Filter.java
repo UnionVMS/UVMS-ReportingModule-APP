@@ -18,15 +18,15 @@ public abstract class Filter implements Serializable {
 
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
 
-    @Transient
-    final private FilterType type;
-
-    public Filter(FilterType type) { this.type = type; }
-
     @Id
     @Column(name = "filter_id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
+
+    @Transient
+    final private FilterType type;
+
+    public Filter(FilterType type) { this.type = type; }
 
     @ManyToOne(cascade = javax.persistence.CascadeType.ALL)
     @JoinColumn(name = "report_id", nullable = false)
@@ -55,4 +55,5 @@ public abstract class Filter implements Serializable {
     public FilterType getType() {
         return type;
     }
+
 }

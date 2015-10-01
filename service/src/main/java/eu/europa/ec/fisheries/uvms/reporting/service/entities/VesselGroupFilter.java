@@ -6,14 +6,11 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.io.Serializable;
 
 @Entity
 @DiscriminatorValue("VGROUP")
 @EqualsAndHashCode(callSuper = true)
-public class VesselGroupFilter extends Filter implements Serializable {
-
-    private String guid;
+public class VesselGroupFilter extends Filter {
 
     private String groupId;
 
@@ -21,15 +18,6 @@ public class VesselGroupFilter extends Filter implements Serializable {
 
     public VesselGroupFilter() {
         super(FilterType.VGROUP);
-    }
-
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
     }
 
     public String getGroupId() {
@@ -56,7 +44,6 @@ public class VesselGroupFilter extends Filter implements Serializable {
     @Override
     public void merge(Filter filter) {
         VesselGroupFilter incoming = (VesselGroupFilter) filter;
-        this.setGuid(incoming.getGuid());
         this.setUserName(incoming.getUserName());
         this.setGroupId(incoming.getGroupId());
     }

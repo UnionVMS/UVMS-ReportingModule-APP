@@ -63,19 +63,16 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void insert(Filter item) throws ServiceException {
         filterDAO.createEntity(item);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void update(Filter item) throws ServiceException {
         filterDAO.updateEntity(item);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void delete(Filter item) throws ServiceException {
         filterDAO.deleteEntity(item, item.getId());
     }

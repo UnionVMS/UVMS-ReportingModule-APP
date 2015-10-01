@@ -7,7 +7,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMap
 @JsonTypeName("vgroup")
 public class VesselGroupFilterDTO extends FilterDTO {
 
-    private String guid;
     private String groupId;
     private String userName;
 
@@ -17,14 +16,6 @@ public class VesselGroupFilterDTO extends FilterDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
     }
 
     public String getGroupId() {

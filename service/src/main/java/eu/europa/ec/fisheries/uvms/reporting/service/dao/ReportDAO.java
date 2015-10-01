@@ -88,9 +88,9 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
      * does logical/soft delete
      * @param report
      */
-    public void remove(Report report) throws ServiceException {
+    public void softDelete(Report report) throws ServiceException {
         //String username = context.getCallerPrincipal().getName();
-        String username = "georgi"; //TODO remove the hardcoded username and use the caller principal instead
+        String username = "georgi"; //TODO softDelete the hardcoded username and use the caller principal instead
 
         log.debug(username + " is removing ReportEntity instance");
         try {
@@ -100,9 +100,9 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
             Session session = em.unwrap(Session.class);
             session.update(report);
             session.flush();
-            log.debug("remove successful");
+            log.debug("softDelete successful");
         } catch (RuntimeException re) {
-            log.error("remove failed", re);
+            log.error("softDelete failed", re);
             throw re;
         }
     }
@@ -111,13 +111,13 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
      * does logical/soft delete
      * @param entityId
      */
-    public void remove(long entityId) throws ServiceException{
+    public void softDelete(long entityId) throws ServiceException{
         Report persistentInstance = this.findReportByReportId(entityId);
         if (persistentInstance == null) {
             throw new ServiceException("Non existing report entity cannot be deleted.");
         }
 
-        this.remove(persistentInstance);
+        softDelete(persistentInstance);
     }
 
     @Transactional

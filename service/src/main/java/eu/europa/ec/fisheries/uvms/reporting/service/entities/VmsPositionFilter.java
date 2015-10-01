@@ -6,15 +6,16 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
 @EqualsAndHashCode(callSuper = true)
-public class VmsPositionFilter extends Filter implements Serializable {
+public class VmsPositionFilter extends Filter  {
 
     @Column(name = "MIN_SPEED")
     private String minimumSpeed;

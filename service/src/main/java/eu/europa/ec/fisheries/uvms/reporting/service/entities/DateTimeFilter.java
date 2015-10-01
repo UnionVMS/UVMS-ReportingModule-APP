@@ -5,11 +5,16 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@DiscriminatorValue("POS")
+@DiscriminatorValue("DATETIME")
 @EqualsAndHashCode(callSuper = true)
 public class DateTimeFilter extends Filter {
 
@@ -21,7 +26,10 @@ public class DateTimeFilter extends Filter {
     @Column(name = "END_DATE")
     private Date endDate;
 
-    DateTimeFilter() {
+    @Embedded
+    private PositionSelector positionSelector;
+
+    DateTimeFilter(){
         super(FilterType.DATETIME);
     }
 
@@ -32,6 +40,17 @@ public class DateTimeFilter extends Filter {
         this.endDate = endDate;
     }
 
+    @Override
+    public FilterDTO convertToDTO() {
+        return DateTimeFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(this);
+    }
+
+    @Override
+    public void merge(Filter filter) {
+        DateTimeFilter incoming = (DateTimeFilter) filter;
+        this.setEndDate(incoming.getEndDate());
+        this.setStartDate(incoming.getStartDate());
+    }
     public Date getStartDate() {
         return startDate;
     }
@@ -48,15 +67,12 @@ public class DateTimeFilter extends Filter {
         this.endDate = endDate;
     }
 
-    @Override
-    public FilterDTO convertToDTO() {
-        return DateTimeFilterMapper.INSTANCE.positionFilterToPositionFilterDTO(this);
+    public PositionSelector getPositionSelector() {
+        return positionSelector;
     }
 
-    @Override
-    public void merge(Filter filter) {
-        DateTimeFilter incoming = (DateTimeFilter) filter;
-        this.setEndDate(incoming.getEndDate());
-        this.setStartDate(incoming.getStartDate());
+    public void setPositionSelector(PositionSelector positionSelector) {
+        this.positionSelector = positionSelector;
     }
+
 }
