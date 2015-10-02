@@ -1,57 +1,79 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.uvms.message.MessageException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelMarshallException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
-import org.junit.Ignore;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageService;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.inject.annotation.InjectIntoByType;
+import org.unitils.inject.annotation.TestedObject;
+import org.unitils.mock.Mock;
 
-import javax.jms.JMSException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.mockito.Matchers.any;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter.VesselFilterBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter.VesselGroupFilterBuilder;
 
-@RunWith(MockitoJUnitRunner.class)
-public class VmsServiceBeanTest {
+public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
-    @InjectMocks
-    private VmsServiceBean service = new VmsServiceBean();
+    @TestedObject
+    private VmsServiceBean service;
 
-    @Mock
-    private ReportDAO dao;
+    @InjectIntoByType
+    private Mock<ReportRepository> repository;
 
-    @Mock
-    private VesselMessageServiceBean vesselModule;
+    @InjectIntoByType
+    private Mock<VesselMessageService> vesselModule;
 
-    @Mock
-    private MovementMessageServiceBean movementModule;
+    @InjectIntoByType
+    private Mock<MovementMessageService> movementModule;
+
+    private Mock<Report> report;
 
     @Test
-    @Ignore
-    public void testGetVmsDataByReportId() throws ReportingModelMarshallException, VesselModelMapperException, MessageException, ModelMapperException, JMSException {
+    public void testGetVmsDataByReportIdWithVesselFilters() throws Exception {
 
-        //FIXME
-//        Long reportId = 1L;
-//        FilterExpressionDTO filterMock = mock(FilterExpressionDTO.class);
-//        Report entityMock = mock(Report.class);
-//
-//        when(dao.findReportByReportId(reportId)).thenReturn(entityMock);
-//        when(marshaller.marshall(null, FilterExpressionDTO.class)).thenReturn(filterMock);
-//        when(marshaller.marshall(null, FilterExpressionDTO.class)).thenReturn(filterMock);
-//
-//        service.getVmsDataByReportId(reportId);
-//
-//        verify(dao, times(1)).findReportByReportId(reportId);
-//        verify(marshaller, times(1)).marshall(null, FilterExpressionDTO.class);
-//        verify(vesselModule, times(1)).getStringVesselMapByGuid(null);
-//        verify(movementModule, times(1)).getMovementMap(null);
+        Set<Filter> filterSet = new HashSet<>();
+        filterSet.add(VesselFilterBuilder().guid("1234").build());
 
+        report.returns(filterSet).getFilters();
+        vesselModule.returns(new ArrayList<>()).getVesselsByVesselListQuery(null);
+        repository.returns(report.getMock()).findReportByReportId(null);
+
+        service.getVmsDataByReportId("test", null);
+
+        vesselModule.assertInvoked().getVesselsByVesselListQuery(null);
+        vesselModule.assertNotInvoked().getVesselsByVesselGroups(null);
+        movementModule.assertInvoked().getMovementMap(null);
+        report.assertInvoked().updateExecutionLog("test");
+    }
+
+    @Test
+    public void testGetVmsDataByReportIdWithVesselGroupFilters() throws Exception {
+
+        Set<Filter> filterSet = new HashSet<>();
+        filterSet.add(VesselGroupFilterBuilder().groupId("123").build());
+
+        report.returns(filterSet).getFilters();
+        vesselModule.returns(new ArrayList<>()).getVesselsByVesselGroups(null);
+        repository.returns(report).findReportByReportId(null);
+
+        service.getVmsDataByReportId("test", null);
+
+        vesselModule.assertNotInvoked().getVesselsByVesselListQuery(null);
+        vesselModule.assertInvoked().getVesselsByVesselGroups(null);
+        movementModule.assertInvoked().getMovementMap(null);
+        report.assertInvoked().updateExecutionLog("test");
+
+    }
+
+    @Test(expected = ReportingServiceException.class)
+    public void testReportNull() throws ReportingServiceException {
+        service.getVmsDataByReportId("test", null);
     }
 }

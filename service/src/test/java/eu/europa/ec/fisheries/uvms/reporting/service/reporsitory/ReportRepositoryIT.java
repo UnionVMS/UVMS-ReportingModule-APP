@@ -24,6 +24,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter.*;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
@@ -62,7 +63,7 @@ public class ReportRepositoryIT {
 
     private Report buildReport() {
         Date currentDate = new Date();
-        return Report.builder().createdBy("georgi").description("This is a report description created on "
+        return Report.ReportBuilder().createdBy("georgi").description("This is a report description created on "
                 + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate)).filters(new HashSet<Filter>())
                 .name("ReportName" + currentDate.getTime()).outComponents("OutComponents")
                 .executionLogs(new HashSet<ExecutionLog>()).scopeId(123).build();
@@ -286,13 +287,20 @@ public class ReportRepositoryIT {
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
 
-        DateTimeFilter filter6 = DateTimeFilter.builder().build();
+        DateTimeFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(report);
         PositionSelector positionSelector = new PositionSelector();
         positionSelector.setPosition(Position.HOURS);
         positionSelector.setSelector(Selector.LAST);
         positionSelector.setValue(24L);
         filter6.setPositionSelector(positionSelector);
+
+        ExecutionLog executionLog = new ExecutionLog();
+        executionLog.setExecutedOn(new Date());
+        executionLog.setExecutedBy("john");
+        executionLog.setReport(report);
+        report.getExecutionLogs().add(executionLog);
+
         expectedCollection.add(filter6);
 
         report.getFilters().add(filter1);

@@ -13,6 +13,8 @@ import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageService;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
@@ -35,9 +37,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * //TODO create test
- */
 @Stateless
 @Local(value = VmsService.class)
 public class VmsServiceBean implements VmsService {
@@ -55,27 +54,32 @@ public class VmsServiceBean implements VmsService {
 
     @Override
     @Transactional
-    public VmsDTO getVmsDataByReportId(final String username, final Long id) throws ServiceException {
+    public VmsDTO getVmsDataByReportId(final String username, final Long id) throws ReportingServiceException {
 
         VmsDTO vmsDto = null;
 
         try {
 
             Report reportByReportId = repository.findReportByReportId(id);
-            VmsQueryMapper mapper = VmsQueryMapper.buildVmsQuery().filters(reportByReportId.getFilters()).build();
 
-            if(mapper.hasVesselsOrVesselGroups()){
+            if (reportByReportId == null){
+                throw new ReportingServiceException("No report found with id " + id);
+            }
+
+            VmsQueryMapper queryMapper = VmsQueryMapper.VmsQueryMapperBuilder().filters(reportByReportId.getFilters()).build();
+
+            if(queryMapper.hasVesselsOrVesselGroups()){
 
                 Set<Vessel> vesselList = new HashSet<>();
-                if (mapper.getVesselListCriteriaPairs() != null) {
-                    List<Vessel> vesselsByVesselListQuery = vesselModule.getVesselsByVesselListQuery(mapper.getVesselListQuery());
+                if (queryMapper.hasVessels()) {
+                    List<Vessel> vesselsByVesselListQuery = vesselModule.getVesselsByVesselListQuery(queryMapper.getVesselListQuery());
                     if (vesselsByVesselListQuery != null) {
                         vesselList.addAll(vesselsByVesselListQuery);
                     }
                 }
 
-                if (mapper.getVesselGroupList() != null) {
-                    List<Vessel> vesselsByVesselGroups = vesselModule.getVesselsByVesselGroups(mapper.getVesselGroupList());
+                if (queryMapper.hasVesselGroups()) {
+                    List<Vessel> vesselsByVesselGroups = vesselModule.getVesselsByVesselGroups(queryMapper.getVesselGroupList());
                     if (vesselsByVesselGroups != null) {
                         vesselList.addAll(vesselsByVesselGroups);
                     }
@@ -83,16 +87,14 @@ public class VmsServiceBean implements VmsService {
 
                 ImmutableMap<String, Vessel> stringVesselMapByGuid = getStringVesselMapByGuid(vesselList);
 
-                List<MovementMapResponseType> movementMap = movementModule.getMovementMap(mapper.getMovementQuery());
+                List<MovementMapResponseType> movementMap = movementModule.getMovementMap(queryMapper.getMovementQuery());
 
                 vmsDto = VmsDTO.getVmsDto(stringVesselMapByGuid, movementMap);
                 reportByReportId.updateExecutionLog(username);
             }
 
-        } catch (VesselModelMapperException | MessageException  e) {
-            throw new ServiceException("", e);
-        } catch (ModelMapperException | JMSException e) {
-            e.printStackTrace();
+        } catch (JMSException | ModelMapperException | ServiceException | VesselModelMapperException | MessageException  e) {
+            throw new ReportingServiceException("", e);
         }
 
         return vmsDto;

@@ -11,9 +11,11 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.*;
 import lombok.Builder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -27,26 +29,26 @@ public class VmsQueryMapper {
     private List<VesselListCriteriaPair> vesselListCriteriaPairs;
     private List<VesselGroup> vesselGroupList;
 
-    @Builder(builderMethodName = "buildVmsQuery")
+    @Builder(builderMethodName = "VmsQueryMapperBuilder")
     public VmsQueryMapper(Set<Filter> filters){
         movementListCriterias = new ArrayList<>();
         vesselListCriteriaPairs = new ArrayList<>();
         vesselGroupList = new ArrayList<>();
         connectIdMovements = new ArrayList<>();
 
-        for (Filter next : filters) {
-
-            switch (next.getType()) {
+        for (Object next : safe(filters)) {
+            Filter filter = (Filter) next;
+            switch (filter.getType()) {
 
                 case VESSEL:
-                    addToVesselCriteria(next);
-                    addConnectIdToMovementCriteria(next);
+                    addToVesselCriteria(filter);
+                    addConnectIdToMovementCriteria(filter);
                     break;
                 case VGROUP:
-                    addToVesselGroupCriteria(next);
+                    addToVesselGroupCriteria(filter);
                     break;
                 case DATETIME:
-                    addToMovementCriteria(next);
+                    addToMovementCriteria(filter);
                     break;
                 case VMSPOS:
                     break;
@@ -54,6 +56,10 @@ public class VmsQueryMapper {
                     break;
             }
         }
+    }
+
+    public static Set safe( Set other ) {
+        return other == null ? Collections.EMPTY_SET : other;
     }
 
     private void addConnectIdToMovementCriteria(Filter next) {
@@ -64,22 +70,30 @@ public class VmsQueryMapper {
         connectIdMovements.add(listCriteria);
     }
 
-    private void addToVesselGroupCriteria(final Filter next) {
+    private void addToVesselGroupCriteria(final Filter filter) {
+        sanityCheck(filter);
         VesselGroup vesselGroup = new VesselGroup();
-        VesselGroupFilter filter = (VesselGroupFilter) next;
-        vesselGroup.setId(new BigInteger(filter.getGroupId()));
-        vesselGroup.setDynamic(false);
-        vesselGroupList.add(vesselGroup);
+        VesselGroupFilter vesselGroupFilter = (VesselGroupFilter) filter;
+        if (StringUtils.isNotBlank(vesselGroupFilter.getGroupId())) {
+            vesselGroup.setId(new BigInteger(vesselGroupFilter.getGroupId()));
+            vesselGroup.setDynamic(false);
+            vesselGroupList.add(vesselGroup);
+        }
     }
 
-    private void addToMovementCriteria(Filter next) {
-        DateTimeFilter filter = (DateTimeFilter) next;
+    private void addToMovementCriteria(final Filter filter) {
+        sanityCheck(filter);
+        DateTimeFilter dateTimeFilter = (DateTimeFilter) filter;
         ListCriteria listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.FROM_DATE);
-        listCriteria.setValue(filter.getStartDate().toString());
-
+        listCriteria.setValue(String.valueOf(dateTimeFilter.getStartDate()));
         movementListCriterias.add(listCriteria);
+    }
 
+    private void sanityCheck(Filter filter) {
+        if (filter == null){
+            throw new IllegalArgumentException("Filter can not be null.");
+        }
     }
 
     public MovementQuery getMovementQuery() {
@@ -94,12 +108,16 @@ public class VmsQueryMapper {
     }
 
 
-    private void addToVesselCriteria(final Filter next){
-        VesselFilter filter = (VesselFilter) next;
-        VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
-        criteriaPair.setKey(ConfigSearchField.GUID);
-        criteriaPair.setValue(filter.getGuid());
-        vesselListCriteriaPairs.add(criteriaPair);
+    private void addToVesselCriteria(final Filter filter){
+        sanityCheck(filter);
+        VesselFilter vesselFilter = (VesselFilter) filter;
+
+        if(StringUtils.isNotBlank(vesselFilter.getGuid())){
+            VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
+            criteriaPair.setKey(ConfigSearchField.GUID);
+            criteriaPair.setValue(vesselFilter.getGuid());
+            vesselListCriteriaPairs.add(criteriaPair);
+        }
     }
 
     public VesselListQuery getVesselListQuery() {
@@ -125,11 +143,15 @@ public class VmsQueryMapper {
         return vesselGroupList;
     }
 
-    public List<VesselListCriteriaPair> getVesselListCriteriaPairs() {
-        return vesselListCriteriaPairs;
+    public boolean hasVesselsOrVesselGroups() {
+        return hasVessels() || hasVesselGroups();
     }
 
-    public boolean hasVesselsOrVesselGroups() {
-        return vesselListCriteriaPairs != null || vesselGroupList != null;
+    public boolean hasVessels() {
+        return vesselListCriteriaPairs != null && vesselListCriteriaPairs.size() > 0;
+    }
+
+    public boolean hasVesselGroups() {
+        return vesselGroupList != null && vesselGroupList.size() > 0;
     }
 }

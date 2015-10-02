@@ -1,12 +1,13 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.Builder;
-
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,12 +17,23 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "report_execution_log", uniqueConstraints = @UniqueConstraint(columnNames = "report_id"))
+@Table(name = "execution_log", schema = "reporting",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
 public class ExecutionLog implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn( name = "report_id", nullable = false)
 	private Report report;
-	private String executedBy;
+
+    @Column(name = "executed_by", nullable = false)
+    private String executedBy;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "executed_on", nullable = false, length = 29)
 	private Date executedOn;
 
 	public ExecutionLog() {
@@ -35,8 +47,6 @@ public class ExecutionLog implements Serializable {
 		this.executedOn = new Date();
 	}
 
-	@Id
-	@Column(name = "id", unique = true, nullable = false)
 	public long getId() {
 		return this.id;
 	}
@@ -45,8 +55,6 @@ public class ExecutionLog implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "report_id", unique = true, nullable = false)
 	public Report getReport() {
 		return this.report;
 	}
@@ -55,7 +63,6 @@ public class ExecutionLog implements Serializable {
 		this.report = report;
 	}
 
-	@Column(name = "executed_by", nullable = false)
 	public String getExecutedBy() {
 		return this.executedBy;
 	}
@@ -64,8 +71,6 @@ public class ExecutionLog implements Serializable {
 		this.executedBy = executedBy;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "executed_on", nullable = false, length = 29)
 	public Date getExecutedOn() {
 		return this.executedOn;
 	}

@@ -5,10 +5,6 @@ import com.google.common.collect.Collections2;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,7 +12,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -85,10 +81,10 @@ public class Report implements Serializable {
     @Embedded
     private Audit audit;
 
-    @Builder
+    @Builder(builderMethodName = "ReportBuilder")
     public Report(String name, String description, String outComponents, long scopeId,
                   String createdBy, Set<Filter> filters,
-                  Set<ExecutionLog> executionLogs) {
+                  Set<ExecutionLog> executionLogs, Audit audit) {
 
         this.name = name;
         this.description = description;
@@ -99,6 +95,7 @@ public class Report implements Serializable {
         this.filters = filters;
         this.executionLogs = executionLogs;
         this.isDeleted = false;
+        this.audit = audit;
     }
 
     Report(){
@@ -113,7 +110,10 @@ public class Report implements Serializable {
         }
         else {
             ExecutionLog executionLog = ExecutionLog.builder().executedBy(username).build();
-            getExecutionLogs().add(executionLog);
+            if (executionLogs == null){
+                executionLogs = new HashSet<>();
+            }
+            executionLogs.add(executionLog);
         }
         return this;
     }
@@ -247,6 +247,16 @@ public class Report implements Serializable {
 
     public Audit getAudit() {
         return audit;
+    }
+
+    public Report createRandomReport() {
+        Date currentDate = new Date();
+
+        return ReportBuilder().name("ReportName" + currentDate.getTime())
+                .createdBy("georgi")
+                .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
+                .outComponents("OutComponents").audit(new Audit(currentDate)).scopeId(123).build();
+
     }
 
 }

@@ -29,17 +29,6 @@ public class EntityUtil {
         return entity;
     }
 
-    public static ReportDTO createRandomReport() {
-        Date currentDate = new Date();
-
-        return createReport("ReportName" + currentDate.getTime(),
-                "georgi",
-                currentDate,
-                "This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate),
-                "{\"map\":true,\"vms\":true}",
-                123);
-    }
-
     public static ReportDetailsDTO createRandomReportDetailsDTO() {
         Date currentDate = new Date();
         ReportDetailsDTO reportDTO =  new ReportDetailsDTO();

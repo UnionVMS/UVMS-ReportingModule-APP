@@ -7,11 +7,11 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 public class ObjectFactory {
 
     public Report createReport() {
-        return Report.builder().build();
+        return Report.ReportBuilder().build();
     }
 
     public DateTimeFilter createPositionFilter() {
-        return DateTimeFilter.builder().build();
+        return DateTimeFilter.DateTimeFilterBuilder().build();
     }
 
     public ReportDTO createReportDTO() {

@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
@@ -20,6 +21,13 @@ public class VesselFilter extends Filter {
 
     public VesselFilter() {
         super(FilterType.VESSEL);
+    }
+
+    @Builder(builderMethodName = "VesselFilterBuilder")
+    public VesselFilter(String guid, String name){
+        super(FilterType.VESSEL);
+        this.guid = guid;
+        this.name = name;
     }
 
     @Override

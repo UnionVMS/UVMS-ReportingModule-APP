@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
@@ -18,6 +19,13 @@ public class VesselGroupFilter extends Filter {
 
     public VesselGroupFilter() {
         super(FilterType.VGROUP);
+    }
+
+    @Builder(builderMethodName = "VesselGroupFilterBuilder")
+    public VesselGroupFilter(String groupId, String userName){
+        super(FilterType.VGROUP);
+        this.groupId = groupId;
+        this.userName = userName;
     }
 
     public String getGroupId() {

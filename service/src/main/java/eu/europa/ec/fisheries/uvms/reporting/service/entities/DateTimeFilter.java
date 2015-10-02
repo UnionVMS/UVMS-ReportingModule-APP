@@ -33,7 +33,7 @@ public class DateTimeFilter extends Filter {
         super(FilterType.DATETIME);
     }
 
-    @Builder
+    @Builder(builderMethodName = "DateTimeFilterBuilder")
     public DateTimeFilter(Date startDate, Date endDate) {
         super(FilterType.DATETIME);
         this.startDate = startDate;
