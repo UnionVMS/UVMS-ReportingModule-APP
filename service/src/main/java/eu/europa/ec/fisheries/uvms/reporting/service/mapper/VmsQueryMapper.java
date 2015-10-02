@@ -144,7 +144,7 @@ public class VmsQueryMapper {
     }
 
     public boolean hasVesselsOrVesselGroups() {
-        return hasVessels() || hasVesselGroups();
+        return hasVessels() | hasVesselGroups();
     }
 
     public boolean hasVessels() {

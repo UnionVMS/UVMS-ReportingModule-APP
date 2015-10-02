@@ -197,7 +197,7 @@ public class ReportingResource extends UnionVMSResource {
    	@Produces(MediaType.APPLICATION_JSON)
     //@IsUserAllowed(oneOfAllFeatures = { ReportFeature.MODIFY_PRIVATE_REPORT, ReportFeature.MODIFY_SHARED_REPORTS}) 
     public Response runReport(@Context HttpServletRequest request, 
-   				@Context HttpServletResponse response, @PathParam("id") Long id) throws ServiceException {
+   				@Context HttpServletResponse response, @PathParam("id") Long id) throws ReportingServiceException {
    	
     	String username = "georgi"; //request.getRemoteUser() should return the username
    	
