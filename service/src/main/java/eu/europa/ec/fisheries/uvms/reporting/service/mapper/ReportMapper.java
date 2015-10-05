@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.Feature;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeature;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
@@ -14,17 +14,18 @@ import lombok.Builder;
 import java.util.HashSet;
 import java.util.Set;
 
+//TODO implement a unit test
 public class ReportMapper {
 
     private final ObjectFactory factory = new ObjectFactory();
     private final AuditMapper auditMapper = new AuditMapperImpl();
     private final ExecutionLogMapper executionLogMapper = new ExecutionLogMapperImpl() ;
-    private final Set<Feature> features;
+    private final Set<String> features;
     private final boolean filters;
     private String currentUser;
 
     @Builder(builderMethodName = "reportMapperBuilder")
-    ReportMapper(boolean filters, Set<Feature> features, String currentUser){
+    ReportMapper(boolean filters, Set<String> features, String currentUser){
         this.currentUser = currentUser;
         this.features = features;
         this.filters = filters;
@@ -34,11 +35,11 @@ public class ReportMapper {
         existing.setId(incoming.getId());
         existing.setName(incoming.getName());
         existing.setDescription(incoming.getDescription());
-        existing.setOutComponents( incoming.getOutComponents() );
-        existing.setScopeId( incoming.getScopeId() );
-        existing.setCreatedBy( incoming.getCreatedBy() );
-        existing.setIsDeleted( incoming.isIsDeleted() );
-        existing.setDeletedOn( incoming.getDeletedOn() );
+        existing.setOutComponents(incoming.getOutComponents());
+        existing.setScopeName(incoming.getScopeName());
+        existing.setCreatedBy(incoming.getCreatedBy());
+        existing.setIsDeleted(incoming.isIsDeleted());
+        existing.setDeletedOn(incoming.getDeletedOn());
         existing.setDeletedBy( incoming.getDeletedBy() );
         existing.setVisibility( incoming.getVisibility() );
     }
@@ -49,28 +50,28 @@ public class ReportMapper {
 
         ReportDTO reportDTO = ReportDTO.builder().build();
 
-        if (features != null){
-            reportDTO.setShareable(isShareable(currentUser, features, report)); //FIXME username
-            reportDTO.setDeletable(isDeletable(report, currentUser, features)); //FIXME username
-            reportDTO.setEditable(isEditable(report, currentUser, features)); //FIXME username
-        }
-
         reportDTO.setId( report.getId() );
         reportDTO.setName( report.getName() );
         reportDTO.setDescription( report.getDescription() );
-        reportDTO.setOutComponents( report.getOutComponents() );
-        reportDTO.setScopeId( report.getScopeId() );
+        reportDTO.setOutComponents(report.getOutComponents());
+        reportDTO.setScopeName(report.getScopeName());
         reportDTO.setAudit(auditMapper.auditToAuditDTO(report.getAudit()));
         reportDTO.setCreatedBy( report.getCreatedBy() );
         if ( report.isIsDeleted() != null ) {
             reportDTO.setIsDeleted( report.isIsDeleted() );
         }
         reportDTO.setExecutionLogs( executionSetToExecutionsDTOSet(report.getExecutionLogs()));
-        reportDTO.setDeletedOn( report.getDeletedOn() );
-        reportDTO.setDeletedBy( report.getDeletedBy() );
-        reportDTO.setVisibility( report.getVisibility() );
+        reportDTO.setDeletedOn(report.getDeletedOn());
+        reportDTO.setDeletedBy(report.getDeletedBy());
+        reportDTO.setVisibility(report.getVisibility());
         if (filters) {
             reportDTO.setFilters( filterSetToFilterDTOSet(report.getFilters()) );//TODO TEst
+        }
+
+        if (features != null){
+            reportDTO.setShareable(isAllowed(AuthorizationCheckUtil.getRequiredFeatureToShareReport(reportDTO, currentUser), features));
+            reportDTO.setDeletable(isAllowed(AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(reportDTO, currentUser), features));
+            reportDTO.setEditable(isAllowed(AuthorizationCheckUtil.getRequiredFeatureToEditReport(reportDTO, currentUser), features));
         }
 
         return reportDTO;
@@ -99,13 +100,13 @@ public class ReportMapper {
         report_.setId( report.getId() );
         report_.setName( report.getName() );
         report_.setDescription( report.getDescription() );
-        report_.setFilters( filterDTOSetToFilterSet( report.getFilters() , report_) );
-        report_.setOutComponents( report.getOutComponents() );
-        report_.setScopeId( report.getScopeId() );
+        report_.setFilters(filterDTOSetToFilterSet(report.getFilters(), report_));
+        report_.setOutComponents(report.getOutComponents());
+        report_.setScopeName(report.getScopeName());
         report_.setCreatedBy( report.getCreatedBy() );
-        report_.setIsDeleted( report.getIsDeleted() );
-        report_.setDeletedOn( report.getDeletedOn() );
-        report_.setDeletedBy( report.getDeletedBy() );
+        report_.setIsDeleted(report.getIsDeleted());
+        report_.setDeletedOn(report.getDeletedOn());
+        report_.setDeletedBy(report.getDeletedBy());
         report_.setVisibility( report.getVisibility() );
 
         return report_;
@@ -139,48 +140,13 @@ public class ReportMapper {
         return set_;
     }
 
-    private boolean isShareable(final String username, final Set<Feature> grantedFeatures, final Report report) {
-        boolean isShareable = false;
-        if (report.getCreatedBy().equals(username) ) {
-            if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_SCOPE) || grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
-                isShareable = true;
-            }
-        } else if (grantedFeatures.contains(ReportFeature.SHARE_REPORTS_GLOBAL)) {
-            isShareable = true;
+    private boolean isAllowed(final ReportFeatureEnum requiredFeature, Set<String> grantedFeatures) {
+        boolean isAllowed = false;
+
+        if (requiredFeature == null || grantedFeatures.contains(requiredFeature.toString())){
+            isAllowed = true;
         }
-        return isShareable;
-    }
-
-    private boolean isEditable(Report report, String username, Set<Feature> grantedFeatures) {
-        boolean isEditable = false;
-
-        if (report.getCreatedBy().equals(username)) {
-            if (grantedFeatures.contains(ReportFeature.MODIFY_PRIVATE_REPORT)) {
-                isEditable = true;
-            }
-        } else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.MODIFY_SCOPE_REPORT)) {
-            isEditable = true;
-        } else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.MODIFY_GLOBAL_REPORT)) {
-            isEditable = true;
-        }
-
-        return isEditable;
-    }
-
-    private boolean isDeletable(Report report, String username, Set<Feature> grantedFeatures) {
-        boolean isDeletable = false;
-
-        if (report.getCreatedBy().equals(username)) {
-            if (grantedFeatures.contains(ReportFeature.DELETE_REPORT)) {
-                isDeletable = true;
-            }
-        } else if ((report.getVisibility() == VisibilityEnum.SCOPE) && grantedFeatures.contains(ReportFeature.DELETE_SCOPE_REPORT)) {
-            isDeletable = true;
-        } else if ((report.getVisibility() == VisibilityEnum.PUBLIC) && grantedFeatures.contains(ReportFeature.DELETE_GLOBAL_REPORT)) {
-            isDeletable = true;
-        }
-
-        return isDeletable;
+        return isAllowed;
     }
 }
 

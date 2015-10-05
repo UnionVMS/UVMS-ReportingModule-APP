@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -76,10 +77,10 @@ public class FilterDAOTest {
 
         Set<Filter> expectedCollection = new HashSet<>();
 
-        Report report = ReportBuilder().build().createRandomReport();
+        Report report = DTOUtil.createRandomReportEntity();
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
-        report.setScopeId(356456731);
+        report.setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
         Report savedReport = reportDAO.createEntity(report);
 

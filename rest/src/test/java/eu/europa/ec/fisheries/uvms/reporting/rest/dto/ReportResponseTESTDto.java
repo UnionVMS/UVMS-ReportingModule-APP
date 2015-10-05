@@ -2,11 +2,9 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
 import java.util.Collection;
 import java.util.Objects;
-
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
 
 @JsonInclude(Include.NON_NULL)
 public class ReportResponseTESTDto {

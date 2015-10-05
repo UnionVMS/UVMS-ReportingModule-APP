@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.reporsitory;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -39,7 +39,7 @@ public class ReportRepositoryIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class,"reporting-service.war")
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "reporting-service.war")
                 .addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.service")
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsResource("config.properties")
@@ -66,7 +66,7 @@ public class ReportRepositoryIT {
         return Report.ReportBuilder().createdBy("georgi").description("This is a report description created on "
                 + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate)).filters(new HashSet<Filter>())
                 .name("ReportName" + currentDate.getTime()).outComponents("OutComponents")
-                .executionLogs(new HashSet<ExecutionLog>()).scopeId(123).build();
+                .executionLogs(new HashSet<ExecutionLog>()).scopeName("123").build();
     }
 
     @After
@@ -76,14 +76,14 @@ public class ReportRepositoryIT {
     @Test
     @Transactional(value = TransactionMode.ROLLBACK)
     @SuppressWarnings("unchecked")
-    public void testRemove() throws Exception{
+    public void testRemove() throws Exception {
         Report reportEntity = report;
         reportEntity.setName("RemoveTest");
         repository.createEntity(reportEntity);
 
-        repository.remove(reportEntity.getId());
+        repository.remove(reportEntity.getId(), reportEntity.getCreatedBy(), reportEntity.getScopeName());
 
-        Report result = repository.findReportByReportId(reportEntity.getId());
+        Report result = repository.findReportByReportId(reportEntity.getId(), reportEntity.getCreatedBy(), reportEntity.getScopeName());
 
         assertNull(result);
 
@@ -92,9 +92,9 @@ public class ReportRepositoryIT {
         Report reportEntity2 = buildReport();
         repository.createEntity(reportEntity2);
 
-        repository.remove(reportEntity2.getId());
+        repository.remove(reportEntity2.getId(), reportEntity2.getCreatedBy(), reportEntity2.getScopeName());
 
-        result = repository.findReportByReportId(reportEntity2.getId());
+        result = repository.findReportByReportId(reportEntity2.getId(), reportEntity2.getCreatedBy(), reportEntity2.getScopeName());
 
         assertNull(result);
 
@@ -103,9 +103,9 @@ public class ReportRepositoryIT {
     @Test
     @Transactional(value = TransactionMode.ROLLBACK)
     @SuppressWarnings("unchecked")
-    public void testFindReportByReportId() throws ServiceException {
+    public void testFindReportByReportId() throws ReportingServiceException {
         repository.createEntity(report);
-        Report reportByReportId = repository.findReportByReportId(report.getId());
+        Report reportByReportId = repository.findReportByReportId(report.getId(), report.getCreatedBy(), report.getScopeName());
         assertTrue(reportByReportId.getId() > 0);
         assertNotNull(reportByReportId);
     }
@@ -113,30 +113,30 @@ public class ReportRepositoryIT {
     @Test
     @Transactional(TransactionMode.ROLLBACK)
     @SuppressWarnings("unchecked")
-    public void testFindByUsernameAndScope() throws ServiceException {
+    public void testFindByUsernameAndScope() throws ReportingServiceException {
 
         report.setCreatedBy("georgiTestttt12");
-        report.setScopeId(945563456);
+        report.setScopeName("945563456");
         repository.createEntity(report);
 
-        Collection<Report> reports = repository.listByUsernameAndScope("georgiTestttt12", 945563456);
+        Collection<Report> reports = repository.listByUsernameAndScope("georgiTestttt12", "945563456");
 
         assertNotNull(reports);
         assertTrue(!reports.isEmpty());
         assertEquals(1, reports.size());
 
-        reports = repository.listByUsernameAndScope("georgiTestttt12", 11000);
+        reports = repository.listByUsernameAndScope("georgiTestttt12", "11000");
 
         assertNotNull(reports);
         assertTrue(reports.isEmpty());
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", 123456);
+        reports = repository.listByUsernameAndScope("nonexistinguser", "123456");
 
         assertNotNull(reports);
         assertTrue(reports.isEmpty());
 
         Report reportEntity2 = buildReport();
-        reportEntity2.setScopeId(58437239);
+        reportEntity2.setScopeName("58437239");
         reportEntity2.setVisibility(VisibilityEnum.SCOPE);
         repository.createEntity(reportEntity2);
 
@@ -144,13 +144,13 @@ public class ReportRepositoryIT {
         reportEntity3.setVisibility(VisibilityEnum.PUBLIC);
         repository.createEntity(reportEntity3);
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", 58437239);
+        reports = repository.listByUsernameAndScope("nonexistinguser", "58437239");
 
         assertNotNull(reports);
         assertTrue(!reports.isEmpty());
         assertEquals(2, reports.size());
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", 123456);
+        reports = repository.listByUsernameAndScope("nonexistinguser", "123456");
 
         assertNotNull(reports);
         assertEquals(1, reports.size());
@@ -161,10 +161,10 @@ public class ReportRepositoryIT {
     @SuppressWarnings("unchecked")
     @Test
     @Transactional(value = TransactionMode.ROLLBACK)
-    public void testAddReportExecLog () throws ServiceException {
+    public void testAddReportExecLog() throws ReportingServiceException {
 
         report.setCreatedBy("georgiTestttt12");
-        report.setScopeId(356456731);
+        report.setScopeName("356456731");
 
         ExecutionLog repExecLog = new ExecutionLog();
         repExecLog.setExecutedBy("someUser");
@@ -176,7 +176,7 @@ public class ReportRepositoryIT {
 
         repository.createEntity(report);
 
-        Report result = repository.findReportByReportId(report.getId());
+        Report result = repository.findReportByReportId(report.getId(), report.getCreatedBy(), report.getScopeName());
 
         assertNotNull(result);
         assertNotNull(report.getExecutionLogs());
@@ -186,11 +186,12 @@ public class ReportRepositoryIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testLatestReportExecLog () throws ServiceException {
+    @Transactional(value = TransactionMode.ROLLBACK)
+    public void testLatestReportExecLog() throws ReportingServiceException {
 
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
-        report.setScopeId(356456731);
+        report.setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
         ExecutionLog repExecLog = new ExecutionLog();
         repExecLog.setExecutedBy(user);
@@ -204,35 +205,35 @@ public class ReportRepositoryIT {
         report.getExecutionLogs().add(repExecLog2);
         Report savedReport = (Report) repository.createEntity(report);
 
-        List<Report> results = repository.listByUsernameAndScope(user, 356456731);
+        List<Report> results = repository.listByUsernameAndScope(user, "356456731");
 
         Iterator<Report> iterator1 = results.iterator();
         Report foundReport = null;
-        while (iterator1.hasNext()){
+        while (iterator1.hasNext()) {
             Report next = iterator1.next();
-            if (next.getId() == iterator1.next().getId()){
+            if (next.getId() == iterator1.next().getId()) {
                 foundReport = next;
                 break;
             }
         }
         assert foundReport != null;
         assertEquals(user, foundReport.getCreatedBy());
-        assertEquals(356456731, foundReport.getScopeId());
+        assertEquals("356456731", foundReport.getScopeName());
         assertEquals(VisibilityEnum.PRIVATE, foundReport.getVisibility());
         Set<ExecutionLog> executionLogs = foundReport.getExecutionLogs();
         assertEquals(2, executionLogs.size());
 
-        repository.deleteEntity(savedReport, savedReport.getId());
+//        repository.deleteEntity(savedReport, savedReport.getId());
     }
 
     @Test(expected = Exception.class)
     @Transactional(value = TransactionMode.ROLLBACK)
     @SuppressWarnings("unchecked")
-    public void testUniqueLogByUser () throws ServiceException {
+    public void testUniqueLogByUser() throws ReportingServiceException {
 
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
-        report.setScopeId(356456731);
+        report.setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
         ExecutionLog repExecLog = new ExecutionLog();
         repExecLog.setExecutedBy(user);
@@ -248,13 +249,13 @@ public class ReportRepositoryIT {
     }
 
     @Test
-    public void testCreateFilters () throws ServiceException {
+    public void testCreateFilters() throws ReportingServiceException {
 
         Set<Filter> expectedCollection = new HashSet<>();
 
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
-        report.setScopeId(356456731);
+        report.setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
 
         VesselFilter filter1 = new VesselFilter();
@@ -311,7 +312,7 @@ public class ReportRepositoryIT {
         report.getFilters().add(filter6);
 
         Report savedReport = repository.createEntity(report);
-        Report byId = repository.findReportByReportId(savedReport.getId());
+        Report byId = repository.findReportByReportId(savedReport.getId(), savedReport.getCreatedBy(), savedReport.getScopeName());
 
         Set<Filter> filters = byId.getFilters();
 

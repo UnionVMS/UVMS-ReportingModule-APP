@@ -13,7 +13,6 @@ import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageService;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
@@ -54,13 +53,13 @@ public class VmsServiceBean implements VmsService {
 
     @Override
     @Transactional
-    public VmsDTO getVmsDataByReportId(final String username, final Long id) throws ReportingServiceException {
+    public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
 
         VmsDTO vmsDto = null;
 
         try {
 
-            Report reportByReportId = repository.findReportByReportId(id);
+            Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
 
             if (reportByReportId == null){
                 throw new ReportingServiceException("No report found with id " + id);
@@ -93,7 +92,7 @@ public class VmsServiceBean implements VmsService {
                 reportByReportId.updateExecutionLog(username);
             }
 
-        } catch (JMSException | ModelMapperException | ServiceException | VesselModelMapperException | MessageException  e) {
+        } catch (JMSException | ModelMapperException | VesselModelMapperException | MessageException  e) {
             throw new ReportingServiceException("", e);
         }
 

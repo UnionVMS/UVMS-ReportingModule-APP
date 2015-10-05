@@ -36,7 +36,11 @@
     <dependencyManagement>
 
         <dependencies>
-
+            <dependency>
+                <groupId>eu.europa.ec.mare.usm</groupId>
+                <artifactId>usm4uvms</artifactId>
+                <version>0.0.7-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geojson</artifactId>
@@ -300,6 +304,12 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>eu.europa.ec.mare.usm</groupId>
+            <artifactId>Information-Service</artifactId>
+            <version>LATEST</version>
+        </dependency>
 
         <dependency>
             <groupId>javax</groupId>

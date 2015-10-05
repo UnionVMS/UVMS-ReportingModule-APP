@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
@@ -26,73 +27,13 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
         this.em = em;
     }
 
-    public Report saveOrUpdate(Report report) throws ServiceException {
-        //check whether it's an update or create
-        if (report.getId() > 0) {
-            log.debug("update ReportEntity instance");
-            Report oldEntity = findReportByReportId(report.getId());
-
-            if (oldEntity != null) {
-                oldEntity.setDescription(report.getDescription());
-                oldEntity.setFilters(report.getFilters());
-                oldEntity.setName(report.getName());
-                oldEntity.setOutComponents(report.getOutComponents());
-                oldEntity.setVisibility(report.getVisibility());
-
-                try {
-                    Session session = em.unwrap(Session.class);
-
-                    session.update(oldEntity);
-                    session.flush();
-                    log.debug("update successful");
-                } catch (RuntimeException re) {
-                    log.error("update failed", re);
-                    throw re;
-                }
-            } else {
-                log.error("updating non-existing report entity with ID=" + report.getId());
-                throw new RuntimeException("updating non-existing report entity");
-            }
-        } else {
-            log.debug("persisting ReportEntity instance");
-            try {
-                Session session = em.unwrap(Session.class);
-
-                session.save(report);
-                session.flush();
-                log.debug("update successful");
-            } catch (RuntimeException re) {
-                log.error("update failed", re);
-                throw re;
-            }
-        }
-
-        return report;
-    }
-
-    public void persist(ExecutionLog transientInstance) throws ServiceException {
-        log.debug("persisting ReportExecutionLogEntity instance");
-        try {
-            Session session = em.unwrap(Session.class);
-
-            session.saveOrUpdate(transientInstance);
-            session.flush();
-            log.debug("update successful");
-        } catch (RuntimeException re) {
-            log.error("update failed", re);
-            throw re;
-        }
-    }
-
     /**
      * does logical/soft delete
      * @param report
      */
-    public void softDelete(Report report) throws ServiceException {
-        //String username = context.getCallerPrincipal().getName();
-        String username = "georgi"; //TODO softDelete the hardcoded username and use the caller principal instead
+    protected void softDelete(Report report, String username) throws ReportingServiceException {
 
-        log.debug(username + " is removing ReportEntity instance");
+        log.debug("{} is removing ReportEntity instance", username);
         try {
             report.setDeletedBy(username);
             report.setDeletedOn(new Date());
@@ -103,7 +44,7 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
             log.debug("softDelete successful");
         } catch (RuntimeException re) {
             log.error("softDelete failed", re);
-            throw re;
+            throw new ReportingServiceException("softDelete failed", re);
         }
     }
 
@@ -111,58 +52,47 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
      * does logical/soft delete
      * @param entityId
      */
-    public void softDelete(long entityId) throws ServiceException{
-        Report persistentInstance = this.findReportByReportId(entityId);
+    public void softDelete(long entityId, String username, String scopeName) throws ReportingServiceException{
+        Report persistentInstance = this.findReportByReportId(entityId, username, scopeName);
         if (persistentInstance == null) {
-            throw new ServiceException("Non existing report entity cannot be deleted.");
+            throw new ReportingServiceException("Non existing report entity cannot be deleted.");
         }
 
-        softDelete(persistentInstance);
+        softDelete(persistentInstance, username);
     }
 
     @Transactional
-    public Report findReportByReportId(final Long id) throws ServiceException {
+    public Report findReportByReportId(final Long id, String username, String scopeName) throws ReportingServiceException {
         Report result = null;
-        List<Report> reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).parameters(), 1);
+        List<Report> reports = null;
+        try {
+            reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).parameters(), 1);
+        } catch (ServiceException exc) {
+            log.error("findReport failed", exc);
+            throw new ReportingServiceException("findReport failed", exc);
+        }
         if (reports != null && reports.size() > 0){
             result = reports.get(0);
         }
         return result;
     }
 
-    public List<Report> listByUsernameAndScope(String username, long scopeId) throws ServiceException {
-        log.debug("Searching for ReportEntity instances with username: " + username + " and scopeID:" + scopeId);
+    public List<Report> listByUsernameAndScope(String username, String scopeName) throws ReportingServiceException {
+        log.debug("Searching for ReportEntity instances with username: {} and scopeName:{}", username, scopeName);
 
         try {
             List<Report> listReports =
                     findEntityByNamedQuery(Report.class, Report.LIST_BY_USERNAME_AND_SCOPE,
-                            with("scopeId", scopeId).and("username", username).parameters());
-            log.debug("get successful");
+                            with("scopeName", scopeName).and("username", username).parameters());
+            log.debug("list successful");
             return listReports;
-        } catch (RuntimeException re) {
-            log.error("get failed", re);
-            throw re;
+        } catch (Exception exc) {
+            log.error("list failed", exc);
+            throw new ReportingServiceException("list failed", exc);
         }
     }
 
-    /**
-     * deletes physically the record from the DB
-     * @param persistentInstance
-     */
-    @Transactional
-    public void delete(Report persistentInstance) throws ServiceException {
-        log.debug("deleting ReportEntity instance with id: " + persistentInstance.getId());
-        try {
-            Session session = em.unwrap(Session.class);
-            session.delete(session.merge(persistentInstance));
-            log.debug("delete successful");
-        } catch (RuntimeException re) {
-            log.error("delete failed", re);
-            throw re;
-        }
-    }
-
-    @Override
+   @Override
     public EntityManager getEntityManager() {
         return em;
     }

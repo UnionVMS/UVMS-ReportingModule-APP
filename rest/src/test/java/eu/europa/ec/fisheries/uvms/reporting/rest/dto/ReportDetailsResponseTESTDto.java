@@ -1,20 +1,19 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
 import java.util.Objects;
-
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 
 @JsonInclude(Include.NON_NULL)
 public class ReportDetailsResponseTESTDto {
 
-    private ReportDetailsDTO data;
+    private ReportDTO data;
     private int code;
     private String msg;
 
-    public ReportDetailsResponseTESTDto(ReportDetailsDTO data, int code) {
+    public ReportDetailsResponseTESTDto(ReportDTO data, int code) {
         this.data = data;
         this.code = code;
     }
@@ -28,7 +27,7 @@ public class ReportDetailsResponseTESTDto {
         this.msg = msg;
     }
     
-    public ReportDetailsResponseTESTDto(ReportDetailsDTO data, int code, String msg) {
+    public ReportDetailsResponseTESTDto(ReportDTO data, int code, String msg) {
     	this.data = data;
         this.code = code;
         this.msg = msg;
@@ -38,7 +37,7 @@ public class ReportDetailsResponseTESTDto {
     }
     
     
-    public ReportDetailsDTO getData() {
+    public ReportDTO getData() {
         return data;
     }
 

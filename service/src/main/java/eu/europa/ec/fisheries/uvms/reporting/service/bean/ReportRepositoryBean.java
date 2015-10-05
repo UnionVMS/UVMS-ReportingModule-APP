@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
@@ -46,18 +47,18 @@ public class ReportRepositoryBean implements ReportRepository {
 
     @Override
     @Transactional
-    public Report saveOrUpdate(final Report report) throws ServiceException {
-        return reportDAO.saveOrUpdate(report);
-    }
-
-    @Override
-    @Transactional
-    public boolean update(final ReportDTO reportDTO) throws ServiceException {
+    public boolean update(final ReportDTO reportDTO) throws ReportingServiceException {
 
         boolean merge;
 
-        reportMerger.merge(Arrays.asList(reportDTO));
-        filterMerger.merge(reportDTO.getFilters());
+        try {
+            reportMerger.merge(Arrays.asList(reportDTO));
+            filterMerger.merge(reportDTO.getFilters());
+        } catch (ServiceException e) {
+            log.error("update failed", e);
+            throw new ReportingServiceException("update failed", e);
+        }
+
         merge = true;
 
         return merge;
@@ -66,29 +67,29 @@ public class ReportRepositoryBean implements ReportRepository {
 
     @Override
     @Transactional
-    public Report findReportByReportId(final Long id) throws ServiceException {
-        return reportDAO.findReportByReportId(id);
+    public Report findReportByReportId(final Long id, String username, String scopeName) throws ReportingServiceException {
+        return reportDAO.findReportByReportId(id, username, scopeName);
     }
 
     @Override
-    public List<Report> listByUsernameAndScope(final String username, final long scopeId) throws ServiceException {
-        return reportDAO.listByUsernameAndScope(username, scopeId);
-    }
-
-    @Override
-    @Transactional
-    public void remove(final Long reportId) throws ServiceException {
-        reportDAO.softDelete(reportId);
-    }
-
-    @Override
-    public void deleteEntity(Report report, Long id) throws ServiceException {
-        reportDAO.deleteEntity(report, id);
+    public List<Report> listByUsernameAndScope(final String username, final String scopeName) throws ReportingServiceException {
+        return reportDAO.listByUsernameAndScope(username, scopeName);
     }
 
     @Override
     @Transactional
-    public Report createEntity(Report report) throws ServiceException {
-        return reportDAO.createEntity(report);
+    public void remove(final Long reportId, String username, String scopeName) throws ReportingServiceException {
+        reportDAO.softDelete(reportId, username, scopeName);
+    }
+
+    @Override
+    @Transactional
+    public Report createEntity(Report report) throws ReportingServiceException {
+        try {
+            return reportDAO.createEntity(report);
+        } catch (ServiceException e) {
+            log.error("createEntity failed", e);
+            throw new ReportingServiceException("createEntity failed", e);
+        }
     }
 }

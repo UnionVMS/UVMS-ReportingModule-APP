@@ -12,10 +12,7 @@ public class RestConstants {
     public static final String ACCESS_CONTROL_ALLOWED_METHODS = "GET, POST, DELETE, PUT, OPTIONS";
     
     public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-    public static final String ACCESS_CONTROL_ALLOW_HEADERS_ALL = "Content-Type";
-    
-    public static final String SESSION_ATTR_ACTIVE_USER_SCOPE = "SESSION_ATTR_ACTIVE_USER_SCOPE";
-    
+
     public static final String REQUEST_PARAM_CURRENT_USER_SCOPE = "CURRENT_USER_SCOPE";
     
     public static final String DATE_TIME_UI_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";

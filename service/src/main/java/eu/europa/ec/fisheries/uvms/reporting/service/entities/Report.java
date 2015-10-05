@@ -2,8 +2,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -12,7 +12,6 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -25,10 +24,10 @@ import static javax.persistence.CascadeType.ALL;
 @NamedQueries({
         @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                        "WHERE ((r.scopeId = :scopeId AND (r.createdBy = :username OR r.visibility = 'SCOPE') ) OR r.visibility = 'PUBLIC') " +
+                        "WHERE ((r.scopeName = :scopeName AND (r.createdBy = :username OR r.visibility = 'SCOPE') ) OR r.visibility = 'PUBLIC') " +
                         "AND r.isDeleted <> 'Y' " +
                         "GROUP BY r.id, l.id"),
-        @NamedQuery(name = Report.FIND_BY_ID ,query = "SELECT r FROM Report r WHERE r.id = :reportID AND r.isDeleted <> 'Y'")
+        @NamedQuery(name = Report.FIND_BY_ID ,query = "SELECT r FROM Report r WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND (r.createdBy = :username OR (r.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC')")
 })
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(exclude = {"executionLogs", "filters", "audit"})
@@ -57,8 +56,8 @@ public class Report implements Serializable {
     @Column(name = "out_components", nullable = false)
     private String outComponents;
 
-    @Column(name = "scope_id", nullable = false)
-    private long scopeId;
+    @Column(name = "scope_name", nullable = false)
+    private String scopeName;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
@@ -82,14 +81,14 @@ public class Report implements Serializable {
     private Audit audit;
 
     @Builder(builderMethodName = "ReportBuilder")
-    public Report(String name, String description, String outComponents, long scopeId,
+    public Report(String name, String description, String outComponents, String scopeName,
                   String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
 
         this.name = name;
         this.description = description;
         this.outComponents = outComponents;
-        this.scopeId = scopeId;
+        this.scopeName = scopeName;
         this.createdBy = createdBy;
         this.visibility = VisibilityEnum.PRIVATE;
         this.filters = filters;
@@ -102,7 +101,7 @@ public class Report implements Serializable {
 
     }
 
-    public Report updateExecutionLog(final String username) throws ServiceException {
+    public Report updateExecutionLog(final String username) throws ReportingServiceException {
         ExecutionLog executionLogByUser = getExecutionLogByUser(username);
 
         if(executionLogByUser != null){
@@ -118,7 +117,7 @@ public class Report implements Serializable {
         return this;
     }
 
-    public ExecutionLog getExecutionLogByUser(final String username) throws ServiceException {
+    public ExecutionLog getExecutionLogByUser(final String username) throws ReportingServiceException {
 
         ExecutionLog result = null;
         Collection<ExecutionLog> filter = null;
@@ -133,7 +132,7 @@ public class Report implements Serializable {
         }
 
         if (filter != null && filter.size() > 1){
-            throw new ServiceException("Error: more then one execution log for the same user");
+            throw new ReportingServiceException("Error: more then one execution log for the same user");
         }
 
         if (filter != null && filter.size() == 1){
@@ -144,8 +143,8 @@ public class Report implements Serializable {
     }
 
     @PrePersist
-    private void onCreate(){
-        audit = new Audit(new Date());
+    private void onCreate() {
+        audit = new Audit(new Date());//FIXME Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime()
     }
 
     public Long getId() {
@@ -188,12 +187,12 @@ public class Report implements Serializable {
         this.outComponents = outComponents;
     }
 
-    public long getScopeId() {
-        return this.scopeId;
+    public String getScopeName() {
+        return this.scopeName;
     }
 
-    public void setScopeId(long scopeId) {
-        this.scopeId = scopeId;
+    public void setScopeName(String scopeName) {
+        this.scopeName = scopeName;
     }
 
     public String getCreatedBy() {
@@ -247,16 +246,6 @@ public class Report implements Serializable {
 
     public Audit getAudit() {
         return audit;
-    }
-
-    public Report createRandomReport() {
-        Date currentDate = new Date();
-
-        return ReportBuilder().name("ReportName" + currentDate.getTime())
-                .createdBy("georgi")
-                .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
-                .outComponents("OutComponents").audit(new Audit(currentDate)).scopeId(123).build();
-
     }
 
 }

@@ -4,19 +4,20 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsResponseTESTDto;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportResponseTESTDto;
+import eu.europa.ec.fisheries.uvms.reporting.rest.util.RestDTOUtil;
+import eu.europa.ec.fisheries.uvms.rest.security.JwtTokenHandler;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 import org.jboss.arquillian.extension.rest.client.Header;
@@ -29,18 +30,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.ArquillianTest;
-import eu.europa.ec.fisheries.uvms.reporting.rest.util.EntityUtil;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
-import eu.europa.ec.fisheries.uvms.rest.dto.ResponseDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -48,16 +45,30 @@ public class ReportingResourceITest extends ArquillianTest {
 	
     @ArquillianResource
     URL contextPath;
+	private String authToken;
+
+	@Before
+	public void setUp() {
+		JwtTokenHandler tokenHandler = new JwtTokenHandler();
+		authToken = tokenHandler.createToken("rep_power");
+	}
+
+	@After
+	public void tearDown() {
+
+	}
+
 
 	@Test
 	@Header(name="connection", value = "Keep-Alive")
 	public void testUpdate(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws JsonParseException, JsonMappingException, IOException {
 		
 		//check if we have the prerequisite - a report in the DB with ID = 1
-		Response response = webTarget.path("/1" ).request().get();
+		Response response = webTarget.path("/1" ).request().header(HttpHeaders.AUTHORIZATION, authToken)
+				.header(AuthConstants.HTTP_HEADER_AUTHORIZATION, authToken).header(AuthConstants.HTTP_HEADER_SCOPE_NAME, "123").get();
 		
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-		ResponseDto responseDto = response.readEntity(ResponseDto.class);
+		ReportResponseTESTDto responseDto = response.readEntity(ReportResponseTESTDto.class);
 		assertNotNull(responseDto);
 
 		assertNotNull(responseDto.getData());
@@ -71,18 +82,19 @@ public class ReportingResourceITest extends ArquillianTest {
 				+ "\"name\":\"Report Name"+date+"\","
 				+ "\"desc\":\"Some description"+date+"\","
 				+ "\"visibility\":\"SCOPE\","
-				+ "\"scopeId\":123,"
+				+ "\"scopeName\":\"123\","
 				+ "\"outComponents\":\"{\\\"map\\\":"+date+",\\\"vms\\\":true}\","
 				+ "\"filterExpression\":\"{\\\"startDate\\\":\\\"2015-09-02 18:20:00\\\",\\\"endDate\\\":\\\"2015-09-02 18:20:00\\\",\\\"positionSelector\\\":\\\""+date+"\\\",\\\"vessels\\\":[{\\\"id\\\":1,\\\"name\\\":\\\"Vessel 1\\\",\\\"type\\\":\\\"vessel\\\"},{\\\"id\\\":2,\\\"name\\\":\\\"Vessel 2\\\",\\\"type\\\":\\\"vessel\\\"}],\\\"vms\\\":{\\\"positions\\\":{\\\"active\\\":false},\\\"segments\\\":{\\\"active\\\":false},\\\"tracks\\\":{\\\"active\\\":false}}}\"}";
 		
 		ObjectMapper mapper = new ObjectMapper();
-		ReportDetailsDTO dto = mapper.readValue(payload, ReportDetailsDTO.class);
+		ReportDTO dto = mapper.readValue(payload, ReportDTO.class);
 		
 		assertNotNull(dto);
 		assertNotNull(dto.getOutComponents());
 		assertNotNull(dto.getVisibility());
 		
-		response = webTarget.path("/1" ).request(MediaType.APPLICATION_JSON).put(Entity.entity(dto,MediaType.APPLICATION_JSON));
+		response = webTarget.path("/1" ).request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, authToken)
+				.header(AuthConstants.HTTP_HEADER_AUTHORIZATION, authToken).header(AuthConstants.HTTP_HEADER_SCOPE_NAME, dto.getScopeName()).put(Entity.entity(dto,MediaType.APPLICATION_JSON));
 		
 		assertNotNull(response);
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -96,9 +108,9 @@ public class ReportingResourceITest extends ArquillianTest {
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		ReportDetailsResponseTESTDto detailsResponseDTO = response.readEntity(ReportDetailsResponseTESTDto.class);
 		assertNotNull(detailsResponseDTO);
-		ReportDetailsDTO detailsDto = detailsResponseDTO.getData();
+		ReportDTO detailsDto = detailsResponseDTO.getData();
 		assertEquals("Report Name"+date, detailsDto.getName());
-		assertEquals("Some description"+date, detailsDto.getDesc());
+		assertEquals("Some description"+date, detailsDto.getDescription());
 		assertEquals(VisibilityEnum.SCOPE, detailsDto.getVisibility());
 		assertEquals("{\"map\":"+date+",\"vms\":true}", detailsDto.getOutComponents());
 		
@@ -111,13 +123,14 @@ public class ReportingResourceITest extends ArquillianTest {
 
 	@Test
 	@Header(name="connection", value = "Keep-Alive")
-	public void testCreateListReadDelete(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws JsonParseException, JsonMappingException, IOException {
+	public void testCreateListReadDelete(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws IOException {
 		
 		//###################  START CREATE TEST
-		ReportDetailsDTO reportDetailsDTO = EntityUtil.createRandomReportDetailsDTO();
+		ReportDTO reportDetailsDTO = RestDTOUtil.createRandomReport();
 		reportDetailsDTO.setVisibility(VisibilityEnum.SCOPE);
 		
-		Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.json(reportDetailsDTO));
+		Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, authToken)
+				.header(AuthConstants.HTTP_HEADER_AUTHORIZATION, authToken).header(AuthConstants.HTTP_HEADER_SCOPE_NAME, reportDetailsDTO.getScopeName()).post(Entity.json(reportDetailsDTO));
 		
 		assertNotNull(response);
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -127,16 +140,16 @@ public class ReportingResourceITest extends ArquillianTest {
 		
 		//############ TEST LIST
 		
-		Collection<ReportDTO> reports = callListRESTAPI(webTarget, reportDetailsDTO.getScopeId());
+		Collection<ReportDTO> reports = callListRESTAPI(webTarget, reportDetailsDTO.getScopeName());
 		
 		
 		assertEquals(1, reports.size());
 		
 		ReportDTO report = reports.iterator().next();
 		
-		assertEquals(reportDetailsDTO.getDesc(), report.getDesc());
+		assertEquals(reportDetailsDTO.getDescription(), report.getDescription());
 		assertEquals(reportDetailsDTO.getName(), report.getName());
-		assertNotNull(report.getCreatedOn());
+		assertNotNull(report.getAudit());
 		assertTrue(report.getId()>0);
 		assertTrue(report.isDeletable());
 		assertTrue(report.isEditable());
@@ -149,7 +162,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		ReportDetailsResponseTESTDto foundReport = response.readEntity(ReportDetailsResponseTESTDto.class);
 		assertNotNull(foundReport);
-		assertEquals(report.getDesc(), foundReport.getData().getDesc());
+		assertEquals(report.getDescription(), foundReport.getData().getDescription());
 		assertEquals(report.getName(), foundReport.getData().getName());
 		assertEquals(report.getId(), foundReport.getData().getId());
 		assertEquals(report.getVisibility(), foundReport.getData().getVisibility());
@@ -170,7 +183,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		response = webTarget.path("/" + report.getId()).request().get();
 		
 		assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response.getStatus());
-		ResponseDto errorResponse = response.readEntity(ResponseDto.class);
+		ReportResponseTESTDto errorResponse = response.readEntity(ReportResponseTESTDto.class);
 		assertEquals(ErrorCodes.ENTRY_NOT_FOUND, errorResponse.getMsg());
 		assertNull(errorResponse.getData());
 		
@@ -188,7 +201,7 @@ public class ReportingResourceITest extends ArquillianTest {
 		
 		assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response.getStatus());
 		
-		ResponseDto resultMsg = response.readEntity(ResponseDto.class);
+		ReportResponseTESTDto resultMsg = response.readEntity(ReportResponseTESTDto.class);
 		assertEquals(ErrorCodes.DELETE_FAILED, resultMsg.getMsg());
 		
 		response.close();
@@ -210,17 +223,17 @@ public class ReportingResourceITest extends ArquillianTest {
 		 * */
 		
 		//1. 
-		Collection<ReportDTO> reports = callListRESTAPI(webTarget, 123);
+		Collection<ReportDTO> reports = callListRESTAPI(webTarget, "123");
 		assertFalse(reports.isEmpty());
 		
 		//2.
 		ReportDTO fstReport = reports.iterator().next();
 		
 		//3.
-		ResponseDto responseExec = callExecuteRESTAPI(webTarget, fstReport.getId());
+		ReportResponseTESTDto responseExec = callExecuteRESTAPI(webTarget, fstReport.getId());
 		
 		//4.
-		reports = callListRESTAPI(webTarget, 123);
+		reports = callListRESTAPI(webTarget, "123");
 		assertFalse(reports.isEmpty());
 		
 		//5.
@@ -236,12 +249,12 @@ public class ReportingResourceITest extends ArquillianTest {
 		assertNotNull(updatedReport);
 
 		//6.
-		assertTrue(fstReport.getLastExecTime().before(updatedReport.getLastExecTime()));
+		assertTrue(fstReport.getExecutionLogs().iterator().next().getExecutedOn().before(updatedReport.getExecutionLogs().iterator().next().getExecutedOn()));
 	}
 	
 	
-	private Collection<ReportDTO> callListRESTAPI(ResteasyWebTarget webTarget, long scopeId) throws JsonParseException, JsonMappingException, IOException {
-		Response responseList = webTarget.path("/list").queryParam(RestConstants.REQUEST_PARAM_CURRENT_USER_SCOPE, scopeId).request().get();
+	private Collection<ReportDTO> callListRESTAPI(ResteasyWebTarget webTarget, String scopeName) throws JsonParseException, JsonMappingException, IOException {
+		Response responseList = webTarget.path("/list").request().header(RestConstants.REQUEST_PARAM_CURRENT_USER_SCOPE, scopeName).get();
 		
 		assertNotNull(responseList);
 		
@@ -256,13 +269,13 @@ public class ReportingResourceITest extends ArquillianTest {
 		return responseDTO.getData();
 	}
 	
-	private ResponseDto callExecuteRESTAPI(ResteasyWebTarget webTarget, long reportId) throws JsonParseException, JsonMappingException, IOException {
+	private ReportResponseTESTDto callExecuteRESTAPI(ResteasyWebTarget webTarget, long reportId) throws JsonParseException, JsonMappingException, IOException {
 		Response response = webTarget.path("/execute/"+reportId).request().get();
 		
 		assertNotNull(response);
 		
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-		ResponseDto responseDto = response.readEntity(ResponseDto.class);
+		ReportResponseTESTDto responseDto = response.readEntity(ReportResponseTESTDto.class);
 		assertNotNull(responseDto);
 		response.close();
 		return responseDto;

@@ -38,6 +38,7 @@ public class ReportServiceBeanITest {
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(new File("src/test/resources/META-INF/jboss-deployment-structure.xml"))
                 .addAsResource("config.properties")
+                .addAsResource("usmDeploymentDescriptor.xml")
                 .addAsResource("logback.xml")
                 .addAsWebInfResource(new File("src/main/resources/META-INF/beans.xml"));
 
@@ -64,8 +65,8 @@ public class ReportServiceBeanITest {
         ReportDTO report = reportBean.create(DTOUtil.createRandomReport());
         assertNotNull(report);
 
-        reportBean.delete(report.getId());
-        report = reportBean.findById(report.getId());
+        reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName());
+        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName());
         assertNull(report);
 
     }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * FIXME unify the Report DTO usage with the ReportServiceBean
  */
 public class Report implements java.io.Serializable {
 
@@ -15,7 +16,7 @@ public class Report implements java.io.Serializable {
 	private String description;
 	private String filterExpression;
 	private String outComponents;
-	private long scopeId;
+	private String scopeName;
 	private String createdBy;
 	private Date createdOn;
 	private VisibilityEnum visibility;
@@ -29,14 +30,14 @@ public class Report implements java.io.Serializable {
 	}
 
 	public Report(long id, String name, String filterExpression,
-			String outComponents, boolean isActive, long scopeId,
+			String outComponents, boolean isActive, String scopeName,
 			String createdBy, Date createdOn, VisibilityEnum visibility,
 			boolean isDeleted) {
 		this.id = id;
 		this.name = name;
 		this.filterExpression = filterExpression;
 		this.outComponents = outComponents;
-		this.scopeId = scopeId;
+		this.scopeName = scopeName;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
 		this.setVisibility(visibility);
@@ -45,7 +46,7 @@ public class Report implements java.io.Serializable {
 
 	public Report(long id, String name, String description,
 			String filterExpression, String outComponents, boolean isActive,
-			long scopeId, String createdBy, Date createdOn, VisibilityEnum visibility,
+			String scopeName, String createdBy, Date createdOn, VisibilityEnum visibility,
 			boolean isDeleted, Date deletedOn, String deletedBy,
 			Set<ReportExecutionLog> reportExecutionLogs) {
 		this.id = id;
@@ -53,7 +54,7 @@ public class Report implements java.io.Serializable {
 		this.description = description;
 		this.filterExpression = filterExpression;
 		this.outComponents = outComponents;
-		this.scopeId = scopeId;
+		this.scopeName = scopeName;
 		this.createdBy = createdBy;
 		this.createdOn = createdOn;
 		this.setVisibility(visibility);
@@ -104,12 +105,12 @@ public class Report implements java.io.Serializable {
 	}
 
 
-	public long getScopeId() {
-		return this.scopeId;
+	public String getScopeName() {
+		return this.scopeName;
 	}
 
-	public void setScopeId(long scopeId) {
-		this.scopeId = scopeId;
+	public void setScopeName(String scopeName) {
+		this.scopeName = scopeName;
 	}
 
 	public String getCreatedBy() {

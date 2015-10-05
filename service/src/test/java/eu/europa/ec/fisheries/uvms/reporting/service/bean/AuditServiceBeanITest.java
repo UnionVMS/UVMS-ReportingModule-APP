@@ -36,6 +36,7 @@ public class AuditServiceBeanITest {
 	              .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
 	              .addAsManifestResource(new File( "src/test/resources/META-INF/jboss-deployment-structure.xml"))
 	              .addAsResource("config.properties")
+				  .addAsResource("usmDeploymentDescriptor.xml")
 	              .addAsResource("logback.xml");
 	  	
 	      File[] libs = Maven.resolver().loadPomFromFile("pom.xml").importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST, ScopeType.PROVIDED).resolve().withTransitivity().asFile();

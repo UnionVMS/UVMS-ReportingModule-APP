@@ -22,7 +22,7 @@ public class ReportDTO implements Serializable {
 	private String name;
 	private String description;
 	private String outComponents;
-	private long scopeId;
+	private String scopeName;
 	private String createdBy;
     private boolean shareable;
     private boolean editable;
@@ -34,7 +34,7 @@ public class ReportDTO implements Serializable {
                      @JsonProperty("name") String name,
                      @JsonProperty("description") String description,
                      @JsonProperty("outComponents") String outComponents,
-                     @JsonProperty("scopeId") long scopeId,
+                     @JsonProperty("scopeName") String scopeName,
                      @JsonProperty("createdBy") String createdBy,
                      @JsonProperty("visibility") VisibilityEnum visibility,
                      @JsonProperty("isDeleted") boolean isDeleted,
@@ -45,7 +45,7 @@ public class ReportDTO implements Serializable {
         this.name = name;
         this.description = description;
         this.outComponents = outComponents;
-        this.scopeId = scopeId;
+        this.scopeName = scopeName;
         this.createdBy = createdBy;
         this.visibility = visibility;
         this.isDeleted = isDeleted;
@@ -113,12 +113,12 @@ public class ReportDTO implements Serializable {
 		this.outComponents = outComponents;
 	}
 
-	public long getScopeId() {
-		return this.scopeId;
+	public String getScopeName() {
+		return this.scopeName;
 	}
 
-	public void setScopeId(long scopeId) {
-		this.scopeId = scopeId;
+	public void setScopeName(String scopeName) {
+		this.scopeName = scopeName;
 	}
 
 	public String getCreatedBy() {
