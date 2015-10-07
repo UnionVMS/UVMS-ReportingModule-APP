@@ -59,6 +59,7 @@ public class MovementDTO {
     }
 
     public SimpleFeature toFeature(){
+        // FIXME add sanity check
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENT);
         featureBuilder.add(getGeometry());
         featureBuilder.add(DateUtils.UI_FORMATTER.print(new DateTime(getPositionTime())));// FIXME
@@ -66,13 +67,17 @@ public class MovementDTO {
         featureBuilder.add(getConnectId());
         featureBuilder.add(getStatus());
         featureBuilder.add(getCourse());
-        featureBuilder.add(getMovementType().value());
+        if (getMovementType() != null){
+            featureBuilder.add(getMovementType().value());
+        }
         featureBuilder.add(getCalculatedSpeed());
         featureBuilder.add(asset.getCfr());
         featureBuilder.add(asset.getCountryCode());
         featureBuilder.add(asset.getIrcs());
         featureBuilder.add(asset.getName());
-        featureBuilder.add(asset.getVesselId().getGuid());
+        if (asset.getVesselId() != null){
+            featureBuilder.add(asset.getVesselId().getGuid());
+        }
         featureBuilder.add(asset.getColor());
         return featureBuilder.buildFeature(getGuid());
     }

@@ -18,9 +18,9 @@ public class ArquillianTest {
                 .addAsManifestResource(new File( "src/test/resources/META-INF/jboss-deployment-structure.xml"))
                 .addAsResource("config.properties")
                 .addAsResource("logback.xml")
-                .addAsWebInfResource(new File("src/main/webapp/WEB-INF/beans.xml"));
-
-        File[] libs = Maven.resolver().loadPomFromFile("pom.xml").importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST).resolve().withTransitivity().asFile();
+                .addAsWebInfResource(new File("src/test/webapp/WEB-INF/beans.xml"));
+        File[] libs = Maven.resolver().loadPomFromFile("pom.xml")
+                .importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST).resolve().withTransitivity().asFile();
         war = war.addAsLibraries(libs);
 
         System.out.println(war.toString(true)); 

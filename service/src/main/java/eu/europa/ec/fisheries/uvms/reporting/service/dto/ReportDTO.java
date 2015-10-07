@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import java.util.Set;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReportDTO implements Serializable {
 
 	private Long id;
@@ -27,6 +29,8 @@ public class ReportDTO implements Serializable {
     private boolean shareable;
     private boolean editable;
     private boolean deletable;
+
+    ReportDTO(){}
 
     @Builder
     @JsonCreator
@@ -54,7 +58,6 @@ public class ReportDTO implements Serializable {
         this.filters = filters;
     }
 
-    @JsonUnwrapped
     private AuditDTO audit;
 
 	private VisibilityEnum visibility;

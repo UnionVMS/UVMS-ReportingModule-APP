@@ -37,17 +37,17 @@ import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
 @RunWith(Arquillian.class)
 @Transactional
-public class FilterDAOTest {
+public class FilterDAOIT {
 
     @PersistenceContext
     private EntityManager em;
 
-    private FilterDAO dao;
+    private FilterDAO filterDAO;
     private ReportDAO reportDAO;
 
     @Before
     public void before(){
-        dao = new FilterDAO(em);
+        filterDAO = new FilterDAO(em);
         reportDAO = new ReportDAO(em);
     }
 
@@ -89,47 +89,47 @@ public class FilterDAOTest {
         filter1.setGuid("guid1");
         filter1.setName("vessel1");
         expectedCollection.add(filter1);
-        dao.createEntity(filter1);
+        filterDAO.createEntity(filter1);
 
         VesselFilter filter2 = new VesselFilter();
         filter2.setReport(savedReport);
         filter2.setGuid("guid2");
         filter2.setName("vessel2");
         expectedCollection.add(filter2);
-        dao.createEntity(filter2);
+        filterDAO.createEntity(filter2);
 
         VmsPositionFilter filter3 = new VmsPositionFilter();
         filter3.setMaximumSpeed("123");
         filter3.setMinimumSpeed("54654");
         filter3.setReport(savedReport);
         expectedCollection.add(filter3);
-        dao.createEntity(filter3);
+        filterDAO.createEntity(filter3);
 
         VesselGroupFilter filter4 = new VesselGroupFilter();
         filter4.setReport(savedReport);
         filter4.setGroupId("1");
         filter4.setUserName("ffsdfsdfds");
         expectedCollection.add(filter4);
-        dao.createEntity(filter4);
+        filterDAO.createEntity(filter4);
 
         VesselGroupFilter filter5 = new VesselGroupFilter();
         filter5.setReport(savedReport);
         filter5.setGroupId("2");
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
-        dao.createEntity(filter5);
+        filterDAO.createEntity(filter5);
 
         DateTimeFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(savedReport);
         PositionSelector positionSelector = new PositionSelector();
         positionSelector.setPosition(Position.HOURS);
         positionSelector.setSelector(Selector.LAST);
-        positionSelector.setValue(24L);
+        positionSelector.setValue(24);
         filter6.setPositionSelector(positionSelector);
         expectedCollection.add(filter6);
-        dao.createEntity(filter6);
+        filterDAO.createEntity(filter6);
 
-        List<Filter> filters = dao.listByReportId(savedReport.getId());
+        List<Filter> filters = filterDAO.listByReportId(savedReport.getId());
         ReflectionAssert.assertReflectionEquals(expectedCollection, filters, LENIENT_ORDER);
 
     }

@@ -65,7 +65,7 @@ public class ReportMapper {
         reportDTO.setDeletedBy(report.getDeletedBy());
         reportDTO.setVisibility(report.getVisibility());
         if (filters) {
-            reportDTO.setFilters( filterSetToFilterDTOSet(report.getFilters()) );//TODO TEst
+            reportDTO.setFilters( filterSetToFilterDTOSet(report.getFilters()) );
         }
 
         if (features != null){

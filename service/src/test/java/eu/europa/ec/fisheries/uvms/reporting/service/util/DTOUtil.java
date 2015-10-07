@@ -22,8 +22,7 @@ public class DTOUtil {
         ReportDTO entity = ReportDTO.builder().build();
 
         entity.setCreatedBy(createdBy);
-        entity.setAudit(new AuditDTO());
-        entity.getAudit().setCreatedOn(date);
+        entity.setAudit(new AuditDTO(date));
         entity.setDescription(description);
         entity.setName(name);
         entity.setOutComponents(outComponents);

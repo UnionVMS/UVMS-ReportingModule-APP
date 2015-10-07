@@ -27,7 +27,9 @@ import static javax.persistence.CascadeType.ALL;
                         "WHERE ((r.scopeName = :scopeName AND (r.createdBy = :username OR r.visibility = 'SCOPE') ) OR r.visibility = 'PUBLIC') " +
                         "AND r.isDeleted <> 'Y' " +
                         "GROUP BY r.id, l.id"),
-        @NamedQuery(name = Report.FIND_BY_ID ,query = "SELECT r FROM Report r WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND (r.createdBy = :username OR (r.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC')")
+        @NamedQuery(name = Report.FIND_BY_ID , query = "SELECT r FROM Report r " +
+                        "WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND (r.createdBy = :username " +
+                        "OR (r.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC')")
 })
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(exclude = {"executionLogs", "filters", "audit"})

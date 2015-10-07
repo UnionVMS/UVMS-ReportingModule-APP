@@ -1,8 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -11,7 +9,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.UserRoleRequestWrapper;
@@ -26,7 +23,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -55,11 +51,11 @@ public class ReportingResource extends UnionVMSResource {
     	
     	LOG.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
-        if (request instanceof UserRoleRequestWrapper) {
+       if (request instanceof UserRoleRequestWrapper) {
 
-            UserRoleRequestWrapper requestWrapper = (UserRoleRequestWrapper) request;
+           UserRoleRequestWrapper requestWrapper = (UserRoleRequestWrapper) request;
 
-            Set<String> features = requestWrapper.getRoles();
+           Set<String> features = requestWrapper.getRoles();
 
             Collection < ReportDTO > reportsList = null;
             try {
@@ -75,7 +71,7 @@ public class ReportingResource extends UnionVMSResource {
 
             return createSuccessResponse(reportsList);
         } else {
-            return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+           return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
     }
     
@@ -182,15 +178,15 @@ public class ReportingResource extends UnionVMSResource {
 	   	report.setCreatedBy(username);
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
-
+        ReportDTO dto;
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
             try {
-                reportService.create(report);
+                dto = reportService.create(report);
             } catch (ReportingServiceException e) {
                 LOG.error("createReport failed.", e);
                 return createErrorResponse();
             }
-            return createSuccessResponse();
+            return createSuccessResponse(dto);
         } else {
             return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
@@ -239,10 +235,9 @@ public class ReportingResource extends UnionVMSResource {
 
         return restResponse;
     }
-    
-    
+
     @GET
-    @Path("/execute/{id}")
+    @Path("/run/{id}")
    	@Produces(MediaType.APPLICATION_JSON)
     public Response runReport(@Context HttpServletRequest request,
    				              @Context HttpServletResponse response,
@@ -254,27 +249,18 @@ public class ReportingResource extends UnionVMSResource {
     	LOG.info("{} is requesting shareReport(...), with a ID={}",username, id);
 
         VmsDTO vmsDto;
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode rootNode = objectMapper.createObjectNode();
+        ObjectNode jsonNodes;
 
         try {
             vmsDto = vmsService.getVmsDataByReportId(username, scopeName, id);
+            jsonNodes = vmsDto.toObjectNode();
 
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
-            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
-
-            rootNode.set("movements", movementsNode);
-            rootNode.set("segments", segmentsNode);
-            rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
-
-
-        } catch (ReportingServiceException | IOException e) {
+        } catch (ReportingServiceException e) {
             LOG.error("Report execution failed.", e);
             return createErrorResponse();
         }
 
-    	return createSuccessResponse(rootNode);
+    	return createSuccessResponse(jsonNodes);
     }
 
 }
