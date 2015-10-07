@@ -353,18 +353,17 @@
         </repository>
     </repositories>
 
+ 	
     <distributionManagement>
         <repository>
-            <id>hav.releases</id>
-            <name>HaV release repo</name>
-            <url>http://livm06p:9080/nexus/content/repositories/releases/</url>
-            <layout>default</layout>
+            <id>digit-releases</id>
+            <name>DG DIGIT Repository</name>
+            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
         </repository>
         <snapshotRepository>
-            <id>hav.snapshots</id>
-            <name>HaV release repo</name>
-            <url>http://livm06p:9080/nexus/content/repositories/snapshots/</url>
-            <layout>default</layout>
+            <id>digit-snapshots</id>
+            <name>DG DIGIT Snapshot Repository</name>
+            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -386,7 +385,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.6</version>
+                <version>LATEST</version>
                 <configuration>
                     <check>true</check>
                     <format>xml</format>
