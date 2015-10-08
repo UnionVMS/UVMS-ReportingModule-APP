@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
@@ -146,7 +147,7 @@ public class Report implements Serializable {
 
     @PrePersist
     private void onCreate() {
-        audit = new Audit(new Date());//FIXME Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime()
+        audit = new Audit(DateUtils.nowUTC().toDate());
     }
 
     public Long getId() {
