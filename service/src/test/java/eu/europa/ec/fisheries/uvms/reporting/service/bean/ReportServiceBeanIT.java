@@ -27,7 +27,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 
 @RunWith(Arquillian.class)
 @Transactional
-public class ReportServiceBeanITest {
+public class ReportServiceBeanIT {
 
     @EJB
     private ReportServiceBean reportBean;
