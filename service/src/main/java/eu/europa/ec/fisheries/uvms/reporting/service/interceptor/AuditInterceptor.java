@@ -7,11 +7,11 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.Report;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
@@ -38,14 +38,14 @@ public class AuditInterceptor implements Serializable {
 		AuditActionEnum auditAction = auditActionInterface.auditActionType();
 		
 		if (auditAction.equals(AuditActionEnum.CREATE)) {
-			Report report = (Report)result;
+            ReportDTO report = (ReportDTO)result;
 			if (report != null) {
 				Long id = report.getId();
 				sendAuditReport(auditAction, id);
 			}			
 			
 		} else if (auditAction.equals(AuditActionEnum.MODIFY)) {
-			Report report = (Report)parameters[0];
+            ReportDTO report = (ReportDTO)parameters[0];
 			if (report != null) {
 				Long id = report.getId();
 				sendAuditReport(auditAction, id);
