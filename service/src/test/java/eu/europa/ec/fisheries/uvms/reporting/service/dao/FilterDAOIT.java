@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.*;
 import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
@@ -57,6 +58,7 @@ public class FilterDAOIT {
                 .addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.service")
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(new File("src/test/resources/META-INF/jboss-deployment-structure.xml"))
+                .addAsResource("usmDeploymentDescriptor.xml")
                 .addAsResource("config.properties")
                 .addAsResource("logback.xml")
                 .addAsWebInfResource(new File("src/main/resources/META-INF/beans.xml"));
@@ -121,11 +123,9 @@ public class FilterDAOIT {
 
         DateTimeFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(savedReport);
-        PositionSelector positionSelector = new PositionSelector();
-        positionSelector.setPosition(Position.HOURS);
-        positionSelector.setSelector(Selector.LAST);
-        positionSelector.setValue(24);
-        filter6.setPositionSelector(positionSelector);
+        filter6.setPositionSelector(
+                PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()
+        );
         expectedCollection.add(filter6);
         filterDAO.createEntity(filter6);
 
