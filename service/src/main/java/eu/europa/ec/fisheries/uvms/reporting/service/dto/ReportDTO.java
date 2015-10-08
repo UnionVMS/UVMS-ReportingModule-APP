@@ -71,7 +71,7 @@ public class ReportDTO implements Serializable {
 
 	private Set<ExecutionLogDTO> executionLogs;
 
-    public Set<ExecutionLogDTO> filterLogsByUser(final String user){// TODO FIXME
+    public Set<ExecutionLogDTO> filterLogsByUser(final String user){// FIXME
         Set<ExecutionLogDTO> filter = null;
         if (getExecutionLogs() != null){
             Predicate<ExecutionLogDTO> isUserPredicate = new Predicate<ExecutionLogDTO>() {
