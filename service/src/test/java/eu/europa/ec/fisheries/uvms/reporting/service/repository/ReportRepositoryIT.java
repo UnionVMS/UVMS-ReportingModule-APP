@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.reporsitory;
+package eu.europa.ec.fisheries.uvms.reporting.service.repository;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
@@ -43,6 +44,7 @@ public class ReportRepositoryIT {
                 .addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.service")
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsResource("config.properties")
+                .addAsResource("usmDeploymentDescriptor.xml")
                 .addAsResource("logback.xml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
@@ -290,11 +292,9 @@ public class ReportRepositoryIT {
 
         DateTimeFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(report);
-        PositionSelector positionSelector = new PositionSelector();
-        positionSelector.setPosition(Position.HOURS);
-        positionSelector.setSelector(Selector.LAST);
-        positionSelector.setValue(24L);
-        filter6.setPositionSelector(positionSelector);
+        filter6.setPositionSelector(
+                PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()
+        );
 
         ExecutionLog executionLog = new ExecutionLog();
         executionLog.setExecutedOn(new Date());
