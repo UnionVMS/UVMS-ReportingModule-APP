@@ -25,7 +25,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 
 @RunWith(Arquillian.class)
 @Transactional(TransactionMode.ROLLBACK)
-public class AuditServiceBeanITest {
+public class AuditServiceBeanIT {
 	
 	@EJB
 	AuditService auditService;
