@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialMessageService;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageService;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
@@ -50,6 +51,9 @@ public class VmsServiceBean implements VmsService {
 
     @EJB
     private MovementMessageService movementModule;
+
+    @EJB
+    private SpatialMessageService spatialModule;
 
     @Override
     @Transactional
