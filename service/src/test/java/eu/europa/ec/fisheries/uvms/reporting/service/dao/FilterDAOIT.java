@@ -2,15 +2,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -31,9 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.*;
 import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
 @RunWith(Arquillian.class)
@@ -121,7 +113,7 @@ public class FilterDAOIT {
         expectedCollection.add(filter5);
         filterDAO.createEntity(filter5);
 
-        DateTimeFilter filter6 = DateTimeFilterBuilder().build();
+        CommonFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(savedReport);
         filter6.setPositionSelector(
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()

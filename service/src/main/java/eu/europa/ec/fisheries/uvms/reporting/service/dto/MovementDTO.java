@@ -62,7 +62,7 @@ public class MovementDTO {
         // FIXME add sanity check
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENT);
         featureBuilder.add(getGeometry());
-        featureBuilder.add(DateUtils.UI_FORMATTER.print(new DateTime(getPositionTime())));// FIXME
+        featureBuilder.add(getPositionTime());
         featureBuilder.add(getMeasuredSpeed());
         featureBuilder.add(getConnectId());
         featureBuilder.add(getStatus());

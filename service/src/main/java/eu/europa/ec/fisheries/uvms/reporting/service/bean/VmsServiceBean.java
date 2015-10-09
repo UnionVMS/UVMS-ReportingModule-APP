@@ -8,7 +8,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
@@ -19,7 +19,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsQueryMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
@@ -65,20 +65,20 @@ public class VmsServiceBean implements VmsService {
                 throw new ReportingServiceException("No report found with id " + id);
             }
 
-            VmsQueryMapper queryMapper = VmsQueryMapper.VmsQueryMapperBuilder().filters(reportByReportId.getFilters()).build();
+            FilterProcessor processor = new FilterProcessor().init(reportByReportId.getFilters());
 
-            if(queryMapper.hasVesselsOrVesselGroups()){
+            if(processor.hasVesselsOrVesselGroups()){
 
                 Set<Vessel> vesselList = new HashSet<>();
-                if (queryMapper.hasVessels()) {
-                    List<Vessel> vesselsByVesselListQuery = vesselModule.getVesselsByVesselListQuery(queryMapper.getVesselListQuery());
+                if (processor.hasVessels()) {
+                    List<Vessel> vesselsByVesselListQuery = vesselModule.getVesselsByVesselListQuery(processor.toVesselListQuery());
                     if (vesselsByVesselListQuery != null) {
                         vesselList.addAll(vesselsByVesselListQuery);
                     }
                 }
 
-                if (queryMapper.hasVesselGroups()) {
-                    List<Vessel> vesselsByVesselGroups = vesselModule.getVesselsByVesselGroups(queryMapper.getVesselGroupList());
+                if (processor.hasVesselGroups()) {
+                    List<Vessel> vesselsByVesselGroups = vesselModule.getVesselsByVesselGroups(processor.getVesselGroupList());
                     if (vesselsByVesselGroups != null) {
                         vesselList.addAll(vesselsByVesselGroups);
                     }
@@ -86,16 +86,17 @@ public class VmsServiceBean implements VmsService {
 
                 ImmutableMap<String, Vessel> stringVesselMapByGuid = getStringVesselMapByGuid(vesselList);
 
-                List<MovementMapResponseType> movementMap = movementModule.getMovementMap(queryMapper.getMovementQuery());
+                List<MovementMapResponseType> movementMap = movementModule.getMovementMap(processor.toMovementQuery());
 
                 vmsDto = VmsDTO.getVmsDto(stringVesselMapByGuid, movementMap);
                 reportByReportId.updateExecutionLog(username);
             }
 
-        } catch (JMSException | ModelMapperException | VesselModelMapperException | MessageException  e) {
+        } catch (JMSException | ModelMapperException | VesselModelMapperException | MessageException e) {
             throw new ReportingServiceException("", e);
+        } catch (ProcessorException e) {
+            throw new ReportingServiceException("Error while processing reporting filters.", e);
         }
-
         return vmsDto;
     }
 

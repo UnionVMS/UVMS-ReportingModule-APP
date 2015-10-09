@@ -148,7 +148,7 @@ public class FilterExpression {
 
     public static enum PositionSelector {
 
-        ALL("all");
+        ALL("all"), LAST("last");
 
         private String name;
 
@@ -173,16 +173,17 @@ public class FilterExpression {
         return movementQuery;
     }
 
-    private List<ListCriteria> createMovementListCriteria(final Date startDate, Date endDate, List<ListCriteria> criterias){
+    private List<ListCriteria> createMovementListCriteria(final Date startDate,
+                                                          final Date endDate, final List<ListCriteria> criteria){
         ListCriteria listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.FROM_DATE);
-        listCriteria.setValue(DateUtil.parseUTCDateToString(startDate)); // FIXME
-        criterias.add(listCriteria);
+        listCriteria.setValue(DateUtil.parseUTCDateToString(startDate));
+        criteria.add(listCriteria);
         listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.TO_DATE);
-        listCriteria.setValue(DateUtil.parseUTCDateToString(endDate)); // FIXME
-        criterias.add(listCriteria);
-        return criterias;
+        listCriteria.setValue(DateUtil.parseUTCDateToString(endDate));
+        criteria.add(listCriteria);
+        return criteria;
     }
 
     private List<ListCriteria> createMovementListCriteria(final FilterExpression filter){

@@ -24,7 +24,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
@@ -290,7 +290,7 @@ public class ReportRepositoryIT {
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
 
-        DateTimeFilter filter6 = DateTimeFilterBuilder().build();
+        CommonFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(report);
         filter6.setPositionSelector(
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()

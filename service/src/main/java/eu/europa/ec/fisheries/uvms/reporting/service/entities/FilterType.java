@@ -2,5 +2,5 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 public enum FilterType {
 
-    VESSEL, VGROUP, DATETIME, VMSPOS;
+    VESSEL, VGROUP, COMMON, VMSPOS;
 }

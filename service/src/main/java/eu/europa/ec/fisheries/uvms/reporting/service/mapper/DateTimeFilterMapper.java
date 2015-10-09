@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.DateTimeFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DateTimeFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -12,8 +12,8 @@ public interface DateTimeFilterMapper {
     DateTimeFilterMapper INSTANCE = Mappers.getMapper(DateTimeFilterMapper.class);
 
     @Mapping(target = "reportId", source = "report.id")
-    DateTimeFilterDTO dateTimeFilterToDateTimeFilterDTO(DateTimeFilter dateTimeFilter);
+    CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter dateTimeFilter);
 
-    DateTimeFilter dateTimeFilterDTOToDateTimeFilter(DateTimeFilterDTO dateTimeFilterDTO);
+    CommonFilter dateTimeFilterDTOToDateTimeFilter(CommonFilterDTO dateTimeFilterDTO);
 
 }

@@ -5,7 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(uses = ObjectFactory.class)
 public interface PositionSelectorMapper {
 
     PositionSelectorMapper INSTANCE = Mappers.getMapper(PositionSelectorMapper.class);

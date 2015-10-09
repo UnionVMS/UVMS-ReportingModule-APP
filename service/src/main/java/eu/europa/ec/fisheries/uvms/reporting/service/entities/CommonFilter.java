@@ -4,7 +4,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -16,7 +15,7 @@ import java.util.Date;
 @Entity
 @DiscriminatorValue("DATETIME")
 @EqualsAndHashCode(callSuper = true)
-public class DateTimeFilter extends Filter {
+public class CommonFilter extends Filter {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "START_DATE")
@@ -29,15 +28,16 @@ public class DateTimeFilter extends Filter {
     @Embedded
     private PositionSelector positionSelector;
 
-    DateTimeFilter(){
-        super(FilterType.DATETIME);
+    CommonFilter(){
+        super(FilterType.COMMON);
     }
 
     @Builder(builderMethodName = "DateTimeFilterBuilder")
-    public DateTimeFilter(Date startDate, Date endDate) {
-        super(FilterType.DATETIME);
+    public CommonFilter(Date startDate, Date endDate, PositionSelector positionSelector) {
+        super(FilterType.COMMON);
         this.startDate = startDate;
         this.endDate = endDate;
+        this.positionSelector = positionSelector;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class DateTimeFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        DateTimeFilter incoming = (DateTimeFilter) filter;
+        CommonFilter incoming = (CommonFilter) filter;
         this.setEndDate(incoming.getEndDate());
         this.setStartDate(incoming.getStartDate());
     }

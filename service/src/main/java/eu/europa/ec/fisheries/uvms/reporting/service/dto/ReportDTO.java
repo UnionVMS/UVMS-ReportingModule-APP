@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
@@ -67,6 +66,7 @@ public class ReportDTO implements Serializable {
     private Date deletedOn;
 
 	private String deletedBy;
+
     private Set<FilterDTO> filters = new HashSet<>(0);
 
 	private Set<ExecutionLogDTO> executionLogs;

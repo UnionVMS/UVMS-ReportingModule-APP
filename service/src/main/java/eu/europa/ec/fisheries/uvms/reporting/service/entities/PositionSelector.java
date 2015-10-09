@@ -1,22 +1,32 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import lombok.Builder;
+
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-/**
- * //TODO create test
- */
 @Embeddable
 public class PositionSelector {
 
-    private Long value;
+    private int value;
 
     @Enumerated(EnumType.STRING)
     private Selector selector;
 
     @Enumerated(EnumType.STRING)
     private Position position;
+
+    PositionSelector(){
+
+    }
+
+    @Builder(builderMethodName = "PositionSelectorBuilder")
+    public PositionSelector(int value, Selector selector, Position position) {
+        this.value = value;
+        this.selector = selector;
+        this.position = position;
+    }
 
     public Position getPosition() {
         return position;
@@ -35,11 +45,11 @@ public class PositionSelector {
         this.selector = selector;
     }
 
-    public Long getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(Long value) {
+    public void setValue(int value) {
         this.value = value;
     }
 }

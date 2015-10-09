@@ -8,8 +8,8 @@ import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 
 import java.util.Date;
 
-@JsonTypeName("datetime")
-public class DateTimeFilterDTO extends FilterDTO {
+@JsonTypeName("common")
+public class CommonFilterDTO extends FilterDTO {
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date startDate;
