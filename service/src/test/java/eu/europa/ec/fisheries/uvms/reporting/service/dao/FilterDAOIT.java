@@ -20,6 +20,7 @@ import org.unitils.reflectionassert.ReflectionAssert;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,10 +68,10 @@ public class FilterDAOIT {
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)
-    public void testListByReportId() throws ServiceException {
+    public void testListById() throws ServiceException {
 
         Set<Filter> expectedCollection = new HashSet<>();
-
+        List<Long> filterIds = new ArrayList<>();
         Report report = DTOUtil.createRandomReportEntity();
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
@@ -83,35 +84,35 @@ public class FilterDAOIT {
         filter1.setGuid("guid1");
         filter1.setName("vessel1");
         expectedCollection.add(filter1);
-        filterDAO.createEntity(filter1);
+        filterIds.add(filterDAO.createEntity(filter1).getId());
 
         VesselFilter filter2 = new VesselFilter();
         filter2.setReport(savedReport);
         filter2.setGuid("guid2");
         filter2.setName("vessel2");
         expectedCollection.add(filter2);
-        filterDAO.createEntity(filter2);
+        filterIds.add(filterDAO.createEntity(filter2).getId());
 
         VmsPositionFilter filter3 = new VmsPositionFilter();
         filter3.setMaximumSpeed("123");
         filter3.setMinimumSpeed("54654");
         filter3.setReport(savedReport);
         expectedCollection.add(filter3);
-        filterDAO.createEntity(filter3);
+        filterIds.add(filterDAO.createEntity(filter3).getId());
 
         VesselGroupFilter filter4 = new VesselGroupFilter();
         filter4.setReport(savedReport);
         filter4.setGroupId("1");
         filter4.setUserName("ffsdfsdfds");
         expectedCollection.add(filter4);
-        filterDAO.createEntity(filter4);
+        filterIds.add(filterDAO.createEntity(filter4).getId());
 
         VesselGroupFilter filter5 = new VesselGroupFilter();
         filter5.setReport(savedReport);
         filter5.setGroupId("2");
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
-        filterDAO.createEntity(filter5);
+        filterIds.add(filterDAO.createEntity(filter5).getId());
 
         CommonFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(savedReport);
@@ -119,9 +120,9 @@ public class FilterDAOIT {
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()
         );
         expectedCollection.add(filter6);
-        filterDAO.createEntity(filter6);
+        filterIds.add(filterDAO.createEntity(filter6).getId());
 
-        List<Filter> filters = filterDAO.listByReportId(savedReport.getId());
+        List<Filter> filters = filterDAO.listById(filterIds);
         ReflectionAssert.assertReflectionEquals(expectedCollection, filters, LENIENT_ORDER);
 
     }

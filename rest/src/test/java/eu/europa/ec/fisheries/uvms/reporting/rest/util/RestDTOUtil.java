@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
+
 public class RestDTOUtil {
 
     public static ReportDTO createReport(String name,
@@ -17,18 +19,18 @@ public class RestDTOUtil {
                                          String outComponents,
                                          String scopeName,
                                          VisibilityEnum visibilityEnum) {
-        ReportDTO entity = ReportDTO.builder().build();
+        ReportDTO dto = ReportDTOBuilder().build();
 
-        entity.setCreatedBy(createdBy);
-        entity.setAudit(new AuditDTO(date));
-        entity.setDescription(description);
-        entity.setName(name);
-        entity.setOutComponents(outComponents);
-        entity.setExecutionLogs(new HashSet());
-        entity.setScopeName(scopeName);
-        entity.setVisibility(visibilityEnum);
+        dto.setCreatedBy(createdBy);
+        dto.setAudit(new AuditDTO(date));
+        dto.setDescription(description);
+        dto.setName(name);
+        dto.setOutComponents(outComponents);
+        dto.setExecutionLogs(new HashSet());
+        dto.setScopeName(scopeName);
+        dto.setVisibility(visibilityEnum);
 
-        return entity;
+        return dto;
     }
 
     public static ReportDTO createRandomReport() {

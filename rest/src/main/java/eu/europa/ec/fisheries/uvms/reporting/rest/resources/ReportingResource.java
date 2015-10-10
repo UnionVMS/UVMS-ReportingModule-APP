@@ -1,9 +1,15 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.rest.json.ReportDTOSerializer;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
@@ -23,6 +29,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -31,10 +38,10 @@ import java.util.Set;
 public class ReportingResource extends UnionVMSResource {
 
     final static Logger LOG = LoggerFactory.getLogger(ReportingResource.class);
-    
+
     @Context
-	private UriInfo context;
-	
+    private UriInfo context;
+
     @EJB
     private ReportServiceBean reportService;
 
@@ -42,103 +49,102 @@ public class ReportingResource extends UnionVMSResource {
     private VmsService vmsService;
 
     @GET
-	@Path("/list")
-	@Produces(MediaType.APPLICATION_JSON)
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listReports(@Context HttpServletRequest request,
-    				            @Context HttpServletResponse response,
+                                @Context HttpServletResponse response,
                                 @HeaderParam("scopeName") String scopeName) {
-    	final String username = "georgi"; //request.getRemoteUser();
-    	
-    	LOG.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
+        final String username = "georgi"; //request.getRemoteUser();
 
-       //if (request instanceof UserRoleRequestWrapper) {
+        LOG.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
-           UserRoleRequestWrapper requestWrapper = (UserRoleRequestWrapper) request;
+        //if (request instanceof UserRoleRequestWrapper) {
 
-           Set<String> features = requestWrapper.getRoles();
+        UserRoleRequestWrapper requestWrapper = (UserRoleRequestWrapper) request;
 
-            Collection < ReportDTO > reportsList = null;
-            try {
-                reportsList = reportService.listByUsernameAndScope(features, username, scopeName);
-            } catch (ReportingServiceException e) {
-                LOG.error("Failed to list reports.", e);
-                return createErrorResponse();
-            }
+        Set<String> features = requestWrapper.getRoles();
 
-            for (ReportDTO report : reportsList) {
-                report.setExecutionLogs(report.filterLogsByUser(username));
-            }
+        Collection < ReportDTO > reportsList = null;
+        try {
+            reportsList = reportService.listByUsernameAndScope(features, username, scopeName);
+        } catch (ReportingServiceException e) {
+            LOG.error("Failed to list reports.", e);
+            return createErrorResponse();
+        }
 
-            return createSuccessResponse(reportsList);
+        for (ReportDTO report : reportsList) {
+            report.setExecutionLogs(report.filterLogsByUser(username));
+        }
+
+        return createSuccessResponse(reportsList);
         //} else {
         //   return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         //}
     }
-    
+
     @GET
     @Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getReport(@Context HttpServletRequest request,
                               @Context HttpServletResponse response,
                               @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName) {
-    	
-    	String username = "georgi";//request.getRemoteUser();
-    	
-    	LOG.info("{} is requesting getReport(...), with an ID={}", username, id );
 
-        ReportDTO report = null;
+        String username = "georgi";//request.getRemoteUser();
+
+        LOG.info("{} is requesting getReport(...), with an ID={}", username, id );
+
+        ReportDTO report;
+
         try {
             report = reportService.findById(id, username, scopeName);
-        } catch (ReportingServiceException e) {
+            Response restResponse;
+            if (report != null) {
+                restResponse = createSuccessResponse(report.serialize(new ReportDTOSerializer(ReportDTO.class)));
+            } else {
+                restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+            }
+            return restResponse;
+
+        } catch (ReportingServiceException | IOException e) {
             LOG.error("Failed to get report.", e);
             return createErrorResponse();
         }
-
-        Response restResponse;
-    	
-    	if (report != null) {
-	    	restResponse = createSuccessResponse(report);
-    	} else {
-    		restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
-    	}
-    	
-    	return restResponse;
     }
-    
+
     @DELETE
     @Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReport(@Context HttpServletRequest request,
-    				             @Context HttpServletResponse response,
+                                 @Context HttpServletResponse response,
                                  @PathParam("id") Long id,
                                  @HeaderParam("scopeName") String scopeName) {
-    	
-    	String username = "georgi";//request.getRemoteUser();
-    	
-    	LOG.info("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
+
+        String username = "georgi";//request.getRemoteUser();
+
+        LOG.info("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
 
         try {
-    		reportService.delete(id, username, scopeName);
-    	} catch (ReportingServiceException exc) {
+            reportService.delete(id, username, scopeName);
+        } catch (ReportingServiceException exc) {
             LOG.error("Report deletion failed." , exc);
-    		return  createErrorResponse(ErrorCodes.DELETE_FAILED);
-    	}
+            return  createErrorResponse(ErrorCodes.DELETE_FAILED);
+        }
 
-    	return createSuccessResponse();
+        return createSuccessResponse();
     }
 
-    
+
     @PUT
-	@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateReport(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
                                  ReportDTO report) {
-    	
-    	String username = "georgi";//request.getRemoteUser();
-    	
-    	LOG.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
+
+        String username = "georgi";//request.getRemoteUser();
+
+        LOG.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(report, username);
 
@@ -149,7 +155,7 @@ public class ReportingResource extends UnionVMSResource {
         boolean isUpdate = false;
 
         try {
-           isUpdate = reportService.update(report);
+            isUpdate = reportService.update(report);
         } catch (ReportingServiceException exc) {
             LOG.error("Update failed.", exc);
         }
@@ -163,48 +169,48 @@ public class ReportingResource extends UnionVMSResource {
         }
         return restResponse;
     }
-    
+
     @POST
-   	@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createReport(@Context HttpServletRequest request,
-   				                 @Context HttpServletResponse response,
+                                 @Context HttpServletResponse response,
                                  ReportDTO report) {
-   	
-	   	String username = "georgi"; //request.getRemoteUser();
-	   	
-	   	LOG.info("{} is requesting createReport(...), with a ID={}", username, report.getId());
 
-	   	report.setCreatedBy(username);
+        String username = "georgi"; //request.getRemoteUser();
+
+        LOG.info("{} is requesting createReport(...), with a ID={}", username, report.getId());
+
+        report.setCreatedBy(username);
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
         ReportDTO dto;
         //if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-            try {
-                dto = reportService.create(report);
-            } catch (ReportingServiceException e) {
-                LOG.error("createReport failed.", e);
-                return createErrorResponse();
-            }
-            return createSuccessResponse(dto);
+        try {
+            dto = reportService.create(report);
+            return createSuccessResponse(dto.serialize(new ReportDTOSerializer(ReportDTO.class)));
+
+        } catch (ReportingServiceException | IOException e) {
+            LOG.error("createReport failed.", e);
+            return createErrorResponse();
         //} else {
         //    return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         //}
-
+        }
     }
-    
+
     @PUT
     @Path("/share/{id}/{visibility}")
-   	@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response shareReport(@Context HttpServletRequest request,
-   				                @Context HttpServletResponse response,
+                                @Context HttpServletResponse response,
                                 @PathParam("id") Long id,
                                 @PathParam("visibility") String visibility,
                                 @HeaderParam("scopeName") String scopeName) {
 
-    	String username = "georgi";// request.getRemoteUser();
-   	
-    	LOG.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id,visibility);
+        String username = "georgi";// request.getRemoteUser();
+
+        LOG.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id,visibility);
 
         ReportDTO reportToUpdate;
 
@@ -222,13 +228,13 @@ public class ReportingResource extends UnionVMSResource {
         Response restResponse;
 
         //if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-            try {
-                reportService.update(reportToUpdate);
-            } catch (ReportingServiceException e) {
-                LOG.error("Sharing report failed.", e);
-                return createErrorResponse();
-            }
-            restResponse = createSuccessResponse();
+        try {
+            reportService.update(reportToUpdate);
+        } catch (ReportingServiceException e) {
+            LOG.error("Sharing report failed.", e);
+            return createErrorResponse();
+        }
+        restResponse = createSuccessResponse();
         //} else {
         //    restResponse = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         //}
@@ -238,15 +244,15 @@ public class ReportingResource extends UnionVMSResource {
 
     @GET
     @Path("/run/{id}")
-   	@Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response runReport(@Context HttpServletRequest request,
-   				              @Context HttpServletResponse response,
+                              @Context HttpServletResponse response,
                               @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName) {
-   	
-    	String username = "georgi";// request.getRemoteUser();
-   	
-    	LOG.info("{} is requesting shareReport(...), with a ID={}",username, id);
+
+        String username = "georgi";// request.getRemoteUser();
+
+        LOG.info("{} is requesting shareReport(...), with a ID={}",username, id);
 
         VmsDTO vmsDto;
         ObjectNode jsonNodes;
@@ -260,7 +266,7 @@ public class ReportingResource extends UnionVMSResource {
             return createErrorResponse();
         }
 
-    	return createSuccessResponse(jsonNodes);
+        return createSuccessResponse(jsonNodes);
     }
 
 }

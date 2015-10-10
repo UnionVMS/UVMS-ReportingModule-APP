@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 
 import static com.fasterxml.jackson.annotation.JsonSubTypes.*;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.*;
@@ -20,18 +21,11 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class FilterDTO {
 
-    private Long reportId;
     private Long id;
 
+    private FilterType type;
+
     public abstract Filter convertToFilter();
-
-    public Long getReportId() {
-        return reportId;
-    }
-
-    public void setReportId(Long reportId) {
-        this.reportId = reportId;
-    }
 
     public Long getId() {
         return id;
@@ -39,5 +33,13 @@ public abstract class FilterDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public FilterType getType() {
+        return type;
+    }
+
+    public void setType(FilterType type) {
+        this.type = type;
     }
 }

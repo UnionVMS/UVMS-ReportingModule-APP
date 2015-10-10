@@ -1,13 +1,22 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -17,33 +26,54 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = ReportDTODeserializer.class)
 public class ReportDTO implements Serializable {
 
-	private Long id;
-	private String name;
-	private String description;
-	private String outComponents;
-	private String scopeName;
-	private String createdBy;
+    public final static String DESC = "desc";
+    public final static String CREATED_BY = "createdBy";
+    public final static String ID = "id";
+    public final static String NAME = "name";
+    public final static String OUT_COMPONENTS = "outComponents";
+    public final static String SCOPE_ID = "scopeId";
+    public final static String VISIBILITY = "visibility";
+    public final static String FILTER_EXPRESSION = "filterExpression";
+
+    private Long id;
+    private String name;
+    private String description;
+    private String outComponents;
+    private String scopeName;
+    private String createdBy;
     private boolean shareable;
     private boolean editable;
     private boolean deletable;
+    private AuditDTO audit;
+    private VisibilityEnum visibility;
+    private boolean isDeleted;
+
+    @JsonSerialize(using = CustomDateSerializer.class)
+    private Date deletedOn;
+
+    private String deletedBy;
+
+    private Set<FilterDTO> filters = new HashSet<>(0);
+
+    private Set<ExecutionLogDTO> executionLogs;
 
     ReportDTO(){}
 
-    @Builder
-    @JsonCreator
-    public ReportDTO(@JsonProperty("id") Long id,
-                     @JsonProperty("name") String name,
-                     @JsonProperty("description") String description,
-                     @JsonProperty("outComponents") String outComponents,
-                     @JsonProperty("scopeName") String scopeName,
-                     @JsonProperty("createdBy") String createdBy,
-                     @JsonProperty("visibility") VisibilityEnum visibility,
-                     @JsonProperty("isDeleted") boolean isDeleted,
-                     @JsonProperty("deletedOn") Date deletedOn,
-                     @JsonProperty("deletedBy") String deletedBy,
-                     @JsonProperty("filters") Set<FilterDTO> filters) {
+    @Builder(builderMethodName = "ReportDTOBuilder")
+    public ReportDTO(Long id,
+                     String name,
+                     String description,
+                     String outComponents,
+                     String scopeName,
+                     String createdBy,
+                     VisibilityEnum visibility,
+                     boolean isDeleted,
+                     Date deletedOn,
+                     String deletedBy,
+                     Set<FilterDTO> filters) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -56,20 +86,6 @@ public class ReportDTO implements Serializable {
         this.deletedBy = deletedBy;
         this.filters = filters;
     }
-
-    private AuditDTO audit;
-
-	private VisibilityEnum visibility;
-	private boolean isDeleted;
-
-    @JsonSerialize(using = CustomDateSerializer.class)
-    private Date deletedOn;
-
-	private String deletedBy;
-
-    private Set<FilterDTO> filters = new HashSet<>(0);
-
-	private Set<ExecutionLogDTO> executionLogs;
 
     public Set<ExecutionLogDTO> filterLogsByUser(final String user){// FIXME
         Set<ExecutionLogDTO> filter = null;
@@ -84,53 +100,61 @@ public class ReportDTO implements Serializable {
         return filter;
     }
 
-	public Long getId() {
-		return this.id;
-	}
+    public JsonNode serialize(JsonSerializer deserializer) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, null, null, null));
+        testModule.addSerializer(deserializer);
+        mapper.registerModule(testModule);
+        return mapper.readTree(mapper.writeValueAsString(this));
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getOutComponents() {
-		return this.outComponents;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setOutComponents(String outComponents) {
-		this.outComponents = outComponents;
-	}
+    public String getOutComponents() {
+        return this.outComponents;
+    }
 
-	public String getScopeName() {
-		return this.scopeName;
-	}
+    public void setOutComponents(String outComponents) {
+        this.outComponents = outComponents;
+    }
 
-	public void setScopeName(String scopeName) {
-		this.scopeName = scopeName;
-	}
+    public String getScopeName() {
+        return this.scopeName;
+    }
 
-	public String getCreatedBy() {
-		return this.createdBy;
-	}
+    public void setScopeName(String scopeName) {
+        this.scopeName = scopeName;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public AuditDTO getAudit() {
         return audit;
@@ -140,46 +164,46 @@ public class ReportDTO implements Serializable {
         this.audit = audit;
     }
 
-	public boolean getIsDeleted() {
-		return this.isDeleted;
-	}
+    public boolean getIsDeleted() {
+        return this.isDeleted;
+    }
 
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
-	public Date getDeletedOn() {
-		return this.deletedOn;
-	}
+    public Date getDeletedOn() {
+        return this.deletedOn;
+    }
 
-	public void setDeletedOn(Date deletedOn) {
-		this.deletedOn = deletedOn;
-	}
+    public void setDeletedOn(Date deletedOn) {
+        this.deletedOn = deletedOn;
+    }
 
-	public String getDeletedBy() {
-		return this.deletedBy;
-	}
+    public String getDeletedBy() {
+        return this.deletedBy;
+    }
 
-	public void setDeletedBy(String deletedBy) {
-		this.deletedBy = deletedBy;
-	}
+    public void setDeletedBy(String deletedBy) {
+        this.deletedBy = deletedBy;
+    }
 
-	public Set<ExecutionLogDTO> getExecutionLogs() {
-		return this.executionLogs;
-	}
+    public Set<ExecutionLogDTO> getExecutionLogs() {
+        return this.executionLogs;
+    }
 
     @JsonIgnore
-	public void setExecutionLogs(Set<ExecutionLogDTO> reportExecutionLogs) {
-		this.executionLogs = reportExecutionLogs;
-	}
+    public void setExecutionLogs(Set<ExecutionLogDTO> reportExecutionLogs) {
+        this.executionLogs = reportExecutionLogs;
+    }
 
-	public VisibilityEnum getVisibility() {
-		return visibility;
-	}
+    public VisibilityEnum getVisibility() {
+        return visibility;
+    }
 
-	public void setVisibility(VisibilityEnum visibility) {
-		this.visibility = visibility;
-	}
+    public void setVisibility(VisibilityEnum visibility) {
+        this.visibility = visibility;
+    }
 
     public Set<FilterDTO> getFilters() {
         return filters;

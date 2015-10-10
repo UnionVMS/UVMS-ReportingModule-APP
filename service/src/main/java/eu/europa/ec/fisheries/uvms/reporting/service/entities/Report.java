@@ -24,7 +24,7 @@ import static javax.persistence.CascadeType.ALL;
 @Table(name = "report", schema = "reporting")
 @NamedQueries({
         @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
-                "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
+                "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
                         "WHERE ((r.scopeName = :scopeName AND (r.createdBy = :username OR r.visibility = 'SCOPE') ) OR r.visibility = 'PUBLIC') " +
                         "AND r.isDeleted <> 'Y' " +
                         "GROUP BY r.id, l.id"),
@@ -84,11 +84,12 @@ public class Report implements Serializable {
     private Audit audit;
 
     @Builder(builderMethodName = "ReportBuilder")
-    public Report(String name, String description, String outComponents, String scopeName,
+    public Report(Long id, String name, String description, String outComponents, String scopeName,
                   String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
 
         this.name = name;
+        this.id = id;
         this.description = description;
         this.outComponents = outComponents;
         this.scopeName = scopeName;

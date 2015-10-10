@@ -7,10 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.service.Merger;
 
 import javax.persistence.EntityManager;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * //TODO create test
@@ -39,15 +36,12 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
     @Override
     protected Collection<Filter> loadCurrents(Collection<FilterDTO> input) throws ServiceException {
         Iterator<FilterDTO> iterator = input.iterator();
-        Long reportId = null;
+        List<Long> reportIds = null;
         while (iterator.hasNext()){
             FilterDTO next = iterator.next();
-            reportId = next.getReportId();
-            if(reportId != null){
-                break;
-            }
+            reportIds.add(next.getId());
         }
-        return filterDAO.listByReportId(reportId);
+        return filterDAO.listById(reportIds);
     }
 
     @Override
@@ -56,6 +50,7 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
         boolean merge = !existing.equals(incoming);
 
         if (merge){
+           incoming.setReport(existing.getReport());
            existing.merge(incoming);
         }
 

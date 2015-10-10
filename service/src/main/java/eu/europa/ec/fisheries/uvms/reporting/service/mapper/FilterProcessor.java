@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import java.math.BigInteger;
@@ -112,8 +113,7 @@ public class FilterProcessor {
 
     private List<ListCriteria> processLastPositions(final CommonFilter dateTimeFilter) {
         int positions = dateTimeFilter.getPositionSelector().getValue();
-        // FIXME continue logic here
-        return null;
+        throw new NotImplementedException("Not implemented in Movement API");
     }
 
     private List<ListCriteria> processLastHours(final CommonFilter dateTimeFilter) {

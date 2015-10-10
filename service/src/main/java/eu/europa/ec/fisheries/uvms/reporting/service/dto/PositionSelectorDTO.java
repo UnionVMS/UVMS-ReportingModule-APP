@@ -2,6 +2,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import lombok.Builder;
+
+import java.security.InvalidParameterException;
 
 public class PositionSelectorDTO {
 
@@ -10,6 +13,18 @@ public class PositionSelectorDTO {
     private Selector selector;
 
     private Position position;
+
+    @Builder(builderMethodName = "PositionSelectorDTOBuilder")
+    public PositionSelectorDTO(Long value, Selector selector, Position position) {
+        this.value = value;
+        this.selector = selector;
+        this.position = position;
+        validate(this);
+    }
+
+    private void validate(PositionSelectorDTO positionSelectorDTO) throws InvalidParameterException {
+
+    }
 
     public Long getValue() {
         return value;

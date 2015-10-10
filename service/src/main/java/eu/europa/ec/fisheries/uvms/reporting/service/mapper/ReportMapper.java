@@ -43,13 +43,13 @@ public class ReportMapper {
         existing.setDeletedBy( incoming.getDeletedBy() );
         existing.setVisibility( incoming.getVisibility() );
     }
+
     public ReportDTO reportToReportDto(final Report report) {
         if ( report == null ) {
             return null;
         }
 
-        ReportDTO reportDTO = ReportDTO.builder().build();
-
+        ReportDTO reportDTO = factory.createReportDTO();
         reportDTO.setId( report.getId() );
         reportDTO.setName( report.getName() );
         reportDTO.setDescription( report.getDescription() );
@@ -65,7 +65,7 @@ public class ReportMapper {
         reportDTO.setDeletedBy(report.getDeletedBy());
         reportDTO.setVisibility(report.getVisibility());
         if (filters) {
-            reportDTO.setFilters( filterSetToFilterDTOSet(report.getFilters()) );
+            reportDTO.setFilters(filterSetToFilterDTOSet(report.getFilters()));
         }
 
         if (features != null){
@@ -77,67 +77,69 @@ public class ReportMapper {
         return reportDTO;
     }
 
-    private Set<ExecutionLogDTO> executionSetToExecutionsDTOSet(final Set<ExecutionLog> set) {
-        if ( set == null ) {
+    private Set<ExecutionLogDTO> executionSetToExecutionsDTOSet(final Set<ExecutionLog> executionLogSet) {
+        if ( executionLogSet == null ) {
             return null;
         }
 
-        Set<ExecutionLogDTO> set_ = new HashSet<>();
-        for ( ExecutionLog log : set ) {
-            set_.add(executionLogMapper.executionLogFilterToExecutionLogFilterDTO(log));
+        Set<ExecutionLogDTO> executionLogDTOSet = new HashSet<>();
+        for ( ExecutionLog log : executionLogSet ) {
+            executionLogDTOSet.add(executionLogMapper.executionLogFilterToExecutionLogFilterDTO(log));
         }
 
-        return set_;
+        return executionLogDTOSet;
     }
 
-    public Report reportDtoToReport(ReportDTO report) {
-        if ( report == null ) {
+    public Report reportDtoToReport(ReportDTO dto) {
+        if ( dto == null ) {
             return null;
         }
 
-        Report report_ = factory.createReport();
+        Report report = factory.createReport();
 
-        report_.setId( report.getId() );
-        report_.setName( report.getName() );
-        report_.setDescription( report.getDescription() );
-        report_.setFilters(filterDTOSetToFilterSet(report.getFilters(), report_));
-        report_.setOutComponents(report.getOutComponents());
-        report_.setScopeName(report.getScopeName());
-        report_.setCreatedBy( report.getCreatedBy() );
-        report_.setIsDeleted(report.getIsDeleted());
-        report_.setDeletedOn(report.getDeletedOn());
-        report_.setDeletedBy(report.getDeletedBy());
-        report_.setVisibility( report.getVisibility() );
+        report.setId( dto.getId() );
+        report.setName( dto.getName() );
+        report.setDescription( dto.getDescription() );
+        report.setFilters(filterDTOSetToFilterSet(dto.getFilters(), report));
+        report.setOutComponents(dto.getOutComponents());
+        report.setScopeName(dto.getScopeName());
+        report.setCreatedBy( dto.getCreatedBy() );
+        report.setIsDeleted(dto.getIsDeleted());
+        report.setDeletedOn(dto.getDeletedOn());
+        report.setDeletedBy(dto.getDeletedBy());
+        report.setVisibility( dto.getVisibility() );
 
-        return report_;
+        return report;
     }
 
-    protected Set<FilterDTO> filterSetToFilterDTOSet(Set<Filter> set) {
-        if ( set == null ) {
+    protected Set<FilterDTO> filterSetToFilterDTOSet(Set<Filter> filterSet) {
+        if ( filterSet == null ) {
             return null;
         }
 
-        Set<FilterDTO> set_ = new HashSet<>();
-        for ( Filter filter : set ) {
-            set_.add( filter.convertToDTO() );
+        Set<FilterDTO> filterDTOSet = new HashSet<>();
+        for ( Filter filter : filterSet ) {
+            FilterDTO filterDTO = filter.convertToDTO();
+            filterDTO.setType(filter.getType());
+            filterDTOSet.add( filterDTO );
         }
 
-        return set_;
+        return filterDTOSet;
     }
 
-    protected Set<Filter> filterDTOSetToFilterSet(Set<FilterDTO> set, final Report report) {
-        if ( set == null ) {
+    protected Set<Filter> filterDTOSetToFilterSet(Set<FilterDTO> filterDTOSet, final Report report) {
+        if ( filterDTOSet == null ) {
             return null;
         }
 
-        Set<Filter> set_ = new HashSet<Filter>();
-        for ( FilterDTO filterDTO : set ) {
+        Set<Filter> filterSet = new HashSet<Filter>();
+        for ( FilterDTO filterDTO : filterDTOSet ) {
             Filter filter = filterDTO.convertToFilter();
             filter.setReport(report);
-            set_.add( filter );
+            filterSet.add( filter );
         }
 
-        return set_;
+        return filterSet;
     }
 
     private boolean isAllowed(final ReportFeatureEnum requiredFeature, Set<String> grantedFeatures) {

@@ -6,12 +6,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(uses = ObjectFactory.class)
 public interface VesselFilterMapper {
 
     VesselFilterMapper INSTANCE = Mappers.getMapper(VesselFilterMapper.class);
 
-    @Mapping(target = "reportId", source = "report.id")
     VesselFilterDTO vesselFilterToVesselFilterDTO(VesselFilter vesselFilter);
 
     VesselFilter vesselFilterDTOToVesselFilter(VesselFilterDTO vesselFilterDTO);

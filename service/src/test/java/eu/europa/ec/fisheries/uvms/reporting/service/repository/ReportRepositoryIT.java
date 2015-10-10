@@ -205,7 +205,7 @@ public class ReportRepositoryIT {
         repExecLog2.setExecutedOn(new Date());
         repExecLog2.setReport(report);
         report.getExecutionLogs().add(repExecLog2);
-        Report savedReport = (Report) repository.createEntity(report);
+        Report savedReport = repository.createEntity(report);
 
         List<Report> results = repository.listByUsernameAndScope(user, "356456731");
 
@@ -213,7 +213,7 @@ public class ReportRepositoryIT {
         Report foundReport = null;
         while (iterator1.hasNext()) {
             Report next = iterator1.next();
-            if (next.getId() == iterator1.next().getId()) {
+            if (next.getId() == savedReport.getId()) {
                 foundReport = next;
                 break;
             }
@@ -225,7 +225,6 @@ public class ReportRepositoryIT {
         Set<ExecutionLog> executionLogs = foundReport.getExecutionLogs();
         assertEquals(2, executionLogs.size());
 
-//        repository.deleteEntity(savedReport, savedReport.getId());
     }
 
     @Test(expected = Exception.class)

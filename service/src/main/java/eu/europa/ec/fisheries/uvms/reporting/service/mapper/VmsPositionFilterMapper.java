@@ -6,12 +6,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(uses = ObjectFactory.class)
 public interface VmsPositionFilterMapper {
 
     VmsPositionFilterMapper INSTANCE = Mappers.getMapper(VmsPositionFilterMapper.class);
 
-    @Mapping(target = "reportId", source = "report.id")
     VmsPositionFilterDTO vmsPositionFilterToVmsPositionFilterDTO(VmsPositionFilter vmsPositionFilter);
 
     VmsPositionFilter vmsPositionFilterDTOToVmsPositionFilter(VmsPositionFilterDTO vmsPositionFilterDTO);

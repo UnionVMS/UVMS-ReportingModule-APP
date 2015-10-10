@@ -10,6 +10,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
+
 public class DTOUtil {
 
     public static ReportDTO createReport(String name,
@@ -19,7 +21,7 @@ public class DTOUtil {
                                          String outComponents,
                                          String scopeName,
                                          VisibilityEnum visibilityEnum) {
-        ReportDTO entity = ReportDTO.builder().build();
+        ReportDTO entity = ReportDTOBuilder().build();
 
         entity.setCreatedBy(createdBy);
         entity.setAudit(new AuditDTO(date));

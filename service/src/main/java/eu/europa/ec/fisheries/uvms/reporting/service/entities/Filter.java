@@ -11,12 +11,12 @@ import java.io.Serializable;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="FILTER_TYPE")
 @NamedQueries({
-        @NamedQuery(name = Filter.LIST_BY_REPORT_ID, query = "SELECT f FROM Filter f WHERE report.id = :reportId"),
+        @NamedQuery(name = Filter.LIST_BY_ID, query = "SELECT f FROM Filter f WHERE id IN :id"),
 })
 @EqualsAndHashCode(exclude = "report")
 public abstract class Filter implements Serializable {
 
-    public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
+    public static final String LIST_BY_ID = "Filter.listById";
 
     @Id
     @Column(name = "filter_id")

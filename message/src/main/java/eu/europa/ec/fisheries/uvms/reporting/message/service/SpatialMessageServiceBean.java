@@ -25,10 +25,10 @@ public class SpatialMessageServiceBean extends AbstractMessageService implements
     @Resource(lookup = CONNECTION_FACTORY)
     private ConnectionFactory connectionFactory;
 
-    @Resource(mappedName = "TODO") //FIXME
+    //@Resource(mappedName = "TODO") //FIXME
     private Queue response;
 
-    @Resource(mappedName = "TODO") // FIXME
+   // @Resource(mappedName = "TODO") // FIXME
     private Destination request;
 
     private SpatialMessageMapper mapper;

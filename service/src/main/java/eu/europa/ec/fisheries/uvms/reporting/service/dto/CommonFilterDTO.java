@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import lombok.Builder;
 
+import java.security.InvalidParameterException;
 import java.util.Date;
 
 @JsonTypeName("common")
@@ -16,6 +18,13 @@ public class CommonFilterDTO extends FilterDTO {
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date endDate;
+
+    @Builder(builderMethodName = "CommonFilterDTOBuilder")
+    public CommonFilterDTO(Date startDate, Date endDate, PositionSelectorDTO positionSelector) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.positionSelector = positionSelector;
+    }
 
     private PositionSelectorDTO positionSelector;
 

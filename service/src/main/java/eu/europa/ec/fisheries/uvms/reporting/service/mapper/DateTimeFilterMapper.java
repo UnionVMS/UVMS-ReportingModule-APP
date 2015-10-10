@@ -11,7 +11,6 @@ public interface DateTimeFilterMapper {
 
     DateTimeFilterMapper INSTANCE = Mappers.getMapper(DateTimeFilterMapper.class);
 
-    @Mapping(target = "reportId", source = "report.id")
     CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter dateTimeFilter);
 
     CommonFilter dateTimeFilterDTOToDateTimeFilter(CommonFilterDTO dateTimeFilterDTO);

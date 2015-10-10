@@ -8,7 +8,7 @@ import eu.europa.ec.fisheries.uvms.service.DAO;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.LIST_BY_REPORT_ID;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.LIST_BY_ID;
 import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
 
 public class FilterDAO extends AbstractDAO<Filter> implements DAO<Filter> {
@@ -24,7 +24,7 @@ public class FilterDAO extends AbstractDAO<Filter> implements DAO<Filter> {
         return em;
     }
 
-    public List<Filter> listByReportId(final Long reportId) throws ServiceException {
-        return findEntityByNamedQuery(Filter.class, LIST_BY_REPORT_ID, with("reportId", reportId).parameters());
+    public List<Filter> listById(final List<Long> reportIds) throws ServiceException {
+        return findEntityByNamedQuery(Filter.class, LIST_BY_ID, with("id", reportIds).parameters());
     }
 }
