@@ -11,8 +11,6 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.HashSet;
@@ -54,41 +52,39 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
     private void addCommon(JsonNode common, Set<FilterDTO> filterDTOList) throws InvalidParameterException {
         if (common != null){
-            CommonFilterDTO dto;
-                String selectorNode = common.get("positionSelector").asText();
-                Selector positionSelector = Selector.valueOf(selectorNode);
 
-                switch(positionSelector){
-                    case ALL:
-                        String startDate = common.get("startDate").asText();
-                        String endDate = common.get("endDate").asText();
-                        if (startDate == null){
-                            throw new InvalidParameterException("StartDate is mandatory when selecting ALL");
-                        }
-                        if (endDate == null){
-                            throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
-                        }
-                        filterDTOList.add(
-                                CommonFilterDTO.CommonFilterDTOBuilder()
-                                        .endDate(DateUtils.stringToDate(endDate))
-                                        .startDate(DateUtils.stringToDate(startDate))
-                                        .positionSelector(
-                                                PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
-                                        )
-                                        .build()
-                        );
-                        break;
-                    case LAST:
-                        break;
+            String selectorNode = common.get("positionSelector").asText();
+            Selector positionSelector = Selector.valueOf(selectorNode);
 
+            switch (positionSelector){
+                case ALL:
+                    String startDate = common.get("startDate").asText();
+                    String endDate = common.get("endDate").asText();
+                    if (startDate == null){
+                        throw new InvalidParameterException("StartDate is mandatory when selecting ALL");
+                    }
+                    if (endDate == null){
+                        throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
+                    }
+                    filterDTOList.add(
+                            CommonFilterDTO.CommonFilterDTOBuilder()
+                                    .endDate(DateUtils.stringToDate(endDate))
+                                    .startDate(DateUtils.stringToDate(startDate))
+                                    .positionSelector(
+                                            PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
+                                    )
+                                    .build()
+                    );
+                    break;
+                case LAST:
+                    throw new InvalidParameterException("Last Positions not implemented");
             }
-
         }
     }
 
     private void addArea(JsonNode area, Set<FilterDTO> filterDTOList) {
         if (area != null){
-            throw new NotImplementedException("Unimplemented functionality");
+            throw new InvalidParameterException("Unimplemented functionality");
         }
     }
 
@@ -102,14 +98,22 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     case VESSEL:
                         filterDTOList.add(
                                 VesselFilterDTO.VesselFilterDTOBuilder()
+                                        //.id()
                                         .guid(next.get(VesselFilterDTO.GUID).textValue())
                                         .name(next.get(VesselFilterDTO.NAME).textValue())
                                         .build()
                         );
                         break;
                     case VGROUP:
+                        filterDTOList.add(
+                                VesselGroupFilterDTO.VesselGroupFilterDTOBuilder()
+                                        .groupId(next.get(VesselGroupFilterDTO.GROUP_ID).textValue())
+                                        .userName(next.get(VesselGroupFilterDTO.USER).textValue())
+                                        .build()
+                        );
                         break;
-
+                    default:
+                        throw new InvalidParameterException("Unsupported parameter value");
 
                 }
             }
@@ -134,8 +138,10 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                     .build()
                     );
                     break;
-                // case TRACKS:
-                // case SEGMENT:
+                default:
+                    throw new InvalidParameterException("Unsupported parameter");
+                    // case TRACKS:
+                    // case SEGMENT:
 
             }
         }

@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
@@ -8,21 +9,29 @@ import lombok.Builder;
 @JsonTypeName("vgroup")
 public class VesselGroupFilterDTO extends FilterDTO {
 
+    public static final String GROUP_ID = "groupId" ;
+    public static final String USER = "user" ;
+
     private String groupId;
-    private String user;
+
+    @JsonProperty(USER)
+    private String userName;
 
     @Builder(builderMethodName = "VesselGroupFilterDTOBuilder")
-    public VesselGroupFilterDTO(String groupId, String userName) {
+    public VesselGroupFilterDTO(Long id,
+                                String groupId,
+                                String userName) {
         this.groupId = groupId;
-        this.user = userName;
+        this.userName = userName;
+        setId(id);
     }
 
-    public String getUser() {
-        return user;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getGroupId() {

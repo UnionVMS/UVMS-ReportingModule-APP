@@ -16,10 +16,16 @@ public class VmsPositionFilterDTO extends FilterDTO {
     public static final String MOV_TYPE = "movType";
     public static final String MOV_ACTIVITY = "movActivity";
 
+    @JsonProperty(MOV_MIN_SPEED)
     private String minimumSpeed;
+
+    @JsonProperty(MOV_MAX_SPEED)
     private String maximumSpeed;
 
+    @JsonProperty(MOV_TYPE)
     private MovementTypeType movementType;
+
+    @JsonProperty(MOV_ACTIVITY)
     private MovementActivityTypeType movementActivity;
 
     @Builder(builderMethodName = "VmsPositionFilterDTOBuilder")

@@ -19,11 +19,6 @@ public class PositionSelectorDTO {
         this.value = value;
         this.selector = selector;
         this.position = position;
-        validate(this);
-    }
-
-    private void validate(PositionSelectorDTO positionSelectorDTO) throws InvalidParameterException {
-
     }
 
     public Long getValue() {

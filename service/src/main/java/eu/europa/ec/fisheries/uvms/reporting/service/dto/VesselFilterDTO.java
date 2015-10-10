@@ -15,9 +15,10 @@ public class VesselFilterDTO extends FilterDTO {
     private String name;
 
     @Builder(builderMethodName = "VesselFilterDTOBuilder")
-    public VesselFilterDTO(String guid, String name) {
+    public VesselFilterDTO(Long id, String guid, String name) {
         this.guid = guid;
         this.name = name;
+        setId(id);
     }
 
     public String getGuid() {
