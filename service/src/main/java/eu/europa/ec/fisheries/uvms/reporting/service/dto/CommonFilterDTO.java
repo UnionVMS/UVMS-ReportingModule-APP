@@ -3,16 +3,18 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 
-import java.security.InvalidParameterException;
 import java.util.Date;
 
 @JsonTypeName("common")
 public class CommonFilterDTO extends FilterDTO {
+
+    public final static String START_DATE = "startDate";
+    public final static String END_DATE = "endDate";
+    public final static String POSITION_SELECTOR = "positionSelector";
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date startDate;

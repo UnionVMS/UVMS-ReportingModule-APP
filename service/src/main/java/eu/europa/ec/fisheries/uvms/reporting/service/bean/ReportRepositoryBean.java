@@ -49,21 +49,19 @@ public class ReportRepositoryBean implements ReportRepository {
     @Transactional
     public boolean update(final ReportDTO reportDTO) throws ReportingServiceException {
 
-        boolean merge;
+        boolean merged;
 
         try {
-            reportMerger.merge(Arrays.asList(reportDTO));
+            merged = reportMerger.merge(Arrays.asList(reportDTO));
             if (reportDTO.getFilters() != null){
-                filterMerger.merge(reportDTO.getFilters());
+                merged = filterMerger.merge(reportDTO.getFilters());
             }
         } catch (ServiceException e) {
             log.error("update failed", e);
             throw new ReportingServiceException("update failed", e);
         }
 
-        merge = true;
-
-        return merge;
+        return merged;
     }
 
 

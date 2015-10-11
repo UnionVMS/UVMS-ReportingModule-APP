@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.json;
+package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -8,6 +8,7 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import java.io.IOException;
 import java.util.Date;
 
+// TODO create unit test
 public class CustomDateSerializer extends JsonSerializer<Date> {
 
     @Override

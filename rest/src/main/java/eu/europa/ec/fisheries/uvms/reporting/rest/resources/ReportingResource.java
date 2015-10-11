@@ -1,15 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.rest.json.ReportDTOSerializer;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
@@ -60,9 +55,9 @@ public class ReportingResource extends UnionVMSResource {
 
         //if (request instanceof UserRoleRequestWrapper) {
 
-        UserRoleRequestWrapper requestWrapper = (UserRoleRequestWrapper) request;
+       // UserRoleRequestWrapper requestWrapper = (UserRoleRequestWrapper) request;
 
-        Set<String> features = requestWrapper.getRoles();
+        Set<String> features = null;//requestWrapper.getRoles();
 
         Collection < ReportDTO > reportsList = null;
         try {
@@ -100,13 +95,13 @@ public class ReportingResource extends UnionVMSResource {
             report = reportService.findById(id, username, scopeName);
             Response restResponse;
             if (report != null) {
-                restResponse = createSuccessResponse(report.serialize(new ReportDTOSerializer(ReportDTO.class)));
+                restResponse = createSuccessResponse(report);
             } else {
                 restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
             }
             return restResponse;
 
-        } catch (ReportingServiceException | IOException e) {
+        } catch (ReportingServiceException e) {
             LOG.error("Failed to get report.", e);
             return createErrorResponse();
         }
@@ -188,9 +183,9 @@ public class ReportingResource extends UnionVMSResource {
         //if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
         try {
             dto = reportService.create(report);
-            return createSuccessResponse(dto.serialize(new ReportDTOSerializer(ReportDTO.class)));
+            return createSuccessResponse(report);
 
-        } catch (ReportingServiceException | IOException e) {
+        } catch (ReportingServiceException e) {
             LOG.error("createReport failed.", e);
             return createErrorResponse();
         //} else {

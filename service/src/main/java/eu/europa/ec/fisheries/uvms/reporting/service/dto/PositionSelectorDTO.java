@@ -8,6 +8,8 @@ import java.security.InvalidParameterException;
 
 public class PositionSelectorDTO {
 
+    public final static String VALUE = "value";
+
     private Long value;
 
     private Selector selector;

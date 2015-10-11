@@ -3,16 +3,17 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTODeserializer;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 
@@ -27,6 +28,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = ReportDTODeserializer.class)
+@JsonSerialize(using = ReportDTOSerializer.class)
 public class ReportDTO implements Serializable {
 
     public final static String DESC = "desc";
@@ -34,9 +36,13 @@ public class ReportDTO implements Serializable {
     public final static String ID = "id";
     public final static String NAME = "name";
     public final static String OUT_COMPONENTS = "outComponents";
+    public final static String CREATED_ON = "createdOn";
     public final static String SCOPE_ID = "scopeId";
     public final static String VISIBILITY = "visibility";
     public final static String FILTER_EXPRESSION = "filterExpression";
+    public final static String SHAREABLE = "shareable";
+    public final static String DELETABLE = "deletable";
+    public final static String EDITABLE = "editable";
 
     private Long id;
     private String name;
@@ -98,14 +104,6 @@ public class ReportDTO implements Serializable {
             filter = new HashSet<>(Collections2.filter(getExecutionLogs(), isUserPredicate));
         }
         return filter;
-    }
-
-    public JsonNode serialize(JsonSerializer deserializer) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule testModule = new SimpleModule("MyModule", new Version(1, 0, 0, null, null, null));
-        testModule.addSerializer(deserializer);
-        mapper.registerModule(testModule);
-        return mapper.readTree(mapper.writeValueAsString(this));
     }
 
     public Long getId() {

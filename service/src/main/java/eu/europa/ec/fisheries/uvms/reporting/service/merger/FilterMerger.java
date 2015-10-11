@@ -44,7 +44,7 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
         while (iterator.hasNext()){
             FilterDTO next = iterator.next();
             Long id = next.getId();
-            if(id != null){
+            if (id != null){
                 filterIds.add(next.getId());
             }
         }
