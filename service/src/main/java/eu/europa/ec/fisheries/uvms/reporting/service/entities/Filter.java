@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -32,6 +33,9 @@ public abstract class Filter implements Serializable {
     @JoinColumn(name = "report_id", nullable = false)
     private Report report;
 
+    @Transient
+    private Long reportId;
+
     public abstract FilterDTO convertToDTO();
 
     public abstract void merge(Filter filter);
@@ -55,5 +59,14 @@ public abstract class Filter implements Serializable {
     public FilterType getType() {
         return type;
     }
+
+    public Long getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
+    }
+
 
 }

@@ -18,12 +18,13 @@ public class VesselGroupFilterDTO extends FilterDTO {
     private String userName;
 
     @Builder(builderMethodName = "VesselGroupFilterDTOBuilder")
-    public VesselGroupFilterDTO(Long id,
+    public VesselGroupFilterDTO(Long reportId, Long id,
                                 String groupId,
                                 String userName) {
         this.groupId = groupId;
         this.userName = userName;
         setId(id);
+        setReportId(reportId);
     }
 
     public String getUserName() {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.Builder;
 
@@ -29,11 +30,14 @@ public class VmsPositionFilterDTO extends FilterDTO {
     private MovementActivityTypeType movementActivity;
 
     @Builder(builderMethodName = "VmsPositionFilterDTOBuilder")
-    public VmsPositionFilterDTO(String minimumSpeed, String maximumSpeed, MovementTypeType movementType, MovementActivityTypeType movementActivity) {
+    public VmsPositionFilterDTO(Long reportId, Long id, String minimumSpeed, String maximumSpeed,
+                                MovementTypeType movementType, MovementActivityTypeType movementActivity) {
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
         this.movementType = movementType;
         this.movementActivity = movementActivity;
+        setReportId(reportId);
+        setId(id);
     }
 
     public String getMinimumSpeed() {

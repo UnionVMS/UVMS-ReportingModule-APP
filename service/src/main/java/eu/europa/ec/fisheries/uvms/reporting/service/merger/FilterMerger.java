@@ -2,8 +2,10 @@ package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.Merger;
 
 import javax.persistence.EntityManager;
@@ -15,9 +17,11 @@ import java.util.*;
 public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     private FilterDAO filterDAO;
+    private ReportDAO reportDAO;
 
     public FilterMerger(final EntityManager em) {
         this.filterDAO = new FilterDAO(em);
+        this.reportDAO = new ReportDAO(em);
     }
 
     @Override
@@ -36,12 +40,15 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
     @Override
     protected Collection<Filter> loadCurrents(Collection<FilterDTO> input) throws ServiceException {
         Iterator<FilterDTO> iterator = input.iterator();
-        List<Long> reportIds = null;
+        List<Long> filterIds = new ArrayList<>();
         while (iterator.hasNext()){
             FilterDTO next = iterator.next();
-            reportIds.add(next.getId());
+            Long id = next.getId();
+            if(id != null){
+                filterIds.add(next.getId());
+            }
         }
-        return filterDAO.listById(reportIds);
+        return filterDAO.listById(filterIds);
     }
 
     @Override
@@ -59,6 +66,8 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     @Override
     protected void insert(Filter item) throws ServiceException {
+        Report entityById = reportDAO.findEntityById(Report.class, item.getReportId());
+        item.setReport(entityById);
         filterDAO.createEntity(item);
     }
 

@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -21,6 +22,12 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class FilterDTO {
 
+    public static final String ID = "id";
+    public static final String TYPE = "type";
+
+    @JsonIgnore
+    private Long reportId;
+
     private Long id;
 
     private FilterType type;
@@ -41,5 +48,13 @@ public abstract class FilterDTO {
 
     public void setType(FilterType type) {
         this.type = type;
+    }
+
+    public Long getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(Long reportId) {
+        this.reportId = reportId;
     }
 }

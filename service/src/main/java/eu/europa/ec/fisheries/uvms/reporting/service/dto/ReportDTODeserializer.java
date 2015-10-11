@@ -31,12 +31,18 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
         Set<FilterDTO> filterDTOList = new HashSet<>();
 
+        JsonNode reportIdNode = node.get(ReportDTO.ID);
+        Long reportId = null;
+        if (reportIdNode != null){
+            reportId = reportIdNode.longValue();
+        }
+
         JsonNode filterNode = node.get(ReportDTO.FILTER_EXPRESSION);
 
-        addVmsFilters(filterNode.get("vms"), filterDTOList);
-        addVessels(filterNode.get("vessels"), filterDTOList);
-        addArea(filterNode.get("area"), filterDTOList);
-        addCommon(filterNode.get("common"), filterDTOList);
+        addVmsFilters(filterNode.get("vms"), filterDTOList, reportId);
+        addVessels(filterNode.get("vessels"), filterDTOList, reportId);
+        addArea(filterNode.get("area"), filterDTOList, reportId);
+        addCommon(filterNode.get("common"), filterDTOList, reportId);
 
         return ReportDTO.ReportDTOBuilder()
                 .createdBy(node.get(ReportDTO.CREATED_BY).textValue())
@@ -50,7 +56,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .build();
     }
 
-    private void addCommon(JsonNode common, Set<FilterDTO> filterDTOList) throws InvalidParameterException {
+    private void addCommon(JsonNode common, Set<FilterDTO> filterDTOList, Long reportId) throws InvalidParameterException {
         if (common != null){
 
             String selectorNode = common.get("positionSelector").asText();
@@ -68,6 +74,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     }
                     filterDTOList.add(
                             CommonFilterDTO.CommonFilterDTOBuilder()
+                                    .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
+                                    .reportId(reportId)
                                     .endDate(DateUtils.stringToDate(endDate))
                                     .startDate(DateUtils.stringToDate(startDate))
                                     .positionSelector(
@@ -82,13 +90,13 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addArea(JsonNode area, Set<FilterDTO> filterDTOList) {
+    private void addArea(JsonNode area, Set<FilterDTO> filterDTOList, Long reportId) {
         if (area != null){
             throw new InvalidParameterException("Unimplemented functionality");
         }
     }
 
-    private void addVessels(JsonNode vessel, Set<FilterDTO> filterDTOList) {
+    private void addVessels(JsonNode vessel, Set<FilterDTO> filterDTOList, Long reportId) {
         if (vessel != null){
             Iterator<JsonNode> elements = vessel.elements();
             while(elements.hasNext()) {
@@ -98,7 +106,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     case VESSEL:
                         filterDTOList.add(
                                 VesselFilterDTO.VesselFilterDTOBuilder()
-                                        //.id()
+                                        .reportId(reportId)
+                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                                         .guid(next.get(VesselFilterDTO.GUID).textValue())
                                         .name(next.get(VesselFilterDTO.NAME).textValue())
                                         .build()
@@ -107,6 +116,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     case VGROUP:
                         filterDTOList.add(
                                 VesselGroupFilterDTO.VesselGroupFilterDTOBuilder()
+                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                                        .reportId(reportId)
                                         .groupId(next.get(VesselGroupFilterDTO.GROUP_ID).textValue())
                                         .userName(next.get(VesselGroupFilterDTO.USER).textValue())
                                         .build()
@@ -120,7 +131,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addVmsFilters(JsonNode vms, Set<FilterDTO> filterDTOList) {
+    private void addVmsFilters(JsonNode vms, Set<FilterDTO> filterDTOList, Long reportId) {
         Iterator<JsonNode> elements = vms.elements();
         while(elements.hasNext()){
             JsonNode next = elements.next();
@@ -129,6 +140,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 case VMSPOS:
                     filterDTOList.add(
                             VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+                                    .reportId(reportId)
+                                    .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                                     .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).asText())
                                     .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).asText())
                                     .movementActivity(MovementActivityTypeType
