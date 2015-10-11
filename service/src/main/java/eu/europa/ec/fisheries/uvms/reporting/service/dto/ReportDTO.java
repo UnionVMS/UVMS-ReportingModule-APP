@@ -25,8 +25,6 @@ import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@JsonInclude(Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = ReportDTODeserializer.class)
 @JsonSerialize(using = ReportDTOSerializer.class)
 public class ReportDTO implements Serializable {
@@ -77,6 +75,7 @@ public class ReportDTO implements Serializable {
                      String createdBy,
                      VisibilityEnum visibility,
                      boolean isDeleted,
+                     Date createdOn,
                      Date deletedOn,
                      String deletedBy,
                      Set<FilterDTO> filters) {
@@ -91,9 +90,13 @@ public class ReportDTO implements Serializable {
         this.deletedOn = deletedOn;
         this.deletedBy = deletedBy;
         this.filters = filters;
+        if(audit == null){
+            audit = new AuditDTO();
+        }
+        audit.setCreatedOn(createdOn);
     }
 
-    public Set<ExecutionLogDTO> filterLogsByUser(final String user){// FIXME
+    public Set<ExecutionLogDTO> filterLogsByUser(final String user){// FIXME try hibernate filter
         Set<ExecutionLogDTO> filter = null;
         if (getExecutionLogs() != null){
             Predicate<ExecutionLogDTO> isUserPredicate = new Predicate<ExecutionLogDTO>() {

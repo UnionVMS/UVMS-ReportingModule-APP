@@ -16,6 +16,7 @@ public class VmsPositionFilterDTO extends FilterDTO {
     public static final String MOV_MAX_SPEED = "movMaxSpeed";
     public static final String MOV_TYPE = "movType";
     public static final String MOV_ACTIVITY = "movActivity";
+    public static final String VMS = "vms";
 
     @JsonProperty(MOV_MIN_SPEED)
     private String minimumSpeed;
@@ -38,6 +39,7 @@ public class VmsPositionFilterDTO extends FilterDTO {
         this.movementActivity = movementActivity;
         setReportId(reportId);
         setId(id);
+        setType(FilterType.VMSPOS);
     }
 
     public String getMinimumSpeed() {

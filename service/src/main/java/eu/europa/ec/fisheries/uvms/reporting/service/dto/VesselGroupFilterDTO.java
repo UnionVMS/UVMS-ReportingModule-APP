@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
 import lombok.Builder;
 
@@ -25,6 +26,7 @@ public class VesselGroupFilterDTO extends FilterDTO {
         this.userName = userName;
         setId(id);
         setReportId(reportId);
+        setType(FilterType.VGROUP);
     }
 
     public String getUserName() {

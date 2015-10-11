@@ -1,8 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -25,7 +29,10 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     private ReportingResource resource;
 
     @InjectIntoByType
-    private Mock<VmsService> serviceMock;
+    private Mock<VmsService> vmsServiceMock;
+
+    @InjectIntoByType
+    private Mock<ReportServiceBean> reportServiceBeanMock;
 
     private Mock<HttpServletRequest> requestMock;
 
@@ -39,7 +46,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     public void testRunReportHappy() throws IOException, ReportingServiceException {
 
         requestMock.returns(USER).getRemoteUser();
-        serviceMock.returns(vmsDTO).getVmsDataByReportId(USER, null, null);
+        vmsServiceMock.returns(vmsDTO).getVmsDataByReportId(USER, null, null);
 
         Response response = resource.runReport(requestMock.getMock(), null, null, null);
 
@@ -51,7 +58,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     public void testRunReport500() throws IOException, ReportingServiceException {
 
         requestMock.returns(USER).getRemoteUser();
-        serviceMock.onceRaises(ReportingServiceException.class).getVmsDataByReportId(USER, null, null);
+        vmsServiceMock.onceRaises(ReportingServiceException.class).getVmsDataByReportId(USER, null, null);
 
         Response response = resource.runReport(requestMock.getMock(), null, null, null);
 
