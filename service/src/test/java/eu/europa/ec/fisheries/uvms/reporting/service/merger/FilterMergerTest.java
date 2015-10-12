@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
 import lombok.SneakyThrows;
@@ -124,5 +125,53 @@ public class FilterMergerTest extends UnitilsJUnit4 {
         reportDAOMock.assertNotInvoked().createEntity(null);
         assertTrue(updated);
 
+    }
+
+    @Test
+    @SneakyThrows
+    public void testMergeVesselFilterUpdateAndDelete(){
+
+        Collection<FilterDTO> collection =  new ArrayList<>();
+        collection.add(vessel1);
+
+        List<Filter> existingFilters = new ArrayList<>();
+        VesselFilter existingFilter = VesselFilter.VesselFilterBuilder().id(47L).guid("guid").name("vessel1").build();
+        VesselFilter existingFilter2 = VesselFilter.VesselFilterBuilder().id(49L).guid("dddd").name("vvvv").build();
+
+        existingFilters.add(existingFilter); // this one is an update
+        existingFilters.add(existingFilter2); // this one has to go
+
+        filterDAOMock.returns(existingFilters).listById(null);
+
+        boolean updated = merger.merge(collection);
+
+        filterDAOMock.assertInvoked().updateEntity(existingFilter);
+        filterDAOMock.assertInvoked().deleteEntity(existingFilter2, 49L);
+        filterDAOMock.assertNotInvoked().createEntity(existingFilter);
+        reportDAOMock.assertNotInvoked().updateEntity(null);
+        reportDAOMock.assertNotInvoked().deleteEntity(null, 47L);
+        reportDAOMock.assertNotInvoked().createEntity(null);
+        assertTrue(updated);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testMergeVesselFilterInsert(){
+
+        Collection<FilterDTO> collection =  new ArrayList<>();
+        collection.add(vessel1);
+
+        Report report = Report.ReportBuilder().id(47L).build();
+        filterDAOMock.returns(new ArrayList<>()).listById(null); // empty array
+        reportDAOMock.returns(report).findEntityById(Report.class, null);
+        boolean updated = merger.merge(collection);
+
+        filterDAOMock.assertNotInvoked().updateEntity(null);
+        filterDAOMock.assertNotInvoked().deleteEntity(null, null);
+        filterDAOMock.assertInvoked().createEntity(new VesselFilter());
+        reportDAOMock.assertNotInvoked().updateEntity(null);
+        reportDAOMock.assertNotInvoked().deleteEntity(null, 47L);
+        reportDAOMock.assertNotInvoked().createEntity(null);
+        assertTrue(updated);
     }
 }
