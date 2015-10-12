@@ -32,7 +32,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testMergeUpdated(){
+        public void testMergeUpdated(){
 
         Report existingReport = ReportBuilder().id(1L).description("desc").createdBy("me").build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).createdBy("you").description("desc").build();
@@ -40,6 +40,10 @@ public class ReportMergerTest extends UnitilsJUnit4 {
         daoMock.returns(existingReport).findEntityById(Report.class, null);
 
         boolean updated = merger.merge(Arrays.asList(incomingReport));
+
+        daoMock.assertInvoked().updateEntity(existingReport);
+        daoMock.assertNotInvoked().deleteEntity(existingReport, 1L);
+        daoMock.assertNotInvoked().createEntity(existingReport);
 
         assertTrue(updated);
 
@@ -56,6 +60,10 @@ public class ReportMergerTest extends UnitilsJUnit4 {
         daoMock.returns(existingReport).findEntityById(Report.class, null);
 
         boolean updated = merger.merge(Arrays.asList(incomingReport));
+
+        daoMock.assertNotInvoked().updateEntity(existingReport);
+        daoMock.assertNotInvoked().deleteEntity(existingReport, 1L);
+        daoMock.assertNotInvoked().createEntity(existingReport);
 
         assertTrue(!updated);
 
