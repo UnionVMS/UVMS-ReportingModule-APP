@@ -19,10 +19,10 @@ import java.util.List;
 public class VmsPositionFilter extends Filter  {
 
     @Column(name = "MIN_SPEED")
-    private String minimumSpeed;
+    private Long minimumSpeed;
 
     @Column(name = "MAX_SPEED")
-    private String maximumSpeed;
+    private Long maximumSpeed;
 
     @Column(name = "MOV_TYPE")
     private MovementTypeType movementType;
@@ -38,11 +38,11 @@ public class VmsPositionFilter extends Filter  {
         List<ListCriteria> listCriterias = new ArrayList<>();
         ListCriteria listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.SPEED_MAX);
-        listCriteria.setValue(maximumSpeed);
+        listCriteria.setValue(String.valueOf(maximumSpeed));
         listCriterias.add(listCriteria);
         listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.SPEED_MIN);
-        listCriteria.setValue(minimumSpeed);
+        listCriteria.setValue(String.valueOf(minimumSpeed));
         listCriterias.add(listCriteria);
         return listCriterias;
     }
@@ -59,11 +59,11 @@ public class VmsPositionFilter extends Filter  {
         this.setMinimumSpeed(incoming.getMinimumSpeed());
     }
 
-    public String getMinimumSpeed() {
+    public Long getMinimumSpeed() {
         return minimumSpeed;
     }
 
-    public void setMinimumSpeed(String minimumSpeed) {
+    public void setMinimumSpeed(Long minimumSpeed) {
         this.minimumSpeed = minimumSpeed;
     }
 
@@ -83,11 +83,11 @@ public class VmsPositionFilter extends Filter  {
         this.movementActivity = movementActivity;
     }
 
-    public String getMaximumSpeed() {
+    public Long getMaximumSpeed() {
         return maximumSpeed;
     }
 
-    public void setMaximumSpeed(String maximumSpeed) {
+    public void setMaximumSpeed(Long maximumSpeed) {
         this.maximumSpeed = maximumSpeed;
     }
 

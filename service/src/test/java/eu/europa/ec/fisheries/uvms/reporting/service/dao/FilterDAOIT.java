@@ -94,8 +94,8 @@ public class FilterDAOIT {
         filterIds.add(filterDAO.createEntity(filter2).getId());
 
         VmsPositionFilter filter3 = new VmsPositionFilter();
-        filter3.setMaximumSpeed("123");
-        filter3.setMinimumSpeed("54654");
+        filter3.setMaximumSpeed(123L);
+        filter3.setMinimumSpeed(54654L);
         filter3.setReport(savedReport);
         expectedCollection.add(filter3);
         filterIds.add(filterDAO.createEntity(filter3).getId());

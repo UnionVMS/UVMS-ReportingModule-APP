@@ -272,8 +272,8 @@ public class ReportRepositoryIT {
         expectedCollection.add(filter2);
 
         VmsPositionFilter filter3 = new VmsPositionFilter();
-        filter3.setMaximumSpeed("123");
-        filter3.setMinimumSpeed("54654");
+        filter3.setMaximumSpeed(123L);
+        filter3.setMinimumSpeed(54654L);
         filter3.setReport(report);
         expectedCollection.add(filter3);
 
