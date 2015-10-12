@@ -33,7 +33,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         Set<Filter> filterList = new HashSet<>();
 
-        VesselFilter vesselFilter = new VesselFilter();
+        VesselFilter vesselFilter = VesselFilter.VesselFilterBuilder().build();
         vesselFilter.setGuid("guid");
         filterList.add(vesselFilter);
 

@@ -19,10 +19,10 @@ import java.util.List;
 public class VmsPositionFilter extends Filter  {
 
     @Column(name = "MIN_SPEED")
-    private Long minimumSpeed;
+    private Float minimumSpeed;
 
     @Column(name = "MAX_SPEED")
-    private Long maximumSpeed;
+    private Float maximumSpeed;
 
     @Column(name = "MOV_TYPE")
     private MovementTypeType movementType;
@@ -59,11 +59,11 @@ public class VmsPositionFilter extends Filter  {
         this.setMinimumSpeed(incoming.getMinimumSpeed());
     }
 
-    public Long getMinimumSpeed() {
+    public Float getMinimumSpeed() {
         return minimumSpeed;
     }
 
-    public void setMinimumSpeed(Long minimumSpeed) {
+    public void setMinimumSpeed(Float minimumSpeed) {
         this.minimumSpeed = minimumSpeed;
     }
 
@@ -83,11 +83,11 @@ public class VmsPositionFilter extends Filter  {
         this.movementActivity = movementActivity;
     }
 
-    public Long getMaximumSpeed() {
+    public Float getMaximumSpeed() {
         return maximumSpeed;
     }
 
-    public void setMaximumSpeed(Long maximumSpeed) {
+    public void setMaximumSpeed(Float maximumSpeed) {
         this.maximumSpeed = maximumSpeed;
     }
 

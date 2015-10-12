@@ -5,7 +5,11 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
@@ -20,7 +24,9 @@ import org.unitils.mock.Mock;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
@@ -62,8 +68,8 @@ public class FilterMergerTest extends UnitilsJUnit4 {
 
         vms = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
                 .movementActivity(MovementActivityTypeType.ANC)
-                .minimumSpeed("100")
-                .maximumSpeed("123")
+                .minimumSpeed(100F)
+                .maximumSpeed(123F)
                 .movementType(MovementTypeType.ENT)
                 .build();
 
@@ -168,7 +174,8 @@ public class FilterMergerTest extends UnitilsJUnit4 {
 
         filterDAOMock.assertNotInvoked().updateEntity(null);
         filterDAOMock.assertNotInvoked().deleteEntity(null, null);
-        filterDAOMock.assertInvoked().createEntity(new VesselFilter());
+        VesselFilter vesselFilter = VesselFilter.VesselFilterBuilder().build();
+        filterDAOMock.assertInvoked().createEntity(vesselFilter);
         reportDAOMock.assertNotInvoked().updateEntity(null);
         reportDAOMock.assertNotInvoked().deleteEntity(null, 47L);
         reportDAOMock.assertNotInvoked().createEntity(null);

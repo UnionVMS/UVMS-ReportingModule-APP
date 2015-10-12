@@ -213,7 +213,7 @@ public class ReportRepositoryIT {
         Report foundReport = null;
         while (iterator1.hasNext()) {
             Report next = iterator1.next();
-            if (next.getId() == savedReport.getId()) {
+            if (next.getId().equals(savedReport.getId())) {
                 foundReport = next;
                 break;
             }
@@ -259,21 +259,21 @@ public class ReportRepositoryIT {
         report.setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
 
-        VesselFilter filter1 = new VesselFilter();
+        VesselFilter filter1 = VesselFilter.VesselFilterBuilder().build();
         filter1.setReport(report);
         filter1.setGuid("guid1");
         filter1.setName("vessel1");
         expectedCollection.add(filter1);
 
-        VesselFilter filter2 = new VesselFilter();
+        VesselFilter filter2 = VesselFilter.VesselFilterBuilder().build();
         filter2.setReport(report);
         filter2.setGuid("guid2");
         filter2.setName("vessel2");
         expectedCollection.add(filter2);
 
         VmsPositionFilter filter3 = new VmsPositionFilter();
-        filter3.setMaximumSpeed(123L);
-        filter3.setMinimumSpeed(54654L);
+        filter3.setMaximumSpeed(123F);
+        filter3.setMinimumSpeed(54654F);
         filter3.setReport(report);
         expectedCollection.add(filter3);
 

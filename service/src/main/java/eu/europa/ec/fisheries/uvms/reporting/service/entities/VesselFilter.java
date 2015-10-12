@@ -19,10 +19,6 @@ public class VesselFilter extends Filter {
 
     private String name;
 
-    public VesselFilter() {
-        super(FilterType.VESSEL);
-    }
-
     @Builder(builderMethodName = "VesselFilterBuilder")
     public VesselFilter(Long id, String guid, String name){
         super(FilterType.VESSEL);

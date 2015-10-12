@@ -103,8 +103,8 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         VmsPositionFilterDTO vms = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
                 .movementActivity(MovementActivityTypeType.ANC)
-                .minimumSpeed("100")
-                .maximumSpeed("123")
+                .minimumSpeed(100F)
+                .maximumSpeed(123F)
                 .movementType(MovementTypeType.ENT)
                 .build();
 

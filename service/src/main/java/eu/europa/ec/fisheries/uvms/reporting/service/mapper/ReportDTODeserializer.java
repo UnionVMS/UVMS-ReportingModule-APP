@@ -145,8 +145,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                             VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
                                     .reportId(reportId)
                                     .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                    .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).asText())
-                                    .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).asText())
+                                    .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue())
+                                    .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue())
                                     .movementActivity(MovementActivityTypeType
                                             .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()))
                                     .movementType(MovementTypeType

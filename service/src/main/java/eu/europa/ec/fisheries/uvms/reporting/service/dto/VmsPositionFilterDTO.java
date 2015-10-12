@@ -19,10 +19,10 @@ public class VmsPositionFilterDTO extends FilterDTO {
     public static final String VMS = "vms";
 
     @JsonProperty(MOV_MIN_SPEED)
-    private String minimumSpeed;
+    private Float minimumSpeed;
 
     @JsonProperty(MOV_MAX_SPEED)
-    private String maximumSpeed;
+    private Float maximumSpeed;
 
     @JsonProperty(MOV_TYPE)
     private MovementTypeType movementType;
@@ -31,7 +31,7 @@ public class VmsPositionFilterDTO extends FilterDTO {
     private MovementActivityTypeType movementActivity;
 
     @Builder(builderMethodName = "VmsPositionFilterDTOBuilder")
-    public VmsPositionFilterDTO(Long reportId, Long id, String minimumSpeed, String maximumSpeed,
+    public VmsPositionFilterDTO(Long reportId, Long id, Float minimumSpeed, Float maximumSpeed,
                                 MovementTypeType movementType, MovementActivityTypeType movementActivity) {
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
@@ -42,19 +42,19 @@ public class VmsPositionFilterDTO extends FilterDTO {
         setType(FilterType.VMSPOS);
     }
 
-    public String getMinimumSpeed() {
+    public Float getMinimumSpeed() {
         return minimumSpeed;
     }
 
-    public void setMinimumSpeed(String minimumSpeed) {
+    public void setMinimumSpeed(Float minimumSpeed) {
         this.minimumSpeed = minimumSpeed;
     }
 
-    public String getMaximumSpeed() {
+    public Float getMaximumSpeed() {
         return maximumSpeed;
     }
 
-    public void setMaximumSpeed(String maximumSpeed) {
+    public void setMaximumSpeed(Float maximumSpeed) {
         this.maximumSpeed = maximumSpeed;
     }
 

@@ -79,14 +79,14 @@ public class FilterDAOIT {
         report.setVisibility(VisibilityEnum.PRIVATE);
         Report savedReport = reportDAO.createEntity(report);
 
-        VesselFilter filter1 = new VesselFilter();
+        VesselFilter filter1 = VesselFilter.VesselFilterBuilder().build();
         filter1.setReport(savedReport);
         filter1.setGuid("guid1");
         filter1.setName("vessel1");
         expectedCollection.add(filter1);
         filterIds.add(filterDAO.createEntity(filter1).getId());
 
-        VesselFilter filter2 = new VesselFilter();
+        VesselFilter filter2 = VesselFilter.VesselFilterBuilder().build();
         filter2.setReport(savedReport);
         filter2.setGuid("guid2");
         filter2.setName("vessel2");
@@ -94,8 +94,8 @@ public class FilterDAOIT {
         filterIds.add(filterDAO.createEntity(filter2).getId());
 
         VmsPositionFilter filter3 = new VmsPositionFilter();
-        filter3.setMaximumSpeed(123L);
-        filter3.setMinimumSpeed(54654L);
+        filter3.setMaximumSpeed(123F);
+        filter3.setMinimumSpeed(54654F);
         filter3.setReport(savedReport);
         expectedCollection.add(filter3);
         filterIds.add(filterDAO.createEntity(filter3).getId());
