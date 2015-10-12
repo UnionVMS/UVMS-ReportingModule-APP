@@ -76,8 +76,8 @@ public class FilterProcessor {
     private void addToVesselGroupCriteria(final Filter filter) {
         VesselGroup vesselGroup = new VesselGroup();
         VesselGroupFilter vesselGroupFilter = (VesselGroupFilter) filter;
-        if (StringUtils.isNotBlank(vesselGroupFilter.getGroupId())) {
-            vesselGroup.setId(new BigInteger(vesselGroupFilter.getGroupId()));
+        if (StringUtils.isNotBlank(vesselGroupFilter.getGuid())) {
+            vesselGroup.setId(new BigInteger(vesselGroupFilter.getGuid()));
             vesselGroup.setDynamic(false);
             vesselGroupList.add(vesselGroup);
         }

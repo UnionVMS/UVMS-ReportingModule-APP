@@ -102,14 +102,14 @@ public class FilterDAOIT {
 
         VesselGroupFilter filter4 = new VesselGroupFilter();
         filter4.setReport(savedReport);
-        filter4.setGroupId("1");
+        filter4.setGuid("1");
         filter4.setUserName("ffsdfsdfds");
         expectedCollection.add(filter4);
         filterIds.add(filterDAO.createEntity(filter4).getId());
 
         VesselGroupFilter filter5 = new VesselGroupFilter();
         filter5.setReport(savedReport);
-        filter5.setGroupId("2");
+        filter5.setGuid("2");
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
         filterIds.add(filterDAO.createEntity(filter5).getId());

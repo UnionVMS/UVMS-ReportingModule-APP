@@ -13,7 +13,7 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 public class VesselGroupFilter extends Filter {
 
-    private String groupId;
+    private String guid;
 
     private String userName;
 
@@ -24,16 +24,16 @@ public class VesselGroupFilter extends Filter {
     @Builder(builderMethodName = "VesselGroupFilterBuilder")
     public VesselGroupFilter(String groupId, String userName){
         super(FilterType.VGROUP);
-        this.groupId = groupId;
+        this.guid = groupId;
         this.userName = userName;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
     public String getUserName() {
@@ -53,6 +53,6 @@ public class VesselGroupFilter extends Filter {
     public void merge(Filter filter) {
         VesselGroupFilter incoming = (VesselGroupFilter) filter;
         this.setUserName(incoming.getUserName());
-        this.setGroupId(incoming.getGroupId());
+        this.setGuid(incoming.getGuid());
     }
 }

@@ -279,13 +279,13 @@ public class ReportRepositoryIT {
 
         VesselGroupFilter filter4 = new VesselGroupFilter();
         filter4.setReport(report);
-        filter4.setGroupId("1");
+        filter4.setGuid("1");
         filter4.setUserName("ffsdfsdfds");
         expectedCollection.add(filter4);
 
         VesselGroupFilter filter5 = new VesselGroupFilter();
         filter5.setReport(report);
-        filter5.setGroupId("2");
+        filter5.setGuid("2");
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
 
