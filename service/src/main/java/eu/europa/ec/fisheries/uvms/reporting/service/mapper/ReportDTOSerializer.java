@@ -7,11 +7,14 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import org.apache.commons.collections4.CollectionUtils;
+import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.*;
 
 public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
@@ -92,7 +95,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeStringField(NAME, reportDTO.getName());
         jgen.writeStringField(DESC, reportDTO.getDescription());
         jgen.writeStringField(VISIBILITY, reportDTO.getVisibility().name());
-        jgen.writeStringField(CREATED_ON, DateUtils.dateToString(reportDTO.getAudit().getCreatedOn()));
+        jgen.writeStringField(CREATED_ON, UI_FORMATTER.print(new DateTime(reportDTO.getAudit().getCreatedOn())));
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
         jgen.writeStringField(SCOPE_ID, reportDTO.getScopeName());
         jgen.writeStringField(OUT_COMPONENTS, reportDTO.getOutComponents());
@@ -107,8 +110,10 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
         switch (positionSelector.getSelector()){
             case ALL :
-                jgen.writeStringField(CommonFilterDTO.START_DATE, DateUtils.dateToString(commonFilter.getStartDate()));
-                jgen.writeStringField(CommonFilterDTO.END_DATE, DateUtils.dateToString(commonFilter.getEndDate()));
+                jgen.writeStringField(CommonFilterDTO.START_DATE,
+                        UI_FORMATTER.print(new DateTime(commonFilter.getStartDate())));
+                jgen.writeStringField(CommonFilterDTO.END_DATE,
+                        UI_FORMATTER.print(new DateTime(commonFilter.getEndDate())));
                 break;
             case LAST:
                 jgen.writeNumberField(PositionSelectorDTO.VALUE, positionSelector.getValue());

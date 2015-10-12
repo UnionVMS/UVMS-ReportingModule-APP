@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
+
 
 /**
  * //TODO create test
@@ -77,8 +79,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                             CommonFilterDTO.CommonFilterDTOBuilder()
                                     .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
                                     .reportId(reportId)
-                                    .endDate(DateUtils.stringToDate(endDate))
-                                    .startDate(DateUtils.stringToDate(startDate))
+                                    .endDate(UI_FORMATTER.parseDateTime(endDate).toDate())
+                                    .startDate(UI_FORMATTER.parseDateTime(startDate).toDate())
                                     .positionSelector(
                                             PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
                                     )

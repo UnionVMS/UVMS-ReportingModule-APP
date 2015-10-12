@@ -5,9 +5,16 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.SneakyThrows;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -15,13 +22,14 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
+import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.VesselFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
-import static org.junit.Assert.assertEquals;
 
 public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
@@ -72,7 +80,8 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         gen.assertInvoked().writeStringField(ReportDTO.NAME, dto.getName());
         gen.assertInvoked().writeStringField(ReportDTO.DESC, dto.getDescription());
         gen.assertInvoked().writeStringField(ReportDTO.VISIBILITY, dto.getVisibility().name());
-        gen.assertInvoked().writeStringField(ReportDTO.CREATED_ON, DateUtils.dateToString(dto.getAudit().getCreatedOn()));
+        gen.assertInvoked().writeStringField(ReportDTO.CREATED_ON,
+                UI_FORMATTER.print(new DateTime(dto.getAudit().getCreatedOn())));
         gen.assertInvoked().writeStringField(ReportDTO.CREATED_BY, dto.getCreatedBy());
         gen.assertInvoked().writeStringField(ReportDTO.SCOPE_ID, dto.getScopeName());
         gen.assertInvoked().writeStringField(ReportDTO.OUT_COMPONENTS, dto.getOutComponents());
@@ -132,8 +141,11 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         gen.assertInvoked().writeNumberField(FilterDTO.ID, common.getId());
         gen.assertInvoked().writeStringField(CommonFilterDTO.POSITION_SELECTOR,
                 Selector.ALL.getName());
-        gen.assertInvoked().writeStringField(CommonFilterDTO.START_DATE, DateUtils.dateToString(common.getStartDate()));
-        gen.assertInvoked().writeStringField(CommonFilterDTO.END_DATE, DateUtils.dateToString(common.getEndDate()));
+
+        gen.assertInvoked().writeStringField(
+                CommonFilterDTO.START_DATE, UI_FORMATTER.print(new DateTime(common.getStartDate())));
+        gen.assertInvoked().writeStringField(
+                CommonFilterDTO.END_DATE, UI_FORMATTER.print(new DateTime(common.getEndDate())));
 
         gen.assertNotInvoked().writeNumberField(PositionSelectorDTO.VALUE, null);
         gen.assertNotInvoked().writeStringField(CommonFilterDTO.POSITION_SELECTOR,
