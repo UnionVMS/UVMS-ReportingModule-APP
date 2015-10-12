@@ -35,8 +35,8 @@ public class VesselFilter extends Filter {
     @Override
     public void merge(Filter filter) {
         VesselFilter incoming = (VesselFilter) filter;
-        this.setGuid(incoming.getGuid());
-        this.setName(incoming.getName());
+        setGuid(incoming.getGuid());
+        setName(incoming.getName());
     }
 
     public String getGuid() {

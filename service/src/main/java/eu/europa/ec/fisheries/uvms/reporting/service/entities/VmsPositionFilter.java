@@ -55,8 +55,8 @@ public class VmsPositionFilter extends Filter  {
     @Override
     public void merge(Filter filter) {
         VmsPositionFilter incoming = (VmsPositionFilter) filter;
-        this.setMaximumSpeed(incoming.getMaximumSpeed());
-        this.setMinimumSpeed(incoming.getMinimumSpeed());
+        setMaximumSpeed(incoming.getMaximumSpeed());
+        setMinimumSpeed(incoming.getMinimumSpeed());
     }
 
     public Float getMinimumSpeed() {

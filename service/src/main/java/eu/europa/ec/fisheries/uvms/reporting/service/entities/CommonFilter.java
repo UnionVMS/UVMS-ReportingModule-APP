@@ -48,8 +48,8 @@ public class CommonFilter extends Filter {
     @Override
     public void merge(Filter filter) {
         CommonFilter incoming = (CommonFilter) filter;
-        this.setEndDate(incoming.getEndDate());
-        this.setStartDate(incoming.getStartDate());
+        setEndDate(incoming.getEndDate());
+        setStartDate(incoming.getStartDate());
     }
     public Date getStartDate() {
         return startDate;

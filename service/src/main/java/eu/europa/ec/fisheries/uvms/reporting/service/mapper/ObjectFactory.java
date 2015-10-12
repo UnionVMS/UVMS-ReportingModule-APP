@@ -1,10 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 
 public class ObjectFactory {
 
@@ -44,8 +41,16 @@ public class ObjectFactory {
         return PositionSelectorDTO.PositionSelectorDTOBuilder().build();
     }
 
-    VesselFilter createVesselFilter(){
+    public VesselFilter createVesselFilter(){
         return VesselFilter.VesselFilterBuilder().build();
+    }
+
+    public TrackFilter createTrackFilter(){
+        return TrackFilter.TrackFilterBuilder().build();
+    }
+
+    public TrackFilterDTO createTrackFilterDTO(){
+        return TrackFilterDTO.TrackFilterDTOBuild().build();
     }
 
 }

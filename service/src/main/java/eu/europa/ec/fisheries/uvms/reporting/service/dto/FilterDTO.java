@@ -17,7 +17,8 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.*;
         @Type(value = VmsPositionFilterDTO.class, name = "vmsposition"),
         @Type(value = VesselFilterDTO.class, name = "vessel"),
         @Type(value = VesselGroupFilterDTO.class, name = "vgroup"),
-        @Type(value = CommonFilterDTO.class, name = "common")
+        @Type(value = CommonFilterDTO.class, name = "common"),
+        @Type(value = TrackFilterDTO.class, name = "track")
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class FilterDTO {
