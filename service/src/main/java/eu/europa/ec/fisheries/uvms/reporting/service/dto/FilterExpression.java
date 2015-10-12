@@ -24,10 +24,10 @@ public class FilterExpression {
         super();
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtils.DATE_TIME_FILTER_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
     private Date startDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtils.DATE_TIME_FILTER_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
     private Date endDate;
 
     private PositionSelector positionSelector;
