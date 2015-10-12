@@ -10,19 +10,19 @@ import lombok.Builder;
 @JsonTypeName("vgroup")
 public class VesselGroupFilterDTO extends FilterDTO {
 
-    public static final String GROUP_ID = "groupId" ;
+    public static final String GUID = "guid" ;
     public static final String USER = "user" ;
 
-    private String groupId;
+    private String guid;
 
     @JsonProperty(USER)
     private String userName;
 
     @Builder(builderMethodName = "VesselGroupFilterDTOBuilder")
     public VesselGroupFilterDTO(Long reportId, Long id,
-                                String groupId,
+                                String guid,
                                 String userName) {
-        this.groupId = groupId;
+        this.guid = guid;
         this.userName = userName;
         setId(id);
         setReportId(reportId);
@@ -37,12 +37,12 @@ public class VesselGroupFilterDTO extends FilterDTO {
         this.userName = userName;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setGuid(String groupId) {
+        this.guid = groupId;
     }
 
     @Override

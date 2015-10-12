@@ -121,7 +121,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                 VesselGroupFilterDTO.VesselGroupFilterDTOBuilder()
                                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                                         .reportId(reportId)
-                                        .groupId(next.get(VesselGroupFilterDTO.GROUP_ID).textValue())
+                                        .guid(next.get(VesselGroupFilterDTO.GUID).textValue())
                                         .userName(next.get(VesselGroupFilterDTO.USER).textValue())
                                         .build()
                         );

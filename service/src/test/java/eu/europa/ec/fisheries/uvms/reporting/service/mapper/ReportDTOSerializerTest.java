@@ -95,11 +95,11 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         VesselFilterDTO vessel1 = VesselFilterDTOBuilder().id(47L).guid("guid1").name("vessel1").build();
 
-        VesselGroupFilterDTO vgroup2 = VesselGroupFilterDTOBuilder().id(48L).groupId("2").userName("ddd").build();
+        VesselGroupFilterDTO vgroup2 = VesselGroupFilterDTOBuilder().id(48L).guid("2").userName("ddd").build();
 
         VesselFilterDTO vessel2 = VesselFilterDTOBuilder().id(49L).guid("gui4564").name("vessel2").build();
 
-        VesselGroupFilterDTO vgroup1 = VesselGroupFilterDTOBuilder().id(45L).groupId("1").userName("ffsdfs").build();
+        VesselGroupFilterDTO vgroup1 = VesselGroupFilterDTOBuilder().id(45L).guid("1").userName("ffsdfs").build();
 
         VmsPositionFilterDTO vms = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
                 .movementActivity(MovementActivityTypeType.ANC)
