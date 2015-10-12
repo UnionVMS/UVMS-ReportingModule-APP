@@ -11,9 +11,6 @@ import eu.europa.ec.fisheries.uvms.service.Merger;
 import javax.persistence.EntityManager;
 import java.util.*;
 
-/**
- * //TODO create test
- */
 public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     private FilterDAO filterDAO;

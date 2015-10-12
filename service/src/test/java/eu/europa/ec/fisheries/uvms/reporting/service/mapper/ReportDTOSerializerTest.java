@@ -67,7 +67,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     }
 
-    protected void commonFields() throws IOException {
+    private void commonFields() throws IOException {
         gen.assertInvoked().writeNumberField(ReportDTO.ID, dto.getId());
         gen.assertInvoked().writeStringField(ReportDTO.NAME, dto.getName());
         gen.assertInvoked().writeStringField(ReportDTO.DESC, dto.getDescription());

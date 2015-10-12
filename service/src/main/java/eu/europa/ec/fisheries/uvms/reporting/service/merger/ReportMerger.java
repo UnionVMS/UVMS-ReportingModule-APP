@@ -13,9 +13,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * This class is designed to merge the changes made onto ReportDTO with an existing Report entity.
- * This class is more useful in case of merging attributes which are collections of other Entities, and only those entries
- * from the collections, which have been modified, will be persisted.
+ * This class is compare an incoming ReportDTO with the existing Report.
+ * If no changes were detected the fields will not be updated
  */
 public class ReportMerger extends Merger<ReportDTO, Report> {
 

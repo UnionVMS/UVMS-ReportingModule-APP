@@ -24,10 +24,11 @@ public class VesselFilter extends Filter {
     }
 
     @Builder(builderMethodName = "VesselFilterBuilder")
-    public VesselFilter(String guid, String name){
+    public VesselFilter(Long id, String guid, String name){
         super(FilterType.VESSEL);
         this.guid = guid;
         this.name = name;
+        setId(id);
     }
 
     @Override
