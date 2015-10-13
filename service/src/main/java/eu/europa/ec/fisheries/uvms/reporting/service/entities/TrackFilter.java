@@ -10,7 +10,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("VESSEL")
+@DiscriminatorValue("TRACK")
 @EqualsAndHashCode(callSuper = true)
 public class TrackFilter extends Filter {
 

@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 
@@ -13,6 +14,7 @@ public class TrackFilterDTO extends FilterDTO {
     public static final String TRK_MAX_TIME = "trkMaxTime";
     public static final String TRK_MIN_DURATION = "trkMinDuration";
     public static final String TRK_MAX_DURATION = "trkMaxDuration";
+    public static final String TRACKS = "tracks";
 
     @JsonProperty(TRK_MAX_TIME)
     private Float maxTime;
@@ -27,11 +29,19 @@ public class TrackFilterDTO extends FilterDTO {
     private Float maxDuration;
 
     @Builder(builderMethodName = "TrackFilterDTOBuild")
-    public TrackFilterDTO(Float maxTime, Float minTime, Float minDuration, Float maxDuration) {
+    public TrackFilterDTO(Long id,
+                          Long reportId,
+                          Float maxTime,
+                          Float minTime,
+                          Float minDuration,
+                          Float maxDuration) {
         this.maxTime = maxTime;
         this.minTime = minTime;
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
+        setId(id);
+        setReportId(reportId);
+        setType(FilterType.TRACK);
     }
 
     @Override
