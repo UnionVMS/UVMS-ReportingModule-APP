@@ -10,24 +10,24 @@ public class PositionSelectorDTO {
 
     public final static String VALUE = "value";
 
-    private Long value;
+    private Float value;
 
     private Selector selector;
 
     private Position position;
 
     @Builder(builderMethodName = "PositionSelectorDTOBuilder")
-    public PositionSelectorDTO(Long value, Selector selector, Position position) {
+    public PositionSelectorDTO(Float value, Selector selector, Position position) {
         this.value = value;
         this.selector = selector;
         this.position = position;
     }
 
-    public Long getValue() {
+    public Float getValue() {
         return value;
     }
 
-    public void setValue(Long value) {
+    public void setValue(Float value) {
         this.value = value;
     }
 

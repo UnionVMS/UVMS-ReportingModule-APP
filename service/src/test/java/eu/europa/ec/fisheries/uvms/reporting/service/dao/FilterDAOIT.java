@@ -118,7 +118,7 @@ public class FilterDAOIT {
         CommonFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(savedReport);
         filter6.setPositionSelector(
-                PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()
+                PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24F).build()
         );
 
         TrackFilter filter7 = TrackFilterBuilder()

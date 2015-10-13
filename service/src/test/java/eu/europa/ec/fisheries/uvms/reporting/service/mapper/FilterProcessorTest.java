@@ -133,11 +133,12 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         };
 
         Set<Filter> filterList = new HashSet<>();
-        int value = 2;
+        Float value = 2F;
 
         CommonFilter dateTimeFilter = DateTimeFilterBuilder()
                 .positionSelector(
-                        PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(value).build()
+                        PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(
+                                value).build()
                 )
                 .build();
 
@@ -153,8 +154,8 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         assertEquals(SearchKey.TO_DATE, processor.getMovementListCriteria().get(1).getKey());
         assertEquals(DateUtils.dateToString(dateNow.toDate()), processor.getMovementListCriteria().get(1).getValue());
         assertEquals(SearchKey.FROM_DATE, processor.getMovementListCriteria().get(0).getKey());
-        assertEquals(DateUtils.dateToString(dateNow.minusHours(value).toDate()), processor.getMovementListCriteria().get(0).getValue());
-
+        assertEquals(DateUtils.dateToString(dateNow.minusHours(value.intValue()).toDate()), processor.getMovementListCriteria().get(0).getValue());
+        // fixme FIX THE HOURS
     }
 
 }

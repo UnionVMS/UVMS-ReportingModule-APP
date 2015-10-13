@@ -87,7 +87,22 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
                     break;
                 case LAST:
-                    throw new InvalidParameterException("Last Positions not implemented");
+                    Float value = common.get("value").floatValue();
+                    try{
+                        filterDTOList.add(
+                                CommonFilterDTO.CommonFilterDTOBuilder()
+                                        .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
+                                        .reportId(reportId)
+                                        .positionSelector(
+                                                PositionSelectorDTO.PositionSelectorDTOBuilder().value(value)
+                                                        .selector(positionSelector).build()
+                                        )
+                                        .build()
+                        );
+                    }
+                    catch (Exception e){
+                        throw new InvalidParameterException("Invalid parameters");
+                    }
             }
         }
     }

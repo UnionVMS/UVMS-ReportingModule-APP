@@ -292,7 +292,7 @@ public class ReportRepositoryIT {
         CommonFilter filter6 = DateTimeFilterBuilder().build();
         filter6.setReport(report);
         filter6.setPositionSelector(
-                PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()
+                PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24F).build()
         );
 
         ExecutionLog executionLog = new ExecutionLog();

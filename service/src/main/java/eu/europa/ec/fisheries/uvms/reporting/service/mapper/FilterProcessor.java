@@ -112,14 +112,14 @@ public class FilterProcessor {
     }
 
     private List<ListCriteria> processLastPositions(final CommonFilter dateTimeFilter) {
-        int positions = dateTimeFilter.getPositionSelector().getValue();
+        Float positions = dateTimeFilter.getPositionSelector().getValue();
         throw new NotImplementedException("Not implemented in Movement API");
     }
 
     private List<ListCriteria> processLastHours(final CommonFilter dateTimeFilter) {
-        int hours = dateTimeFilter.getPositionSelector().getValue();
+        Float hours = dateTimeFilter.getPositionSelector().getValue();
         DateTime currentDate = nowUTC();
-        Date toDate = DateUtils.nowUTCMinusHours(currentDate, hours).toDate();
+        Date toDate = DateUtils.nowUTCMinusHours(currentDate, hours.intValue()).toDate();// FIXME hours!
         List<ListCriteria> listCriterias = new ArrayList<>();
         add(DateUtils.dateToString(toDate), listCriterias, SearchKey.FROM_DATE);
         add(DateUtils.dateToString(currentDate.toDate()), listCriterias, SearchKey.TO_DATE);

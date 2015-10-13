@@ -9,7 +9,7 @@ import javax.persistence.Enumerated;
 @Embeddable
 public class PositionSelector {
 
-    private int value;
+    private Float value;
 
     @Enumerated(EnumType.STRING)
     private Selector selector;
@@ -22,7 +22,7 @@ public class PositionSelector {
     }
 
     @Builder(builderMethodName = "PositionSelectorBuilder")
-    public PositionSelector(int value, Selector selector, Position position) {
+    public PositionSelector(Float value, Selector selector, Position position) {
         this.value = value;
         this.selector = selector;
         this.position = position;
@@ -45,11 +45,11 @@ public class PositionSelector {
         this.selector = selector;
     }
 
-    public int getValue() {
+    public Float getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(Float value) {
         this.value = value;
     }
 }
