@@ -29,7 +29,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(Arquillian.class)
-public class AuthRestITest {
+public class AuthRestIT {
 
 //    @EJB
 //    CrudService crudService;
