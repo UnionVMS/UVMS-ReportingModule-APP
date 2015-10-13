@@ -21,7 +21,7 @@ public class VesselFilter extends Filter {
 
     @Builder(builderMethodName = "VesselFilterBuilder")
     public VesselFilter(Long id, String guid, String name){
-        super(FilterType.VESSEL);
+        super(FilterType.vessel);
         this.guid = guid;
         this.name = name;
         setId(id);

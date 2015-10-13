@@ -18,12 +18,12 @@ public class VesselGroupFilter extends Filter {
     private String userName;
 
     public VesselGroupFilter() {
-        super(FilterType.VGROUP);
+        super(FilterType.vgroup);
     }
 
     @Builder(builderMethodName = "VesselGroupFilterBuilder")
     public VesselGroupFilter(String groupId, String userName){
-        super(FilterType.VGROUP);
+        super(FilterType.vgroup);
         this.guid = groupId;
         this.userName = userName;
     }

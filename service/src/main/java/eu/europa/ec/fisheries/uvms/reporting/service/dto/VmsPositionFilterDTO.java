@@ -9,7 +9,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.Builder;
 
-@JsonTypeName("vmsposition")
 public class VmsPositionFilterDTO extends FilterDTO {
 
     public static final String MOV_MIN_SPEED = "movMinSpeed";
@@ -39,7 +38,7 @@ public class VmsPositionFilterDTO extends FilterDTO {
         this.movementActivity = movementActivity;
         setReportId(reportId);
         setId(id);
-        setType(FilterType.VMSPOS);
+        setType(FilterType.vmspos);
     }
 
     public Float getMinimumSpeed() {

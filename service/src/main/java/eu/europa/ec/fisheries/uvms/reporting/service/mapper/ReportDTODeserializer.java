@@ -105,7 +105,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 JsonNode next = elements.next();
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch(type){
-                    case VESSEL:
+                    case vessel:
                         filterDTOList.add(
                                 VesselFilterDTO.VesselFilterDTOBuilder()
                                         .reportId(reportId)
@@ -115,7 +115,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .build()
                         );
                         break;
-                    case VGROUP:
+                    case vgroup:
                         filterDTOList.add(
                                 VesselGroupFilterDTO.VesselGroupFilterDTOBuilder()
                                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
@@ -140,7 +140,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 JsonNode next = elements.next();
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch (type) {
-                    case VMSPOS:
+                    case vmspos:
                         filterDTOList.add(
                                 VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
                                         .reportId(reportId)
@@ -154,7 +154,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .build()
                         );
                         break;
-                    case VMSTRACK:
+                    case vmstrack:
                         filterDTOList.add(
                                 TrackFilterDTO.TrackFilterDTOBuild()
                                         .reportId(reportId)

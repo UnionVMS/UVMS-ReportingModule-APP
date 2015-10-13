@@ -31,7 +31,7 @@ public class VmsPositionFilter extends Filter  {
     private MovementActivityTypeType movementActivity;
 
     public VmsPositionFilter() {
-        super(FilterType.VMSPOS);
+        super(FilterType.vmspos);
     }
 
     public List<ListCriteria> movementListCriteria() {

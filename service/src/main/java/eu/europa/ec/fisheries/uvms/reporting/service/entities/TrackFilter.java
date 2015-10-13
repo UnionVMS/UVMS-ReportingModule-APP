@@ -26,13 +26,16 @@ public class TrackFilter extends Filter {
     @Column(name = "MAX_DURATION")
     private Float maxDuration;
 
+    TrackFilter(){
+        super(FilterType.vmstrack);
+    }
+
     @Builder(builderMethodName = "TrackFilterBuilder")
     public TrackFilter(Float maxTime,
                        Float maxDuration,
                        Float minDuration,
-                       Float minTime,
-                       FilterType type) {
-        super(FilterType.VMSTRACK);
+                       Float minTime) {
+        super(FilterType.vmstrack);
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
         this.minTime = minTime;

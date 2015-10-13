@@ -1,13 +1,11 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
 import lombok.Builder;
 
-@JsonTypeName("vgroup")
 public class VesselGroupFilterDTO extends FilterDTO {
 
     public static final String GUID = "guid" ;
@@ -26,7 +24,7 @@ public class VesselGroupFilterDTO extends FilterDTO {
         this.userName = userName;
         setId(id);
         setReportId(reportId);
-        setType(FilterType.VGROUP);
+        setType(FilterType.vgroup);
     }
 
     public String getUserName() {

@@ -29,12 +29,12 @@ public class CommonFilter extends Filter {
     private PositionSelector positionSelector;
 
     CommonFilter(){
-        super(FilterType.COMMON);
+        super(FilterType.common);
     }
 
     @Builder(builderMethodName = "DateTimeFilterBuilder")
     public CommonFilter(Date startDate, Date endDate, PositionSelector positionSelector) {
-        super(FilterType.COMMON);
+        super(FilterType.common);
         this.startDate = startDate;
         this.endDate = endDate;
         this.positionSelector = positionSelector;

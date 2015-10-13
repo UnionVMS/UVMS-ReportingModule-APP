@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
@@ -10,7 +9,6 @@ import lombok.Builder;
 
 import java.util.Date;
 
-@JsonTypeName("common")
 public class CommonFilterDTO extends FilterDTO {
 
     public final static String START_DATE = "startDate";
@@ -31,7 +29,7 @@ public class CommonFilterDTO extends FilterDTO {
         this.positionSelector = positionSelector;
         setId(id);
         setReportId(reportId);
-        setType(FilterType.COMMON);
+        setType(FilterType.common);
     }
 
     private PositionSelectorDTO positionSelector;

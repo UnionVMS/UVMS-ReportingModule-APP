@@ -39,17 +39,17 @@ public class FilterProcessor {
             Filter filter = (Filter) next;
             switch (filter.getType()) {
 
-                case VESSEL:
+                case vessel:
                     addToVesselCriteria(filter);
                     addConnectIdToMovementCriteria(filter);
                     break;
-                case VGROUP:
+                case vgroup:
                     addToVesselGroupCriteria(filter);
                     break;
-                case COMMON:
+                case common:
                     addToMovementCriteria(filter);
                     break;
-                case VMSPOS:
+                case vmspos:
                     break;
                 default:
                     break;

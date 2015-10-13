@@ -46,9 +46,9 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
     private void serializeFilterFields(JsonGenerator jgen, Set<FilterDTO> filters) throws IOException {
 
-        FilterDTO position = null;
+        VmsPositionFilterDTO position = null;
         FilterDTO segment = null;
-        FilterDTO track = null;
+        TrackFilterDTO track = null;
 
         List<FilterDTO> vesselFilterDTOList = new ArrayList<>();
         CommonFilterDTO commonFilter = null;
@@ -56,17 +56,17 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         for (FilterDTO filterDTO : filters) {
             FilterType type = filterDTO.getType();
             switch (type) {
-                case COMMON:
+                case common:
                     commonFilter = (CommonFilterDTO) filterDTO;
                     break;
-                case VMSPOS:
-                    position = filterDTO;
+                case vmspos:
+                    position = (VmsPositionFilterDTO) filterDTO;
                     break;
-                case VMSTRACK:
-                    track = filterDTO;
+                case vmstrack:
+                    track = (TrackFilterDTO) filterDTO;
                     break;
-                case VESSEL:
-                case VGROUP:
+                case vessel:
+                case vgroup:
                     vesselFilterDTOList.add(filterDTO);
                     break;
             }
@@ -80,7 +80,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeEndObject();
     }
 
-    private void writeVmsTrack(JsonGenerator jgen, FilterDTO track) throws IOException {
+    private void writeVmsTrack(JsonGenerator jgen, TrackFilterDTO track) throws IOException {
         if (track != null){
             jgen.writeFieldName(TrackFilterDTO.TRACKS);
             jgen.writeObject(track);
@@ -93,7 +93,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         }
     }
 
-    private void writeVmsPosition(JsonGenerator jgen, FilterDTO position) throws IOException {
+    private void writeVmsPosition(JsonGenerator jgen, VmsPositionFilterDTO position) throws IOException {
         if (position != null){
             jgen.writeFieldName(VmsPositionFilterDTO.VMS);
             jgen.writeObject(position);
