@@ -50,7 +50,7 @@ public class ReportingResourceIT extends ArquillianTest {
 	@Before
 	public void setUp() {
 		JwtTokenHandler tokenHandler = new JwtTokenHandler();
-		authToken = tokenHandler.createToken("rep_power");
+		authToken = tokenHandler.createToken("rep_power");//rep_power has all features
 	}
 
 	@After
@@ -94,6 +94,8 @@ public class ReportingResourceIT extends ArquillianTest {
 	}
 
     ReportDTO mapReportDTO(Response response) throws IOException {
+		assert response.getStatus() == HttpServletResponse.SC_OK;
+
         ObjectMapper mapper = new ObjectMapper();
         String s = response.readEntity(String.class);
         String replace = s.replace("{\"data\":", "");
@@ -105,39 +107,30 @@ public class ReportingResourceIT extends ArquillianTest {
 	@Header(name="connection", value = "Keep-Alive")
 	public void testCreateListReadDelete(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws IOException {
 
+		//FIXME the problem comes from the non-symmetric Serializer/deserializer
         //###################  START CREATE TEST
-        ReportDTO dto = RestDTOUtil.createRandomReport();
-        dto.setScopeName("CreateListReadDelete");
-        dto.setVisibility(VisibilityEnum.SCOPE);
 
-		Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, authToken)
-				.header(AuthConstants.HTTP_HEADER_AUTHORIZATION, authToken).header(AuthConstants.HTTP_HEADER_SCOPE_NAME,
-                        dto.getScopeName()).post(Entity.json(dto));
-		
-		assertNotNull(response);
-		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+		ReportDTO resultReport = callCreateRESTAPI( webTarget, "CreateListReadDelete");
 
-		response.close();
-		
 		//############ TEST LIST
 
-        Collection<ReportDTO> reports = callListRESTAPI(webTarget, dto.getScopeName());
+        Collection<ReportDTO> reports = callListRESTAPI(webTarget, resultReport.getScopeName());
 
 		assertEquals(1, reports.size());
 		
 		ReportDTO report = reports.iterator().next();
 		
-		assertEquals(dto.getDescription(), report.getDescription());
-		assertEquals(dto.getName(), report.getName());
+		assertEquals(resultReport.getDescription(), report.getDescription());
+		assertEquals(resultReport.getName(), report.getName());
 		assertNotNull(report.getAudit().getCreatedOn());
 		assertTrue(report.getId()>0);
-		//assertTrue(report.isDeletable()); //FIXME test features stuff
-		//assertTrue(report.isEditable()); //FIXME test features stuff
+		assertTrue(report.isDeletable());
+		assertTrue(report.isEditable());
 		assertEquals(VisibilityEnum.SCOPE, report.getVisibility());
-		//assertTrue(report.isShareable()); //FIXME test features stuff
+		assertTrue(report.isShareable());
 		
 		//###################### TEST READ
-		response = webTarget.path("/" + report.getId()).request().get();
+		Response response = webTarget.path("/" + report.getId()).request().get();
 		
 		assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 		ReportDetailsResponseTESTDto foundReport = response.readEntity(ReportDetailsResponseTESTDto.class);
@@ -146,14 +139,14 @@ public class ReportingResourceIT extends ArquillianTest {
 		assertEquals(report.getName(), foundReport.getData().getName());
 		ReportDTO reportDTO = reports.iterator().next();
 		
-		assertEquals(reportDTO.getDescription(), dto.getDescription());
-		assertEquals(reportDTO.getName(), dto.getName());
+		assertEquals(reportDTO.getDescription(), resultReport.getDescription());
+		assertEquals(reportDTO.getName(), resultReport.getName());
 		assertNotNull(reportDTO.getAudit());
 		assertTrue(reportDTO.getId()>0);
-		//assertTrue(reportDTO.isDeletable());  //FIXME test features stuff
-		//assertTrue(reportDTO.isEditable());  //FIXME test features stuff
+		assertTrue(reportDTO.isDeletable());
+		assertTrue(reportDTO.isEditable());
 		assertEquals(VisibilityEnum.SCOPE, reportDTO.getVisibility());
-		//assertTrue(reportDTO.isShareable());  //FIXME test features stuff
+		assertTrue(reportDTO.isShareable());
 		
 		//###################### TEST READ
 		response = webTarget.path("/" + reportDTO.getId()).request().get();
@@ -194,6 +187,20 @@ public class ReportingResourceIT extends ArquillianTest {
             delete.close();
 	}
 
+	private ReportDTO callCreateRESTAPI(ReportDTO dto, ResteasyWebTarget webTarget, String scopeName) throws IOException {
+
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonString = mapper.writeValueAsString(dto);
+
+		Response response = webTarget.request(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, authToken)
+				.header(AuthConstants.HTTP_HEADER_SCOPE_NAME, scopeName)
+				.post(Entity.text(jsonString));
+		ReportDTO reportDTO = mapReportDTO(response);
+		response.close();
+		return reportDTO;
+	}
+
 	@Test
 	@Header(name="connection", value = "Keep-Alive")
 	public void testDeleteNonExisting(@ArquillianResteasyResource("rest/report") ResteasyWebTarget webTarget) throws IOException {
@@ -212,13 +219,9 @@ public class ReportingResourceIT extends ArquillianTest {
 
 	private ReportDTO callCreateRESTAPI(ResteasyWebTarget webTarget, String scopeName) throws IOException {
         ReportDTO dto = RestDTOUtil.createRandomReport();
-        dto.setVisibility(VisibilityEnum.SCOPE);
-        Response response = webTarget.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, authToken)
-                .header(AuthConstants.HTTP_HEADER_AUTHORIZATION, authToken).header(AuthConstants.HTTP_HEADER_SCOPE_NAME,
-                        dto.getScopeName()).post(Entity.json(dto));
-        ReportDTO reportDTO = mapReportDTO(response);
-        response.close();
-        return reportDTO;
+		dto.setVisibility(VisibilityEnum.SCOPE);
+
+       return callCreateRESTAPI(dto, webTarget, scopeName);
     }
 
 	private Collection<ReportDTO> callListRESTAPI(ResteasyWebTarget webTarget, String scopeName) throws IOException {
