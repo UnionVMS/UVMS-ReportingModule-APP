@@ -27,6 +27,7 @@ import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.TrackFilter.TrackFilterBuilder;
 import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
 @RunWith(Arquillian.class)
@@ -120,7 +121,7 @@ public class FilterDAOIT {
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()
         );
 
-        TrackFilter filter7 = TrackFilter.TrackFilterBuilder()
+        TrackFilter filter7 = TrackFilterBuilder()
                     .maxTime(10F)
                     .minDuration(11F)
                     .maxDuration(12F)
