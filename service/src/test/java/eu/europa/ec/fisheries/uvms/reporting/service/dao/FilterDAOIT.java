@@ -119,8 +119,17 @@ public class FilterDAOIT {
         filter6.setPositionSelector(
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24).build()
         );
-        expectedCollection.add(filter6);
-        filterIds.add(filterDAO.createEntity(filter6).getId());
+
+        TrackFilter filter7 = TrackFilter.TrackFilterBuilder()
+                    .maxTime(10F)
+                    .minDuration(11F)
+                    .maxDuration(12F)
+                    .minTime(13F)
+                .build();
+        filter7.setReport(savedReport);
+
+        expectedCollection.add(filter7);
+        filterIds.add(filterDAO.createEntity(filter7).getId());
 
         List<Filter> filters = filterDAO.listById(filterIds);
         ReflectionAssert.assertReflectionEquals(expectedCollection, filters, LENIENT_ORDER);
