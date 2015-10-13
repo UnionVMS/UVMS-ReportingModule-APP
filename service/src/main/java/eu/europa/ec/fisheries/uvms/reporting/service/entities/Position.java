@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Position {
 
-    POSITIONS("POSITION"), HOURS("HOURS");
+    POSITIONS("position"),
+    HOURS("hours");
 
     private String name;
 

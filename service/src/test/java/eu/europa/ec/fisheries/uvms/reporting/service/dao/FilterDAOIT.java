@@ -115,7 +115,7 @@ public class FilterDAOIT {
         expectedCollection.add(filter5);
         filterIds.add(filterDAO.createEntity(filter5).getId());
 
-        CommonFilter filter6 = DateTimeFilterBuilder().build();
+        CommonFilter filter6 = CommonFilterBuilder().build();
         filter6.setReport(savedReport);
         filter6.setPositionSelector(
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24F).build()

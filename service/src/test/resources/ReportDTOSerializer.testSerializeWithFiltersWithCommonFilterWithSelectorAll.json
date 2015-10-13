@@ -1,0 +1,16 @@
+{
+  "id" : 5,
+  "name" : "ReportName788",
+  "desc" : "This is a report descri created on 2015/09/28 13:31",
+  "visibility" : "private",
+  "createdOn" : "2015-10-11T13:02:23",
+  "createdBy" : "georgi",
+  "withMap" : true,
+  "filterExpression" : {
+    "common" : {
+      "positionSelector" : "all",
+      "startDate" : "2005-03-26T12:01:01",
+      "endDate" : "2004-03-26T12:01:01"
+    }
+  }
+}

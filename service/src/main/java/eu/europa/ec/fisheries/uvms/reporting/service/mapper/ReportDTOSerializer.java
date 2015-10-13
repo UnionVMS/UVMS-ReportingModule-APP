@@ -21,7 +21,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     @Override
     public void serialize(ReportDTO reportDTO, JsonGenerator jgen, SerializerProvider serializerProvider) throws IOException {
 
-        Set<FilterDTO> filters = reportDTO.getFilters();
+        List<FilterDTO> filters = reportDTO.getFilters();
 
         jgen.writeStartObject();
 
@@ -44,7 +44,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeBooleanField(DELETABLE, reportDTO.isDeletable());
     }
 
-    private void serializeFilterFields(JsonGenerator jgen, Set<FilterDTO> filters) throws IOException {
+    private void serializeFilterFields(JsonGenerator jgen, List<FilterDTO> filters) throws IOException {
 
         VmsPositionFilterDTO position = null;
         FilterDTO segment = null;
@@ -113,24 +113,30 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     }
 
     private void writeCommonFields(JsonGenerator jgen, CommonFilterDTO commonFilter) throws IOException {
-        jgen.writeFieldName(CommonFilterDTO.COMMON);
-        jgen.writeStartObject();
-        jgen.writeNumberField(FilterDTO.ID, commonFilter.getId());
-        PositionSelectorDTO positionSelector = commonFilter.getPositionSelector();
-        jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().getName());
+        if(commonFilter != null){
+            jgen.writeFieldName(CommonFilterDTO.COMMON);
+            jgen.writeStartObject();
+            Long id = commonFilter.getId();
+            if (id != null){
+                jgen.writeNumberField(FilterDTO.ID, commonFilter.getId());
+            }
+            PositionSelectorDTO positionSelector = commonFilter.getPositionSelector();
+            jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().getName());
 
-        switch (positionSelector.getSelector()){
-            case ALL :
-                jgen.writeStringField(CommonFilterDTO.START_DATE,
-                        UI_FORMATTER.print(new DateTime(commonFilter.getStartDate())));
-                jgen.writeStringField(CommonFilterDTO.END_DATE,
-                        UI_FORMATTER.print(new DateTime(commonFilter.getEndDate())));
-                break;
-            case LAST:
-                jgen.writeNumberField(PositionSelectorDTO.VALUE, positionSelector.getValue());
-                break;
+            switch (positionSelector.getSelector()){
+                case ALL :
+                    jgen.writeStringField(CommonFilterDTO.START_DATE,
+                            UI_FORMATTER.print(new DateTime(commonFilter.getStartDate())));
+                    jgen.writeStringField(CommonFilterDTO.END_DATE,
+                            UI_FORMATTER.print(new DateTime(commonFilter.getEndDate())));
+                    break;
+                case LAST:
+                    jgen.writeStringField(PositionSelectorDTO.SELECTOR, positionSelector.getPosition().getName());
+                    jgen.writeNumberField(PositionSelectorDTO.VALUE, positionSelector.getValue());
+                    break;
 
+            }
+            jgen.writeEndObject();
         }
-        jgen.writeEndObject();
     }
 }

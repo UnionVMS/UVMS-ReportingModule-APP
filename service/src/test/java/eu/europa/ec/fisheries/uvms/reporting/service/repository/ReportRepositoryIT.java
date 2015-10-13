@@ -289,7 +289,7 @@ public class ReportRepositoryIT {
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
 
-        CommonFilter filter6 = DateTimeFilterBuilder().build();
+        CommonFilter filter6 = CommonFilterBuilder().build();
         filter6.setReport(report);
         filter6.setPositionSelector(
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24F).build()

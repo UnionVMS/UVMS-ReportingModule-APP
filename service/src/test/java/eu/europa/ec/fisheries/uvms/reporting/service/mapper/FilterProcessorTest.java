@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.DateTimeFilterBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.CommonFilterBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static junit.framework.TestCase.assertEquals;
 
@@ -87,7 +88,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         Date toDate = c.getTime();
         Date fromDate = new Date();
 
-        CommonFilter dateTimeFilter = DateTimeFilterBuilder()
+        CommonFilter dateTimeFilter = CommonFilterBuilder()
                 .startDate(fromDate)
                 .endDate(toDate)
                 .positionSelector(PositionSelectorBuilder().selector(Selector.ALL).build())
@@ -135,7 +136,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         Set<Filter> filterList = new HashSet<>();
         Float value = 2F;
 
-        CommonFilter dateTimeFilter = DateTimeFilterBuilder()
+        CommonFilter dateTimeFilter = CommonFilterBuilder()
                 .positionSelector(
                         PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(
                                 value).build()

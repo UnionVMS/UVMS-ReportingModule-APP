@@ -11,7 +11,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import lombok.Builder;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //TODO implement a unit test
@@ -97,11 +99,11 @@ public class ReportMapper {
         return executionLogDTOSet;
     }
 
-    private Set<FilterDTO> filterSetToFilterDTOSet(final Set<Filter> filterSet) {
+    private List<FilterDTO> filterSetToFilterDTOSet(final Set<Filter> filterSet) {
         if (filterSet == null) {
             return null;
         }
-        Set<FilterDTO> filterDTOSet = new HashSet<>();
+        List<FilterDTO> filterDTOSet = new ArrayList<>();
         for ( Filter filter : filterSet ) {
             FilterDTO filterDTO = filter.convertToDTO();
             filterDTO.setType(filter.getType());
@@ -110,7 +112,7 @@ public class ReportMapper {
         return filterDTOSet;
     }
 
-    private Set<Filter> filterDTOSetToFilterSet(final Set<FilterDTO> filterDTOSet, final Report report) {
+    private Set<Filter> filterDTOSetToFilterSet(final List<FilterDTO> filterDTOSet, final Report report) {
         if (filterDTOSet == null) {
             return null;
         }

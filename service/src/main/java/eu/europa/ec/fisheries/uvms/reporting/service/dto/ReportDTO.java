@@ -19,9 +19,7 @@ import lombok.Builder;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -60,7 +58,7 @@ public class ReportDTO implements Serializable {
 
     private String deletedBy;
 
-    private Set<FilterDTO> filters = new HashSet<>(0);
+    private List<FilterDTO> filters = new ArrayList<>();
 
     private Set<ExecutionLogDTO> executionLogs;
 
@@ -78,7 +76,7 @@ public class ReportDTO implements Serializable {
                      Date createdOn,
                      Date deletedOn,
                      String deletedBy,
-                     Set<FilterDTO> filters) {
+                     List<FilterDTO> filters) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -198,11 +196,11 @@ public class ReportDTO implements Serializable {
         this.visibility = visibility;
     }
 
-    public Set<FilterDTO> getFilters() {
+    public List<FilterDTO> getFilters() {
         return filters;
     }
 
-    public void setFilters(Set<FilterDTO> filters) {
+    public void setFilters(List<FilterDTO> filters) {
         this.filters = filters;
     }
 

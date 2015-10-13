@@ -32,7 +32,7 @@ public class CommonFilter extends Filter {
         super(FilterType.common);
     }
 
-    @Builder(builderMethodName = "DateTimeFilterBuilder")
+    @Builder(builderMethodName = "CommonFilterBuilder")
     public CommonFilter(Date startDate, Date endDate, PositionSelector positionSelector) {
         super(FilterType.common);
         this.startDate = startDate;

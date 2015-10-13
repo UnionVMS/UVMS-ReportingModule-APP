@@ -13,9 +13,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 
@@ -27,7 +25,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
 
-        Set<FilterDTO> filterDTOList = new HashSet<>();
+        List<FilterDTO> filterDTOList = new ArrayList<>();
 
         JsonNode reportIdNode = node.get(ReportDTO.ID);
         Long reportId = null;
@@ -52,7 +50,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .build();
     }
 
-    private void addCommon(JsonNode common, Set<FilterDTO> filterDTOList, Long reportId) throws InvalidParameterException {
+    private void addCommon(JsonNode common, List<FilterDTO> filterDTOList, Long reportId) throws InvalidParameterException {
         if (common != null){
 
             String selectorNode = common.get("positionSelector").asText().toUpperCase();
@@ -107,13 +105,13 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addArea(JsonNode area, Set<FilterDTO> filterDTOList, Long reportId) {
+    private void addArea(JsonNode area, List<FilterDTO> filterDTOList, Long reportId) {
         if (area != null){
             throw new InvalidParameterException("Unimplemented functionality");
         }
     }
 
-    private void addVessels(JsonNode vessel, Set<FilterDTO> filterDTOList, Long reportId) {
+    private void addVessels(JsonNode vessel, List<FilterDTO> filterDTOList, Long reportId) {
         if (vessel != null){
             Iterator<JsonNode> elements = vessel.elements();
             while(elements.hasNext()) {
@@ -148,7 +146,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addVmsFilters(JsonNode vms, Set<FilterDTO> filterDTOList, Long reportId) {
+    private void addVmsFilters(JsonNode vms, List<FilterDTO> filterDTOList, Long reportId) {
         if (vms != null) {
             Iterator<JsonNode> elements = vms.elements();
             while (elements.hasNext()) {

@@ -9,8 +9,8 @@ public class ObjectFactory {
         return Report.ReportBuilder().build();
     }
 
-    public CommonFilter createPositionFilter() {
-        return CommonFilter.DateTimeFilterBuilder().build();
+    public CommonFilter createCommonFilter() {
+        return CommonFilter.CommonFilterBuilder().build();
     }
 
     public ReportDTO createReportDTO() {
