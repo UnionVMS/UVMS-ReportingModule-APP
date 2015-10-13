@@ -183,7 +183,6 @@ public class ReportingResource extends UnionVMSResource {
 
 	   	report.setCreatedBy(username);
         report.setScopeName(scopeName);
-        report.setScopeName("scopeName");
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
 
