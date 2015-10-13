@@ -31,8 +31,8 @@ public class ReportMerger extends Merger<ReportDTO, Report> {
 
     @Override
     protected Collection<Report> convert(ReportDTO input) throws ServiceException {
-        ReportMapper build = ReportMapper.reportMapperBuilder().filters(true).build();
-        return Arrays.asList(build.reportDtoToReport(input));
+        ReportMapper build = ReportMapper.ReportMapperBuilder().filters(true).build();
+        return Arrays.asList(build.reportDTOToReport(input));
     }
 
     @Override
@@ -59,8 +59,7 @@ public class ReportMerger extends Merger<ReportDTO, Report> {
         boolean merge = !existing.equals(incoming);
 
         if (merge){
-            ReportMapper mapper = ReportMapper.reportMapperBuilder().filters(false).build();
-            mapper.merge(incoming, existing);
+            existing.merge(incoming);
         }
 
         return merge;

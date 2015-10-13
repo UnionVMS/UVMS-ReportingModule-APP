@@ -1,9 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum Selector {
-    ALL("ALL"), LAST("LAST");
+
+    ALL("all"),
+    LAST("last");
 
     private String name;
 
@@ -11,7 +11,6 @@ public enum Selector {
         this.name = name;
     }
 
-    @JsonValue
     public String getName() {
         return name;
     }

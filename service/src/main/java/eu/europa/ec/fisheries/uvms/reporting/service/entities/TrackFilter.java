@@ -10,7 +10,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("TRACK")
+@DiscriminatorValue("VMSTRACK")
 @EqualsAndHashCode(callSuper = true)
 public class TrackFilter extends Filter {
 
@@ -32,7 +32,7 @@ public class TrackFilter extends Filter {
                        Float minDuration,
                        Float minTime,
                        FilterType type) {
-        super(type);
+        super(FilterType.VMSTRACK);
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
         this.minTime = minTime;

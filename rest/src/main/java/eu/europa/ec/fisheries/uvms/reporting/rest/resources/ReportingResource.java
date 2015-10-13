@@ -183,17 +183,17 @@ public class ReportingResource extends UnionVMSResource {
 
 	   	report.setCreatedBy(username);
         report.setScopeName(scopeName);
+        report.setScopeName("scopeName");
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
 
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
             try {
-                reportService.create(report);
+                return createSuccessResponse(reportService.create(report));
             } catch (ReportingServiceException e) {
                 LOG.error("createReport failed.", e);
                 return createErrorResponse();
             }
-            return createSuccessResponse();
         } else {
             return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }

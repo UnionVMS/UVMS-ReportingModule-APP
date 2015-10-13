@@ -56,8 +56,9 @@ public class Report implements Serializable {
 
     private String description;
 
-    @Column(name = "out_components", nullable = false)
-    private String outComponents;
+    @Column(name = "with_map", nullable = false, length=1)
+    @Convert(converter=CharBooleanConverter.class)
+    private Boolean withMap;
 
     @Column(name = "scope_name", nullable = false)
     private String scopeName;
@@ -84,14 +85,14 @@ public class Report implements Serializable {
     private Audit audit;
 
     @Builder(builderMethodName = "ReportBuilder")
-    public Report(Long id, String name, String description, String outComponents, String scopeName,
+    public Report(Long id, String name, String description, Boolean withMap, String scopeName,
                   String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
 
         this.name = name;
         this.id = id;
         this.description = description;
-        this.outComponents = outComponents;
+        this.withMap = withMap;
         this.scopeName = scopeName;
         this.createdBy = createdBy;
         this.visibility = VisibilityEnum.PRIVATE;
@@ -146,6 +147,19 @@ public class Report implements Serializable {
         return result;
     }
 
+    public void merge(Report incoming){
+        setId(incoming.getId());
+        setName(incoming.getName());
+        setDescription(incoming.getDescription());
+        setWithMap(incoming.getWithMap());
+        setScopeName(incoming.getScopeName());
+        setCreatedBy(incoming.getCreatedBy());
+        setIsDeleted(incoming.isIsDeleted());
+        setDeletedOn(incoming.getDeletedOn());
+        setDeletedBy( incoming.getDeletedBy() );
+        setVisibility( incoming.getVisibility() );
+    }
+
     @PrePersist
     private void onCreate() {
         audit = new Audit(DateUtils.nowUTC().toDate());
@@ -181,14 +195,6 @@ public class Report implements Serializable {
 
     public void setFilters(Set<Filter> filters) {
         this.filters = filters;
-    }
-
-    public String getOutComponents() {
-        return this.outComponents;
-    }
-
-    public void setOutComponents(String outComponents) {
-        this.outComponents = outComponents;
     }
 
     public String getScopeName() {
@@ -252,4 +258,11 @@ public class Report implements Serializable {
         return audit;
     }
 
+    public Boolean getWithMap() {
+        return withMap;
+    }
+
+    public void setWithMap(Boolean withMap) {
+        this.withMap = withMap;
+    }
 }

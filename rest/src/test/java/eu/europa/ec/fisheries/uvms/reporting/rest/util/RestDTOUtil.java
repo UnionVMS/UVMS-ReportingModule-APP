@@ -16,7 +16,7 @@ public class RestDTOUtil {
                                          String createdBy,
                                          Date date,
                                          String description,
-                                         String outComponents,
+                                         Boolean withMap,
                                          String scopeName,
                                          VisibilityEnum visibilityEnum) {
         ReportDTO dto = ReportDTOBuilder().build();
@@ -25,7 +25,7 @@ public class RestDTOUtil {
         dto.setAudit(new AuditDTO(date));
         dto.setDescription(description);
         dto.setName(name);
-        dto.setOutComponents(outComponents);
+        dto.setWithMap(withMap);
         dto.setExecutionLogs(new HashSet());
         dto.setScopeName(scopeName);
         dto.setVisibility(visibilityEnum);
@@ -40,7 +40,7 @@ public class RestDTOUtil {
                 "georgi",
                 currentDate,
                 "This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate),
-                "OutComponents",
+                true,
                 "123",
                 VisibilityEnum.SCOPE);
     }

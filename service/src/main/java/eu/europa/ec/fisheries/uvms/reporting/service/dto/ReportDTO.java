@@ -33,7 +33,7 @@ public class ReportDTO implements Serializable {
     public final static String CREATED_BY = "createdBy";
     public final static String ID = "id";
     public final static String NAME = "name";
-    public final static String OUT_COMPONENTS = "outComponents";
+    public final static String WITH_MAP = "withMap";
     public final static String CREATED_ON = "createdOn";
     public final static String SCOPE_ID = "scopeId";
     public final static String VISIBILITY = "visibility";
@@ -45,7 +45,7 @@ public class ReportDTO implements Serializable {
     private Long id;
     private String name;
     private String description;
-    private String outComponents;
+    private Boolean withMap;
     private String scopeName;
     private String createdBy;
     private boolean shareable;
@@ -70,7 +70,7 @@ public class ReportDTO implements Serializable {
     public ReportDTO(Long id,
                      String name,
                      String description,
-                     String outComponents,
+                     Boolean withMap,
                      String scopeName,
                      String createdBy,
                      VisibilityEnum visibility,
@@ -82,7 +82,7 @@ public class ReportDTO implements Serializable {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.outComponents = outComponents;
+        this.withMap = withMap;
         this.scopeName = scopeName;
         this.createdBy = createdBy;
         this.visibility = visibility;
@@ -131,14 +131,6 @@ public class ReportDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getOutComponents() {
-        return this.outComponents;
-    }
-
-    public void setOutComponents(String outComponents) {
-        this.outComponents = outComponents;
     }
 
     public String getScopeName() {
@@ -238,4 +230,11 @@ public class ReportDTO implements Serializable {
         this.deletable = deletable;
     }
 
+    public Boolean getWithMap() {
+        return withMap;
+    }
+
+    public void setWithMap(Boolean withMap) {
+        this.withMap = withMap;
+    }
 }

@@ -67,7 +67,7 @@ public class ReportRepositoryIT {
         Date currentDate = new Date();
         return Report.ReportBuilder().createdBy("georgi").description("This is a report description created on "
                 + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate)).filters(new HashSet<Filter>())
-                .name("ReportName" + currentDate.getTime()).outComponents("OutComponents")
+                .name("ReportName" + currentDate.getTime()).withMap(true)
                 .executionLogs(new HashSet<ExecutionLog>()).scopeName("123").build();
     }
 

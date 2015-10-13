@@ -7,7 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 
-@JsonTypeName("track")
+@JsonTypeName("vmstrack")
 public class TrackFilterDTO extends FilterDTO {
 
     public static final String TRK_MIN_TIME = "trkMinTime";
@@ -41,7 +41,7 @@ public class TrackFilterDTO extends FilterDTO {
         this.maxDuration = maxDuration;
         setId(id);
         setReportId(reportId);
-        setType(FilterType.TRACK);
+        setType(FilterType.VMSTRACK);
     }
 
     @Override

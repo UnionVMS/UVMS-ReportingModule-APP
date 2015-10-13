@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import org.apache.commons.collections4.CollectionUtils;
@@ -63,6 +62,9 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case VMSPOS:
                     position = filterDTO;
                     break;
+                case VMSTRACK:
+                    track = filterDTO;
+                    break;
                 case VESSEL:
                 case VGROUP:
                     vesselFilterDTOList.add(filterDTO);
@@ -73,8 +75,16 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeStartObject();
         writeCommonFields(jgen, commonFilter);
         writeVessels(jgen, vesselFilterDTOList);
-        writeVms(jgen, position);
+        writeVmsPosition(jgen, position);
+        writeVmsTrack(jgen, track);
         jgen.writeEndObject();
+    }
+
+    private void writeVmsTrack(JsonGenerator jgen, FilterDTO track) throws IOException {
+        if (track != null){
+            jgen.writeFieldName(TrackFilterDTO.TRACKS);
+            jgen.writeObject(track);
+        }
     }
 
     private void writeVessels(JsonGenerator jgen, List<FilterDTO> vesselFilterDTOList) throws IOException {
@@ -83,7 +93,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         }
     }
 
-    private void writeVms(JsonGenerator jgen, FilterDTO position) throws IOException {
+    private void writeVmsPosition(JsonGenerator jgen, FilterDTO position) throws IOException {
         if (position != null){
             jgen.writeFieldName(VmsPositionFilterDTO.VMS);
             jgen.writeObject(position);
@@ -93,12 +103,13 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     private void serializeReportFields(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
         jgen.writeNumberField(ID, reportDTO.getId());
         jgen.writeStringField(NAME, reportDTO.getName());
-        jgen.writeStringField(DESC, reportDTO.getDescription());
-        jgen.writeStringField(VISIBILITY, reportDTO.getVisibility().name());
+        if (reportDTO.getDescription() != null){
+            jgen.writeStringField(DESC, reportDTO.getDescription());
+        }
+        jgen.writeStringField(VISIBILITY, reportDTO.getVisibility().getName());
         jgen.writeStringField(CREATED_ON, UI_FORMATTER.print(new DateTime(reportDTO.getAudit().getCreatedOn())));
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
-        jgen.writeStringField(SCOPE_ID, reportDTO.getScopeName());
-        jgen.writeStringField(OUT_COMPONENTS, reportDTO.getOutComponents());
+        jgen.writeBooleanField(WITH_MAP, reportDTO.getWithMap());
     }
 
     private void writeCommonFields(JsonGenerator jgen, CommonFilterDTO commonFilter) throws IOException {
@@ -106,7 +117,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeStartObject();
         jgen.writeNumberField(FilterDTO.ID, commonFilter.getId());
         PositionSelectorDTO positionSelector = commonFilter.getPositionSelector();
-        jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().name());
+        jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().getName());
 
         switch (positionSelector.getSelector()){
             case ALL :

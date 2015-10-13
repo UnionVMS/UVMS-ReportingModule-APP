@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
@@ -20,10 +19,6 @@ import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 
-
-/**
- * //TODO create test
- */
 public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
     @Override
@@ -48,19 +43,19 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         addCommon(filterNode.get("common"), filterDTOList, reportId);
 
         return ReportDTO.ReportDTOBuilder()
-                .description(node.get(ReportDTO.DESC).textValue())
+                .description(node.get(ReportDTO.DESC) != null? node.get(ReportDTO.DESC).textValue() : null)
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
-                .outComponents(node.get(ReportDTO.OUT_COMPONENTS).textValue())
+                .withMap(node.get(ReportDTO.WITH_MAP).booleanValue())
                 .filters(filterDTOList)
-                .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue()))
+                .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
                 .build();
     }
 
     private void addCommon(JsonNode common, Set<FilterDTO> filterDTOList, Long reportId) throws InvalidParameterException {
         if (common != null){
 
-            String selectorNode = common.get("positionSelector").asText();
+            String selectorNode = common.get("positionSelector").asText().toUpperCase();
             Selector positionSelector = Selector.valueOf(selectorNode);
 
             switch (positionSelector){
@@ -73,17 +68,23 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     if (endDate == null){
                         throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
                     }
-                    filterDTOList.add(
-                            CommonFilterDTO.CommonFilterDTOBuilder()
-                                    .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
-                                    .reportId(reportId)
-                                    .endDate(UI_FORMATTER.parseDateTime(endDate).toDate())
-                                    .startDate(UI_FORMATTER.parseDateTime(startDate).toDate())
-                                    .positionSelector(
-                                            PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
-                                    )
-                                    .build()
-                    );
+                    try{
+                        filterDTOList.add(
+                                CommonFilterDTO.CommonFilterDTOBuilder()
+                                        .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
+                                        .reportId(reportId)
+                                        .endDate(UI_FORMATTER.parseDateTime(endDate).toDate())
+                                        .startDate(UI_FORMATTER.parseDateTime(startDate).toDate())
+                                        .positionSelector(
+                                                PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
+                                        )
+                                        .build()
+                        );
+                    }
+                    catch (Exception e){
+                        throw new InvalidParameterException("Invalid parameters");
+                    }
+
                     break;
                 case LAST:
                     throw new InvalidParameterException("Last Positions not implemented");
@@ -144,8 +145,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                 VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
                                         .reportId(reportId)
                                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue())
-                                        .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue())
+                                        .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue())
+                                        .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue())
                                         .movementActivity(MovementActivityTypeType
                                                 .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()))
                                         .movementType(MovementTypeType
@@ -153,9 +154,20 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .build()
                         );
                         break;
+                    case VMSTRACK:
+                        filterDTOList.add(
+                                TrackFilterDTO.TrackFilterDTOBuild()
+                                        .reportId(reportId)
+                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                                        .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue())
+                                        .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue())
+                                        .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue())
+                                        .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue())
+                                        .build()
+                        );
+                        break;
                     default:
                         throw new InvalidParameterException("Unsupported parameter");
-                        // case TRACKS:
                         // case SEGMENT:
 
                 }

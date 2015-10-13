@@ -18,7 +18,7 @@ public class DTOUtil {
                                          String createdBy,
                                          Date date,
                                          String description,
-                                         String outComponents,
+                                         Boolean withMap,
                                          String scopeName,
                                          VisibilityEnum visibilityEnum) {
         ReportDTO entity = ReportDTOBuilder().build();
@@ -27,7 +27,7 @@ public class DTOUtil {
         entity.setAudit(new AuditDTO(date));
         entity.setDescription(description);
         entity.setName(name);
-        entity.setOutComponents(outComponents);
+        entity.setWithMap(withMap);
         entity.setExecutionLogs(new HashSet());
         entity.setScopeName(scopeName);
         entity.setVisibility(visibilityEnum);
@@ -42,7 +42,7 @@ public class DTOUtil {
                 "georgi",
                 currentDate,
                 "This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate),
-                "OutComponents",
+                true,
                 "123",
                 VisibilityEnum.SCOPE);
     }
@@ -54,7 +54,7 @@ public class DTOUtil {
         return Report.ReportBuilder().name("ReportName" + currentDate.getTime())
                 .createdBy("georgi")
                 .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
-                .outComponents("OutComponents").audit(new Audit(currentDate)).scopeName("123").build();
+                .withMap(true).audit(new Audit(currentDate)).scopeName("123").build();
 
     }
 }

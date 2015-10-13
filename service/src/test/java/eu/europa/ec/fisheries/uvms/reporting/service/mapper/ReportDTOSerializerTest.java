@@ -45,7 +45,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         dto = ReportDTO.ReportDTOBuilder()
                 .createdBy("georgi")
                 .scopeName("356456731")
-                .outComponents("OutComponents")
+                .withMap(true)
                 .createdOn(DateUtils.stringToDate("2015-10-11 13:02:23 +0200"))
                 .visibility(VisibilityEnum.PRIVATE)
                 .description("This is a report descri created on 2015/09/28 13:31")
@@ -79,12 +79,12 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         gen.assertInvoked().writeNumberField(ReportDTO.ID, dto.getId());
         gen.assertInvoked().writeStringField(ReportDTO.NAME, dto.getName());
         gen.assertInvoked().writeStringField(ReportDTO.DESC, dto.getDescription());
-        gen.assertInvoked().writeStringField(ReportDTO.VISIBILITY, dto.getVisibility().name());
+        gen.assertInvoked().writeStringField(ReportDTO.VISIBILITY, dto.getVisibility().getName());
         gen.assertInvoked().writeStringField(ReportDTO.CREATED_ON,
                 UI_FORMATTER.print(new DateTime(dto.getAudit().getCreatedOn())));
         gen.assertInvoked().writeStringField(ReportDTO.CREATED_BY, dto.getCreatedBy());
-        gen.assertInvoked().writeStringField(ReportDTO.SCOPE_ID, dto.getScopeName());
-        gen.assertInvoked().writeStringField(ReportDTO.OUT_COMPONENTS, dto.getOutComponents());
+        gen.assertNotInvoked().writeStringField(ReportDTO.SCOPE_ID, dto.getScopeName());
+        gen.assertInvoked().writeBooleanField(ReportDTO.WITH_MAP, dto.getWithMap());
     }
 
     @Test
