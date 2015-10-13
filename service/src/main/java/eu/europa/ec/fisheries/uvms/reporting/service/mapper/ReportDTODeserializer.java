@@ -48,13 +48,11 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         addCommon(filterNode.get("common"), filterDTOList, reportId);
 
         return ReportDTO.ReportDTOBuilder()
-                .createdBy(node.get(ReportDTO.CREATED_BY).textValue())
                 .description(node.get(ReportDTO.DESC).textValue())
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
                 .outComponents(node.get(ReportDTO.OUT_COMPONENTS).textValue())
                 .filters(filterDTOList)
-                .scopeName(node.get(ReportDTO.SCOPE_ID).textValue())
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue()))
                 .build();
     }
@@ -135,30 +133,32 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private void addVmsFilters(JsonNode vms, Set<FilterDTO> filterDTOList, Long reportId) {
-        Iterator<JsonNode> elements = vms.elements();
-        while(elements.hasNext()){
-            JsonNode next = elements.next();
-            FilterType type = FilterType.valueOf(next.get("type").textValue());
-            switch(type){
-                case VMSPOS:
-                    filterDTOList.add(
-                            VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
-                                    .reportId(reportId)
-                                    .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                    .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue())
-                                    .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue())
-                                    .movementActivity(MovementActivityTypeType
-                                            .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()))
-                                    .movementType(MovementTypeType
-                                            .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE).textValue()))
-                                    .build()
-                    );
-                    break;
-                default:
-                    throw new InvalidParameterException("Unsupported parameter");
-                    // case TRACKS:
-                    // case SEGMENT:
+        if (vms != null) {
+            Iterator<JsonNode> elements = vms.elements();
+            while (elements.hasNext()) {
+                JsonNode next = elements.next();
+                FilterType type = FilterType.valueOf(next.get("type").textValue());
+                switch (type) {
+                    case VMSPOS:
+                        filterDTOList.add(
+                                VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+                                        .reportId(reportId)
+                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                                        .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue())
+                                        .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue())
+                                        .movementActivity(MovementActivityTypeType
+                                                .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()))
+                                        .movementType(MovementTypeType
+                                                .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE).textValue()))
+                                        .build()
+                        );
+                        break;
+                    default:
+                        throw new InvalidParameterException("Unsupported parameter");
+                        // case TRACKS:
+                        // case SEGMENT:
 
+                }
             }
         }
     }

@@ -239,11 +239,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
+				<!--<configuration>
 					<excludes>
 						<exclude>**/*ITest.java</exclude>
 					</excludes>
-				</configuration>
+				</configuration>-->
 			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jojoha
  */
-@WebFilter("/*")
 public class CrossOriginFilter implements Filter {
 
     final static Logger LOG = LoggerFactory.getLogger(CrossOriginFilter.class);
@@ -38,7 +37,7 @@ public class CrossOriginFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        HttpServletResponse response = (HttpServletResponse) res;
+         HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader(RestConstants.ACCESS_CONTROL_ALLOW_ORIGIN, RestConstants.ACCESS_CONTROL_ALLOW_METHODS_ALL);
         response.setHeader(RestConstants.ACCESS_CONTROL_ALLOW_METHODS, RestConstants.ACCESS_CONTROL_ALLOWED_METHODS);
         response.setHeader(RestConstants.ACCESS_CONTROL_ALLOW_HEADERS, ((HttpServletRequest)request).getHeader("Access-Control-Request-Headers"));
