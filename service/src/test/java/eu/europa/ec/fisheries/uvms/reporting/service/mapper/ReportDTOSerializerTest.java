@@ -186,6 +186,31 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
+    public void testSerializeWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(CommonFilterDTOBuilder()
+                .startDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
+                .positionSelector(PositionSelectorDTOBuilder()
+                        .selector(Selector.LAST)
+                        .position(Position.POSITIONS)
+                        .value(23F)
+                        .build())
+                .build());
+
+        dto.setFilters(filterDTOList);
+
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+        URL url = Resources
+                .getResource("ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    @SneakyThrows
     public void testSerializeWithFiltersWithCommonFilterWithTracks() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();

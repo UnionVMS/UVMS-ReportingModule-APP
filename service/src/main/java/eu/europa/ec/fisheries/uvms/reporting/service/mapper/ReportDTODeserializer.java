@@ -154,17 +154,16 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch (type) {
                     case vmspos:
-
                         filterDTOList.add(
                                 VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
                                         .reportId(reportId)
                                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .maximumSpeed(next.get(FilterDTO.ID) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
-                                        .minimumSpeed(next.get(FilterDTO.ID) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
+                                        .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
+                                        .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
                                         .movementActivity(MovementActivityTypeType
-                                                .valueOf(next.get(FilterDTO.ID) != null ? next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue() : null))
+                                                .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null ? next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue() : null))
                                         .movementType(MovementTypeType
-                                                .valueOf(next.get(FilterDTO.ID) != null ? next.get(VmsPositionFilterDTO.MOV_TYPE).textValue() : null))
+                                                .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE) != null ? next.get(VmsPositionFilterDTO.MOV_TYPE).textValue() : null))
                                         .build()
                         );
                         break;
@@ -173,10 +172,10 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                 TrackFilterDTO.TrackFilterDTOBuild()
                                         .reportId(reportId)
                                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .minDuration(next.get(FilterDTO.ID) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)
-                                        .maxTime(next.get(FilterDTO.ID) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
-                                        .maxDuration(next.get(FilterDTO.ID) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
-                                        .maxTime(next.get(FilterDTO.ID) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
+                                        .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)
+                                        .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
+                                        .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
+                                        .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
                                         .build()
                         );
                         break;
