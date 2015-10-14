@@ -8,8 +8,10 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -23,6 +25,7 @@ import java.util.List;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.VesselFilterDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
 import static org.junit.Assert.assertEquals;
 
 public class ReportDTOSerializerTest extends UnitilsJUnit4 {
@@ -79,7 +82,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithVesselFilter() {
+    public void testSerializeWithFiltersWithVessel() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(VesselFilterDTOBuilder().guid("guid1").name("vessel1").build());
@@ -90,6 +93,26 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
         URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVessel.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testSerializeWithFiltersWithVesselAndVesselGroup() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(VesselFilterDTOBuilder().guid("guid1").name("vessel1").build());
+        filterDTOList.add(VesselFilterDTOBuilder().id(48L).guid("guid2").name("vessel2").build());
+        filterDTOList.add(VesselGroupFilterDTOBuilder().guid("guid6").id(66L).userName("houston").build());
+        filterDTOList.add(VesselGroupFilterDTOBuilder().guid("guid7").id(67L).userName("houstonGreg").build());
+
+        dto.setFilters(filterDTOList);
+
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVesselAndVesselGroup.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
