@@ -10,12 +10,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTODeserialize
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.*;
 
 @JsonDeserialize(using = ReportDTODeserializer.class)
 @JsonSerialize(using = ReportDTOSerializer.class)
+@EqualsAndHashCode(exclude = {"scopeName"})
 public class ReportDTO implements Serializable {
 
     public final static String DESC = "desc";

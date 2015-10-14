@@ -20,10 +20,7 @@ import org.unitils.reflectionassert.ReflectionAssert;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
@@ -145,6 +142,17 @@ public class FilterDAOIT {
         segmentFilter.setReport(savedReport);
         expectedCollection.add(segmentFilter);
         filterIds.add(filterDAO.createEntity(segmentFilter).getId());
+
+        CommonFilter commonFilter2 = CommonFilterBuilder().build();
+        commonFilter2.setReport(savedReport);
+        commonFilter2.setEndDate(new Date());
+        commonFilter2.setPositionSelector(
+                PositionSelectorBuilder().selector(Selector.LAST).
+                        position(Position.HOURS).value(24F).build()
+        );
+        commonFilter2.setReport(savedReport);
+        expectedCollection.add(commonFilter2);
+        filterIds.add(filterDAO.createEntity(commonFilter2).getId());
 
         List<Filter> filters = filterDAO.listById(filterIds);
         ReflectionAssert.assertReflectionEquals(expectedCollection, filters, LENIENT_ORDER);

@@ -45,6 +45,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
                 .withMap(node.get(ReportDTO.WITH_MAP).booleanValue())
+                .createdBy(node.get(ReportDTO.CREATED_BY).textValue())
                 .filters(filterDTOList)
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
                 .build();
@@ -154,18 +155,28 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch (type) {
                     case vmspos:
-                        filterDTOList.add(
-                                VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
-                                        .reportId(reportId)
-                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
-                                        .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
-                                        .movementActivity(MovementActivityTypeType
-                                                .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null ? next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue() : null))
-                                        .movementType(MovementTypeType
-                                                .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE) != null ? next.get(VmsPositionFilterDTO.MOV_TYPE).textValue() : null))
-                                        .build()
-                        );
+                        VmsPositionFilterDTO dto = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+                                .reportId(reportId)
+                                .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                                .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
+
+                                .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
+                                .movementActivity(MovementActivityTypeType
+                                        .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null ? next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue() : null))
+                                .movementType(MovementTypeType
+                                        .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE) != null ? next.get(VmsPositionFilterDTO.MOV_TYPE).textValue() : null))
+                                .build();
+
+                        if (next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null){
+                            dto.setMovementActivity(MovementActivityTypeType
+                                    .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()));
+                        }
+                        if (next.get(VmsPositionFilterDTO.MOV_TYPE) != null){
+                            dto.setMovementType(MovementTypeType
+                                    .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE).textValue()));
+                        }
+                        filterDTOList.add(dto);
+
                         break;
                     case vmstrack:
                         filterDTOList.add(

@@ -37,7 +37,6 @@ public class PositionSelector {
     }
 
     public Selector getSelector() {
-
         return selector;
     }
 
