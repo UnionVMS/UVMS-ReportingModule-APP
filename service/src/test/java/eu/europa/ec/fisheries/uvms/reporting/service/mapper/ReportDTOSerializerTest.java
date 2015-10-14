@@ -231,4 +231,25 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         assertEquals(expected, serialized);
     }
 
+    @Test
+    @SneakyThrows
+    public void testSerializeWithFiltersWithVmsPositionsWithoutSomeFields() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+                .id(5L)
+                .movementType(MovementTypeType.EXI)
+                .movementActivity(MovementActivityTypeType.CAN)
+                .build());
+
+        dto.setFilters(filterDTOList);
+
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVmsPositionsWithoutSomeFields.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
 }
