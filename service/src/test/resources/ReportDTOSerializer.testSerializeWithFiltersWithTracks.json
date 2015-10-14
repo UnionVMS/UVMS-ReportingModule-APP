@@ -7,13 +7,15 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
-    "tracks" : {
-      "id" : 1,
-      "type" : "vmstrack",
-      "trkMaxTime" : 20.345,
-      "trkMinTime" : 10.0,
-      "trkMinDuration" : 40.5,
-      "trkMaxDuration" : 200.345
+    "vms" : {
+      "tracks" : {
+        "id" : 1,
+        "type" : "vmstrack",
+        "trkMaxTime" : 20.345,
+        "trkMinTime" : 10.0,
+        "trkMinDuration" : 40.5,
+        "trkMaxDuration" : 200.345
+      }
     }
   }
 }

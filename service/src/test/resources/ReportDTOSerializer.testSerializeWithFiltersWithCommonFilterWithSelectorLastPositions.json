@@ -11,6 +11,7 @@
       "positionSelector" : "last",
       "selector" : "position",
       "value" : 23.0
-    }
+    },
+    "vms" : { }
   }
 }

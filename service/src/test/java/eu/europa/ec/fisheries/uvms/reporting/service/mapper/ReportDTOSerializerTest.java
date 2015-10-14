@@ -10,7 +10,6 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Before;

@@ -154,6 +154,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch (type) {
                     case vmspos:
+
                         filterDTOList.add(
                                 VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
                                         .reportId(reportId)

@@ -75,8 +75,13 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeStartObject();
         writeCommonFields(jgen, commonFilter);
         writeVessels(jgen, vesselFilterDTOList);
-        writeVmsPosition(jgen, position);
-        writeVmsTrack(jgen, track);
+
+        jgen.writeFieldName("vms");
+            jgen.writeStartObject();
+            writeVmsPosition(jgen, position);
+            writeVmsTrack(jgen, track);
+        jgen.writeEndObject();
+
         jgen.writeEndObject();
     }
 
@@ -95,7 +100,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
     private void writeVmsPosition(JsonGenerator jgen, VmsPositionFilterDTO position) throws IOException {
         if (position != null){
-            jgen.writeFieldName(VmsPositionFilterDTO.VMS);
+            jgen.writeFieldName(VmsPositionFilterDTO.VMS_POSITION);
             jgen.writeObject(position);
         }
     }

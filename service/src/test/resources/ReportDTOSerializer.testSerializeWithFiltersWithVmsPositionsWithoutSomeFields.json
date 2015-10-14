@@ -8,10 +8,12 @@
   "withMap" : true,
   "filterExpression" : {
     "vms" : {
-      "id" : 5,
-      "type" : "vmspos",
-      "movType" : "EXI",
-      "movActivity" : "CAN"
+      "vmsposition" : {
+        "id" : 5,
+        "type" : "vmspos",
+        "movType" : "EXI",
+        "movActivity" : "CAN"
+      }
     }
   }
 }

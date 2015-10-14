@@ -16,7 +16,7 @@ public class VmsPositionFilterDTO extends FilterDTO {
     public static final String MOV_MAX_SPEED = "movMaxSpeed";
     public static final String MOV_TYPE = "movType";
     public static final String MOV_ACTIVITY = "movActivity";
-    public static final String VMS = "vms";
+    public static final String VMS_POSITION = "vmsposition";
 
     @JsonProperty(MOV_MIN_SPEED)
     private Float minimumSpeed;
