@@ -21,8 +21,13 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>model</artifactId>
+            <artifactId>reporting-model</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+            <artifactId>spatial-model</artifactId>
+        </dependency>        
 
         <dependency>
             <groupId>com.google.guava</groupId>

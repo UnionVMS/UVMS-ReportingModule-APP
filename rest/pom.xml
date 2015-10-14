@@ -31,7 +31,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 
        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>model</artifactId>
+            <artifactId>reporting-model</artifactId>
        </dependency>
 
         <dependency>

@@ -33,7 +33,7 @@
                         </ejbModule>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>
-                            <artifactId>model</artifactId>
+                            <artifactId>reporting-model</artifactId>
                         </ejbModule>
                         <webModule>
                             <groupId>${project.groupId}</groupId>
@@ -62,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>model</artifactId>
+            <artifactId>reporting-model</artifactId>
             <version>${project.parent.version}</version>
             <type>ejb</type>
         </dependency>
