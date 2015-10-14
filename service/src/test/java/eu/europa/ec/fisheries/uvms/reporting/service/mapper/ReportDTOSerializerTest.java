@@ -3,12 +3,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
@@ -24,6 +23,7 @@ import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO.TrackFilterDTOBuild;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.VesselFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
 import static org.junit.Assert.assertEquals;
@@ -190,7 +190,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
     public void testSerializeWithFiltersWithCommonFilterWithTracks() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
-        filterDTOList.add(TrackFilterDTO.TrackFilterDTOBuild()
+        filterDTOList.add(TrackFilterDTOBuild()
                 .id(1L)
                 .maxDuration(200.345F)
                 .maxTime(20.345F)
@@ -207,4 +207,28 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         assertEquals(expected, serialized);
     }
+
+    @Test
+    @SneakyThrows
+    public void testSerializeWithFiltersWithVmsPositions() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+                .id(5L)
+                .maximumSpeed(234.2F)
+                .minimumSpeed(45.5F)
+                .movementType(MovementTypeType.EXI)
+                .movementActivity(MovementActivityTypeType.CAN)
+                .build());
+
+        dto.setFilters(filterDTOList);
+
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVmsPositions.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
 }
