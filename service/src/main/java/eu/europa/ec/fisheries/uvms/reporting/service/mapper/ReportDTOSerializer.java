@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -127,20 +128,22 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             }
             PositionSelectorDTO positionSelector = commonFilter.getPositionSelector();
             jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().getName());
+            Date startDate = commonFilter.getStartDate();
+            Date endDate = commonFilter.getEndDate();
+            if (startDate != null){
+                jgen.writeStringField(CommonFilterDTO.START_DATE,UI_FORMATTER.print(new DateTime(startDate)));
 
+            }
+            if (endDate != null){
+                jgen.writeStringField(CommonFilterDTO.END_DATE,UI_FORMATTER.print(new DateTime(endDate)));
+            }
             switch (positionSelector.getSelector()){
-                case ALL :
-                    jgen.writeStringField(CommonFilterDTO.START_DATE,
-                            UI_FORMATTER.print(new DateTime(commonFilter.getStartDate())));
-                    jgen.writeStringField(CommonFilterDTO.END_DATE,
-                            UI_FORMATTER.print(new DateTime(commonFilter.getEndDate())));
-                    break;
                 case LAST:
                     jgen.writeStringField(PositionSelectorDTO.SELECTOR, positionSelector.getPosition().getName());
                     jgen.writeNumberField(PositionSelectorDTO.VALUE, positionSelector.getValue());
                     break;
-
             }
+
             jgen.writeEndObject();
         }
     }
