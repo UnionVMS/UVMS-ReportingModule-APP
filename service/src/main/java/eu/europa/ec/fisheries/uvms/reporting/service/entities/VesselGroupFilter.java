@@ -14,7 +14,7 @@ import javax.persistence.Entity;
 public class VesselGroupFilter extends Filter {
 
     private String guid;
-
+    private String name;
     private String userName;
 
     public VesselGroupFilter() {
@@ -22,11 +22,33 @@ public class VesselGroupFilter extends Filter {
     }
 
     @Builder(builderMethodName = "VesselGroupFilterBuilder")
-    public VesselGroupFilter(Long id, String groupId, String userName){
+    public VesselGroupFilter(Long id, String groupId, String userName, String name){
         super(FilterType.vgroup);
         this.guid = groupId;
         this.userName = userName;
+        this.name = name;
         setId(id);
+    }
+
+    @Override
+    public FilterDTO convertToDTO() {
+        return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroupFilterDTO(this);
+    }
+
+    @Override
+    public void merge(Filter filter) {
+        VesselGroupFilter incoming = (VesselGroupFilter) filter;
+        setUserName(incoming.getUserName());
+        setGuid(incoming.getGuid());
+        setName(incoming.getName());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGuid() {
@@ -45,15 +67,4 @@ public class VesselGroupFilter extends Filter {
         this.userName = userName;
     }
 
-    @Override
-    public FilterDTO convertToDTO() {
-        return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroupFilterDTO(this);
-    }
-
-    @Override
-    public void merge(Filter filter) {
-        VesselGroupFilter incoming = (VesselGroupFilter) filter;
-        this.setUserName(incoming.getUserName());
-        this.setGuid(incoming.getGuid());
-    }
 }

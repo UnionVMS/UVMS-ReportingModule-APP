@@ -8,6 +8,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.Builder;
+import org.apache.commons.lang3.NotImplementedException;
 
 public class VmsPositionFilterDTO extends FilterDTO {
 
@@ -39,6 +40,11 @@ public class VmsPositionFilterDTO extends FilterDTO {
         setReportId(reportId);
         setId(id);
         setType(FilterType.vmspos);
+    }
+
+    @Override
+    public void validate() {
+        throw new NotImplementedException("TODO"); // TODO
     }
 
     public Float getMinimumSpeed() {

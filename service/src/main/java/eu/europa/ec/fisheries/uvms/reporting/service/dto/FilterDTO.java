@@ -5,11 +5,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class FilterDTO {
 
     public static final String ID = "id";
     public static final String TYPE = "type";
+
+    protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @JsonIgnore
     private Long reportId;
@@ -19,6 +24,8 @@ public abstract class FilterDTO {
     private FilterType type;
 
     public abstract Filter convertToFilter();
+
+    public abstract void validate();
 
     public Long getId() {
         return id;

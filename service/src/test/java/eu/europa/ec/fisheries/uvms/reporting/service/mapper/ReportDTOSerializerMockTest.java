@@ -72,7 +72,7 @@ public class ReportDTOSerializerMockTest extends UnitilsJUnit4 {
 
         gen.assertNotInvoked().writeFieldName(ReportDTO.FILTER_EXPRESSION);
         gen.assertNotInvoked().writeFieldName(CommonFilterDTO.COMMON);
-        gen.assertNotInvoked().writeFieldName(VesselFilterDTO.VESSEL);
+        gen.assertNotInvoked().writeFieldName(VesselFilterDTO.VESSELS);
         gen.assertNotInvoked().writeFieldName(VmsPositionFilterDTO.VMS);
 
     }
@@ -137,7 +137,7 @@ public class ReportDTOSerializerMockTest extends UnitilsJUnit4 {
 
         gen.assertInvoked().writeFieldName(ReportDTO.FILTER_EXPRESSION);
         gen.assertInvoked().writeFieldName(CommonFilterDTO.COMMON);
-        gen.assertInvoked().writeFieldName(VesselFilterDTO.VESSEL);
+        gen.assertInvoked().writeFieldName(VesselFilterDTO.VESSELS);
         gen.assertInvoked().writeFieldName(VmsPositionFilterDTO.VMS);
 
         gen.assertInvoked().writeNumberField(FilterDTO.ID, common.getId());

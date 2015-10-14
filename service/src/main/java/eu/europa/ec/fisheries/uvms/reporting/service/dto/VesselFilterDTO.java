@@ -5,16 +5,22 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import lombok.Builder;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 public class VesselFilterDTO extends FilterDTO {
 
     public static final String NAME = "name";
     public static final String GUID = "guid";
-    public static final String VESSEL = "vessel";
+    public static final String VESSELS = "vessels";
 
-    @Size(min = 3, max = 3)
+    @Size(min = 1, max = 255)
     private String guid;
+
+    @Size(min = 1, max = 255)
     private String name;
 
     @Builder(builderMethodName = "VesselFilterDTOBuilder")
@@ -24,6 +30,18 @@ public class VesselFilterDTO extends FilterDTO {
         setId(id);
         setReportId(reportId);
         setType(FilterType.vessel);
+        validate();
+    }
+
+    @Override
+    public void validate() {
+        Set<ConstraintViolation<VesselFilterDTO>> violations =
+                validator.validate(this);
+
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(
+                    new HashSet<ConstraintViolation<?>>(violations));
+        }
     }
 
     public String getGuid() {

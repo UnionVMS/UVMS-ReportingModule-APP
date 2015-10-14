@@ -89,7 +89,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
     private void writeVessels(JsonGenerator jgen, List<FilterDTO> vesselFilterDTOList) throws IOException {
         if(CollectionUtils.isNotEmpty(vesselFilterDTOList)) {
-            jgen.writeObjectField(VesselFilterDTO.VESSEL, vesselFilterDTOList);
+            jgen.writeObjectField(VesselFilterDTO.VESSELS, vesselFilterDTOList);
         }
     }
 

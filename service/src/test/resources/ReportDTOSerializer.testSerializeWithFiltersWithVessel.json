@@ -7,7 +7,7 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
-    "vessel" : [ {
+    "vessels" : [ {
       "type" : "vessel",
       "guid" : "guid1",
       "name" : "vessel1"

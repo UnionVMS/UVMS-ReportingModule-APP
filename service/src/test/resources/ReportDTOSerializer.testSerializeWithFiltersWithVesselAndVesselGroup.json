@@ -7,7 +7,7 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
-    "vessel" : [ {
+    "vessels" : [ {
       "type" : "vessel",
       "guid" : "guid1",
       "name" : "vessel1"
@@ -20,11 +20,13 @@
       "id" : 66,
       "type" : "vgroup",
       "guid" : "guid6",
+      "name" : "name2",
       "user" : "houston"
     }, {
       "id" : 67,
       "type" : "vgroup",
       "guid" : "guid7",
+      "name" : "name2",
       "user" : "houstonGreg"
     } ]
   }

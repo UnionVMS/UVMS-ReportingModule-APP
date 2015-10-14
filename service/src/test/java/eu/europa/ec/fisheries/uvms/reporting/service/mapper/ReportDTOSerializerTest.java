@@ -105,8 +105,8 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(VesselFilterDTOBuilder().guid("guid1").name("vessel1").build());
         filterDTOList.add(VesselFilterDTOBuilder().id(48L).guid("guid2").name("vessel2").build());
-        filterDTOList.add(VesselGroupFilterDTOBuilder().guid("guid6").id(66L).userName("houston").build());
-        filterDTOList.add(VesselGroupFilterDTOBuilder().guid("guid7").id(67L).userName("houstonGreg").build());
+        filterDTOList.add(VesselGroupFilterDTOBuilder().name("name2").guid("guid6").id(66L).userName("houston").build());
+        filterDTOList.add(VesselGroupFilterDTOBuilder().name("name2").guid("guid7").id(67L).userName("houstonGreg").build());
 
         dto.setFilters(filterDTOList);
 

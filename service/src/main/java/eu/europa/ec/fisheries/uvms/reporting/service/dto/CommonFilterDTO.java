@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Date;
 
@@ -37,6 +38,11 @@ public class CommonFilterDTO extends FilterDTO {
     @Override
     public Filter convertToFilter() {
         return DateTimeFilterMapper.INSTANCE.dateTimeFilterDTOToDateTimeFilter(this);
+    }
+
+    @Override
+    public void validate() {
+        throw new NotImplementedException("TODO"); // TODO
     }
 
     public Date getStartDate() {
