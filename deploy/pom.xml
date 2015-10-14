@@ -83,7 +83,6 @@
                     <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
-                        <version>LATEST</version>
                         <executions>
                             <!-- Undeploy the application on clean -->
 		                    <execution>
