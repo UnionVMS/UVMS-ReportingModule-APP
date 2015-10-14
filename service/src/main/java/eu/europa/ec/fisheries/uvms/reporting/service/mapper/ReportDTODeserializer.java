@@ -37,7 +37,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
         addVmsFilters(filterNode.get("vms"), filterDTOList, reportId);
         addVessels(filterNode.get("vessels"), filterDTOList, reportId);
-        addArea(filterNode.get("area"), filterDTOList, reportId);
+        addArea(filterNode.get("areas"), filterDTOList, reportId);
         addCommon(filterNode.get("common"), filterDTOList, reportId);
 
         return ReportDTO.ReportDTOBuilder()
@@ -107,8 +107,19 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private void addArea(JsonNode area, List<FilterDTO> filterDTOList, Long reportId) {
-        if (area != null){
-            throw new InvalidParameterException("Unimplemented functionality");
+        if (area != null) {
+            Iterator<JsonNode> elements = area.elements();
+            while (elements.hasNext()) {
+                JsonNode next = elements.next();
+                filterDTOList.add(
+                        AreaFilterDTO.AreaFilterDTOBuilder()
+                                .reportId(reportId)
+                                .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                                .areaId(next.get(AreaFilterDTO.JSON_ATTR_AREA_ID).longValue())
+                                .areaType(next.get(AreaFilterDTO.JSON_ATTR_AREA_ID).textValue())
+                                .build()
+                );
+            }
         }
     }
 
@@ -119,7 +130,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 JsonNode next = elements.next();
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch(type){
-                    case vessel:
+                    case vessels:
                         filterDTOList.add(
                                 VesselFilterDTO.VesselFilterDTOBuilder()
                                         .reportId(reportId)

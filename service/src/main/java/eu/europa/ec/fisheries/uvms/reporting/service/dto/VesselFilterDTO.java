@@ -29,7 +29,7 @@ public class VesselFilterDTO extends FilterDTO {
         this.name = name;
         setId(id);
         setReportId(reportId);
-        setType(FilterType.vessel);
+        setType(FilterType.vessels);
         validate();
     }
 

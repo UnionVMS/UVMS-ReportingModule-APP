@@ -64,7 +64,7 @@ public class ReportDTODeserializerTest extends UnitilsJUnit4 {
 
         dto.setFilters(filterDTOList);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorAll.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorAll.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         ReportDTO deserialised = mapper.readValue(expected, ReportDTO.class);

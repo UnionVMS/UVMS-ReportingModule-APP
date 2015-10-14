@@ -20,12 +20,12 @@ public class VesselFilter extends Filter {
     private String name;
 
     VesselFilter(){
-        super(FilterType.vessel);
+        super(FilterType.vessels);
     }
 
     @Builder(builderMethodName = "VesselFilterBuilder")
     public VesselFilter(Long id, String guid, String name){
-        super(FilterType.vessel);
+        super(FilterType.vessels);
         this.guid = guid;
         this.name = name;
         setId(id);

@@ -181,4 +181,5 @@ public class FilterMergerTest extends UnitilsJUnit4 {
         reportDAOMock.assertNotInvoked().createEntity(null);
         assertTrue(updated);
     }
+
 }

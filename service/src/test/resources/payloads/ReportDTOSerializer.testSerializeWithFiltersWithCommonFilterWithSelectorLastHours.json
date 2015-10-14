@@ -12,6 +12,8 @@
       "positionTypeSelector" : "hours",
       "xValue" : 23.45
     },
-    "vms" : { }
+    "vms" : { },
+    "areas" : [ ],
+    "vessels" : [ ]
   }
 }

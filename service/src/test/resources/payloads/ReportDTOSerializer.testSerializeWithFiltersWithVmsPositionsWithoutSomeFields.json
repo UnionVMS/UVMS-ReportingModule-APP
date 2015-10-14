@@ -7,11 +7,15 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
-    "common" : {
-      "positionSelector" : "last",
-      "positionTypeSelector" : "position",
-      "xValue" : 23.0
+    "vms" : {
+      "vmsposition" : {
+        "id" : 5,
+        "type" : "vmspos",
+        "movType" : "EXI",
+        "movActivity" : "CAN"
+      }
     },
-    "vms" : { }
+    "areas" : [ ],
+    "vessels" : [ ]
   }
 }

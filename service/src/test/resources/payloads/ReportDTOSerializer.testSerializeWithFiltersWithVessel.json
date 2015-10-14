@@ -7,12 +7,17 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
-    "common" : {
-      "positionSelector" : "last",
-      "startDate" : "2004-03-26T12:01:01",
-      "positionTypeSelector" : "position",
-      "xValue" : 23.0
-    },
-    "vms" : { }
+    "vms" : { },
+    "areas" : [ ],
+    "vessels" : [ {
+      "type" : "vessels",
+      "guid" : "guid1",
+      "name" : "vessel1"
+    }, {
+      "id" : 48,
+      "type" : "vessels",
+      "guid" : "guid2",
+      "name" : "vessel2"
+    } ]
   }
 }

@@ -7,15 +7,13 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
-    "vms" : {
-      "vmsposition" : {
-        "id" : 5,
-        "type" : "vmspos",
-        "movMinSpeed" : 45.5,
-        "movMaxSpeed" : 234.2,
-        "movType" : "EXI",
-        "movActivity" : "CAN"
-      }
-    }
+    "common" : {
+      "positionSelector" : "all",
+      "startDate" : "2005-03-26T12:01:01",
+      "endDate" : "2004-03-26T12:01:01"
+    },
+    "vms" : { },
+    "areas" : [ ],
+    "vessels" : [ ]
   }
 }

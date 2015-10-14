@@ -61,10 +61,11 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithoutFilters.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithoutFilters.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
     }
 
     @Test
@@ -74,7 +75,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         dto.setDescription(null);
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithoutFiltersWithoutDescription.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithoutFiltersWithoutDescription.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -92,7 +93,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVessel.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVessel.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -112,7 +113,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVesselAndVesselGroup.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVesselAndVesselGroup.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -133,7 +134,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorAll.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorAll.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -156,7 +157,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastHours.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastHours.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -179,7 +180,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastPositions.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastPositions.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -204,7 +205,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
         URL url = Resources
-                .getResource("ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json");
+                .getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -227,7 +228,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithTracks.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithTracks.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -250,7 +251,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVmsPositions.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVmsPositions.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -271,7 +272,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVmsPositionsWithoutSomeFields.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVmsPositionsWithoutSomeFields.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
@@ -300,10 +301,30 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVmsSegments.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVmsSegments.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
     }
 
+
+    @Test
+    @SneakyThrows
+    public void testSerializeWithAreaFilters() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(AreaFilterDTO.AreaFilterDTOBuilder().areaId(345364L).areaType("eez").build());
+        filterDTOList.add(AreaFilterDTO.AreaFilterDTOBuilder().id(48L).areaId(42524L).areaType("user").build());
+        filterDTOList.add(AreaFilterDTO.AreaFilterDTOBuilder().id(66L).areaId(21312L).areaType("eez").build());
+        filterDTOList.add(AreaFilterDTO.AreaFilterDTOBuilder().id(67L).areaId(56546L).areaType("rfmo").build());
+
+        dto.setFilters(filterDTOList);
+
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithAreaFilters.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
 }

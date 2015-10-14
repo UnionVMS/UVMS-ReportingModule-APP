@@ -7,11 +7,17 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
-    "common" : {
-      "positionSelector" : "all",
-      "startDate" : "2005-03-26T12:01:01",
-      "endDate" : "2004-03-26T12:01:01"
+    "vms" : {
+      "tracks" : {
+        "id" : 1,
+        "type" : "vmstrack",
+        "trkMaxTime" : 20.345,
+        "trkMinTime" : 10.0,
+        "trkMinDuration" : 40.5,
+        "trkMaxDuration" : 200.345
+      }
     },
-    "vms" : { }
+    "areas" : [ ],
+    "vessels" : [ ]
   }
 }

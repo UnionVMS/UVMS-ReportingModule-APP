@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import org.apache.commons.collections4.CollectionUtils;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -45,17 +44,22 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     }
 
     private void serializeFilterFields(JsonGenerator jgen, List<FilterDTO> filters) throws IOException {
+        jgen.writeFieldName(FILTER_EXPRESSION);
+        jgen.writeStartObject();
 
+        List<FilterDTO> vesselFilterDTOList = new ArrayList<>();
+        List<FilterDTO> areaFilterDTOList = new ArrayList<>();
         VmsPositionFilterDTO position = null;
         VmsSegmentFilterDTO segment = null;
         TrackFilterDTO track = null;
-
-        List<FilterDTO> vesselFilterDTOList = new ArrayList<>();
         CommonFilterDTO commonFilter = null;
 
         for (FilterDTO filterDTO : filters) {
             FilterType type = filterDTO.getType();
             switch (type) {
+                case areas:
+                    areaFilterDTOList.add(filterDTO);
+                    break;
                 case common:
                     commonFilter = (CommonFilterDTO) filterDTO;
                     break;
@@ -68,16 +72,15 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case vmsseg:
                     segment = (VmsSegmentFilterDTO) filterDTO;
                     break;
-                case vessel:
+                case vessels:
+                    vesselFilterDTOList.add(filterDTO);
+                    break;
                 case vgroup:
                     vesselFilterDTOList.add(filterDTO);
                     break;
             }
         }
-        jgen.writeFieldName(FILTER_EXPRESSION);
-        jgen.writeStartObject();
         writeCommonFields(jgen, commonFilter);
-        writeVessels(jgen, vesselFilterDTOList);
 
         jgen.writeFieldName("vms");
             jgen.writeStartObject();
@@ -86,7 +89,14 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             writeVmsSegments(jgen, segment);
         jgen.writeEndObject();
 
+        writeAreaFilters(jgen, areaFilterDTOList);
+        writeVessels(jgen, vesselFilterDTOList);
         jgen.writeEndObject();
+    }
+
+
+    private void writeAreaFilters(JsonGenerator jgen, List<FilterDTO> areaFilterDTOList) throws IOException {
+        jgen.writeObjectField(FilterType.areas.toString(), areaFilterDTOList);
     }
 
     private void writeVmsTrack(JsonGenerator jgen, TrackFilterDTO track) throws IOException {
@@ -104,9 +114,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     }
 
     private void writeVessels(JsonGenerator jgen, List<FilterDTO> vesselFilterDTOList) throws IOException {
-        if(CollectionUtils.isNotEmpty(vesselFilterDTOList)) {
-            jgen.writeObjectField(VesselFilterDTO.VESSELS, vesselFilterDTOList);
-        }
+        jgen.writeObjectField(VesselFilterDTO.VESSELS, vesselFilterDTOList);
     }
 
     private void writeVmsPosition(JsonGenerator jgen, VmsPositionFilterDTO position) throws IOException {

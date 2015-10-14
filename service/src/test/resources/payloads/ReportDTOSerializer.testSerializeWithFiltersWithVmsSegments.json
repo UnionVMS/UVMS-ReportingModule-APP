@@ -22,6 +22,8 @@
         "segMinSpeed" : 45.5,
         "segMaxSpeed" : 234.2
       }
-    }
+    },
+    "areas" : [ ],
+    "vessels" : [ ]
   }
 }

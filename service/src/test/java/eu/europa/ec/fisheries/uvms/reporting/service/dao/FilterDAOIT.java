@@ -154,6 +154,11 @@ public class FilterDAOIT {
         expectedCollection.add(commonFilter2);
         filterIds.add(filterDAO.createEntity(commonFilter2).getId());
 
+        AreaFilter filter8 = AreaFilter.AreaFilterBuilder().areaId(123456L).areaType("eez").build();
+        filter8.setReport(savedReport);
+        expectedCollection.add(filter8);
+        filterIds.add(filterDAO.createEntity(filter8).getId());
+
         List<Filter> filters = filterDAO.listById(filterIds);
         ReflectionAssert.assertReflectionEquals(expectedCollection, filters, LENIENT_ORDER);
 

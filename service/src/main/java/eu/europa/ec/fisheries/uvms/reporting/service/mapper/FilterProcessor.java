@@ -25,7 +25,7 @@ import java.util.Set;
 
 /**
  * This class is responsible reading the report filters and transform them
- * to search queries for vessel and movement queues
+ * to search queries for vessels and movement queues
  */
 public class FilterProcessor {
 
@@ -39,7 +39,7 @@ public class FilterProcessor {
             Filter filter = (Filter) next;
             switch (filter.getType()) {
 
-                case vessel:
+                case vessels:
                     addToVesselCriteria(filter);
                     addConnectIdToMovementCriteria(filter);
                     break;

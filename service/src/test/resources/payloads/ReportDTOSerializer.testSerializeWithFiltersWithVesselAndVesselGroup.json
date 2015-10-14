@@ -7,13 +7,15 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "filterExpression" : {
+    "vms" : { },
+    "areas" : [ ],
     "vessels" : [ {
-      "type" : "vessel",
+      "type" : "vessels",
       "guid" : "guid1",
       "name" : "vessel1"
     }, {
       "id" : 48,
-      "type" : "vessel",
+      "type" : "vessels",
       "guid" : "guid2",
       "name" : "vessel2"
     }, {
@@ -28,7 +30,6 @@
       "guid" : "guid7",
       "name" : "name2",
       "user" : "houstonGreg"
-    } ],
-    "vms" : { }
+    } ]
   }
 }
