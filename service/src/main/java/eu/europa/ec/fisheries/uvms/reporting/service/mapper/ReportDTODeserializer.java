@@ -45,7 +45,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
                 .withMap(node.get(ReportDTO.WITH_MAP).booleanValue())
-                .createdBy(node.get(ReportDTO.CREATED_BY).textValue())
+                .createdBy(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
                 .filters(filterDTOList)
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
                 .build();
@@ -159,7 +159,6 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                 .reportId(reportId)
                                 .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                                 .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
-
                                 .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
                                 .build();
 
