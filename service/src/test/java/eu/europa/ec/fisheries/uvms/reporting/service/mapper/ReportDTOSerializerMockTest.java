@@ -149,7 +149,7 @@ public class ReportDTOSerializerMockTest extends UnitilsJUnit4 {
         gen.assertInvoked().writeStringField(
                 CommonFilterDTO.END_DATE, UI_FORMATTER.print(new DateTime(common.getEndDate())));
 
-        gen.assertNotInvoked().writeNumberField(PositionSelectorDTO.VALUE, null);
+        gen.assertNotInvoked().writeNumberField(PositionSelectorDTO.X_VALUE, null);
         gen.assertNotInvoked().writeStringField(CommonFilterDTO.POSITION_SELECTOR,
                 Selector.LAST.getName());
 

@@ -10,7 +10,7 @@
     "common" : {
       "positionSelector" : "last",
       "positionTypeSelector" : "position",
-      "value" : 23.0
+      "xValue" : 23.0
     },
     "vms" : { }
   }

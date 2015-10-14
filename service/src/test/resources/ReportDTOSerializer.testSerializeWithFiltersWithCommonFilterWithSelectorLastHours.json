@@ -10,7 +10,7 @@
     "common" : {
       "positionSelector" : "last",
       "positionTypeSelector" : "hours",
-      "value" : 23.45
+      "xValue" : 23.45
     },
     "vms" : { }
   }

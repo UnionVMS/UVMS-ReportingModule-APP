@@ -85,7 +85,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
                     break;
                 case LAST:
-                    Float value = common.get("value").floatValue();
+                    Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
                     try{
                         filterDTOList.add(
                                 CommonFilterDTO.CommonFilterDTOBuilder()

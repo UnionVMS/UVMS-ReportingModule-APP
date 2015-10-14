@@ -9,7 +9,7 @@ import java.security.InvalidParameterException;
 
 public class PositionSelectorDTO {
 
-    public final static String VALUE = "value";
+    public final static String X_VALUE = "xValue";
     public final static String POSITION_TYPE_SELECTOR = "positionTypeSelector";
 
     private Float value;
