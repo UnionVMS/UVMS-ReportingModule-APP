@@ -25,6 +25,8 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelector
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO.TrackFilterDTOBuild;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.VesselFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO.VmsPositionFilterDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder;
 import static org.junit.Assert.assertEquals;
 
 public class ReportDTOSerializerTest extends UnitilsJUnit4 {
@@ -237,7 +239,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
     public void testSerializeWithFiltersWithVmsPositions() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
-        filterDTOList.add(VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+        filterDTOList.add(VmsPositionFilterDTOBuilder()
                 .id(5L)
                 .maximumSpeed(234.2F)
                 .minimumSpeed(45.5F)
@@ -260,7 +262,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
     public void testSerializeWithFiltersWithVmsPositionsWithoutSomeFields() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
-        filterDTOList.add(VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+        filterDTOList.add(VmsPositionFilterDTOBuilder()
                 .id(5L)
                 .movementType(MovementTypeType.EXI)
                 .movementActivity(MovementActivityTypeType.CAN)
@@ -271,6 +273,35 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
         URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVmsPositionsWithoutSomeFields.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testSerializeWithFiltersWithVmsSegments() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(VmsPositionFilterDTOBuilder()
+                .id(5L)
+                .maximumSpeed(234.2F)
+                .minimumSpeed(45.5F)
+                .movementType(MovementTypeType.EXI)
+                .movementActivity(MovementActivityTypeType.CAN)
+                .build());
+
+        filterDTOList.add(VmsSegmentFilterDTOBuilder()
+                .id(5L)
+                .maximumSpeed(234.2F)
+                .minimumSpeed(45.5F)
+                .build());
+
+        dto.setFilters(filterDTOList);
+
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithVmsSegments.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);

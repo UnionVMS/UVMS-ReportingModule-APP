@@ -1,0 +1,27 @@
+{
+  "id" : 5,
+  "name" : "ReportName788",
+  "desc" : "This is a report descri created on 2015/09/28 13:31",
+  "visibility" : "private",
+  "createdOn" : "2015-10-11T13:02:23",
+  "createdBy" : "georgi",
+  "withMap" : true,
+  "filterExpression" : {
+    "vms" : {
+      "vmsposition" : {
+        "id" : 5,
+        "type" : "vmspos",
+        "movMinSpeed" : 45.5,
+        "movMaxSpeed" : 234.2,
+        "movType" : "EXI",
+        "movActivity" : "CAN"
+      },
+      "vmssegment" : {
+        "id" : 5,
+        "type" : "vmsseg",
+        "segMinSpeed" : 45.5,
+        "segMaxSpeed" : 234.2
+      }
+    }
+  }
+}

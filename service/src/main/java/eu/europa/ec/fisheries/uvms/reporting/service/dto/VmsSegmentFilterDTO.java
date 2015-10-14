@@ -10,21 +10,22 @@ import org.apache.commons.lang3.NotImplementedException;
 
 public class VmsSegmentFilterDTO extends FilterDTO {
 
-    public static final String MOV_MIN_SPEED = "movMinSpeed";
-    public static final String MOV_MAX_SPEED = "movMaxSpeed";
-    public static final String TRK_MIN_TIME = "trkMinTime";
-    public static final String TRK_MAX_TIME = "trkMaxTime";
+    public static final String SEG_MIN_SPEED = "segMinSpeed";
+    public static final String SEG_MAX_SPEED = "segMaxSpeed";
+    public static final String SEG_MIN_TIME = "segMinTime";
+    public static final String SEG_MAX_TIME = "segMaxTime";
+    public static final String VMS_SEGMENT = "vmssegment";
 
-    @JsonProperty(MOV_MIN_SPEED)
+    @JsonProperty(SEG_MIN_SPEED)
     private Float minimumSpeed;
 
-    @JsonProperty(MOV_MAX_SPEED)
+    @JsonProperty(SEG_MAX_SPEED)
     private Float maximumSpeed;
 
-    @JsonProperty(TRK_MAX_TIME)
+    @JsonProperty(SEG_MAX_TIME)
     private Float maxTime;
 
-    @JsonProperty(TRK_MIN_TIME)
+    @JsonProperty(SEG_MIN_TIME)
     private Float minTime;
 
     @Builder(builderMethodName = "VmsSegmentFilterDTOBuilder")

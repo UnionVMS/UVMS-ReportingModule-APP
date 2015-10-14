@@ -179,9 +179,20 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .build()
                         );
                         break;
+                    case vmsseg:
+                        filterDTOList.add(
+                                VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder()
+                                        .reportId(reportId)
+                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                                        .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)
+                                        .maxTime(next.get(VmsSegmentFilterDTO.SEG_MAX_TIME) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_TIME).floatValue() : null)
+                                        .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
+                                        .maxTime(next.get(VmsSegmentFilterDTO.SEG_MAX_TIME) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_TIME).floatValue() : null)
+                                        .build()
+                        );
+                        break;
                     default:
                         throw new InvalidParameterException("Unsupported parameter");
-                        // case SEGMENT:
 
                 }
             }

@@ -48,7 +48,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     private void serializeFilterFields(JsonGenerator jgen, List<FilterDTO> filters) throws IOException {
 
         VmsPositionFilterDTO position = null;
-        FilterDTO segment = null;
+        VmsSegmentFilterDTO segment = null;
         TrackFilterDTO track = null;
 
         List<FilterDTO> vesselFilterDTOList = new ArrayList<>();
@@ -66,6 +66,9 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case vmstrack:
                     track = (TrackFilterDTO) filterDTO;
                     break;
+                case vmsseg:
+                    segment = (VmsSegmentFilterDTO) filterDTO;
+                    break;
                 case vessel:
                 case vgroup:
                     vesselFilterDTOList.add(filterDTO);
@@ -81,6 +84,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             jgen.writeStartObject();
             writeVmsPosition(jgen, position);
             writeVmsTrack(jgen, track);
+            writeVmsSegments(jgen, segment);
         jgen.writeEndObject();
 
         jgen.writeEndObject();
@@ -90,6 +94,13 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         if (track != null){
             jgen.writeFieldName(TrackFilterDTO.TRACKS);
             jgen.writeObject(track);
+        }
+    }
+
+    private void writeVmsSegments(JsonGenerator jgen, VmsSegmentFilterDTO vmsSegmentFilterDTO) throws IOException {
+        if (vmsSegmentFilterDTO != null){
+            jgen.writeFieldName(VmsSegmentFilterDTO.VMS_SEGMENT);
+            jgen.writeObject(vmsSegmentFilterDTO);
         }
     }
 
