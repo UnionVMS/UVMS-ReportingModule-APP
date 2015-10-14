@@ -53,4 +53,8 @@ public class ObjectFactory {
         return TrackFilterDTO.TrackFilterDTOBuild().build();
     }
 
+    public VmsPositionFilter createVmsPositionFilter(){
+        return  VmsPositionFilter.VmsPositionFilterBuilder().build();
+    }
+
 }

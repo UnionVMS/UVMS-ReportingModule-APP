@@ -33,11 +33,12 @@ public class CommonFilter extends Filter {
     }
 
     @Builder(builderMethodName = "CommonFilterBuilder")
-    public CommonFilter(Date startDate, Date endDate, PositionSelector positionSelector) {
+    public CommonFilter(Long id, Date startDate, Date endDate, PositionSelector positionSelector) {
         super(FilterType.common);
         this.startDate = startDate;
         this.endDate = endDate;
         this.positionSelector = positionSelector;
+        setId(id);
     }
 
     @Override

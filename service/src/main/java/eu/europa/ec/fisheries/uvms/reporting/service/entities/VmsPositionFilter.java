@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -30,8 +31,21 @@ public class VmsPositionFilter extends Filter  {
     @Column(name = "MOV_ACTIVITY")
     private MovementActivityTypeType movementActivity;
 
-    public VmsPositionFilter() {
+    VmsPositionFilter(){
         super(FilterType.vmspos);
+    }
+    @Builder(builderMethodName = "VmsPositionFilterBuilder")
+    public VmsPositionFilter(Long id,
+                             MovementActivityTypeType movementActivity,
+                             MovementTypeType movementType,
+                             Float maximumSpeed,
+                             Float minimumSpeed) {
+        super(FilterType.vmspos);
+        setId(id);
+        this.movementActivity = movementActivity;
+        this.movementType = movementType;
+        this.maximumSpeed = maximumSpeed;
+        this.minimumSpeed = minimumSpeed;
     }
 
     public List<ListCriteria> movementListCriteria() {
@@ -57,6 +71,8 @@ public class VmsPositionFilter extends Filter  {
         VmsPositionFilter incoming = (VmsPositionFilter) filter;
         setMaximumSpeed(incoming.getMaximumSpeed());
         setMinimumSpeed(incoming.getMinimumSpeed());
+        setMovementActivity(incoming.getMovementActivity());
+        setMovementType(incoming.getMovementType());
     }
 
     public Float getMinimumSpeed() {

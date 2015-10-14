@@ -31,7 +31,8 @@ public class TrackFilter extends Filter {
     }
 
     @Builder(builderMethodName = "TrackFilterBuilder")
-    public TrackFilter(Float maxTime,
+    public TrackFilter(Long id,
+                       Float maxTime,
                        Float maxDuration,
                        Float minDuration,
                        Float minTime) {
@@ -40,6 +41,7 @@ public class TrackFilter extends Filter {
         this.maxDuration = maxDuration;
         this.minTime = minTime;
         this.maxTime = maxTime;
+        setId(id);
     }
 
     @Override

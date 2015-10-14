@@ -271,7 +271,7 @@ public class ReportRepositoryIT {
         filter2.setName("vessel2");
         expectedCollection.add(filter2);
 
-        VmsPositionFilter filter3 = new VmsPositionFilter();
+        VmsPositionFilter filter3 = VmsPositionFilter.VmsPositionFilterBuilder().build();
         filter3.setMaximumSpeed(123F);
         filter3.setMinimumSpeed(54654F);
         filter3.setReport(report);

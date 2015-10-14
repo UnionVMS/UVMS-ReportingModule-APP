@@ -22,10 +22,11 @@ public class VesselGroupFilter extends Filter {
     }
 
     @Builder(builderMethodName = "VesselGroupFilterBuilder")
-    public VesselGroupFilter(String groupId, String userName){
+    public VesselGroupFilter(Long id, String groupId, String userName){
         super(FilterType.vgroup);
         this.guid = groupId;
         this.userName = userName;
+        setId(id);
     }
 
     public String getGuid() {
