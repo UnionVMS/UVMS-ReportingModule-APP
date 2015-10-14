@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.SneakyThrows;
@@ -156,6 +157,29 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
         URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorLastPositions.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        assertEquals(expected, serialized);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testSerializeWithFiltersWithCommonFilterWithTracks() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(TrackFilterDTO.TrackFilterDTOBuild()
+                .id(1L)
+                .maxDuration(200.345F)
+                .maxTime(20.345F)
+                .minDuration(40.5F)
+                .minTime(10F)
+                .build());
+
+        dto.setFilters(filterDTOList);
+
+        String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+        URL url = Resources.getResource("ReportDTOSerializer.testSerializeWithFiltersWithTracks.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
