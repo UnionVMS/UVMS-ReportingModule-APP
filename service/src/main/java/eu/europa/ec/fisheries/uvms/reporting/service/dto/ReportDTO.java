@@ -1,12 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Predicate;
@@ -17,11 +11,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonDeserialize(using = ReportDTODeserializer.class)
 @JsonSerialize(using = ReportDTOSerializer.class)

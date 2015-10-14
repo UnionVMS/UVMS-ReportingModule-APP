@@ -9,7 +9,7 @@
   "filterExpression" : {
     "common" : {
       "positionSelector" : "last",
-      "selector" : "hours",
+      "positionTypeSelector" : "hours",
       "value" : 23.45
     },
     "vms" : { }

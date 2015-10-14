@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import java.security.InvalidParameterException;
 public class PositionSelectorDTO {
 
     public final static String VALUE = "value";
-    public final static String SELECTOR = "selector";
+    public final static String POSITION_TYPE_SELECTOR = "positionTypeSelector";
 
     private Float value;
 

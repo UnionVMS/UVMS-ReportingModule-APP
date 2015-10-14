@@ -65,7 +65,6 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
-
     }
 
     @Test

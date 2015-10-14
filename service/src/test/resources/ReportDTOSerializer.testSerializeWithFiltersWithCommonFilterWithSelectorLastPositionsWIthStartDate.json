@@ -10,7 +10,7 @@
     "common" : {
       "positionSelector" : "last",
       "startDate" : "2004-03-26T12:01:01",
-      "selector" : "position",
+      "positionTypeSelector" : "position",
       "value" : 23.0
     },
     "vms" : { }

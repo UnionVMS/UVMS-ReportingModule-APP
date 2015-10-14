@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.*;
@@ -150,7 +149,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             }
             switch (positionSelector.getSelector()){
                 case LAST:
-                    jgen.writeStringField(PositionSelectorDTO.SELECTOR, positionSelector.getPosition().getName());
+                    jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().getName());
                     jgen.writeNumberField(PositionSelectorDTO.VALUE, positionSelector.getValue());
                     break;
             }
