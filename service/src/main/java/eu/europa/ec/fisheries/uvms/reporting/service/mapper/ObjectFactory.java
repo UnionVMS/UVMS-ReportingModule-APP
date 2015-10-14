@@ -57,4 +57,13 @@ public class ObjectFactory {
         return  VmsPositionFilter.VmsPositionFilterBuilder().build();
     }
 
+    public VmsSegmentFilter createVmsSegmentFilter(){
+        return VmsSegmentFilter.VmsSegmentFilterBuilder().build();
+    }
+
+    public VmsSegmentFilterDTO createVmsSegmentFilterDTO(){
+        return VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder().build();
+    }
+
+
 }

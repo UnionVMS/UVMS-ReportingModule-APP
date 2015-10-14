@@ -6,5 +6,6 @@ public enum FilterType {
     vgroup,
     common,
     vmspos,
-    vmstrack;
+    vmstrack,
+    vmsseg,
 }

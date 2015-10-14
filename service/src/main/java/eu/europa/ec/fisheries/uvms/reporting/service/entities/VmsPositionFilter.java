@@ -34,6 +34,7 @@ public class VmsPositionFilter extends Filter  {
     VmsPositionFilter(){
         super(FilterType.vmspos);
     }
+
     @Builder(builderMethodName = "VmsPositionFilterBuilder")
     public VmsPositionFilter(Long id,
                              MovementActivityTypeType movementActivity,

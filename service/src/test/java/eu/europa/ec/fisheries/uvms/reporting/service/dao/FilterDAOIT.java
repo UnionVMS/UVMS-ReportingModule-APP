@@ -28,6 +28,7 @@ import java.util.Set;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.TrackFilter.TrackFilterBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter.VmsSegmentFilterBuilder;
 import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
 @RunWith(Arquillian.class)
@@ -120,6 +121,9 @@ public class FilterDAOIT {
         filter6.setPositionSelector(
                 PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(24F).build()
         );
+        filter6.setReport(savedReport);
+        expectedCollection.add(filter6);
+        filterIds.add(filterDAO.createEntity(filter6).getId());
 
         TrackFilter filter7 = TrackFilterBuilder()
                     .maxTime(10F)
@@ -128,9 +132,19 @@ public class FilterDAOIT {
                     .minTime(13F)
                 .build();
         filter7.setReport(savedReport);
-
         expectedCollection.add(filter7);
         filterIds.add(filterDAO.createEntity(filter7).getId());
+
+        VmsSegmentFilter segmentFilter = VmsSegmentFilterBuilder()
+                .maxDuration(12F)
+                .maximumSpeed(164F)
+                .minDuration(156F)
+                .minimumSpeed(4565F)
+                .build();
+        segmentFilter.setReport(savedReport);
+        segmentFilter.setReport(savedReport);
+        expectedCollection.add(segmentFilter);
+        filterIds.add(filterDAO.createEntity(segmentFilter).getId());
 
         List<Filter> filters = filterDAO.listById(filterIds);
         ReflectionAssert.assertReflectionEquals(expectedCollection, filters, LENIENT_ORDER);
