@@ -32,6 +32,39 @@
     <profile>
       <id>DGMARE-UVMS-ARHS</id>
       <repositories>
+
+		  <repository>
+			  <releases>
+				  <enabled>false</enabled>
+				  <updatePolicy>always</updatePolicy>
+				  <checksumPolicy>warn</checksumPolicy>
+			  </releases>
+			  <snapshots>
+				  <enabled>true</enabled>
+				  <updatePolicy>never</updatePolicy>
+				  <checksumPolicy>fail</checksumPolicy>
+			  </snapshots>
+			  <id>digit-snapshots</id>
+			  <name>Digit snapshot</name>
+			  <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
+		  </repository>
+
+		  <repository>
+			  <releases>
+				  <enabled>true</enabled>
+				  <updatePolicy>always</updatePolicy>
+				  <checksumPolicy>warn</checksumPolicy>
+			  </releases>
+			  <snapshots>
+				  <enabled>false</enabled>
+				  <updatePolicy>never</updatePolicy>
+				  <checksumPolicy>fail</checksumPolicy>
+			  </snapshots>
+			  <id>digit-releases</id>
+			  <name>Digit release</name>
+			  <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
+		  </repository>
+
         <repository>
 		  <id>arhs-repo-releases</id>
 		  <name>ARHS release nexus</name>
@@ -55,18 +88,7 @@
 						 <name>ARHS global</name>
 						 <url>http://maven.aris-lux.lan/nexus/content/groups/public/</url>
 		  </repository>
-		  
-		  <repository>
-						 <id>digit-snapshots</id>
-						 <name>Digit snapshot</name>
-						 <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
-		  </repository>
-		  
-		  <repository>
-						 <id>digit-releases</id>
-						 <name>Digit release</name>
-						 <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
-		  </repository>
+
       </repositories>
     </profile>
 
