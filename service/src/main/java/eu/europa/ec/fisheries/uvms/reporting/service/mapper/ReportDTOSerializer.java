@@ -157,7 +157,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             }
             switch (positionSelector.getSelector()){
                 case LAST:
-                    jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().getName());
+                    jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().toString());
                     jgen.writeNumberField(PositionSelectorDTO.X_VALUE, positionSelector.getValue());
                     break;
             }

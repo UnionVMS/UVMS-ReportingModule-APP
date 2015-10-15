@@ -105,7 +105,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                         if(selectorNode != null){
                             dto.setPositionSelector(PositionSelectorDTO.PositionSelectorDTOBuilder()
                                     .value(value)
-                                    .position(Position.valueOf(selectorType.textValue().toUpperCase()))
+                                    .position(Position.valueOf(selectorType.textValue()))
                                     .selector(positionSelector).build());
 
                         }

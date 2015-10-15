@@ -150,7 +150,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         filterDTOList.add(CommonFilterDTOBuilder()
                 .positionSelector(PositionSelectorDTOBuilder()
                         .selector(Selector.LAST)
-                        .position(Position.HOURS)
+                        .position(Position.hours)
                         .value(23.45F)
                         .build())
                 .build());
@@ -173,7 +173,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         filterDTOList.add(CommonFilterDTOBuilder()
                 .positionSelector(PositionSelectorDTOBuilder()
                         .selector(Selector.LAST)
-                        .position(Position.POSITION)
+                        .position(Position.positions)
                         .value(23F)
                         .build())
                 .build());
@@ -197,7 +197,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
                 .startDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
                 .positionSelector(PositionSelectorDTOBuilder()
                         .selector(Selector.LAST)
-                        .position(Position.POSITION)
+                        .position(Position.positions)
                         .value(23F)
                         .build())
                 .build());

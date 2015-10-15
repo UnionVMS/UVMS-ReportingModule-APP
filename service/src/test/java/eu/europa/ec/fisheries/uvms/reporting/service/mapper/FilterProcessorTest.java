@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
@@ -138,7 +137,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         CommonFilter dateTimeFilter = CommonFilterBuilder()
                 .positionSelector(
-                        PositionSelectorBuilder().selector(Selector.LAST).position(Position.HOURS).value(
+                        PositionSelectorBuilder().selector(Selector.LAST).position(Position.hours).value(
                                 value).build()
                 )
                 .build();
@@ -156,7 +155,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         assertEquals(DateUtils.dateToString(dateNow.toDate()), processor.getMovementListCriteria().get(1).getValue());
         assertEquals(SearchKey.FROM_DATE, processor.getMovementListCriteria().get(0).getKey());
         assertEquals(DateUtils.dateToString(dateNow.minusHours(value.intValue()).toDate()), processor.getMovementListCriteria().get(0).getValue());
-        // fixme FIX THE HOURS
+        // fixme FIX THE hours
     }
 
 }
