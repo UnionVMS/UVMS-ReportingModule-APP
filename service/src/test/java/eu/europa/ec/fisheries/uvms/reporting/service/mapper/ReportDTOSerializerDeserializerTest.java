@@ -63,7 +63,7 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTestr.testWithoutFilters.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithoutFilters.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
