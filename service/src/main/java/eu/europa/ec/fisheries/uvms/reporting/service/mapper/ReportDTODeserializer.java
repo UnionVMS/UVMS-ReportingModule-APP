@@ -56,11 +56,11 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     private void addCommon(JsonNode common, List<FilterDTO> filterDTOList, Long reportId) throws InvalidParameterException {
         if (common != null){
 
-            String selectorNode = common.get("positionSelector").asText().toUpperCase();
+            String selectorNode = common.get("positionSelector").asText();
             Selector positionSelector = Selector.valueOf(selectorNode);
 
             switch (positionSelector){
-                case ALL:
+                case all:
                     String startDate = common.get("startDate").asText();
                     String endDate = common.get("endDate").asText();
                     if (startDate == null){
@@ -87,21 +87,27 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     }
 
                     break;
-                case LAST:
-                    startDate = common.get("startDate").asText();
-                    endDate = common.get("endDate").asText();
+                case last:
+                    String startDateLast = null;
+                    String endDateLast = null;
                     try{
 
-                    Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
-                    CommonFilterDTO dto = CommonFilterDTO.CommonFilterDTOBuilder()
-                            .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
-                            .reportId(reportId)
-                            .startDate(endDate != null ? UI_FORMATTER.parseDateTime(startDate).toDate() : null)
-                            .endDate(endDate != null ? UI_FORMATTER.parseDateTime(endDate).toDate() : null)
-                            .build();
+                        if (common.get("startDate") != null){
+                            startDateLast = common.get("startDate").asText();
+                        }
+                        if (common.get("endDate") != null){
+                            endDateLast = common.get("endDate").asText();
+                        }
+                        Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
+                        CommonFilterDTO dto = CommonFilterDTO.CommonFilterDTOBuilder()
+                                .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
+                                .reportId(reportId)
+                                .startDate(startDateLast != null ? UI_FORMATTER.parseDateTime(startDateLast).toDate() : null)
+                                .endDate(endDateLast != null ? UI_FORMATTER.parseDateTime(endDateLast).toDate() : null)
+                                .build();
                         filterDTOList.add(dto);
 
-                    JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
+                        JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
                         if(selectorNode != null){
                             dto.setPositionSelector(PositionSelectorDTO.PositionSelectorDTOBuilder()
                                     .value(value)

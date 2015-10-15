@@ -77,7 +77,7 @@ public class FilterMergerTest extends UnitilsJUnit4 {
 
         common = CommonFilterDTOBuilder()
                 .id(46L)
-                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.ALL).build())
+                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
                 .endDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
                 .startDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
                 .build();

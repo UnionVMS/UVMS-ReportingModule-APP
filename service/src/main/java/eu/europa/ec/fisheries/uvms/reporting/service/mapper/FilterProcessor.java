@@ -89,10 +89,10 @@ public class FilterProcessor {
         PositionSelector positionSelector = commonFilter.getPositionSelector();
 
         switch(positionSelector.getSelector()){
-            case ALL:
+            case all:
                 movementListCriteria.addAll(processAll(commonFilter));
                 break;
-            case LAST:
+            case last:
                 Position position = positionSelector.getPosition();
                 switch(position){
                     case hours:

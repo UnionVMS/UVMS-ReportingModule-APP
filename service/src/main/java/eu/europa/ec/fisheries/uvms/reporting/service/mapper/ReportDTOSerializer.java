@@ -145,7 +145,15 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 jgen.writeNumberField(FilterDTO.ID, commonFilter.getId());
             }
             PositionSelectorDTO positionSelector = commonFilter.getPositionSelector();
-            jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().getName());
+            if (positionSelector != null){
+                jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().name());
+                switch (positionSelector.getSelector()){
+                    case last:
+                        jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().toString());
+                        jgen.writeNumberField(PositionSelectorDTO.X_VALUE, positionSelector.getValue());
+                        break;
+                }
+            }
             Date startDate = commonFilter.getStartDate();
             Date endDate = commonFilter.getEndDate();
             if (startDate != null){
@@ -154,12 +162,6 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             }
             if (endDate != null){
                 jgen.writeStringField(CommonFilterDTO.END_DATE,UI_FORMATTER.print(new DateTime(endDate)));
-            }
-            switch (positionSelector.getSelector()){
-                case LAST:
-                    jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().toString());
-                    jgen.writeNumberField(PositionSelectorDTO.X_VALUE, positionSelector.getValue());
-                    break;
             }
 
             jgen.writeEndObject();

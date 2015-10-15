@@ -116,7 +116,7 @@ public class FilterDAOIT {
         CommonFilter filter6 = CommonFilterBuilder().build();
         filter6.setReport(savedReport);
         filter6.setPositionSelector(
-                PositionSelectorBuilder().selector(Selector.LAST).position(Position.hours).value(24F).build()
+                PositionSelectorBuilder().selector(Selector.last).position(Position.hours).value(24F).build()
         );
         filter6.setReport(savedReport);
         expectedCollection.add(filter6);
@@ -147,7 +147,7 @@ public class FilterDAOIT {
         commonFilter2.setReport(savedReport);
         commonFilter2.setEndDate(new Date());
         commonFilter2.setPositionSelector(
-                PositionSelectorBuilder().selector(Selector.LAST).
+                PositionSelectorBuilder().selector(Selector.last).
                         position(Position.hours).value(24F).build()
         );
         commonFilter2.setReport(savedReport);

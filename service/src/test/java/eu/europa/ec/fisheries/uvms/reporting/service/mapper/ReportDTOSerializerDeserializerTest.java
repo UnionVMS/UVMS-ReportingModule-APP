@@ -11,13 +11,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.SneakyThrows;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
@@ -141,11 +142,12 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void testWithFiltersWithCommonFilterWithSelectorAll() {
 
+        Calendar calendar = new GregorianCalendar(2013,1,28,13,24,56);
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
-                .endDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
-                .startDate(new DateTime(2005, 3, 26, 12, 1, 1, 1).toDate())
-                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.ALL).build())
+                .endDate(calendar.getTime())
+                .startDate(calendar.getTime())
+                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
                 .build());
 
         dto.setFilters(filterDTOList);
@@ -157,6 +159,10 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
 
         assertEquals(expected, serialized);
 
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
+
     }
 
     @Test
@@ -166,7 +172,7 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
                 .positionSelector(PositionSelectorDTOBuilder()
-                        .selector(Selector.LAST)
+                        .selector(Selector.last)
                         .position(Position.hours)
                         .value(23.45F)
                         .build())
@@ -180,6 +186,10 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
@@ -189,7 +199,7 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
                 .positionSelector(PositionSelectorDTOBuilder()
-                        .selector(Selector.LAST)
+                        .selector(Selector.last)
                         .position(Position.positions)
                         .value(23F)
                         .build())
@@ -203,17 +213,23 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
     @SneakyThrows
     public void testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate() {
 
+        Calendar calendar = new GregorianCalendar(2013,1,28,13,24,00);
+
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
-                .startDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
+                .startDate(calendar.getTime())
                 .positionSelector(PositionSelectorDTOBuilder()
-                        .selector(Selector.LAST)
+                        .selector(Selector.last)
                         .position(Position.positions)
                         .value(23F)
                         .build())
@@ -224,10 +240,14 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
         URL url = Resources
-                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json");
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test

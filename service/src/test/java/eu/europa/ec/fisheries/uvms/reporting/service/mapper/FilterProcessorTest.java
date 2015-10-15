@@ -90,7 +90,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         CommonFilter dateTimeFilter = CommonFilterBuilder()
                 .startDate(fromDate)
                 .endDate(toDate)
-                .positionSelector(PositionSelectorBuilder().selector(Selector.ALL).build())
+                .positionSelector(PositionSelectorBuilder().selector(Selector.all).build())
                 .build();
 
         filterList.add(dateTimeFilter);
@@ -137,7 +137,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         CommonFilter dateTimeFilter = CommonFilterBuilder()
                 .positionSelector(
-                        PositionSelectorBuilder().selector(Selector.LAST).position(Position.hours).value(
+                        PositionSelectorBuilder().selector(Selector.last).position(Position.hours).value(
                                 value).build()
                 )
                 .build();

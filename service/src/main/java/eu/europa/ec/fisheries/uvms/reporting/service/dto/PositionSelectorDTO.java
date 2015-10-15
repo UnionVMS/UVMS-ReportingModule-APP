@@ -5,7 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(of = {"value", "selector", "position"})
+@EqualsAndHashCode(of = {"value", "selector"})
 public class PositionSelectorDTO {
 
     public final static String X_VALUE = "xValue";

@@ -18,14 +18,14 @@ public class CommonFilterDTOTest {
                 .endDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
                 .startDate(new DateTime(2005, 3, 26, 12, 1, 1, 1).toDate())
                 .reportId(45L)
-                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.ALL).build())
+                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
                 .build();
 
         CommonFilterDTO build2 = CommonFilterDTOBuilder()
                 .endDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
                 .startDate(new DateTime(2005, 3, 26, 12, 1, 1, 1).toDate())
                 .reportId(38L)
-                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.ALL).build())
+                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
                 .build();
 
         assertTrue(build.equals(build2));

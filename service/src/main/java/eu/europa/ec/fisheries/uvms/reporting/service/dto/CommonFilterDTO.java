@@ -11,7 +11,7 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = false, of = {"startDate", "endDate", "positionSelector"})
+@EqualsAndHashCode(callSuper = false, of = {"startDate", "endDate"})
 public class CommonFilterDTO extends FilterDTO {
 
     public final static String START_DATE = "startDate";

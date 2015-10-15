@@ -9,9 +9,9 @@
   "filterExpression" : {
     "common" : {
       "positionSelector" : "last",
-      "startDate" : "2004-03-26T12:01:01",
       "positionTypeSelector" : "positions",
-      "xValue" : 23.0
+      "xValue" : 23.0,
+      "startDate" : "2013-02-28T13:24:00"
     },
     "vms" : { },
     "areas" : [ ],

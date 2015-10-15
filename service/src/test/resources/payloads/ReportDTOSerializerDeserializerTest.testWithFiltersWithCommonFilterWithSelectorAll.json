@@ -9,8 +9,8 @@
   "filterExpression" : {
     "common" : {
       "positionSelector" : "all",
-      "startDate" : "2005-03-26T12:01:01",
-      "endDate" : "2004-03-26T12:01:01"
+      "startDate" : "2013-02-28T13:24:56",
+      "endDate" : "2013-02-28T13:24:56"
     },
     "vms" : { },
     "areas" : [ ],
