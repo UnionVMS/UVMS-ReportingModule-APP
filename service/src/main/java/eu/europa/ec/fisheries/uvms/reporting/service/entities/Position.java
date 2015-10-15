@@ -1,10 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum Position {
 
-    POSITIONS("position"),
+    POSITION("position"),
     HOURS("hours");
 
     private String name;
@@ -13,7 +11,6 @@ public enum Position {
         this.name = name;
     }
 
-    @JsonValue
     public String getName() {
         return name;
     }

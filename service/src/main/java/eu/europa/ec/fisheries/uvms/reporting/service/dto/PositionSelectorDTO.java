@@ -1,12 +1,11 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 
-import java.security.InvalidParameterException;
-
+@EqualsAndHashCode(of = {"value", "selector", "position"})
 public class PositionSelectorDTO {
 
     public final static String X_VALUE = "xValue";

@@ -8,8 +8,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.NotImplementedException;
 
+@EqualsAndHashCode(callSuper = false, of = {"movementType", "movementActivity", "minimumSpeed", "maximumSpeed"})
 public class VmsPositionFilterDTO extends FilterDTO {
 
     public static final String MOV_MIN_SPEED = "movMinSpeed";

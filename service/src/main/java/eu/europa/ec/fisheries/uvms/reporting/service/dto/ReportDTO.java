@@ -17,7 +17,8 @@ import java.util.*;
 
 @JsonDeserialize(using = ReportDTODeserializer.class)
 @JsonSerialize(using = ReportDTOSerializer.class)
-@EqualsAndHashCode(exclude = {"scopeName"})
+@EqualsAndHashCode(of = {"description" ,"withMap" ,"visibility", "name" ,
+        "shareable", "deletable", "editable", "filters", "isDeleted"})
 public class ReportDTO implements Serializable {
 
     public final static String DESC = "desc";

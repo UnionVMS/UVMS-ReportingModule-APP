@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;

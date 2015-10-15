@@ -98,7 +98,7 @@ public class FilterProcessor {
                     case HOURS:
                         movementListCriteria.addAll(processLastHours(commonFilter));
                         break;
-                    case POSITIONS:
+                    case POSITION:
                         movementListCriteria.addAll(processLastPositions(commonFilter));
                         break;
                     default:

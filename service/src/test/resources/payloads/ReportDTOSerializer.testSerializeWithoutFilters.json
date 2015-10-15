@@ -8,5 +8,10 @@
   "withMap" : true,
   "editable" : false,
   "shareable" : false,
-  "deletable" : false
+  "deletable" : false,
+  "filterExpression" : {
+    "vms" : { },
+    "areas" : [ ],
+    "vessels" : [ ]
+  }
 }

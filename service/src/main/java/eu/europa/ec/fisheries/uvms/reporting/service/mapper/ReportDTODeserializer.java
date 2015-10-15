@@ -10,6 +10,8 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -86,19 +88,29 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
                     break;
                 case LAST:
-                    Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
+                    startDate = common.get("startDate").asText();
+                    endDate = common.get("endDate").asText();
                     try{
-                        filterDTOList.add(
-                                CommonFilterDTO.CommonFilterDTOBuilder()
-                                        .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
-                                        .reportId(reportId)
-                                        .positionSelector(
-                                                PositionSelectorDTO.PositionSelectorDTOBuilder().value(value)
-                                                        .selector(positionSelector).build()
-                                        )
-                                        .build()
-                        );
+
+                    Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
+                    CommonFilterDTO dto = CommonFilterDTO.CommonFilterDTOBuilder()
+                            .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
+                            .reportId(reportId)
+                            .startDate(endDate != null ? UI_FORMATTER.parseDateTime(startDate).toDate() : null)
+                            .endDate(endDate != null ? UI_FORMATTER.parseDateTime(endDate).toDate() : null)
+                            .build();
+                        filterDTOList.add(dto);
+
+                    JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
+                        if(selectorNode != null){
+                            dto.setPositionSelector(PositionSelectorDTO.PositionSelectorDTOBuilder()
+                                    .value(value)
+                                    .position(Position.valueOf(selectorType.textValue().toUpperCase()))
+                                    .selector(positionSelector).build());
+
+                        }
                     }
+
                     catch (Exception e){
                         throw new InvalidParameterException("Invalid parameters");
                     }

@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode( of = {"id", "type"})
 public abstract class FilterDTO {
 
     public static final String ID = "id";

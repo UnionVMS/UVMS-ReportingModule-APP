@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
 import lombok.SneakyThrows;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -34,6 +35,7 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
 import static junit.framework.TestCase.assertTrue;
 
+@Ignore
 public class FilterMergerTest extends UnitilsJUnit4 {
 
     @PersistenceContext

@@ -3,10 +3,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
@@ -22,6 +25,7 @@ import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO.VmsPositionFilterDTOBuilder;
 import static junit.framework.TestCase.assertTrue;
 
 @Ignore
@@ -39,14 +43,12 @@ public class ReportDTODeserializerTest extends UnitilsJUnit4 {
     @Before
     public void before(){
         dto = ReportDTO.ReportDTOBuilder()
-                .createdBy("georgi")
-                .scopeName("356456731")
                 .withMap(true)
-                .createdOn(DateUtils.stringToDate("2015-10-11 13:02:23 +0200"))
                 .visibility(VisibilityEnum.PRIVATE)
                 .description("This is a report descri created on 2015/09/28 13:31")
                 .name("ReportName788")
                 .isDeleted(false)
+                .filters(new ArrayList<FilterDTO>())
                 .id(5L)
                 .build();
     }
@@ -55,21 +57,51 @@ public class ReportDTODeserializerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void testSerializeWithoutFilters() {
 
-        List<FilterDTO> filterDTOList = new ArrayList<>();
-        filterDTOList.add(CommonFilterDTOBuilder()
-                .endDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
-                .startDate(new DateTime(2005, 3, 26, 12, 1, 1, 1).toDate())
-                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.ALL).build())
-                .build());
-
-        dto.setFilters(filterDTOList);
-
-        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorAll.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithoutFilters.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        ReportDTO deserialised = mapper.readValue(expected, ReportDTO.class);
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
-        assertTrue(deserialised.equals(dto));
+        assertTrue(deserialized.equals(dto));
     }
+
+    @Test
+    @SneakyThrows
+    public void testSerializeWithFiltersWithVmsPositionsWithoutSomeFields() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+        filterDTOList.add(VmsPositionFilterDTOBuilder()
+                .movementType(MovementTypeType.EXI)
+                .movementActivity(MovementActivityTypeType.CAN)
+                .id(5L)
+                .build());
+            dto.setFilters(filterDTOList);
+
+        URL url = Resources.
+                getResource("payloads/ReportDTOSerializer." +
+                        "testSerializeWithFiltersWithVmsPositionsWithoutSomeFields.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
+    }
+
+    @Test
+    @SneakyThrows
+    public void testSerializeWithFiltersWithVmsSegments() {
+
+        List<FilterDTO> filterDTOList = new ArrayList<>();
+
+
+        URL url = Resources.
+                getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVmsSegments.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
+    }
+
 
 }

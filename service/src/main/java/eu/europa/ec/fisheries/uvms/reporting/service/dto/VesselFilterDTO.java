@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = false)
 public class VesselFilterDTO extends FilterDTO {
 
     public static final String NAME = "name";

@@ -6,10 +6,12 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = false, of = {"startDate", "endDate", "positionSelector"})
 public class CommonFilterDTO extends FilterDTO {
 
     public final static String START_DATE = "startDate";
