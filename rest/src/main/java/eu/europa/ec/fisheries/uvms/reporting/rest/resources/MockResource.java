@@ -56,7 +56,7 @@ public class MockResource {
             rootNode.set("segments", segmentsNode);
             rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
 
-            reportingResource.runReport(request, response, id, scopeName);
+           // reportingResource.runReport(request, response, id, scopeName); we don't need it for the mock
 
         } catch (IOException e) {
             e.printStackTrace();
