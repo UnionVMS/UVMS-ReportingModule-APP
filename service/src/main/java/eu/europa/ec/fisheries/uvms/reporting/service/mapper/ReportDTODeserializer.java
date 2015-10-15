@@ -47,7 +47,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
                 .withMap(node.get(ReportDTO.WITH_MAP).booleanValue())
-                .createdBy(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
+                .createdBy(node.get(ReportDTO.CREATED_BY)!= null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
                 .filters(filterDTOList)
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
                 .build();

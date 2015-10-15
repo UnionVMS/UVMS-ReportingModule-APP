@@ -135,6 +135,7 @@ public class ReportingResource extends UnionVMSResource {
 
 
     @PUT
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateReport(@Context HttpServletRequest request,
