@@ -30,7 +30,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilte
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     private static ObjectMapper mapper;
@@ -48,6 +47,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
                 .createdBy("georgi")
                 .scopeName("356456731")
                 .withMap(true)
+                .filters(new ArrayList<FilterDTO>())
                 .createdOn(DateUtils.stringToDate("2015-10-11 13:02:23 +0200"))
                 .visibility(VisibilityEnum.PRIVATE)
                 .description("This is a report descri created on 2015/09/28 13:31")

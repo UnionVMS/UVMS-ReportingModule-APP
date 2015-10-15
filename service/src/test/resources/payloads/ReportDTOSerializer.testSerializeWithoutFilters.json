@@ -6,9 +6,6 @@
   "createdOn" : "2015-10-11T13:02:23",
   "createdBy" : "georgi",
   "withMap" : true,
-  "editable" : false,
-  "shareable" : false,
-  "deletable" : false,
   "filterExpression" : {
     "vms" : { },
     "areas" : [ ],
