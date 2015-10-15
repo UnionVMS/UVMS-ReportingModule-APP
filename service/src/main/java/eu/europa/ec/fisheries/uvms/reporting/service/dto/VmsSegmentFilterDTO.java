@@ -6,8 +6,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.NotImplementedException;
 
+@EqualsAndHashCode(callSuper = false, of = {"minimumSpeed", "maximumSpeed"})
 public class VmsSegmentFilterDTO extends FilterDTO {
 
     public static final String SEG_MIN_SPEED = "segMinSpeed";

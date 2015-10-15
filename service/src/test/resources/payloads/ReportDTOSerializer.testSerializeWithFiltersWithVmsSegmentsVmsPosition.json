@@ -8,6 +8,14 @@
   "withMap" : true,
   "filterExpression" : {
     "vms" : {
+      "vmsposition" : {
+        "id" : 5,
+        "type" : "vmspos",
+        "movMinSpeed" : 45.5,
+        "movMaxSpeed" : 234.2,
+        "movType" : "EXI",
+        "movActivity" : "CAN"
+      },
       "vmssegment" : {
         "id" : 5,
         "type" : "vmsseg",

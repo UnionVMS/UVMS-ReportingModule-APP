@@ -14,7 +14,6 @@ import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import java.net.URL;
@@ -28,9 +27,10 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO.VmsPositionFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-public class ReportDTOSerializerTest extends UnitilsJUnit4 {
+public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
 
     private static ObjectMapper mapper;
 
@@ -59,7 +59,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testSerializeWithoutFilters() {
+    public void testWithoutFilters() {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
@@ -68,11 +68,15 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         assertEquals(expected, serialized);
 
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
+
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithoutFiltersWithoutDescription() {
+    public void testWithoutFiltersWithoutDescription() {
 
         dto.setDescription(null);
 
@@ -81,11 +85,15 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithVessel() {
+    public void testWithFiltersWithVessel() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(VesselFilterDTOBuilder().guid("guid1").name("vessel1").build());
@@ -99,11 +107,15 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithVesselAndVesselGroup() {
+    public void testWithFiltersWithVesselAndVesselGroup() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(VesselFilterDTOBuilder().guid("guid1").name("vessel1").build());
@@ -119,11 +131,15 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithCommonFilterWithSelectorAll() {
+    public void testWithFiltersWithCommonFilterWithSelectorAll() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
@@ -136,15 +152,16 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithCommonFilterWithSelectorAll.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializer.testSerializeWithFiltersWithCommonFilterWithSelectorAll.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithCommonFilterWithSelectorLastHours() {
+    public void testWithFiltersWithCommonFilterWithSelectorLastHours() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
@@ -167,7 +184,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithCommonFilterWithSelectorLastPositions() {
+    public void testWithFiltersWithCommonFilterWithSelectorLastPositions() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
@@ -190,7 +207,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate() {
+    public void testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
@@ -215,7 +232,7 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithCommonFilterWithTracks() {
+    public void testWithFiltersWithCommonFilterWithTracks() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(TrackFilterDTOBuild()
@@ -234,11 +251,15 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithVmsPositions() {
+    public void testWithFiltersWithVmsPositions() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(VmsPositionFilterDTOBuilder()
@@ -257,11 +278,15 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithVmsPositionsWithoutSomeFields() {
+    public void testWithFiltersWithVmsPositionsWithoutSomeFields() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(VmsPositionFilterDTOBuilder()
@@ -278,11 +303,15 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
     @Test
     @SneakyThrows
-    public void testSerializeWithFiltersWithVmsSegments() {
+    public void testWithFiltersWithVmsSegments() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(VmsPositionFilterDTOBuilder()
@@ -303,16 +332,20 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVmsSegments.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithFiltersWithVmsSegmentsVmsPosition.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 
 
     @Test
     @SneakyThrows
-    public void testSerializeWithAreaFilters() {
+    public void testWithAreaFilters() {
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(AreaFilterDTO.AreaFilterDTOBuilder().areaId(345364L).areaType("eez").build());
@@ -324,9 +357,13 @@ public class ReportDTOSerializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
-        URL url = Resources.getResource("payloads/ReportDTOSerializer.testSerializeWithAreaFilters.json");
+        URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializer.testWithAreaFilters.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, serialized);
+
+        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+
+        assertTrue(deserialized.equals(dto));
     }
 }
