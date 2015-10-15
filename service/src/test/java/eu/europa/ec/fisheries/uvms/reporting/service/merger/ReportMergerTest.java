@@ -20,7 +20,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.Report
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
 import static junit.framework.TestCase.assertTrue;
 
-@Ignore
 public class ReportMergerTest extends UnitilsJUnit4 {
 
     @PersistenceContext

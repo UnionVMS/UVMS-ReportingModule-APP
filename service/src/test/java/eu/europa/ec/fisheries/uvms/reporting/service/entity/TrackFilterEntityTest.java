@@ -9,7 +9,6 @@ import org.unitils.inject.annotation.TestedObject;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.TrackFilter.TrackFilterBuilder;
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class TrackFilterEntityTest extends UnitilsJUnit4 {
 
     @TestedObject
