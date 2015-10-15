@@ -35,7 +35,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
 import static junit.framework.TestCase.assertTrue;
 
-@Ignore
 public class FilterMergerTest extends UnitilsJUnit4 {
 
     @PersistenceContext
