@@ -326,11 +326,11 @@
 
     <dependencies>
 
-        <dependency>
+        <!--<dependency>
             <groupId>eu.europa.ec.mare.usm</groupId>
             <artifactId>Information-Service</artifactId>
             <version>LATEST</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>javax</groupId>
