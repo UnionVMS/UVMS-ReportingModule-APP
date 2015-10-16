@@ -152,8 +152,6 @@ public class Report implements Serializable {
         setName(incoming.getName());
         setDescription(incoming.getDescription());
         setWithMap(incoming.getWithMap());
-        setScopeName(incoming.getScopeName());
-        setCreatedBy(incoming.getCreatedBy());
         setIsDeleted(incoming.isIsDeleted());
         setDeletedOn(incoming.getDeletedOn());
         setDeletedBy( incoming.getDeletedBy() );

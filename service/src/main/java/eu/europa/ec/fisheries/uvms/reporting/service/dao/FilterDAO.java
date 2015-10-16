@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.service.DAO;
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.LIST_BY_ID;
@@ -24,6 +25,12 @@ public class FilterDAO extends AbstractDAO<Filter> implements DAO<Filter> {
     }
 
     public List<Filter> listById(final List<Long> filterIds) throws ServiceException {
-        return findEntityByNamedQuery(Filter.class, LIST_BY_ID, with("id", filterIds).parameters());
+        List<Filter> returnList = null;
+        if (filterIds != null && !filterIds.isEmpty()) {
+            returnList = findEntityByNamedQuery(Filter.class, LIST_BY_ID, with("id", filterIds).parameters());
+        } else {
+            returnList = new ArrayList<>();
+        }
+        return returnList;
     }
 }

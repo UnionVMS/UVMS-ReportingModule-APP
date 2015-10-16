@@ -92,7 +92,7 @@ public class ReportingResource extends UnionVMSResource {
 
         LOG.info("{} is requesting getReport(...), with an ID={}", username, id );
 
-        ReportDTO report = null;
+        ReportDTO report;
         try {
             report = reportService.findById(id, username, scopeName);
         } catch (ReportingServiceException e) {
@@ -122,6 +122,20 @@ public class ReportingResource extends UnionVMSResource {
         String username = request.getRemoteUser();
 
         LOG.info("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
+        ReportDTO originalReport;
+
+        try {
+            originalReport = reportService.findById(id, username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
+        } catch (ReportingServiceException e) {
+            LOG.error("Failed to get report.", e);
+            return createErrorResponse();
+        }
+
+        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport, username);
+
+        if ( requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+            createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+        }
 
         try {
             reportService.delete(id, username, scopeName);
@@ -140,13 +154,22 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateReport(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
-                                 ReportDTO report) {
+                                 ReportDTO report,
+                                 @HeaderParam("scopeName") String scopeName) {
 
         String username = request.getRemoteUser();
 
         LOG.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
+        ReportDTO originalReport;
 
-        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(report, username);
+        try {
+            originalReport = reportService.findById(report.getId(), username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
+        } catch (ReportingServiceException e) {
+            LOG.error("Failed to get report.", e);
+            return createErrorResponse();
+        }
+
+        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport, username);
 
         if ( requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
             createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
