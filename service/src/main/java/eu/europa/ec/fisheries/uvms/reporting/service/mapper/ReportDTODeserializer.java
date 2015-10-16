@@ -11,7 +11,6 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -38,7 +37,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         JsonNode filterNode = node.get(ReportDTO.FILTER_EXPRESSION);
 
         addVmsFilters(filterNode.get("vms"), filterDTOList, reportId);
-        addVessels(filterNode.get("vessels"), filterDTOList, reportId);
+        addVessels(filterNode.get(VesselFilterDTO.VESSELS), filterDTOList, reportId);
         addArea(filterNode.get("areas"), filterDTOList, reportId);
         addCommon(filterNode.get("common"), filterDTOList, reportId);
 
@@ -148,7 +147,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 JsonNode next = elements.next();
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch(type){
-                    case vessels:
+                    case vessel:
                         filterDTOList.add(
                                 VesselFilterDTO.VesselFilterDTOBuilder()
                                         .reportId(reportId)
@@ -165,6 +164,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .reportId(reportId)
                                         .guid(next.get(VesselGroupFilterDTO.GUID).textValue())
                                         .userName(next.get(VesselGroupFilterDTO.USER).textValue())
+                                        .name(next.get(VesselGroupFilterDTO.NAME).textValue())
                                         .build()
                         );
                         break;

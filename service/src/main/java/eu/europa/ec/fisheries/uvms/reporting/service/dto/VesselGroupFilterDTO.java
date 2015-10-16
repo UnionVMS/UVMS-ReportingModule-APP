@@ -11,6 +11,7 @@ public class VesselGroupFilterDTO extends FilterDTO {
 
     public static final String GUID = "guid" ;
     public static final String USER = "user" ;
+    public static final String NAME = "name" ;
 
     private String guid;
 
