@@ -6,11 +6,15 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.util.HashSet;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@EqualsAndHashCode( of = {"id", "type"})
+@EqualsAndHashCode( of = {"type"})
 public abstract class FilterDTO {
 
     public static final String ID = "id";
@@ -27,7 +31,15 @@ public abstract class FilterDTO {
 
     public abstract Filter convertToFilter();
 
-    public abstract void validate();
+    public void validate() {
+        Set<ConstraintViolation<FilterDTO>> violations =
+                validator.validate(this);
+
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(
+                    new HashSet<ConstraintViolation<?>>(violations));
+        }
+    }
 
     public Long getId() {
         return id;

@@ -9,9 +9,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.NotImplementedException;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = false, of = {"startDate", "endDate"})
+@EqualsAndHashCode(callSuper = true, of = {"startDate", "endDate"})
 public class CommonFilterDTO extends FilterDTO {
 
     public final static String START_DATE = "startDate";
@@ -33,18 +34,18 @@ public class CommonFilterDTO extends FilterDTO {
         setId(id);
         setReportId(reportId);
         setType(FilterType.common);
+        validate();
     }
 
     private PositionSelectorDTO positionSelector;
 
-    @Override
-    public Filter convertToFilter() {
-        return DateTimeFilterMapper.INSTANCE.dateTimeFilterDTOToDateTimeFilter(this);
+    public CommonFilterDTO() {
+
     }
 
     @Override
-    public void validate() {
-        throw new NotImplementedException("TODO"); // TODO
+    public Filter convertToFilter() {
+        return DateTimeFilterMapper.INSTANCE.dateTimeFilterDTOToDateTimeFilter(this);
     }
 
     public Date getStartDate() {

@@ -5,11 +5,13 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.FilterMerger;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.ReportMerger;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
@@ -52,10 +54,11 @@ public class ReportRepositoryBean implements ReportRepository {
         boolean merged;
 
         try {
-            merged = reportMerger.merge(Arrays.asList(reportDTO));
-            if (reportDTO.getFilters() != null){
-                merged = filterMerger.merge(reportDTO.getFilters());
-            }
+           merged = reportMerger.merge(Arrays.asList(reportDTO));
+            List<FilterDTO> filters = reportDTO.getFilters();
+            if (CollectionUtils.isNotEmpty(filters)){
+                merged = filterMerger.merge(filters);
+          }
         } catch (ServiceException e) {
             log.error("update failed", e);
             throw new ReportingServiceException("update failed", e);
@@ -63,7 +66,6 @@ public class ReportRepositoryBean implements ReportRepository {
 
         return merged;
     }
-
 
     @Override
     @Transactional

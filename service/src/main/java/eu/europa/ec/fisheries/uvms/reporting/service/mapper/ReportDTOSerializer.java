@@ -72,7 +72,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case vmsseg:
                     segment = (VmsSegmentFilterDTO) filterDTO;
                     break;
-                case vessels:
+                case vessel:
                     vesselFilterDTOList.add(filterDTO);
                     break;
                 case vgroup:

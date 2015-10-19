@@ -9,23 +9,26 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("VESSEL")
 @EqualsAndHashCode(callSuper = true)
 public class VesselFilter extends Filter {
 
+    @NotNull
     private String guid;
 
+    @NotNull
     private String name;
 
     VesselFilter(){
-        super(FilterType.vessels);
+        super(FilterType.vessel);
     }
 
     @Builder(builderMethodName = "VesselFilterBuilder")
     public VesselFilter(Long id, String guid, String name){
-        super(FilterType.vessels);
+        super(FilterType.vessel);
         this.guid = guid;
         this.name = name;
         setId(id);

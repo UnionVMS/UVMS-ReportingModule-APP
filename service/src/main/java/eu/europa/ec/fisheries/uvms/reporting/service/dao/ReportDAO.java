@@ -52,7 +52,7 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
      * does logical/soft delete
      * @param entityId
      */
-    public void softDelete(long entityId, String username, String scopeName) throws ReportingServiceException{
+    public void softDelete(Long entityId, String username, String scopeName) throws ReportingServiceException{
         Report persistentInstance = this.findReportByReportId(entityId, username, scopeName);
         if (persistentInstance == null) {
             throw new ReportingServiceException("Non existing report entity cannot be deleted.");

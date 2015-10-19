@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "execution_log", schema = "reporting",
@@ -26,14 +28,17 @@ public class ExecutionLog implements Serializable {
 	private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn( name = "report_id", nullable = false)
+    @JoinColumn( name = "report_id")
+    @Valid
 	private Report report;
 
-    @Column(name = "executed_by", nullable = false)
+    @Column(name = "executed_by")
+    @NotNull
     private String executedBy;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "executed_on", nullable = false, length = 29)
+    @Column(name = "executed_on")
+    @NotNull
 	private Date executedOn;
 
 	public ExecutionLog() {

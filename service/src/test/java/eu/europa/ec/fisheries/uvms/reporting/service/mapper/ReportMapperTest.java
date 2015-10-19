@@ -1,17 +1,20 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
 
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+//TODO implement more tests
 public class ReportMapperTest extends UnitilsJUnit4 {
 
     @TestedObject
@@ -31,8 +34,16 @@ public class ReportMapperTest extends UnitilsJUnit4 {
                 .build();
     }
 
+
     @Test
-    public void testReportToReportDTO(){
+    public void testReportDTOToReportWithNull(){
+        Report report = mapper.reportDTOToReport(null);
+
+        assertNull(report);
+    }
+
+    @Test
+    public void testReportToReportDTOWithNoFilters(){
 
         ReportDTO expectedDTO = ReportDTO.ReportDTOBuilder()
                 .id(1L)
@@ -42,11 +53,21 @@ public class ReportMapperTest extends UnitilsJUnit4 {
                 .withMap(true)
                 .visibility(VisibilityEnum.PRIVATE)
                 .scopeName("scopeName")
+                .filters(new ArrayList<FilterDTO>())
                 .build();
 
         ReportDTO dto = mapper.reportToReportDTO(report);
 
         assertTrue(expectedDTO.equals(dto));
+
+    }
+
+    @Test
+    public void testReportToReportDTOWithReportNull(){
+
+        ReportDTO dto = mapper.reportToReportDTO(null);
+
+        assertNull(dto);
 
     }
 }

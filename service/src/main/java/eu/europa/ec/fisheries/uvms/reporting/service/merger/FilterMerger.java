@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.Merger;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.*;
 
 public class FilterMerger extends Merger<FilterDTO, Filter> {
@@ -37,15 +38,15 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
     @Override
     protected Collection<Filter> loadCurrents(Collection<FilterDTO> input) throws ServiceException {
         Iterator<FilterDTO> iterator = input.iterator();
-        List<Long> filterIds = new ArrayList<>();
+        Long reportId = null;
         while (iterator.hasNext()){
             FilterDTO next = iterator.next();
-            Long id = next.getId();
-            if (id != null){
-                filterIds.add(next.getId());
+            reportId = next.getReportId();
+            if(reportId != null){
+                break;
             }
         }
-        return filterDAO.listById(filterIds);
+        return filterDAO.listByReportId(reportId);
     }
 
     @Override
@@ -75,6 +76,6 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     @Override
     protected void delete(Filter item) throws ServiceException {
-        filterDAO.deleteEntity(item, item.getId());
+        filterDAO.deleteBy(item.getId());
     }
 }

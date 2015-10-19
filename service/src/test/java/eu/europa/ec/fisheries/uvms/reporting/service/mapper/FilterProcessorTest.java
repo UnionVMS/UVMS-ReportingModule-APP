@@ -154,8 +154,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         assertEquals(SearchKey.TO_DATE, processor.getMovementListCriteria().get(1).getKey());
         assertEquals(DateUtils.dateToString(dateNow.toDate()), processor.getMovementListCriteria().get(1).getValue());
         assertEquals(SearchKey.FROM_DATE, processor.getMovementListCriteria().get(0).getKey());
-        assertEquals(DateUtils.dateToString(dateNow.minusHours(value.intValue()).toDate()), processor.getMovementListCriteria().get(0).getValue());
-        // fixme FIX THE hours
+        assertEquals(DateUtils.dateToString(dateNow.minusSeconds((int) (value.longValue() * 3600)).toDate()), processor.getMovementListCriteria().get(0).getValue());
     }
 
 }

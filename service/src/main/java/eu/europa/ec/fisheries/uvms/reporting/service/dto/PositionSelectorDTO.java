@@ -24,6 +24,10 @@ public class PositionSelectorDTO {
         this.position = position;
     }
 
+    public PositionSelectorDTO() {
+
+    }
+
     public Float getValue() {
         return value;
     }

@@ -10,12 +10,12 @@
     "vms" : { },
     "areas" : [ ],
     "vessels" : [ {
-      "type" : "vessels",
+      "type" : "vessel",
       "guid" : "guid1",
       "name" : "vessel1"
     }, {
       "id" : 48,
-      "type" : "vessels",
+      "type" : "vessel",
       "guid" : "guid2",
       "name" : "vessel2"
     } ]

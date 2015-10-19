@@ -4,7 +4,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -12,12 +11,14 @@ import java.io.Serializable;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="FILTER_TYPE")
 @NamedQueries({
-        @NamedQuery(name = Filter.LIST_BY_ID, query = "SELECT f FROM Filter f WHERE id IN :id"),
+        @NamedQuery(name = Filter.LIST_BY_REPORT_ID, query = "SELECT f FROM Filter f WHERE report.id = :reportId"),
+        @NamedQuery(name = Filter.DELETE_BY_ID, query = "DELETE FROM Filter WHERE id = :id")
 })
-@EqualsAndHashCode(exclude = "report")
+@EqualsAndHashCode(exclude = {"report"})
 public abstract class Filter implements Serializable {
 
-    public static final String LIST_BY_ID = "Filter.listById";
+    public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
+    public static final String DELETE_BY_ID = "Filter.deleteById";
 
     @Id
     @Column(name = "filter_id")

@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
@@ -16,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//TODO implement a unit test
 public class ReportMapper {
 
     private final ObjectFactory factory = new ObjectFactory();
@@ -45,8 +43,8 @@ public class ReportMapper {
         reportDTO.setScopeName(report.getScopeName());
         reportDTO.setAudit(auditMapper.auditToAuditDTO(report.getAudit()));
         reportDTO.setCreatedBy( report.getCreatedBy());
-        if (report.isIsDeleted() != null) {
-            reportDTO.setIsDeleted(report.isIsDeleted());
+        if (report.getIsDeleted() != null) {
+            reportDTO.setDeleted(report.getIsDeleted());
         }
         reportDTO.setExecutionLogs(executionSetToExecutionsDTOSet(report.getExecutionLogs()));
         reportDTO.setDeletedOn(report.getDeletedOn());
@@ -81,7 +79,7 @@ public class ReportMapper {
         report.setWithMap(dto.getWithMap());
         report.setScopeName(dto.getScopeName());
         report.setCreatedBy( dto.getCreatedBy() );
-        report.setIsDeleted(dto.getIsDeleted());
+        report.setIsDeleted(dto.isDeleted());
         report.setDeletedOn(dto.getDeletedOn());
         report.setDeletedBy(dto.getDeletedBy());
         report.setVisibility(dto.getVisibility());

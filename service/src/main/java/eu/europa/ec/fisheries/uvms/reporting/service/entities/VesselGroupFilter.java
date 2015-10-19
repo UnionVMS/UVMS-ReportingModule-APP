@@ -7,14 +7,20 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("VGROUP")
 @EqualsAndHashCode(callSuper = true)
 public class VesselGroupFilter extends Filter {
 
+    @NotNull
     private String guid;
+
+    @NotNull
     private String name;
+
+    @NotNull
     private String userName;
 
     public VesselGroupFilter() {

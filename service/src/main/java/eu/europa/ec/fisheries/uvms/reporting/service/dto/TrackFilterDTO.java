@@ -5,8 +5,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
-import org.apache.commons.lang3.NotImplementedException;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 public class TrackFilterDTO extends FilterDTO {
 
     public static final String TRK_MIN_TIME = "trkMinTime";
@@ -41,11 +42,11 @@ public class TrackFilterDTO extends FilterDTO {
         setId(id);
         setReportId(reportId);
         setType(FilterType.vmstrack);
+        validate();
     }
 
-    @Override
-    public void validate() {
-        throw new NotImplementedException("TODO"); // TODO
+    public TrackFilterDTO() {
+
     }
 
     @Override

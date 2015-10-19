@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Predicate;
@@ -10,15 +9,21 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTODeserialize
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @JsonDeserialize(using = ReportDTODeserializer.class)
 @JsonSerialize(using = ReportDTOSerializer.class)
 @EqualsAndHashCode(of = {"description" ,"withMap" ,"visibility", "name" ,
         "shareable", "deletable", "editable", "filters", "isDeleted"})
+@Data
 public class ReportDTO implements Serializable {
 
     public final static String DESC = "desc";
@@ -56,7 +61,7 @@ public class ReportDTO implements Serializable {
 
     private Set<ExecutionLogDTO> executionLogs;
 
-    ReportDTO(){}
+    public ReportDTO(){}
 
     @Builder(builderMethodName = "ReportDTOBuilder")
     public ReportDTO(Long id,
@@ -99,134 +104,5 @@ public class ReportDTO implements Serializable {
             filter = new HashSet<>(Collections2.filter(getExecutionLogs(), isUserPredicate));
         }
         return filter;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getScopeName() {
-        return this.scopeName;
-    }
-
-    public void setScopeName(String scopeName) {
-        this.scopeName = scopeName;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public AuditDTO getAudit() {
-        return audit;
-    }
-
-    public void setAudit(AuditDTO audit) {
-        this.audit = audit;
-    }
-
-    public boolean getIsDeleted() {
-        return this.isDeleted;
-    }
-
-    public void setIsDeleted(boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
-    public Date getDeletedOn() {
-        return this.deletedOn;
-    }
-
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
-
-    public String getDeletedBy() {
-        return this.deletedBy;
-    }
-
-    public void setDeletedBy(String deletedBy) {
-        this.deletedBy = deletedBy;
-    }
-
-    public Set<ExecutionLogDTO> getExecutionLogs() {
-        return this.executionLogs;
-    }
-
-    @JsonIgnore
-    public void setExecutionLogs(Set<ExecutionLogDTO> reportExecutionLogs) {
-        this.executionLogs = reportExecutionLogs;
-    }
-
-    public VisibilityEnum getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(VisibilityEnum visibility) {
-        this.visibility = visibility;
-    }
-
-    public List<FilterDTO> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<FilterDTO> filters) {
-        this.filters = filters;
-    }
-
-    public boolean isShareable() {
-        return shareable;
-    }
-
-    public void setShareable(boolean shareable) {
-        this.shareable = shareable;
-    }
-
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
-    public boolean isDeletable() {
-        return deletable;
-    }
-
-    public void setDeletable(boolean deletable) {
-        this.deletable = deletable;
-    }
-
-    public Boolean getWithMap() {
-        return withMap;
-    }
-
-    public void setWithMap(Boolean withMap) {
-        this.withMap = withMap;
     }
 }

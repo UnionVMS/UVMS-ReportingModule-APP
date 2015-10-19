@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
+import lombok.SneakyThrows;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -26,6 +27,9 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilte
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.TrackFilter.TrackFilterBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter.VmsSegmentFilterBuilder;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
 @RunWith(Arquillian.class)
@@ -67,10 +71,9 @@ public class FilterDAOIT {
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)
-    public void testListById() throws ServiceException {
+    public void testListByReportId() throws ServiceException {
 
         Set<Filter> expectedCollection = new HashSet<>();
-        List<Long> filterIds = new ArrayList<>();
         Report report = DTOUtil.createRandomReportEntity();
         String user = "georgiTestttt12";
         report.setCreatedBy(user);
@@ -83,35 +86,37 @@ public class FilterDAOIT {
         filter1.setGuid("guid1");
         filter1.setName("vessel1");
         expectedCollection.add(filter1);
-        filterIds.add(filterDAO.createEntity(filter1).getId());
+        filterDAO.createEntity(filter1);
 
         VesselFilter filter2 = VesselFilter.VesselFilterBuilder().build();
         filter2.setReport(savedReport);
         filter2.setGuid("guid2");
         filter2.setName("vessel2");
         expectedCollection.add(filter2);
-        filterIds.add(filterDAO.createEntity(filter2).getId());
+        filterDAO.createEntity(filter2);
 
         VmsPositionFilter filter3 = VmsPositionFilter.VmsPositionFilterBuilder().build();
         filter3.setMaximumSpeed(123F);
         filter3.setMinimumSpeed(54654F);
         filter3.setReport(savedReport);
         expectedCollection.add(filter3);
-        filterIds.add(filterDAO.createEntity(filter3).getId());
+        filterDAO.createEntity(filter3);
 
         VesselGroupFilter filter4 = new VesselGroupFilter();
         filter4.setReport(savedReport);
         filter4.setGuid("1");
         filter4.setUserName("ffsdfsdfds");
+        filter4.setName("name");
         expectedCollection.add(filter4);
-        filterIds.add(filterDAO.createEntity(filter4).getId());
+        filterDAO.createEntity(filter4);
 
         VesselGroupFilter filter5 = new VesselGroupFilter();
         filter5.setReport(savedReport);
         filter5.setGuid("2");
         filter5.setUserName("ffsdfsdfds");
+        filter5.setName("name2");
         expectedCollection.add(filter5);
-        filterIds.add(filterDAO.createEntity(filter5).getId());
+        filterDAO.createEntity(filter5);
 
         CommonFilter filter6 = CommonFilterBuilder().build();
         filter6.setReport(savedReport);
@@ -120,7 +125,7 @@ public class FilterDAOIT {
         );
         filter6.setReport(savedReport);
         expectedCollection.add(filter6);
-        filterIds.add(filterDAO.createEntity(filter6).getId());
+        filterDAO.createEntity(filter6);
 
         TrackFilter filter7 = TrackFilterBuilder()
                     .maxTime(10F)
@@ -130,7 +135,7 @@ public class FilterDAOIT {
                 .build();
         filter7.setReport(savedReport);
         expectedCollection.add(filter7);
-        filterIds.add(filterDAO.createEntity(filter7).getId());
+        filterDAO.createEntity(filter7);
 
         VmsSegmentFilter segmentFilter = VmsSegmentFilterBuilder()
                 .maxDuration(12F)
@@ -141,7 +146,7 @@ public class FilterDAOIT {
         segmentFilter.setReport(savedReport);
         segmentFilter.setReport(savedReport);
         expectedCollection.add(segmentFilter);
-        filterIds.add(filterDAO.createEntity(segmentFilter).getId());
+        filterDAO.createEntity(segmentFilter);
 
         CommonFilter commonFilter2 = CommonFilterBuilder().build();
         commonFilter2.setReport(savedReport);
@@ -152,16 +157,37 @@ public class FilterDAOIT {
         );
         commonFilter2.setReport(savedReport);
         expectedCollection.add(commonFilter2);
-        filterIds.add(filterDAO.createEntity(commonFilter2).getId());
+        filterDAO.createEntity(commonFilter2);
 
         AreaFilter filter8 = AreaFilter.AreaFilterBuilder().areaId(123456L).areaType("eez").build();
         filter8.setReport(savedReport);
         expectedCollection.add(filter8);
-        filterIds.add(filterDAO.createEntity(filter8).getId());
+        filterDAO.createEntity(filter8);
 
-        List<Filter> filters = filterDAO.listById(filterIds);
+        List<Filter> filters = filterDAO.listByReportId(savedReport.getId());
         ReflectionAssert.assertReflectionEquals(expectedCollection, filters, LENIENT_ORDER);
 
     }
 
+    @Test
+    @SneakyThrows
+    public void testDeleteBy(){
+
+        Report report = DTOUtil.createRandomReportEntity();
+        String user = "georgiTestttt12";
+        report.setCreatedBy(user);
+        report.setScopeName("356456731");
+        report.setVisibility(VisibilityEnum.PRIVATE);
+        Report savedReport = reportDAO.createEntity(report);
+
+        AreaFilter filter8 = AreaFilter.AreaFilterBuilder().areaId(123456L).areaType("eez").build();
+        filter8.setReport(savedReport);
+        Filter entity = filterDAO.createEntity(filter8);
+
+        filterDAO.deleteBy(entity.getId());
+
+        Report entityById = reportDAO.findEntityById(Report.class, savedReport.getId());
+
+        assertNull(entityById.getFilters());
+    }
 }

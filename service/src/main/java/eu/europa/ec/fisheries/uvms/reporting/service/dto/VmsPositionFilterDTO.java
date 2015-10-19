@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -9,9 +8,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.NotImplementedException;
 
-@EqualsAndHashCode(callSuper = false, of = {"movementType", "movementActivity", "minimumSpeed", "maximumSpeed"})
+@EqualsAndHashCode(callSuper = true, of = {"movementType", "movementActivity", "minimumSpeed", "maximumSpeed"})
 public class VmsPositionFilterDTO extends FilterDTO {
 
     public static final String MOV_MIN_SPEED = "movMinSpeed";
@@ -42,11 +40,11 @@ public class VmsPositionFilterDTO extends FilterDTO {
         setReportId(reportId);
         setId(id);
         setType(FilterType.vmspos);
+        validate();
     }
 
-    @Override
-    public void validate() {
-        throw new NotImplementedException("TODO"); // TODO
+    public VmsPositionFilterDTO() {
+
     }
 
     public Float getMinimumSpeed() {

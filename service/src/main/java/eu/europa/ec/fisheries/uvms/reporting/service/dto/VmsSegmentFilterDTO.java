@@ -3,11 +3,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.NotImplementedException;
 
 @EqualsAndHashCode(callSuper = false, of = {"minimumSpeed", "maximumSpeed"})
 public class VmsSegmentFilterDTO extends FilterDTO {
@@ -44,16 +42,16 @@ public class VmsSegmentFilterDTO extends FilterDTO {
         setReportId(reportId);
         setId(id);
         setType(FilterType.vmsseg);
+        validate();
+    }
+
+    public VmsSegmentFilterDTO() {
+
     }
 
     @Override
     public Filter convertToFilter() {
         return VmsSegmentFilterMapper.INSTANCE.vmsSegmentFilterDTOToVmsSegmentFilter(this);
-    }
-
-    @Override
-    public void validate() {
-        throw new NotImplementedException("TODO"); // TODO
     }
 
     public Float getMinimumSpeed() {

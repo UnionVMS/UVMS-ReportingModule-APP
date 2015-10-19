@@ -1,21 +1,26 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by georgige on 10/13/2015.
  */
+@EqualsAndHashCode(callSuper = true)
 public class AreaFilterDTO extends FilterDTO {
 
     public static final String JSON_ATTR_AREA_TYPE = "areaType";
     public static final String JSON_ATTR_AREA_ID = "areaId";
 
+    @NotNull
     private String areaType;
 
+    @NotNull
     private Long areaId;
 
     public AreaFilterDTO () {
@@ -30,6 +35,7 @@ public class AreaFilterDTO extends FilterDTO {
         setId(id);
         setReportId(reportId);
         setType(FilterType.areas);
+        validate();
     }
 
     public String getAreaType() {
@@ -53,8 +59,4 @@ public class AreaFilterDTO extends FilterDTO {
         return AreaFilterMapper.INSTANCE.areaFilterDTOToAreaFilter(this);
     }
 
-    @Override
-    public void validate() {
-
-    }
 }

@@ -5,19 +5,25 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
 import lombok.Builder;
-import org.apache.commons.lang3.NotImplementedException;
+import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotNull;
+
+@EqualsAndHashCode(callSuper = true)
 public class VesselGroupFilterDTO extends FilterDTO {
 
     public static final String GUID = "guid" ;
     public static final String USER = "user" ;
     public static final String NAME = "name" ;
 
+    @NotNull
     private String guid;
 
     @JsonProperty(USER)
+    @NotNull
     private String userName;
 
+    @NotNull
     private String name;
 
     @Builder(builderMethodName = "VesselGroupFilterDTOBuilder")
@@ -31,11 +37,11 @@ public class VesselGroupFilterDTO extends FilterDTO {
         setId(id);
         setReportId(reportId);
         setType(FilterType.vgroup);
+        validate();
     }
 
-    @Override
-    public void validate() {
-        throw new NotImplementedException("TODO"); // TODO
+    public VesselGroupFilterDTO() {
+
     }
 
     public String getUserName() {

@@ -1,9 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -12,10 +10,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.rest.security.UserRoleRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,12 +23,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 
 @Path("/report")
-//TODO implement unit testing for all the error handlings
 public class ReportingResource extends UnionVMSResource {
 
     final static Logger LOG = LoggerFactory.getLogger(ReportingResource.class);
@@ -280,20 +274,19 @@ public class ReportingResource extends UnionVMSResource {
 
         LOG.info("{} is requesting shareReport(...), with a ID={}",username, id);
 
-        VmsDTO vmsDto;
+        VmsDTO vmsDto = null;
         ObjectNode jsonNodes;
 
         try {
             vmsDto = vmsService.getVmsDataByReportId(username, scopeName, id);
-
             jsonNodes = vmsDto.toObjectNode();
+            return createSuccessResponse(jsonNodes);
 
         } catch (ReportingServiceException e) {
             LOG.error("Report execution failed.", e);
             return createErrorResponse();
         }
 
-        return createSuccessResponse(jsonNodes);
     }
 
 }

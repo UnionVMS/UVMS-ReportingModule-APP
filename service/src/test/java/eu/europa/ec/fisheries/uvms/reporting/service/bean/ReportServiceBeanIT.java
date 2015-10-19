@@ -1,22 +1,16 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ejb.EJB;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
+import lombok.SneakyThrows;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -30,7 +24,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import javax.ejb.EJB;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 @Transactional
@@ -46,6 +46,12 @@ public class ReportServiceBeanIT {
                 .addAsManifestResource(new File("src/test/resources/META-INF/jboss-deployment-structure.xml"))
                 .addAsResource("config.properties")
                 .addAsResource("usmDeploymentDescriptor.xml")
+                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithoutFiltersWithoutDescription.json")
+                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorAll.json")
+                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastHours.json")
+                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositions.json")
+                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json")
+                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithTracksNoFilterIds.json")
                 .addAsResource("logback.xml")
                 .addAsWebInfResource(new File("src/main/resources/META-INF/beans.xml"));
 
@@ -113,4 +119,125 @@ public class ReportServiceBeanIT {
         assertNull(report);
 
     }
+
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    @SneakyThrows
+    public void testCreateWithoutFiltersWithoutDescription(){
+
+        URL url = Resources
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithoutFiltersWithoutDescription.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
+        deserialized.setId(null);
+        deserialized.setScopeName("test");
+        deserialized.setCreatedBy("test");
+
+        ReportDTO savedReport = reportBean.create(deserialized);
+
+        assertTrue(savedReport.equals(deserialized));
+
+    }
+
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    @SneakyThrows
+    public void testCreateWithFiltersWithCommonFilterWithSelectorAll(){
+
+        URL url = Resources
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorAll.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
+        deserialized.setId(null);
+        deserialized.setScopeName("test");
+        deserialized.setCreatedBy("test");
+
+        ReportDTO savedReport = reportBean.create(deserialized);
+
+        assertTrue(savedReport.equals(deserialized));
+
+    }
+
+    @Test
+     @Transactional(TransactionMode.ROLLBACK)
+     @SneakyThrows
+     public void testCreateWithFiltersWithCommonFilterWithSelectorLastHour(){
+
+        URL url = Resources
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastHours.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
+        deserialized.setId(null);
+        deserialized.setScopeName("test");
+        deserialized.setCreatedBy("test");
+
+        ReportDTO savedReport = reportBean.create(deserialized);
+
+        assertTrue(savedReport.equals(deserialized));
+
+    }
+
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    @SneakyThrows
+    public void testCreateWithFiltersWithCommonFilterWithSelectorLastPositions(){
+
+        URL url = Resources
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositions.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
+        deserialized.setId(null);
+        deserialized.setScopeName("test");
+        deserialized.setCreatedBy("test");
+
+        ReportDTO savedReport = reportBean.create(deserialized);
+
+        assertTrue(savedReport.equals(deserialized));
+
+    }
+
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    @SneakyThrows
+    public void testCreateWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate(){
+
+        URL url = Resources
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
+        deserialized.setId(null);
+        deserialized.setScopeName("test");
+        deserialized.setCreatedBy("test");
+
+        ReportDTO savedReport = reportBean.create(deserialized);
+
+        assertTrue(savedReport.equals(deserialized));
+
+    }
+
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    @SneakyThrows
+    public void testCreateWithFiltersWithTracks(){
+
+        URL url = Resources
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithTracksNoFilterIds.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+
+        ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
+        deserialized.setId(null);
+        deserialized.setScopeName("test");
+        deserialized.setCreatedBy("test");
+
+        ReportDTO savedReport = reportBean.create(deserialized);
+
+        assertTrue(savedReport.equals(deserialized));
+
+    }
+
 }

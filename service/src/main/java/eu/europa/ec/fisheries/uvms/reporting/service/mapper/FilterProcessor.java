@@ -25,7 +25,7 @@ import java.util.Set;
 
 /**
  * This class is responsible reading the report filters and transform them
- * to search queries for vessels and movement queues
+ * to search queries for vessel and movement queues
  */
 public class FilterProcessor {
 
@@ -39,7 +39,7 @@ public class FilterProcessor {
             Filter filter = (Filter) next;
             switch (filter.getType()) {
 
-                case vessels:
+                case vessel:
                     addToVesselCriteria(filter);
                     addConnectIdToMovementCriteria(filter);
                     break;
@@ -119,7 +119,7 @@ public class FilterProcessor {
     private List<ListCriteria> processLastHours(final CommonFilter dateTimeFilter) {
         Float hours = dateTimeFilter.getPositionSelector().getValue();
         DateTime currentDate = nowUTC();
-        Date toDate = DateUtils.nowUTCMinusHours(currentDate, hours.intValue()).toDate();// FIXME hours!
+        Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
         List<ListCriteria> listCriterias = new ArrayList<>();
         add(DateUtils.dateToString(toDate), listCriterias, SearchKey.FROM_DATE);
         add(DateUtils.dateToString(currentDate.toDate()), listCriterias, SearchKey.TO_DATE);

@@ -7,11 +7,28 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -35,6 +52,7 @@ import static javax.persistence.CascadeType.ALL;
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(exclude = {"executionLogs", "filters", "audit"})
 @ToString
+@Data
 public class Report implements Serializable {
 
     private static final long serialVersionUID = 7784224707011748170L;
@@ -51,7 +69,7 @@ public class Report implements Serializable {
     @OneToMany(mappedBy = "report", cascade = ALL)
     private Set<Filter> filters = new HashSet<>();
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
     private String description;
@@ -60,14 +78,16 @@ public class Report implements Serializable {
     @Convert(converter=CharBooleanConverter.class)
     private Boolean withMap;
 
-    @Column(name = "scope_name", nullable = false)
+    @Column(name = "scope_name")
+    @NotNull
     private String scopeName;
 
-    @Column(name = "created_by", nullable = false)
+    @Column(name = "created_by")
+    @NotNull
     private String createdBy;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull
     private VisibilityEnum visibility;
 
     @Convert(converter=CharBooleanConverter.class)
@@ -152,7 +172,7 @@ public class Report implements Serializable {
         setName(incoming.getName());
         setDescription(incoming.getDescription());
         setWithMap(incoming.getWithMap());
-        setIsDeleted(incoming.isIsDeleted());
+        setIsDeleted(incoming.getIsDeleted());
         setDeletedOn(incoming.getDeletedOn());
         setDeletedBy( incoming.getDeletedBy() );
         setVisibility( incoming.getVisibility() );
@@ -163,104 +183,4 @@ public class Report implements Serializable {
         audit = new Audit(DateUtils.nowUTC().toDate());
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<Filter> getFilters() {
-        return this.filters;
-    }
-
-    public void setFilters(Set<Filter> filters) {
-        this.filters = filters;
-    }
-
-    public String getScopeName() {
-        return this.scopeName;
-    }
-
-    public void setScopeName(String scopeName) {
-        this.scopeName = scopeName;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Boolean isIsDeleted() {
-        return this.isDeleted;
-    }
-
-    public void setIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
-    public Date getDeletedOn() {
-        return this.deletedOn;
-    }
-
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
-
-    public String getDeletedBy() {
-        return this.deletedBy;
-    }
-
-    public void setDeletedBy(String deletedBy) {
-        this.deletedBy = deletedBy;
-    }
-
-    public Set<ExecutionLog> getExecutionLogs() {
-        return this.executionLogs;
-    }
-
-    public void setExecutionLogs(
-            Set<ExecutionLog> executionLogs) {
-        this.executionLogs = executionLogs;
-    }
-
-    public VisibilityEnum getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(VisibilityEnum visibility) {
-        this.visibility = visibility;
-    }
-
-    public Audit getAudit() {
-        return audit;
-    }
-
-    public Boolean getWithMap() {
-        return withMap;
-    }
-
-    public void setWithMap(Boolean withMap) {
-        this.withMap = withMap;
-    }
 }

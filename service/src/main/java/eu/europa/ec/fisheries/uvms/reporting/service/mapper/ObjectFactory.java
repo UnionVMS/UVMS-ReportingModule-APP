@@ -14,7 +14,7 @@ public class ObjectFactory {
     }
 
     public ReportDTO createReportDTO() {
-        return ReportDTO.ReportDTOBuilder().build();
+        return new ReportDTO();
     }
 
     public PositionSelector createPositionSelector() {
@@ -22,23 +22,23 @@ public class ObjectFactory {
     }
 
     public VesselFilterDTO createVesselFilterDTO() {
-        return VesselFilterDTO.VesselFilterDTOBuilder().build();
+        return new VesselFilterDTO();
     }
 
     public VmsPositionFilterDTO createVmsPositionFilterDTO() {
-        return VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().build();
+        return new VmsPositionFilterDTO();
     }
 
     public VesselGroupFilterDTO createVesselGroupFilterDTO() {
-        return VesselGroupFilterDTO.VesselGroupFilterDTOBuilder().build();
+        return new VesselGroupFilterDTO();
     }
 
     public CommonFilterDTO createCommonFilterDTO(){
-        return CommonFilterDTO.CommonFilterDTOBuilder().build();
+        return new CommonFilterDTO();
     }
 
     public PositionSelectorDTO createPositionSelectorDTO(){
-        return PositionSelectorDTO.PositionSelectorDTOBuilder().build();
+        return new PositionSelectorDTO();
     }
 
     public VesselFilter createVesselFilter(){
@@ -50,7 +50,7 @@ public class ObjectFactory {
     }
 
     public TrackFilterDTO createTrackFilterDTO(){
-        return TrackFilterDTO.TrackFilterDTOBuild().build();
+        return new TrackFilterDTO();
     }
 
     public VmsPositionFilter createVmsPositionFilter(){
@@ -62,7 +62,7 @@ public class ObjectFactory {
     }
 
     public VmsSegmentFilterDTO createVmsSegmentFilterDTO(){
-        return VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder().build();
+        return new VmsSegmentFilterDTO();
     }
 
 

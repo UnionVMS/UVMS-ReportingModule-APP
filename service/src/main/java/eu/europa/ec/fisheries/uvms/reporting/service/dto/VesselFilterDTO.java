@@ -6,13 +6,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class VesselFilterDTO extends FilterDTO {
 
     public static final String NAME = "name";
@@ -20,10 +17,16 @@ public class VesselFilterDTO extends FilterDTO {
     public static final String VESSELS = "vessels";
 
     @Size(min = 1, max = 255)
+    @NotNull
     private String guid;
 
     @Size(min = 1, max = 255)
+    @NotNull
     private String name;
+
+    public VesselFilterDTO(){
+
+    }
 
     @Builder(builderMethodName = "VesselFilterDTOBuilder")
     public VesselFilterDTO(Long reportId, Long id, String guid, String name) {
@@ -31,19 +34,8 @@ public class VesselFilterDTO extends FilterDTO {
         this.name = name;
         setId(id);
         setReportId(reportId);
-        setType(FilterType.vessels);
+        setType(FilterType.vessel);
         validate();
-    }
-
-    @Override
-    public void validate() {
-        Set<ConstraintViolation<VesselFilterDTO>> violations =
-                validator.validate(this);
-
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(
-                    new HashSet<ConstraintViolation<?>>(violations));
-        }
     }
 
     public String getGuid() {

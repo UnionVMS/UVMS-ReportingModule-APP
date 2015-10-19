@@ -133,7 +133,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                 .reportId(reportId)
                                 .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                                 .areaId(next.get(AreaFilterDTO.JSON_ATTR_AREA_ID).longValue())
-                                .areaType(next.get(AreaFilterDTO.JSON_ATTR_AREA_ID).textValue())
+                                .areaType(next.get(AreaFilterDTO.JSON_ATTR_AREA_TYPE).textValue())
                                 .build()
                 );
             }
@@ -210,7 +210,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)
                                         .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
                                         .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
-                                        .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
+                                        .minTime(next.get(TrackFilterDTO.TRK_MIN_TIME) != null ? next.get(TrackFilterDTO.TRK_MIN_TIME).floatValue() : null)
                                         .build()
                         );
                         break;
@@ -222,7 +222,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)
                                         .maxTime(next.get(VmsSegmentFilterDTO.SEG_MAX_TIME) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_TIME).floatValue() : null)
                                         .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
-                                        .maxTime(next.get(VmsSegmentFilterDTO.SEG_MAX_TIME) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_TIME).floatValue() : null)
+                                        .minTime(next.get(VmsSegmentFilterDTO.SEG_MIN_TIME) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_TIME).floatValue() : null)
                                         .build()
                         );
                         break;
