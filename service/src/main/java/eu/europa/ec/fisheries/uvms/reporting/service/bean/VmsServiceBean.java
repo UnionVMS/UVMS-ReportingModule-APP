@@ -1,8 +1,22 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.jms.JMSException;
+import javax.transaction.Transactional;
+
+import org.geotools.feature.DefaultFeatureCollection;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -12,7 +26,6 @@ import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialMessageService;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageService;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
@@ -25,17 +38,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
-import org.geotools.feature.DefaultFeatureCollection;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.JMSException;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Stateless
 @Local(value = VmsService.class)
@@ -52,8 +54,6 @@ public class VmsServiceBean implements VmsService {
     @EJB
     private MovementMessageService movementModule;
 
-    @EJB
-    private SpatialMessageService spatialModule;
 
     @Override
     @Transactional
