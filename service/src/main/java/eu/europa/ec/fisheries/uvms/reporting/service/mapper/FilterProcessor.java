@@ -112,7 +112,7 @@ public class FilterProcessor {
     }
 
     private List<ListCriteria> processLastPositions(final CommonFilter dateTimeFilter) {
-        Float positions = dateTimeFilter.getPositionSelector().getValue();
+      //  Float positions = dateTimeFilter.getPositionSelector().getValue();
         throw new NotImplementedException("Not implemented in Movement API");
     }
 
