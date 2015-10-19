@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
@@ -15,12 +16,13 @@ import javax.validation.constraints.NotNull;
 public class AreaFilterDTO extends FilterDTO {
 
     public static final String JSON_ATTR_AREA_TYPE = "areaType";
-    public static final String JSON_ATTR_AREA_ID = "areaId";
+    public static final String JSON_ATTR_AREA_ID = "gid";
 
     @NotNull
     private String areaType;
 
     @NotNull
+    @JsonProperty(JSON_ATTR_AREA_ID)
     private Long areaId;
 
     public AreaFilterDTO () {

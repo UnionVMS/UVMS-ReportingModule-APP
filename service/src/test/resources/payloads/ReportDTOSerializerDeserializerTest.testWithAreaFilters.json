@@ -11,22 +11,22 @@
     "areas" : [ {
       "type" : "areas",
       "areaType" : "eez",
-      "areaId" : 345364
+      "gid" : 345364
     }, {
       "id" : 48,
       "type" : "areas",
       "areaType" : "user",
-      "areaId" : 42524
+      "gid" : 42524
     }, {
       "id" : 66,
       "type" : "areas",
       "areaType" : "eez",
-      "areaId" : 21312
+      "gid" : 21312
     }, {
       "id" : 67,
       "type" : "areas",
       "areaType" : "rfmo",
-      "areaId" : 56546
+      "gid" : 56546
     } ],
     "vessels" : [ ]
   }
