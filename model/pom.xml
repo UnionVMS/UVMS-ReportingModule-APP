@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>reporting-model</artifactId>
-    <name>${project.parent.artifactId}-model</name>   
+    <name>${project.parent.artifactId}</name>   
     <packaging>ejb</packaging>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
