@@ -26,6 +26,10 @@ public class VmsSegmentFilter extends Filter {
     @Column(name = "MAX_DURATION")
     private Float maxDuration;
 
+    @Column(name = "SEG_CATEGORY")
+    private String category;
+
+
     VmsSegmentFilter(){
         super(FilterType.vmsseg);
     }
@@ -35,13 +39,15 @@ public class VmsSegmentFilter extends Filter {
                             Float maxDuration,
                             Float minDuration,
                             Float maximumSpeed,
-                            Float minimumSpeed) {
+                            Float minimumSpeed,
+                            String category) {
         super(FilterType.vmsseg);
         setId(id);
         this.maxDuration = maxDuration;
         this.maximumSpeed = maximumSpeed;
         this.minimumSpeed = minimumSpeed;
         this.minDuration = minDuration;
+        this.category   = category;
     }
     @Override
     public FilterDTO convertToDTO() {
@@ -55,6 +61,15 @@ public class VmsSegmentFilter extends Filter {
         setMinimumSpeed(incoming.getMinimumSpeed());
         setMinDuration(incoming.getMinDuration());
         setMaxDuration(incoming.getMaxDuration());
+        setCategory(incoming.getCategory());
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Float getMinimumSpeed() {

@@ -220,9 +220,10 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                                         .reportId(reportId)
                                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                                         .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)
-                                        .maxTime(next.get(VmsSegmentFilterDTO.SEG_MAX_TIME) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_TIME).floatValue() : null)
+                                        .maxDuration(next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION).floatValue() : null)
                                         .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
-                                        .minTime(next.get(VmsSegmentFilterDTO.SEG_MIN_TIME) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_TIME).floatValue() : null)
+                                        .minDuration(next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION).floatValue() : null)
+                                        .category(next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null ? next.get(VmsSegmentFilterDTO.SEG_CATEGORY).asText() : null)
                                         .build()
                         );
                         break;

@@ -20,7 +20,10 @@
         "id" : 5,
         "type" : "vmsseg",
         "segMinSpeed" : 45.5,
-        "segMaxSpeed" : 234.2
+        "segMaxSpeed" : 234.2,
+        "segMaxDuration" : 33.3,
+        "segMinDuration" : 33.3,
+        "segCategory" : "TEST"
       }
     },
     "areas" : [ ],

@@ -7,13 +7,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapp
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = false, of = {"minimumSpeed", "maximumSpeed"})
+@EqualsAndHashCode(callSuper = false, of = {"minimumSpeed", "maximumSpeed", "maxDuration", "minDuration", "category"})
 public class VmsSegmentFilterDTO extends FilterDTO {
 
     public static final String SEG_MIN_SPEED = "segMinSpeed";
     public static final String SEG_MAX_SPEED = "segMaxSpeed";
-    public static final String SEG_MIN_TIME = "segMinTime";
-    public static final String SEG_MAX_TIME = "segMaxTime";
+    public static final String SEG_MIN_DURATION = "segMinDuration";
+    public static final String SEG_MAX_DURATION = "segMaxDuration";
+    public static final String SEG_CATEGORY = "segCategory";
     public static final String VMS_SEGMENT = "vmssegment";
 
     @JsonProperty(SEG_MIN_SPEED)
@@ -22,23 +23,28 @@ public class VmsSegmentFilterDTO extends FilterDTO {
     @JsonProperty(SEG_MAX_SPEED)
     private Float maximumSpeed;
 
-    @JsonProperty(SEG_MAX_TIME)
-    private Float maxTime;
+    @JsonProperty(SEG_MAX_DURATION)
+    private Float maxDuration;
 
-    @JsonProperty(SEG_MIN_TIME)
-    private Float minTime;
+    @JsonProperty(SEG_MIN_DURATION)
+    private Float minDuration;
+
+    @JsonProperty(SEG_CATEGORY)
+    private String category;
 
     @Builder(builderMethodName = "VmsSegmentFilterDTOBuilder")
     public VmsSegmentFilterDTO(Long reportId,
                                Long id,
-                               Float maxTime,
-                               Float minTime,
+                               Float maxDuration,
+                               Float minDuration,
                                Float minimumSpeed,
-                               Float maximumSpeed) {
+                               Float maximumSpeed,
+                               String category) {
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
-        this.minTime = minTime;
-        this.maxTime = maxTime;
+        this.minDuration = minDuration;
+        this.maxDuration = maxDuration;
+        this.category = category;
         setReportId(reportId);
         setId(id);
         setType(FilterType.vmsseg);
@@ -47,6 +53,15 @@ public class VmsSegmentFilterDTO extends FilterDTO {
 
     public VmsSegmentFilterDTO() {
 
+    }
+
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override
@@ -70,19 +85,19 @@ public class VmsSegmentFilterDTO extends FilterDTO {
         this.maximumSpeed = maximumSpeed;
     }
 
-    public Float getMaxTime() {
-        return maxTime;
+    public Float getMaxDuration() {
+        return maxDuration;
     }
 
-    public void setMaxTime(Float maxTime) {
-        this.maxTime = maxTime;
+    public void setMaxDuration(Float maxDuration) {
+        this.maxDuration = maxDuration;
     }
 
-    public Float getMinTime() {
-        return minTime;
+    public Float getMinDuration() {
+        return minDuration;
     }
 
-    public void setMinTime(Float minTime) {
-        this.minTime = minTime;
+    public void setMinDuration(Float minDuration) {
+        this.minDuration = minDuration;
     }
 }

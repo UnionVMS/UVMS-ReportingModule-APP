@@ -346,6 +346,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
                 .id(5L)
                 .maximumSpeed(234.2F)
                 .minimumSpeed(45.5F)
+                .minDuration(33.3F)
+                .maxDuration(33.3f)
+                .category("TEST")
                 .build());
 
         dto.setFilters(filterDTOList);
