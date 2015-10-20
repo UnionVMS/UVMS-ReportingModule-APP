@@ -26,7 +26,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
         serializeReportFields(reportDTO, jgen);
 
-        if (filters != null) {
+        if (filters != null && !filters.isEmpty()) {
             serializeFilterFields(jgen, filters);
         }
         else {

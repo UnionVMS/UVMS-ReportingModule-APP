@@ -36,10 +36,12 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
         JsonNode filterNode = node.get(ReportDTO.FILTER_EXPRESSION);
 
-        addVmsFilters(filterNode.get("vms"), filterDTOList, reportId);
-        addVessels(filterNode.get(VesselFilterDTO.VESSELS), filterDTOList, reportId);
-        addArea(filterNode.get("areas"), filterDTOList, reportId);
-        addCommon(filterNode.get("common"), filterDTOList, reportId);
+        if (filterNode != null) {
+            addVmsFilters(filterNode.get("vms"), filterDTOList, reportId);
+            addVessels(filterNode.get(VesselFilterDTO.VESSELS), filterDTOList, reportId);
+            addArea(filterNode.get("areas"), filterDTOList, reportId);
+            addCommon(filterNode.get("common"), filterDTOList, reportId);
+        }
 
         return ReportDTO.ReportDTOBuilder()
                 .description(node.get(ReportDTO.DESC) != null? node.get(ReportDTO.DESC).textValue() : null)

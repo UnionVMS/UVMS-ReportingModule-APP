@@ -6,9 +6,7 @@
   "createdOn" : "2015-10-11T13:02:23",
   "createdBy" : "georgi",
   "withMap" : true,
-  "filterExpression" : {
-    "vms" : { },
-    "areas" : [ ],
-    "vessels" : [ ]
-  }
+  "editable" : false,
+  "shareable" : false,
+  "deletable" : false
 }
