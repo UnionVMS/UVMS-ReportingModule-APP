@@ -72,10 +72,10 @@ public class SegmentDTO {
 
     private interface Include {
         String getId();
-        BigDecimal getCourseOverGround();
-        BigDecimal getSpeedOverGround();
-        BigDecimal getDuration();
-        BigDecimal getDistance();
+        Double getCourseOverGround();
+        Double getSpeedOverGround();
+        Double getDuration();
+        Double getDistance();
         String getTrackId();
     }
 

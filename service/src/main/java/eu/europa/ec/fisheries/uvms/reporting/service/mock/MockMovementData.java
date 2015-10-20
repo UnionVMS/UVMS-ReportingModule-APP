@@ -29,22 +29,15 @@ public class MockMovementData {
         MovementType dto = new MovementType();
         dto.setConnectId(String.valueOf(++counter));
         dto.setConnectId(UUID.randomUUID().toString());
-        dto.setCalculatedSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
-        dto.setCourse(MockingUtils.randInt(1, 20));
-        dto.setMeasuredSpeed(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
+        dto.setCalculatedSpeed((double) MockingUtils.randInt(0, 50));
+        dto.setCalculatedCourse((double) MockingUtils.randInt(1, 20));
+        dto.setReportedSpeed(Double.valueOf(MockingUtils.randInt(0, 50)));
         dto.setMovementType(MovementTypeType.ENT);
-        dto.setMobileTerminal(getMobTermId());
         dto.setSource(MovementSourceType.INMARSAT_C);
         dto.setStatus(RandomStringUtils.randomAlphabetic(MockingUtils.randInt(5, 20)));
         dto.setPositionTime(getPositionTime());
         dto.setWkt(writer.write(point));
         return dto;
-    }
-
-    public static MobileTerminalId getMobTermId() {
-        MobileTerminalId id = new MobileTerminalId();
-        id.setId("ABC-80+");
-        return id;
     }
 
     public static ListPagination getListPagination() {

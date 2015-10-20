@@ -13,7 +13,7 @@ import javax.jms.Destination;
  */
 @Stateless
 @LocalBean
-public class VesselProducerBean extends AbstractProducer {
+public class VesselModuleSenderBean extends AbstractProducer {
 
     @Resource(mappedName = MessageConstants.QUEUE_VESSEL_EVENT)
     private Destination destination;
@@ -22,4 +22,5 @@ public class VesselProducerBean extends AbstractProducer {
     public Destination getDestination() {
         return destination;
     }
+
 }

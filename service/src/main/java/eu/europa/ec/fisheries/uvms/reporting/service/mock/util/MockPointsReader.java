@@ -62,10 +62,10 @@ public class MockPointsReader {
                 linestringList.add(lnG);
                 String write = wktWriter.write(lnG);
                 MovementSegment movementSegment = new MovementSegment();
-                movementSegment.setCourseOverGround(BigDecimal.valueOf(MockingUtils.randInt(0, 20)));
-                movementSegment.setDistance(BigDecimal.valueOf(MockingUtils.randInt(0, 20)));
-                movementSegment.setDuration(BigDecimal.valueOf(MockingUtils.randInt(0, 20)));
-                movementSegment.setSpeedOverGround(BigDecimal.valueOf(MockingUtils.randInt(0, 20)));
+                movementSegment.setCourseOverGround((double) MockingUtils.randInt(0, 20));
+                movementSegment.setDistance((double) MockingUtils.randInt(0, 20));
+                movementSegment.setDuration((double) MockingUtils.randInt(0, 20));
+                movementSegment.setSpeedOverGround((double) MockingUtils.randInt(0, 20));
                 movementSegment.setWkt(write);
                 movementSegment.setId(String.valueOf(i));
                 segmentList.add(movementSegment);
@@ -88,8 +88,8 @@ public class MockPointsReader {
                 LineString lineString1 = geomFac.createLineString(lsc);
                 MovementTrack movementTrack = new MovementTrack();
                 movementTrack.setWkt(wktWriter.write(lineString1));
-                movementTrack.setDistance(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
-                movementTrack.setDuration(BigDecimal.valueOf(MockingUtils.randInt(0, 50)));
+                movementTrack.setDistance((double) MockingUtils.randInt(0, 50));
+                movementTrack.setDuration((double) MockingUtils.randInt(0, 50));
                 movementTrack.setId(String.valueOf(i));
                 movementTrackList.add(movementTrack);
             }

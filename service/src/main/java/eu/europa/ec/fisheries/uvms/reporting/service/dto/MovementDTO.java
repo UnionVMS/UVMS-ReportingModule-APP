@@ -6,7 +6,6 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
@@ -14,7 +13,6 @@ import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.joda.time.DateTime;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -43,12 +41,12 @@ public class MovementDTO {
         sb.setCRS(DefaultGeographicCRS.WGS84);
         sb.add("geometry", Point.class);
         sb.add("pos_tm", String.class);
-        sb.add("m_spd", BigDecimal.class);
+        //sb.add("m_spd", BigDecimal.class);
         sb.add("con_id", String.class);
         sb.add("stat", String.class);
-        sb.add("crs", Integer.class);
+        sb.add("crs", Double.class);
         sb.add("msg_tp", String.class);
-        sb.add("c_spd", BigDecimal.class);
+        sb.add("c_spd", Double.class);
         sb.add("cfr", String.class);
         sb.add("cc", String.class);
         sb.add("ircs", String.class);
@@ -63,10 +61,9 @@ public class MovementDTO {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENT);
         featureBuilder.add(getGeometry());
         featureBuilder.add(getPositionTime());
-        featureBuilder.add(getMeasuredSpeed());
         featureBuilder.add(getConnectId());
         featureBuilder.add(getStatus());
-        featureBuilder.add(getCourse());
+        featureBuilder.add(getCalculatedCourse());
         if (getMovementType() != null){
             featureBuilder.add(getMovementType().value());
         }
@@ -87,9 +84,8 @@ public class MovementDTO {
         void setGuid(String id);
         String getConnectId();
         String getStatus();
-        BigDecimal getMeasuredSpeed();
-        BigDecimal getCalculatedSpeed();
-        int getCourse();
+        Double getCalculatedSpeed();
+        Double getCalculatedCourse();
         String getWkt();
         MovementTypeType getMovementType();
     }

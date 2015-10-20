@@ -1,22 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.JMSException;
-import javax.transaction.Transactional;
-
-import org.geotools.feature.DefaultFeatureCollection;
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -25,8 +11,12 @@ import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementMessageService;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselMessageService;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.VesselMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.impl.VesselMessageMapperImpl;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.*;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
@@ -37,7 +27,23 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.util.MockPointsReader;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleResponseMapper;
+import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
+import eu.europa.ec.fisheries.wsdl.vessel.types.*;
+import org.geotools.feature.DefaultFeatureCollection;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Stateless
 @Local(value = VmsService.class)
@@ -46,14 +52,23 @@ public class VmsServiceBean implements VmsService {
     private static final int LIST_SIZE = 1000;
 
     @EJB
-    private VesselMessageService vesselModule;
-
-    @EJB
     private ReportRepository repository;
 
     @EJB
-    private MovementMessageService movementModule;
+    private VesselModuleSenderBean vesselSender;
 
+    @EJB
+    private VesselModuleReceiverBean vesselReceiver;
+
+    @EJB
+    private MovementModuleSenderBean movementSender;
+
+    @EJB
+    private MovementModuleReceiverBean movementReceiver;
+
+    @PostConstruct
+    public void init(){
+    }
 
     @Override
     @Transactional
@@ -71,37 +86,60 @@ public class VmsServiceBean implements VmsService {
 
             FilterProcessor processor = new FilterProcessor().init(reportByReportId.getFilters());
 
-            if(processor.hasVesselsOrVesselGroups()){
+            if (processor.hasVesselsOrVesselGroups()){
 
                 Set<Vessel> vesselList = new HashSet<>();
                 if (processor.hasVessels()) {
-                    List<Vessel> vesselsByVesselListQuery = vesselModule.getVesselsByVesselListQuery(processor.toVesselListQuery());
-                    if (vesselsByVesselListQuery != null) {
-                        vesselList.addAll(vesselsByVesselListQuery);
+                    List<Vessel> vessels = getVessels(processor);
+                    if (vessels != null) {
+                        vesselList.addAll(vessels);
                     }
                 }
 
                 if (processor.hasVesselGroups()) {
-                    List<Vessel> vesselsByVesselGroups = vesselModule.getVesselsByVesselGroups(processor.getVesselGroupList());
-                    if (vesselsByVesselGroups != null) {
-                        vesselList.addAll(vesselsByVesselGroups);
+                    List<Vessel> groupList = getVesselGroupList(processor);
+
+                    if (groupList != null) {
+                        vesselList.addAll(groupList);
                     }
                 }
 
                 ImmutableMap<String, Vessel> stringVesselMapByGuid = getStringVesselMapByGuid(vesselList);
 
-                List<MovementMapResponseType> movementMap = movementModule.getMovementMap(processor.toMovementQuery());
+                List<MovementMapResponseType> movementMap = getMovementMapResponseTypes(processor);
 
                 vmsDto = VmsDTO.getVmsDto(stringVesselMapByGuid, movementMap);
-                reportByReportId.updateExecutionLog(username);
+
             }
 
-        } catch (JMSException | ModelMapperException | VesselModelMapperException | MessageException e) {
-            throw new ReportingServiceException("", e);
-        } catch (ProcessorException e) {
+            reportByReportId.updateExecutionLog(username);
+
+
+        } catch (MessageException | VesselModelMapperException |ProcessorException | ModelMapperException | JMSException e) {
             throw new ReportingServiceException("Error while processing reporting filters.", e);
         }
         return vmsDto;
+    }
+
+    private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws MessageException, ModelMapperException, JMSException {
+        String movementMapByQueryRequest = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
+        String moduleMessage = movementSender.sendModuleMessage(movementMapByQueryRequest, movementReceiver.getDestination());
+        TextMessage response = movementReceiver.getMessage(moduleMessage, TextMessage.class);
+        return MovementModuleResponseMapper.mapToMovementMapResponse(response);
+    }
+
+    private List<Vessel> getVesselGroupList(FilterProcessor processor) throws VesselModelMapperException, MessageException {
+        String vesselListModuleRequest = VesselModuleRequestMapper.createVesselListModuleRequest(processor.getVesselGroupList());
+        String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
+        TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
+        return VesselModuleResponseMapper.mapToVesselListFromResponse(response, moduleMessage);
+    }
+
+    private List<Vessel> getVessels(FilterProcessor processor) throws VesselModelMapperException, MessageException {
+        String vesselListModuleRequest = VesselModuleRequestMapper.createVesselListModuleRequest(processor.toVesselListQuery());
+        String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
+        TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
+        return VesselModuleResponseMapper.mapToVesselListFromResponse(response, moduleMessage);
     }
 
     private ImmutableMap<String, Vessel> getStringVesselMapByGuid(Set<Vessel> vesselList) {

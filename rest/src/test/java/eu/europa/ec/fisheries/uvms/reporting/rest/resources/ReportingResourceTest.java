@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
+import lombok.SneakyThrows;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -45,6 +46,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     private VmsDTO vmsDTO;
 
     @Test
+    @SneakyThrows
     public void testRunReportHappy() throws IOException, ReportingServiceException {
 
         requestMock.returns(USER).getRemoteUser();
@@ -57,6 +59,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     }
 
     @Test
+    @SneakyThrows
     public void testRunReport500() throws IOException, ReportingServiceException {
 
         requestMock.returns(USER).getRemoteUser();

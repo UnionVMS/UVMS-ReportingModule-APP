@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
@@ -14,13 +13,13 @@ import javax.jms.Destination;
  */
 @Stateless
 @LocalBean
-public class VesselConsumerBean extends AbstractConsumer {
+public class MovementModuleSenderBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_VESSEL)
+    @Resource(mappedName = MessageConstants.QUEUE_MODULE_MOVEMENT)
     private Destination destination;
 
     @Override
-    public Destination getDestination() {
+    protected Destination getDestination() {
         return destination;
     }
 }

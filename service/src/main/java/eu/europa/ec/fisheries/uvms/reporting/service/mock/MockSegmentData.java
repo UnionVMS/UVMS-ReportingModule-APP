@@ -15,10 +15,10 @@ public class MockSegmentData {
     public static MovementSegment getDto(String wkt) {
         MovementSegment dto = new MovementSegment();
         dto.setWkt(wkt);
-        dto.setCourseOverGround(BigDecimal.valueOf(MockingUtils.randInt(1, 30)));
-        dto.setDistance(BigDecimal.valueOf(MockingUtils.randInt(1, 30)));
-        dto.setDuration(BigDecimal.valueOf(MockingUtils.randInt(1, 30)));
-        dto.setSpeedOverGround(BigDecimal.valueOf((double) MockingUtils.randInt(1, 30)));
+        dto.setCourseOverGround((double) MockingUtils.randInt(1, 30));
+        dto.setDistance((double) MockingUtils.randInt(1, 30));
+        dto.setDuration((double) MockingUtils.randInt(1, 30));
+        dto.setSpeedOverGround((double) MockingUtils.randInt(1, 30));
         dto.setCategory(SegmentCategoryType.OTHER);
         dto.setId(String.valueOf(++counter));
         return dto;

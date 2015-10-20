@@ -49,19 +49,6 @@ public class VmsPositionFilter extends Filter  {
         this.minimumSpeed = minimumSpeed;
     }
 
-    public List<ListCriteria> movementListCriteria() {
-        List<ListCriteria> listCriterias = new ArrayList<>();
-        ListCriteria listCriteria = new ListCriteria();
-        listCriteria.setKey(SearchKey.SPEED_MAX);
-        listCriteria.setValue(String.valueOf(maximumSpeed));
-        listCriterias.add(listCriteria);
-        listCriteria = new ListCriteria();
-        listCriteria.setKey(SearchKey.SPEED_MIN);
-        listCriteria.setValue(String.valueOf(minimumSpeed));
-        listCriterias.add(listCriteria);
-        return listCriterias;
-    }
-
     @Override
     public FilterDTO convertToDTO() {
         return VmsPositionFilterMapper.INSTANCE.vmsPositionFilterToVmsPositionFilterDTO(this);

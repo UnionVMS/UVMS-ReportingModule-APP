@@ -1,9 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.schema.movement.search.v1.*;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
@@ -30,6 +27,8 @@ import java.util.Set;
 public class FilterProcessor {
 
     private final List<ListCriteria> movementListCriteria = new ArrayList<>();
+    private final List<RangeCriteria> rangeCriteria = new ArrayList<>();
+
     private final List<ListCriteria> connectIdMovements = new ArrayList<>();
     private final List<VesselListCriteriaPair> vesselListCriteriaPairs = new ArrayList<>();
     private final List<VesselGroup> vesselGroupList = new ArrayList<>();
@@ -90,13 +89,13 @@ public class FilterProcessor {
 
         switch(positionSelector.getSelector()){
             case all:
-                movementListCriteria.addAll(processAll(commonFilter));
+                rangeCriteria.addAll(processAll(commonFilter));
                 break;
             case last:
                 Position position = positionSelector.getPosition();
                 switch(position){
                     case hours:
-                        movementListCriteria.addAll(processLastHours(commonFilter));
+                        rangeCriteria.addAll(processLastHours(commonFilter));
                         break;
                     case positions:
                         movementListCriteria.addAll(processLastPositions(commonFilter));
@@ -116,29 +115,31 @@ public class FilterProcessor {
         throw new NotImplementedException("Not implemented in Movement API");
     }
 
-    private List<ListCriteria> processLastHours(final CommonFilter dateTimeFilter) {
+    private List<RangeCriteria> processLastHours(final CommonFilter dateTimeFilter) {
         Float hours = dateTimeFilter.getPositionSelector().getValue();
         DateTime currentDate = nowUTC();
         Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
-        List<ListCriteria> listCriterias = new ArrayList<>();
-        add(DateUtils.dateToString(toDate), listCriterias, SearchKey.FROM_DATE);
-        add(DateUtils.dateToString(currentDate.toDate()), listCriterias, SearchKey.TO_DATE);
-        return listCriterias;
+        List<RangeCriteria> rangeCriterias = new ArrayList<>();
+        addRangeCriteria(DateUtils.dateToString(toDate),
+                DateUtils.dateToString(currentDate.toDate()), rangeCriterias, RangeKeyType.DATE);
+        return rangeCriterias;
     }
 
-    private List<ListCriteria> processAll(final CommonFilter dateTimeFilter) {
-        List<ListCriteria> listCriterias = new ArrayList<>();
-        add(DateUtils.dateToString(dateTimeFilter.getStartDate()), listCriterias, SearchKey.FROM_DATE);
-        add(DateUtils.dateToString(dateTimeFilter.getEndDate()), listCriterias, SearchKey.TO_DATE);
-        return listCriterias;
+    private List<RangeCriteria> processAll(final CommonFilter dateTimeFilter) {
+        List<RangeCriteria> rangeCriteria = new ArrayList<>();
+        addRangeCriteria(DateUtils.dateToString(dateTimeFilter.getStartDate()),
+                DateUtils.dateToString(dateTimeFilter.getEndDate()), rangeCriteria, RangeKeyType.DATE);
+        return rangeCriteria;
     }
 
-    private void add(final Object object, final List<ListCriteria> criteriaList, final SearchKey key) {
-        ListCriteria criteria = new ListCriteria();
+    private void addRangeCriteria(final String from, final String to, final List<RangeCriteria> rangeCriteria, final RangeKeyType key) {
+        RangeCriteria criteria = new RangeCriteria();
         criteria.setKey(key);
-        criteria.setValue(String.valueOf(object));
-        criteriaList.add(criteria);
+        criteria.setFrom(from);
+        criteria.setTo(to);
+        rangeCriteria.add(criteria);
     }
+
     // UT
     protected DateTime nowUTC() {
         return DateUtils.nowUTC();
@@ -148,6 +149,7 @@ public class FilterProcessor {
         MovementQuery movementQuery = new MovementQuery();
         movementQuery.getMovementSearchCriteria().addAll(movementListCriteria);
         movementQuery.getMovementSearchCriteria().addAll(connectIdMovements);
+        movementQuery.getMovementRangeSearchCriteria().addAll(rangeCriteria);
         ListPagination pagination = new ListPagination();
         pagination.setListSize(new BigInteger("1000"));
         pagination.setPage(new BigInteger("1000"));

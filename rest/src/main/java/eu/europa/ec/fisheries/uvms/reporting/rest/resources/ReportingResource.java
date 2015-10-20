@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
+import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -12,6 +13,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -282,11 +284,10 @@ public class ReportingResource extends UnionVMSResource {
             jsonNodes = vmsDto.toObjectNode();
             return createSuccessResponse(jsonNodes);
 
-        } catch (ReportingServiceException e) {
+        } catch (ReportingServiceException | MessageException | VesselModelMapperException e) {
             LOG.error("Report execution failed.", e);
             return createErrorResponse();
         }
-
     }
 
 }
