@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Entity
 @DiscriminatorValue("DATETIME")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"startDate", "endDate"})
 public class CommonFilter extends Filter {
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,6 +52,12 @@ public class CommonFilter extends Filter {
         setEndDate(incoming.getEndDate());
         setStartDate(incoming.getStartDate());
     }
+
+    @Override
+    public Object getUniqKey() {
+        return getId();
+    }
+
     public Date getStartDate() {
         return startDate;
     }

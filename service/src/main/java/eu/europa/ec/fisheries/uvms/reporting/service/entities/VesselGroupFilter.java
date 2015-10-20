@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("VGROUP")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"guid", "name", "userName"})
 public class VesselGroupFilter extends Filter {
 
     @NotNull
@@ -47,6 +47,11 @@ public class VesselGroupFilter extends Filter {
         setUserName(incoming.getUserName());
         setGuid(incoming.getGuid());
         setName(incoming.getName());
+    }
+
+    @Override
+    public Object getUniqKey() {
+        return hashCode();
     }
 
     public String getName() {

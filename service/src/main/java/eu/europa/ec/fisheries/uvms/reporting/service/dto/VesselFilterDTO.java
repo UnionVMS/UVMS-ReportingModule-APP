@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"guid", "name"})
 public class VesselFilterDTO extends FilterDTO {
 
     public static final String NAME = "name";

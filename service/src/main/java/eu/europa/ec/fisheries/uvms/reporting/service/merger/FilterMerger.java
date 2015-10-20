@@ -24,7 +24,7 @@ public class FilterMerger extends Merger<FilterDTO, Filter> {
 
     @Override
     protected Object getUniqKey(final Filter item) throws ServiceException {
-        return item.getId();
+        return item.getUniqKey();
     }
 
     @Override

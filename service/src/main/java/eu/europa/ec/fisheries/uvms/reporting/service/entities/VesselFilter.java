@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @DiscriminatorValue("VESSEL")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"guid", "name"})
 public class VesselFilter extends Filter {
 
     @NotNull
@@ -44,6 +44,11 @@ public class VesselFilter extends Filter {
         VesselFilter incoming = (VesselFilter) filter;
         setGuid(incoming.getGuid());
         setName(incoming.getName());
+    }
+
+    @Override
+    public Object getUniqKey() {
+        return hashCode();
     }
 
     public String getGuid() {

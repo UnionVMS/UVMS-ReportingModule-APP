@@ -76,6 +76,11 @@ public class VmsPositionFilter extends Filter  {
         setMovementType(incoming.getMovementType());
     }
 
+    @Override
+    public Object getUniqKey() {
+        return getId();
+    }
+
     public Float getMinimumSpeed() {
         return minimumSpeed;
     }

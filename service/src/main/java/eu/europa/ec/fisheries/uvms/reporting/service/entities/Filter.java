@@ -14,7 +14,7 @@ import java.io.Serializable;
         @NamedQuery(name = Filter.LIST_BY_REPORT_ID, query = "SELECT f FROM Filter f WHERE report.id = :reportId"),
         @NamedQuery(name = Filter.DELETE_BY_ID, query = "DELETE FROM Filter WHERE id = :id")
 })
-@EqualsAndHashCode(exclude = {"report"})
+@EqualsAndHashCode(of = {"id"})
 public abstract class Filter implements Serializable {
 
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
@@ -70,4 +70,5 @@ public abstract class Filter implements Serializable {
     }
 
 
+    public abstract Object getUniqKey();
 }

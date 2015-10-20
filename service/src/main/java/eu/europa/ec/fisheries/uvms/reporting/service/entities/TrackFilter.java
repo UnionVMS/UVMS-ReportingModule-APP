@@ -58,6 +58,11 @@ public class TrackFilter extends Filter {
         setMinTime(incoming.getMinTime());
     }
 
+    @Override
+    public Object getUniqKey() {
+        return getId();
+    }
+
     public Float getMaxTime() {
         return maxTime;
     }

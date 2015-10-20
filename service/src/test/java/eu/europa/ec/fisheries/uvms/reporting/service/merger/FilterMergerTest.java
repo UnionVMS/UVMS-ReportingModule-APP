@@ -22,6 +22,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
+import org.unitils.mock.MockUnitils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,9 +34,11 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.VesselFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter.VesselFilterBuilder;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.unitils.mock.MockUnitils.*;
 
-@Ignore
 public class FilterMergerTest extends UnitilsJUnit4 {
 
     @PersistenceContext
@@ -62,11 +65,11 @@ public class FilterMergerTest extends UnitilsJUnit4 {
 
         vessel1 = VesselFilterDTOBuilder().id(47L).guid("guid1").name("vessel1").build();
 
-        vgroup2 = VesselGroupFilterDTOBuilder().id(48L).guid("2").userName("ddd").build();
+        vgroup2 = VesselGroupFilterDTOBuilder().id(48L).guid("2").userName("ddd").name("name").build();
 
         vessel2 = VesselFilterDTOBuilder().id(49L).guid("gui4564").name("vessel2").build();
 
-        vgroup1 = VesselGroupFilterDTOBuilder().id(45L).guid("1").userName("ffsdfs").build();
+        vgroup1 = VesselGroupFilterDTOBuilder().id(45L).guid("1").userName("ffsdfs").name("name2").build();
 
         vms = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
                 .movementActivity(MovementActivityTypeType.ANC)
@@ -89,22 +92,19 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     public void testMergeVesselFilterUntouched(){
 
         Collection<FilterDTO> collection =  new ArrayList<>();
+
         collection.add(vessel1);
 
         List<Filter> existingFilters = new ArrayList<>();
-        VesselFilter existingFilter = VesselFilter.VesselFilterBuilder().id(47L).guid("guid1").name("vessel1").build();
+        VesselFilter existingFilter = VesselFilterBuilder().id(47L).guid("guid1").name("vessel1").build();
         existingFilters.add(existingFilter);
 
         filterDAOMock.returns(existingFilters).listByReportId(null);
 
         boolean updated = merger.merge(collection);
 
-        filterDAOMock.assertNotInvoked().updateEntity(existingFilter);
-        filterDAOMock.assertNotInvoked().deleteEntity(existingFilter, 47L);
-        filterDAOMock.assertNotInvoked().createEntity(existingFilter);
-        reportDAOMock.assertNotInvoked().updateEntity(null);
-        reportDAOMock.assertNotInvoked().deleteEntity(null, 47L);
-        reportDAOMock.assertNotInvoked().createEntity(null);
+        assertNoMoreInvocations();
+
         assertTrue(!updated);
 
     }
@@ -114,23 +114,26 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void testMergeVesselFilter(){
 
-        Collection<FilterDTO> collection =  new ArrayList<>();
-        collection.add(vessel1);
+        vessel1 = VesselFilterDTOBuilder().id(null).guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build();
+        vessel2 = VesselFilterDTOBuilder().id(null).guid("sf3da03a2-13c2-342e-v3ab-14c12469b7e").name("JEANNE").build();
+
+        Collection<FilterDTO> incoming =  new ArrayList<>();
+        incoming.add(vessel1);
+        incoming.add(vessel2);
 
         List<Filter> existingFilters = new ArrayList<>();
-        VesselFilter existingFilter = VesselFilter.VesselFilterBuilder().id(47L).guid("guid").name("vessel1").build();
+        VesselFilter existingFilter = VesselFilterBuilder().id(23L).guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build();
+
         existingFilters.add(existingFilter);
 
         filterDAOMock.returns(existingFilters).listByReportId(null);
 
-        boolean updated = merger.merge(collection);
+        boolean updated = merger.merge(incoming);
 
-        filterDAOMock.assertInvoked().updateEntity(existingFilter);
-        filterDAOMock.assertNotInvoked().deleteEntity(existingFilter, 47L);
-        filterDAOMock.assertNotInvoked().createEntity(existingFilter);
-        reportDAOMock.assertNotInvoked().updateEntity(null);
-        reportDAOMock.assertNotInvoked().deleteEntity(null, 47L);
-        reportDAOMock.assertNotInvoked().createEntity(null);
+        filterDAOMock.assertInvoked().deleteBy(existingFilter.getId());
+        filterDAOMock.assertInvoked().createEntity(null);
+        filterDAOMock.assertInvoked().createEntity(null);
+        assertNoMoreInvocations();
         assertTrue(updated);
 
     }
@@ -143,8 +146,8 @@ public class FilterMergerTest extends UnitilsJUnit4 {
         collection.add(vessel1);
 
         List<Filter> existingFilters = new ArrayList<>();
-        VesselFilter existingFilter = VesselFilter.VesselFilterBuilder().id(47L).guid("guid").name("vessel1").build();
-        VesselFilter existingFilter2 = VesselFilter.VesselFilterBuilder().id(49L).guid("dddd").name("vvvv").build();
+        VesselFilter existingFilter = VesselFilterBuilder().id(47L).guid("guid").name("vessel1").build();
+        VesselFilter existingFilter2 = VesselFilterBuilder().id(49L).guid("dddd").name("vvvv").build();
 
         existingFilters.add(existingFilter); // this one is an update
         existingFilters.add(existingFilter2); // this one has to go
@@ -153,12 +156,10 @@ public class FilterMergerTest extends UnitilsJUnit4 {
 
         boolean updated = merger.merge(collection);
 
-        filterDAOMock.assertInvoked().updateEntity(existingFilter);
-        filterDAOMock.assertInvoked().deleteEntity(existingFilter2, 49L);
-        filterDAOMock.assertNotInvoked().createEntity(existingFilter);
-        reportDAOMock.assertNotInvoked().updateEntity(null);
-        reportDAOMock.assertNotInvoked().deleteEntity(null, 47L);
-        reportDAOMock.assertNotInvoked().createEntity(null);
+        filterDAOMock.assertInvoked().createEntity(null);
+        filterDAOMock.assertInvoked().deleteBy(49L);
+        filterDAOMock.assertInvoked().deleteBy(47L);
+        assertNoMoreInvocations();
         assertTrue(updated);
     }
 
@@ -176,11 +177,9 @@ public class FilterMergerTest extends UnitilsJUnit4 {
 
         filterDAOMock.assertNotInvoked().updateEntity(null);
         filterDAOMock.assertNotInvoked().deleteEntity(null, null);
-        VesselFilter vesselFilter = VesselFilter.VesselFilterBuilder().build();
+        VesselFilter vesselFilter = VesselFilterBuilder().build();
         filterDAOMock.assertInvoked().createEntity(vesselFilter);
-        reportDAOMock.assertNotInvoked().updateEntity(null);
-        reportDAOMock.assertNotInvoked().deleteEntity(null, 47L);
-        reportDAOMock.assertNotInvoked().createEntity(null);
+        assertNoMoreInvocations();
         assertTrue(updated);
     }
 

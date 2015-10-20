@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@EqualsAndHashCode( of = {"type"})
+@EqualsAndHashCode( of = {"id"})
 public abstract class FilterDTO {
 
     public static final String ID = "id";

@@ -72,6 +72,11 @@ public class VmsSegmentFilter extends Filter {
         this.category = category;
     }
 
+    @Override
+    public Object getUniqKey() {
+        return getId();
+    }
+
     public Float getMinimumSpeed() {
         return minimumSpeed;
     }
