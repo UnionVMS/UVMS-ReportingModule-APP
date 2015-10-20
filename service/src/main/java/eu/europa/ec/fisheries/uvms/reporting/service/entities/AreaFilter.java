@@ -14,7 +14,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("areas")
-@EqualsAndHashCode(callSuper = true, of = {"areaType","areaId"})
+@EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
 public class AreaFilter extends Filter {
 
     @Column(name = "area_type")
@@ -60,11 +60,13 @@ public class AreaFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-
+        AreaFilter incoming = (AreaFilter) filter;
+        setAreaId(incoming.getAreaId());
+        setAreaType(incoming.getAreaType());
     }
 
     @Override
     public Object getUniqKey() {
-        return this.hashCode();
+        return hashCode();
     }
 }

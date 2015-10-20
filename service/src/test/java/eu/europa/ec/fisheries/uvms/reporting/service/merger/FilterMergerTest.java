@@ -5,15 +5,8 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -59,6 +52,7 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     private VesselGroupFilterDTO vgroup1;
     private VmsPositionFilterDTO vms;
     private CommonFilterDTO common;
+    private AreaFilterDTO area;
 
     @Before
     public void before(){
@@ -84,6 +78,8 @@ public class FilterMergerTest extends UnitilsJUnit4 {
                 .endDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
                 .startDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
                 .build();
+
+        area = AreaFilterDTO.AreaFilterDTOBuilder().areaId(20L).areaType("EEZ").build();
     }
 
 
@@ -159,6 +155,31 @@ public class FilterMergerTest extends UnitilsJUnit4 {
         filterDAOMock.assertInvoked().createEntity(null);
         filterDAOMock.assertInvoked().deleteBy(49L);
         filterDAOMock.assertInvoked().deleteBy(47L);
+        assertNoMoreInvocations();
+        assertTrue(updated);
+    }
+
+    @Test
+    @SneakyThrows
+    public void testMergeVesselFilterUpdateAndDeleteAreaFilters(){
+
+        Collection<FilterDTO> collection =  new ArrayList<>();
+        collection.add(area);
+
+        List<Filter> existingFilters = new ArrayList<>();
+        AreaFilter existingFilter = AreaFilter.AreaFilterBuilder().id(47L).areaId(10L).areaType("BBB").build();
+        AreaFilter existingFilter2 = AreaFilter.AreaFilterBuilder().id(48L).areaId(11L).areaType("CCC").build();
+
+        existingFilters.add(existingFilter); // this one is an update
+        existingFilters.add(existingFilter2); // this one has to go
+
+        filterDAOMock.returns(existingFilters).listByReportId(null);
+
+        boolean updated = merger.merge(collection);
+
+        filterDAOMock.assertInvoked().createEntity(null);
+        filterDAOMock.assertInvoked().deleteBy(47L);
+        filterDAOMock.assertInvoked().deleteBy(48L);
         assertNoMoreInvocations();
         assertTrue(updated);
     }

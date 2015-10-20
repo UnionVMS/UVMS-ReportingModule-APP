@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by georgige on 10/13/2015.
  */
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
 public class AreaFilterDTO extends FilterDTO {
 
     public static final String JSON_ATTR_AREA_TYPE = "areaType";
