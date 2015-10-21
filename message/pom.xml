@@ -84,5 +84,52 @@
             </plugin>
         </plugins>
     </build>
+
+	<profiles>
+		<profile>
+			<id>jmeter-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.lazerycode.jmeter</groupId>
+						<artifactId>jmeter-maven-plugin</artifactId>
+						<version>1.9.1</version>
+						<executions>
+							<execution>
+								<id>jmeter-test</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>jmeter</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.activemq</groupId>
+								<artifactId>activemq-all</artifactId>
+								<version>5.12.1</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+					<plugin>
+						<groupId>com.lazerycode.jmeter</groupId>
+						<artifactId>jmeter-analysis-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>analyze</goal>
+								</goals>
+								<configuration>
+									<source>${project.build.directory}/**/*.jtl</source>
+									<targetDirectory>${project.build.directory}/jmeter/analysis</targetDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
     
 </project>
