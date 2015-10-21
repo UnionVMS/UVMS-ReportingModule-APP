@@ -151,8 +151,8 @@ public class FilterProcessor {
         movementQuery.getMovementSearchCriteria().addAll(connectIdMovements);
         movementQuery.getMovementRangeSearchCriteria().addAll(rangeCriteria);
         ListPagination pagination = new ListPagination();
-        pagination.setListSize(new BigInteger("1000"));
-        pagination.setPage(new BigInteger("1000"));
+        pagination.setListSize(new BigInteger("10"));
+        pagination.setPage(new BigInteger("1"));
         movementQuery.setPagination(pagination);
         return movementQuery;
     }

@@ -34,9 +34,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.*;
 import org.geotools.feature.DefaultFeatureCollection;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
+import javax.ejb.*;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.transaction.Transactional;
@@ -49,29 +47,20 @@ import java.util.Set;
 @Local(value = VmsService.class)
 public class VmsServiceBean implements VmsService {
 
-    private static final int LIST_SIZE = 1000;
-
     @EJB
     private ReportRepository repository;
 
     @EJB
-    private VesselModuleSenderBean vesselSender;
+    private VesselServiceBean vessel;
 
     @EJB
-    private VesselModuleReceiverBean vesselReceiver;
-
-    @EJB
-    private MovementModuleSenderBean movementSender;
-
-    @EJB
-    private MovementModuleReceiverBean movementReceiver;
+    private MovementServiceBean movement;
 
     @PostConstruct
     public void init(){
     }
 
     @Override
-    @Transactional
     public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
 
         VmsDTO vmsDto = null;
@@ -90,7 +79,7 @@ public class VmsServiceBean implements VmsService {
 
                 Set<Vessel> vesselList = new HashSet<>();
                 if (processor.hasVessels()) {
-                    List<Vessel> vessels = getVessels(processor);
+                    List<Vessel> vessels = vessel.getVessels(processor);
                     if (vessels != null) {
                         vesselList.addAll(vessels);
                     }
@@ -106,41 +95,38 @@ public class VmsServiceBean implements VmsService {
 
                 ImmutableMap<String, Vessel> stringVesselMapByGuid = getStringVesselMapByGuid(vesselList);
 
-                List<MovementMapResponseType> movementMap = getMovementMapResponseTypes(processor);
+
+                List<MovementMapResponseType> movementMap = movement.getMovementMapResponseTypes(processor);
 
                 vmsDto = VmsDTO.getVmsDto(stringVesselMapByGuid, movementMap);
 
             }
 
-            reportByReportId.updateExecutionLog(username);
+            //reportByReportId.updateExecutionLog(username);
 
 
-        } catch (MessageException | VesselModelMapperException |ProcessorException | ModelMapperException | JMSException e) {
+        } catch (MessageException | VesselModelMapperException |ProcessorException e) {
             throw new ReportingServiceException("Error while processing reporting filters.", e);
         }
         return vmsDto;
     }
 
-    private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws MessageException, ModelMapperException, JMSException {
-        String movementMapByQueryRequest = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
-        String moduleMessage = movementSender.sendModuleMessage(movementMapByQueryRequest, movementReceiver.getDestination());
-        TextMessage response = movementReceiver.getMessage(moduleMessage, TextMessage.class);
-        return MovementModuleResponseMapper.mapToMovementMapResponse(response);
-    }
+
 
     private List<Vessel> getVesselGroupList(FilterProcessor processor) throws VesselModelMapperException, MessageException {
-        String vesselListModuleRequest = VesselModuleRequestMapper.createVesselListModuleRequest(processor.getVesselGroupList());
-        String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
-        TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
-        return VesselModuleResponseMapper.mapToVesselListFromResponse(response, moduleMessage);
+//        String vesselListModuleRequest = VesselModuleRequestMapper.createVesselListModuleRequest(processor.getVesselGroupList());
+//        String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
+//        TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
+//        return VesselModuleResponseMapper.mapToVesselListFromResponse(response, moduleMessage);
+        return null;
     }
-
-    private List<Vessel> getVessels(FilterProcessor processor) throws VesselModelMapperException, MessageException {
-        String vesselListModuleRequest = VesselModuleRequestMapper.createVesselListModuleRequest(processor.toVesselListQuery());
-        String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
-        TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
-        return VesselModuleResponseMapper.mapToVesselListFromResponse(response, moduleMessage);
-    }
+//
+//    private List<Vessel> getVessels(FilterProcessor processor) throws VesselModelMapperException, MessageException {
+//        String vesselListModuleRequest = VesselModuleRequestMapper.createVesselListModuleRequest(processor.toVesselListQuery());
+//        String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
+//        TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
+//        return VesselModuleResponseMapper.mapToVesselListFromResponse(response, moduleMessage);
+//    }
 
     private ImmutableMap<String, Vessel> getStringVesselMapByGuid(Set<Vessel> vesselList) {
         return Maps.uniqueIndex(vesselList, new Function<Vessel, String>() {
