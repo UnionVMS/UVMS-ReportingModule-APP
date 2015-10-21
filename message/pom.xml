@@ -86,6 +86,8 @@
     </build>
 
 	<profiles>
+		<!-- Run the test only : mvn clean jmeter:jmeter -P jmeter-test -->
+		<!-- Run with analysis report : mvn clean verify -P jmeter-test -->
 		<profile>
 			<id>jmeter-test</id>
 			<build>
