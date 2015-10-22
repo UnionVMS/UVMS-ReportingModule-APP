@@ -18,17 +18,17 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class VmsTrackFilter extends Filter {
 
-    @Column(name = "MAX_TIME")
-    private Float maxTime;
-
     @Column(name = "MIN_TIME")
-    private Float minTime;
+    private Float minTime = 0F;;
+
+    @Column(name = "MAX_TIME")
+    private Float maxTime = 5000F;;
 
     @Column(name = "MIN_DURATION")
-    private Float minDuration;
+    private Float minDuration = 0F;
 
     @Column(name = "MAX_DURATION")
-    private Float maxDuration;
+    private Float maxDuration = 5000F;
 
     public VmsTrackFilter() {
         super(FilterType.vmstrack);
