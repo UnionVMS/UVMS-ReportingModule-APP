@@ -1,10 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
@@ -17,6 +12,13 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 import lombok.Builder;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 /**
  * This class is responsible reading the report filters and transform them
@@ -31,14 +33,23 @@ public class FilterProcessor {
 
     @Builder(builderMethodName = "FilterProcessorBuilder")
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
-    	if (filters != null && !filters.isEmpty()) {
-    		throw new ProcessorException("Unable to process empty filter list or filter list is null.");
-    	}
-        for (Filter filter : filters) {          
-            vesselListCriteriaPairs.addAll(filter.vesselCriteria());
-            vesselGroupList.addAll(filter.vesselGroupCriteria());
-            rangeCriteria.addAll(filter.movementRangeCriteria());
-        	movementListCriteria.addAll(filter.movementCriteria());
+        validate(filters);
+
+        for (Filter filter : filters) {
+            addCriteria(filter);
+        }
+    }
+
+    private void addCriteria(Filter filter) {
+        vesselListCriteriaPairs.addAll(filter.vesselCriteria());
+        vesselGroupList.addAll(filter.vesselGroupCriteria());
+        rangeCriteria.addAll(filter.movementRangeCriteria());
+        movementListCriteria.addAll(filter.movementCriteria());
+    }
+
+    private void validate(Set<Filter> filters) throws ProcessorException {
+        if (isNotEmpty(filters)) {
+            throw new ProcessorException("Unable to process empty filter list or filter list is null.");
         }
     }
 
@@ -54,22 +65,28 @@ public class FilterProcessor {
     }
 
     public VesselListQuery toVesselListQuery() {
+        VesselListQuery query = new VesselListQuery();
 
-        VesselListQuery query = null;
-
-        if (vesselListCriteriaPairs.size() > 0){
-            query = new VesselListQuery();
-            VesselListCriteria vesselListCriteria = new VesselListCriteria();
-            vesselListCriteria.setIsDynamic(false);
-            vesselListCriteria.getCriterias().addAll(vesselListCriteriaPairs);
-            query.setVesselSearchCriteria(vesselListCriteria);
-            VesselListPagination pagination = new VesselListPagination();
-            pagination.setPage(BigInteger.valueOf(1));
-            pagination.setListSize(new BigInteger("1000"));
-            query.setPagination(pagination);
+        if (isNotEmpty(vesselListCriteriaPairs)) {
+            query.setVesselSearchCriteria(createListCriteria());
+            query.setPagination(createPagination());
         }
 
         return query;
+    }
+
+    private VesselListPagination createPagination() {
+        VesselListPagination pagination = new VesselListPagination();
+        pagination.setPage(BigInteger.valueOf(1));
+        pagination.setListSize(new BigInteger("1000"));
+        return pagination;
+    }
+
+    private VesselListCriteria createListCriteria() {
+        VesselListCriteria vesselListCriteria = new VesselListCriteria();
+        vesselListCriteria.setIsDynamic(false);
+        vesselListCriteria.getCriterias().addAll(vesselListCriteriaPairs);
+        return vesselListCriteria;
     }
 
     public List<VesselGroup> getVesselGroupList() {

@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtendedVesselMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
@@ -12,7 +13,6 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 
 import javax.ejb.*;
 import javax.jms.TextMessage;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,19 +31,15 @@ public class VesselServiceBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public ImmutableMap<String, Vessel> getVesselMapByGuid(final FilterProcessor processor) throws ReportingServiceException {
-
-        Set<Vessel> vesselList = new HashSet<>();
+        Set<Vessel> vesselList = Sets.newHashSet();
 
         try {
-
             if (processor.hasVessels()) {
                 String vesselListModuleRequest = ExtendedVesselMessageMapper.createVesselListModuleRequest(processor.toVesselListQuery());
                 String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
                 TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
-                List<Vessel> vessels =  ExtendedVesselMessageMapper.mapToVesselListFromResponse(response, moduleMessage);
-                if (vessels != null) {
-                    vesselList.addAll(vessels);
-                }
+                List<Vessel> vessels = ExtendedVesselMessageMapper.mapToVesselListFromResponse(response, moduleMessage);
+                vesselList.addAll(vessels);
             }
 
             if (processor.hasVesselGroups()) {
@@ -51,12 +47,8 @@ public class VesselServiceBean {
                 String moduleMessage = vesselSender.sendModuleMessage(vesselListModuleRequest, vesselReceiver.getDestination());
                 TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
                 List<Vessel> groupList = ExtendedVesselMessageMapper.mapToVesselListFromResponse(response, moduleMessage);
-
-                if (groupList != null) {
-                    vesselList.addAll(groupList);
-                }
+                vesselList.addAll(groupList);
             }
-
         } catch (MessageException | VesselModelMapperException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM VESSEL", e);
         }
