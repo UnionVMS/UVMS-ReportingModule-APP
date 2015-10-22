@@ -26,7 +26,7 @@ public class ExtendedMovementMessageMapperTest {
 
     @Test
     @SneakyThrows
-    public void testMapToGetMovementMapByQueryRequest() throws ModelMarshallException {
+    public void testMapToGetMovementMapByQueryRequest() {
 
         URL url = Resources.getResource("ExtendedMovementMessageMapperTests.getMovementMapByQueryRequest.xml");
         String expected = Resources.toString(url, Charsets.UTF_8).replaceAll("\r", "");
@@ -35,27 +35,14 @@ public class ExtendedMovementMessageMapperTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMapToGetMovementMapByQueryRequestException() throws ModelMarshallException {
-//        mapper.mapToGetMovementMapByQueryRequest(null);
-    }
-
-    @Test
-    public void testMapToMovementMapResponse() throws ModelMapperException, JMSException {
-
-        final List<MovementMapResponseType> list = new ArrayList<>();
-        TextMessage mock = mock(TextMessage.class);
-
-//        mapper = new ExtendedMovementMessageMapper(){
-//            public List<MovementMapResponseType> getMapToMovementMapResponse(TextMessage message) throws ModelMapperException, JMSException {
-//                return list;}
-//        };
-//
-//        assertEquals(list, mapper.mapToMovementMapResponse(mock));
-
+    @SneakyThrows
+    public void testMapToGetMovementMapByQueryRequestException() {
+        ExtendedMovementMessageMapper.mapToGetMovementMapByQueryRequest(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMapToMovementMapResponseException() throws JMSException, ModelMapperException {
-//        mapper.mapToMovementMapResponse(null);
+    @SneakyThrows
+    public void testMapToMovementMapResponseException() {
+        ExtendedMovementMessageMapper.mapToMovementMapResponse(null);
     }
 }
