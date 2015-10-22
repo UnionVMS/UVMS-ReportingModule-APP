@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtendedVesselMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
@@ -29,7 +30,7 @@ public class VesselServiceBean {
     private VesselModuleReceiverBean vesselReceiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public com.google.common.collect.ImmutableMap<String, Vessel> getVesselMapByGuid(final FilterProcessor processor) throws ReportingServiceException {
+    public ImmutableMap<String, Vessel> getVesselMapByGuid(final FilterProcessor processor) throws ReportingServiceException {
 
         Set<Vessel> vesselList = new HashSet<>();
 
