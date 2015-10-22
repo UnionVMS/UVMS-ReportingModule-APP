@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 /**
  * This class is responsible reading the report filters and transform them
@@ -48,7 +49,7 @@ public class FilterProcessor {
     }
 
     private void validate(Set<Filter> filters) throws ProcessorException {
-        if (isNotEmpty(filters)) {
+        if (isEmpty(filters)) {
             throw new ProcessorException("Unable to process empty filter list or filter list is null.");
         }
     }
