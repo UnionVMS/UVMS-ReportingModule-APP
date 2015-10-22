@@ -4,12 +4,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity

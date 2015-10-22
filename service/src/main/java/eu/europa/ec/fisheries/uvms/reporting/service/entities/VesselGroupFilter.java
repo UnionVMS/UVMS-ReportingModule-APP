@@ -2,12 +2,15 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
+import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 
 @Entity
 @DiscriminatorValue("VGROUP")
@@ -47,6 +50,16 @@ public class VesselGroupFilter extends Filter {
         setUserName(incoming.getUserName());
         setGuid(incoming.getGuid());
         setName(incoming.getName());
+    }
+
+    @Override
+    public VesselGroup vesselGroupCriteria(){
+        VesselGroup vesselGroup = new VesselGroup();
+        if (StringUtils.isNotBlank(getGuid())) {
+            vesselGroup.setId(new BigInteger(getGuid()));
+            vesselGroup.setDynamic(false);
+        }
+        return vesselGroup;
     }
 
     @Override

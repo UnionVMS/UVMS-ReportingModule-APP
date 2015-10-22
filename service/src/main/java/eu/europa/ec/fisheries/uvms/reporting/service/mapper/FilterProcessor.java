@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
+import lombok.Builder;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -33,17 +34,19 @@ public class FilterProcessor {
     private final List<VesselListCriteriaPair> vesselListCriteriaPairs = new ArrayList<>();
     private final List<VesselGroup> vesselGroupList = new ArrayList<>();
 
-    public FilterProcessor init(Set<Filter> filters) throws ProcessorException {
+    @Builder(builderMethodName = "FilterProcessorBuilder")
+    public FilterProcessor(Set<Filter> filters) throws ProcessorException {
         for (Object next : safe(filters)) {
             Filter filter = (Filter) next;
             switch (filter.getType()) {
 
+                // FIXME trying to generify this
                 case vessel:
-                    addToVesselCriteria(filter);
-                    addConnectIdToMovementCriteria(filter);
+                    vesselListCriteriaPairs.add(filter.vesselCriteria());
+                    connectIdMovements.add(filter.movementCriteria());
                     break;
                 case vgroup:
-                    addToVesselGroupCriteria(filter);
+                    vesselGroupList.add(filter.vesselGroupCriteria());
                     break;
                 case common:
                     addToMovementCriteria(filter);
@@ -54,7 +57,6 @@ public class FilterProcessor {
                     break;
             }
         }
-        return this;
     }
 
     private Set safe( Set other ) throws ProcessorException {
@@ -62,24 +64,6 @@ public class FilterProcessor {
             throw new ProcessorException("Unable to process empty filter list or filter list is null.");
         }
         return other;
-    }
-
-    private void addConnectIdToMovementCriteria(Filter next) {
-        VesselFilter filter = (VesselFilter) next;
-        ListCriteria listCriteria = new ListCriteria();
-        listCriteria.setKey(SearchKey.CONNECT_ID);
-        listCriteria.setValue(filter.getGuid());
-        connectIdMovements.add(listCriteria);
-    }
-
-    private void addToVesselGroupCriteria(final Filter filter) {
-        VesselGroup vesselGroup = new VesselGroup();
-        VesselGroupFilter vesselGroupFilter = (VesselGroupFilter) filter;
-        if (StringUtils.isNotBlank(vesselGroupFilter.getGuid())) {
-            vesselGroup.setId(new BigInteger(vesselGroupFilter.getGuid()));
-            vesselGroup.setDynamic(false);
-            vesselGroupList.add(vesselGroup);
-        }
     }
 
     private void addToMovementCriteria(final Filter filter) {
@@ -155,16 +139,6 @@ public class FilterProcessor {
         pagination.setPage(new BigInteger("1"));
         movementQuery.setPagination(pagination);
         return movementQuery;
-    }
-
-    private void addToVesselCriteria(final Filter filter){
-        VesselFilter vesselFilter = (VesselFilter) filter;
-        if(StringUtils.isNotBlank(vesselFilter.getGuid())){
-            VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
-            criteriaPair.setKey(ConfigSearchField.GUID);
-            criteriaPair.setValue(vesselFilter.getGuid());
-            vesselListCriteriaPairs.add(criteriaPair);
-        }
     }
 
     public VesselListQuery toVesselListQuery() {

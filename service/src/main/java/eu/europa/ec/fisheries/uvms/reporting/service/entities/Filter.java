@@ -1,6 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
@@ -69,6 +73,21 @@ public abstract class Filter implements Serializable {
         this.reportId = reportId;
     }
 
-
     public abstract Object getUniqKey();
+
+    //Hook me
+    public VesselListCriteriaPair vesselCriteria() {
+        return new VesselListCriteriaPair();
+    }
+
+    //Hook me
+    public ListCriteria movementCriteria() {
+        return new ListCriteria();
+    }
+
+    //Hook me
+    public VesselGroup vesselGroupCriteria(){
+        return new VesselGroup();
+    }
+
 }

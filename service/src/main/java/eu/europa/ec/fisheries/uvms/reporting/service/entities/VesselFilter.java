@@ -1,5 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
@@ -49,7 +51,23 @@ public class VesselFilter extends Filter {
     @Override
     public Object getUniqKey() {
         return hashCode();
-    } // FIXME better to use GUID as unique key but test first
+    }
+
+    @Override
+    public VesselListCriteriaPair vesselCriteria() {
+        VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
+        criteriaPair.setKey(ConfigSearchField.GUID);
+        criteriaPair.setValue(guid);
+        return criteriaPair;
+    }
+
+    @Override
+    public ListCriteria movementCriteria() {
+        ListCriteria listCriteria = new ListCriteria();
+        listCriteria.setKey(SearchKey.CONNECT_ID);
+        listCriteria.setValue(getGuid());
+        return listCriteria;
+    }
 
     public String getGuid() {
         return guid;
@@ -65,13 +83,6 @@ public class VesselFilter extends Filter {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public VesselListCriteriaPair vesselListCriteriaPair(){
-        VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
-        criteriaPair.setKey(ConfigSearchField.GUID);
-        criteriaPair.setValue(guid);
-        return criteriaPair;
     }
 
 }
