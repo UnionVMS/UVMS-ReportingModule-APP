@@ -6,6 +6,8 @@ import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtendedMovementMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtendedVesselMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
@@ -40,10 +42,10 @@ public class MovementServiceBean {
 
         try {
 
-            String movementMapByQueryRequest = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
+            String movementMapByQueryRequest = ExtendedMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
             String moduleMessage = movementSender.sendModuleMessage(movementMapByQueryRequest, movementReceiver.getDestination());
             TextMessage response = movementReceiver.getMessage(moduleMessage, TextMessage.class);
-            return MovementModuleResponseMapper.mapToMovementMapResponse(response);
+            return ExtendedMovementMessageMapper.mapToMovementMapResponse(response);
 
         } catch (ModelMapperException | JMSException | MessageException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM SPATIAL");

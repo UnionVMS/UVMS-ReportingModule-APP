@@ -36,21 +36,6 @@ public class ExtendedVesselMessageMapper extends VesselModuleRequestMapper {
         if (correlationId == null){
             throw new IllegalArgumentException("CorrelationId can not be null.");
         }
-        return getMapToVesselListFromResponse(textMessage, correlationId);
-    }
-
-    public static String mapToGetVesselListModuleRequestByVesselGroups(final List<VesselGroup> vesselGroups) throws VesselModelMapperException {
-        if (vesselGroups == null){
-            throw new IllegalArgumentException("TextMessage can not be null.");
-        }
-        return getMapToGetVesselListModuleRequestByVesselGroups(vesselGroups);
-    }
-
-    private static String getMapToGetVesselListModuleRequestByVesselGroups(List<VesselGroup> vesselGroups) throws VesselModelMapperException {
-        return VesselModuleRequestMapper.createVesselListModuleRequest(vesselGroups);
-    }
-
-    private static List<Vessel> getMapToVesselListFromResponse(final TextMessage textMessage, final String correlationId) throws VesselModelMapperException {
         return VesselModuleResponseMapper.mapToVesselListFromResponse(textMessage, correlationId);
     }
 
