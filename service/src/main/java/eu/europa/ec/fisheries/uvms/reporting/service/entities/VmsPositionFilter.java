@@ -1,29 +1,35 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
 @EqualsAndHashCode(callSuper = true)
-public class VmsPositionFilter extends Filter  {
+public class VmsPositionFilter extends Filter {
 
     @Column(name = "MIN_SPEED")
-    private Float minimumSpeed;
+    private Float minimumSpeed = 0.0F;
 
     @Column(name = "MAX_SPEED")
-    private Float maximumSpeed;
+    private Float maximumSpeed = 1000F;
 
     @Column(name = "MOV_TYPE")
     private MovementTypeType movementType;
@@ -61,6 +67,28 @@ public class VmsPositionFilter extends Filter  {
         setMinimumSpeed(incoming.getMinimumSpeed());
         setMovementActivity(incoming.getMovementActivity());
         setMovementType(incoming.getMovementType());
+    }
+    
+    @Override
+    public List<ListCriteria> movementCriteria() {    	
+    	ListCriteria movementType = new ListCriteria();
+    	movementType.setKey(SearchKey.MOVEMENT_TYPE);
+    	movementType.setValue(getMovementType().name());
+    	
+    	ListCriteria momementActivity = new ListCriteria();
+    	momementActivity.setKey(SearchKey.ACTIVITY_TYPE);
+    	momementActivity.setValue(getMovementActivity().name());
+    	
+    	return Arrays.asList(movementType, momementActivity);
+    }
+
+    @Override
+    public List<RangeCriteria> movementRangeCriteria(){    	
+    	RangeCriteria movementSpeed = new RangeCriteria();
+    	movementSpeed.setKey(RangeKeyType.MOVEMENT_SPEED);
+    	movementSpeed.setFrom(Float.toString(getMinimumSpeed()));
+    	movementSpeed.setTo(Float.toString(getMaximumSpeed()));
+    	return Arrays.asList(movementSpeed);
     }
 
     @Override

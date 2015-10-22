@@ -1,9 +1,17 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -15,16 +23,16 @@ import javax.persistence.Entity;
 public class VmsSegmentFilter extends Filter {
 
     @Column(name = "MIN_SPEED")
-    private Float minimumSpeed;
+    private Float minimumSpeed = 0.0F;
 
     @Column(name = "MAX_SPEED")
-    private Float maximumSpeed;
+    private Float maximumSpeed = 1000F;
 
     @Column(name = "MIN_DURATION")
-    private Float minDuration;
+    private Float minDuration = 0F;
 
     @Column(name = "MAX_DURATION")
-    private Float maxDuration;
+    private Float maxDuration = 1000F;
 
     @Column(name = "SEG_CATEGORY")
     private String category;
@@ -62,6 +70,29 @@ public class VmsSegmentFilter extends Filter {
         setMinDuration(incoming.getMinDuration());
         setMaxDuration(incoming.getMaxDuration());
         setCategory(incoming.getCategory());
+    }
+    
+    @Override
+    public List<ListCriteria> movementCriteria() {
+    	ListCriteria segmentCatagory = new ListCriteria();
+    	segmentCatagory.setKey(SearchKey.CATEGORY);
+    	segmentCatagory.setValue(getCategory());
+    	return Arrays.asList(segmentCatagory);
+    }
+
+    @Override
+    public List<RangeCriteria> movementRangeCriteria(){
+    	RangeCriteria segmentSpeed = new RangeCriteria();
+    	segmentSpeed.setKey(RangeKeyType.SEGMENT_SPEED);
+    	segmentSpeed.setFrom(Float.toString(getMinimumSpeed()));
+    	segmentSpeed.setTo(Float.toString(getMaximumSpeed()));
+    	
+    	RangeCriteria segmentDuration = new RangeCriteria();
+    	segmentDuration.setKey(RangeKeyType.SEGMENT_DURATION);
+    	segmentDuration.setFrom(Float.toString(getMinDuration()));
+    	segmentDuration.setTo(Float.toString(getMaxDuration()));
+    	
+    	return Arrays.asList(segmentSpeed, segmentDuration);
     }
 
     public String getCategory() {

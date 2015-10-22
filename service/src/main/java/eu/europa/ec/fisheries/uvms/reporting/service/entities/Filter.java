@@ -93,8 +93,4 @@ public abstract class Filter implements Serializable {
     public List<RangeCriteria> movementRangeCriteria(){
         return Collections.emptyList();
     }
-
-    public List<ListCriteria> movementListCriteria() {
-        return Collections.emptyList();
-    }
 }

@@ -1,25 +1,26 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
-import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 import lombok.Builder;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 /**
  * This class is responsible reading the report filters and transform them
@@ -38,8 +39,14 @@ public class FilterProcessor {
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
         for (Object next : safe(filters)) {
             Filter filter = (Filter) next;
-            switch (filter.getType()) {
-
+            
+            vesselListCriteriaPairs.addAll(filter.vesselCriteria());
+            connectIdMovements.addAll(filter.movementCriteria());
+            vesselGroupList.addAll(filter.vesselGroupCriteria());
+            rangeCriteria.addAll(filter.movementRangeCriteria());
+        	movementListCriteria.addAll(filter.movementCriteria());
+        	
+/*            switch (filter.getType()) {
                 case vessel:
                     vesselListCriteriaPairs.addAll(filter.vesselCriteria());
                     connectIdMovements.addAll(filter.movementCriteria());
@@ -51,14 +58,19 @@ public class FilterProcessor {
                     rangeCriteria.addAll(filter.movementRangeCriteria());
                     break;
                 case vmspos:
+                	rangeCriteria.addAll(filter.movementRangeCriteria());
+                	movementListCriteria.addAll(filter.movementCriteria());
                     break;
+                case vmsseg:
+                	rangeCriteria.addAll(filter.movementRangeCriteria());
+                	movementListCriteria.addAll(filter.movementCriteria());
                 case vmstrack:
-                    movementListCriteria.addAll(filter.movementListCriteria());
+                    movementListCriteria.addAll(filter.movementCriteria());
                     rangeCriteria.addAll(filter.movementRangeCriteria());
                     break;
                 default:
                     break;
-            }
+            }*/
         }
     }
 
@@ -67,6 +79,47 @@ public class FilterProcessor {
             throw new ProcessorException("Unable to process empty filter list or filter list is null.");
         }
         return other;
+    }
+    
+    //Add VMS position criteria
+    private void addToVMSPositionCriteria(Filter filter) {
+    	VmsPositionFilter vmsPositionFilter = (VmsPositionFilter)filter;
+    	RangeCriteria movementSpeed = new RangeCriteria();
+    	movementSpeed.setKey(RangeKeyType.MOVEMENT_SPEED);
+    	movementSpeed.setFrom(Float.toString(vmsPositionFilter.getMinimumSpeed()));
+    	movementSpeed.setTo(Float.toString(vmsPositionFilter.getMaximumSpeed()));
+    	rangeCriteria.add(movementSpeed);
+    	
+    	ListCriteria movementType = new ListCriteria();
+    	movementType.setKey(SearchKey.MOVEMENT_TYPE);
+    	movementType.setValue(vmsPositionFilter.getMovementType().name());
+    	
+    	ListCriteria momementActivity = new ListCriteria();
+    	momementActivity.setKey(SearchKey.ACTIVITY_TYPE);
+    	momementActivity.setValue(vmsPositionFilter.getMovementActivity().name());
+    	
+    	movementListCriteria.add(movementType);
+    	movementListCriteria.add(momementActivity);
+    }
+    
+    //Add VMS segment criteria
+    private void addVMSSegmentCriteria(Filter filter) {
+    	VmsSegmentFilter vmsSegmentFilter = (VmsSegmentFilter)filter;
+    	RangeCriteria segmentSpeed = new RangeCriteria();
+    	segmentSpeed.setKey(RangeKeyType.SEGMENT_SPEED);
+    	segmentSpeed.setFrom(Float.toString(vmsSegmentFilter.getMinimumSpeed()));
+    	segmentSpeed.setTo(Float.toString(vmsSegmentFilter.getMaximumSpeed()));
+    	rangeCriteria.add(segmentSpeed);
+    	
+    	RangeCriteria segmentDuration = new RangeCriteria();
+    	segmentDuration.setKey(RangeKeyType.SEGMENT_DURATION);
+    	segmentDuration.setFrom(Float.toString(vmsSegmentFilter.getMinDuration()));
+    	segmentDuration.setTo(Float.toString(vmsSegmentFilter.getMaxDuration()));
+    	rangeCriteria.add(segmentDuration);
+    	
+    	ListCriteria segmentCatagory = new ListCriteria();
+    	segmentCatagory.setKey(SearchKey.CATEGORY);
+    	segmentCatagory.setValue(vmsSegmentFilter.getCategory());
     }
 
     public MovementQuery toMovementQuery() {

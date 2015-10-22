@@ -62,7 +62,7 @@ public class TrackFilter extends Filter {
     }
 
     @Override
-    public List<ListCriteria> movementListCriteria() {
+    public List<ListCriteria> movementCriteria() {
         ListCriteria listCriteria = new ListCriteria();
 
         return Lists.newArrayList(listCriteria);
