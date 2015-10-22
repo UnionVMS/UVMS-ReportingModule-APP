@@ -12,9 +12,9 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true, of = {"guid", "name", "userName"})
 public class VesselGroupFilterDTO extends FilterDTO {
 
-    public static final String GUID = "guid" ;
-    public static final String USER = "user" ;
-    public static final String NAME = "name" ;
+    public static final String GUID = "guid";
+    public static final String USER = "user";
+    public static final String NAME = "name";
 
     @NotNull
     private String guid;
@@ -26,22 +26,24 @@ public class VesselGroupFilterDTO extends FilterDTO {
     @NotNull
     private String name;
 
+    public VesselGroupFilterDTO() {
+        super(FilterType.vgroup);
+    }
+
+    public VesselGroupFilterDTO(Long id, Long reportId) {
+        super(FilterType.vgroup, id, reportId);
+    }
+
     @Builder(builderMethodName = "VesselGroupFilterDTOBuilder")
     public VesselGroupFilterDTO(Long reportId, Long id,
                                 String guid,
                                 String userName,
                                 String name) {
+        this(id, reportId);
         this.guid = guid;
         this.userName = userName;
         this.name = name;
-        setId(id);
-        setReportId(reportId);
-        setType(FilterType.vgroup);
         validate();
-    }
-
-    public VesselGroupFilterDTO() {
-
     }
 
     public String getUserName() {

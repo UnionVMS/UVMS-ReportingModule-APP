@@ -30,21 +30,23 @@ public class VmsPositionFilterDTO extends FilterDTO {
     @JsonProperty(MOV_ACTIVITY)
     private MovementActivityTypeType movementActivity;
 
+    public VmsPositionFilterDTO() {
+        super(FilterType.vmspos);
+    }
+
+    public VmsPositionFilterDTO(Long id, Long reportId) {
+        super(FilterType.vmspos, id, reportId);
+    }
+
     @Builder(builderMethodName = "VmsPositionFilterDTOBuilder")
     public VmsPositionFilterDTO(Long reportId, Long id, Float minimumSpeed, Float maximumSpeed,
                                 MovementTypeType movementType, MovementActivityTypeType movementActivity) {
+        this(id, reportId);
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
         this.movementType = movementType;
         this.movementActivity = movementActivity;
-        setReportId(reportId);
-        setId(id);
-        setType(FilterType.vmspos);
         validate();
-    }
-
-    public VmsPositionFilterDTO() {
-
     }
 
     public Float getMinimumSpeed() {

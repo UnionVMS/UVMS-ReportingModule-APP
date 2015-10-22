@@ -26,12 +26,12 @@ public class VesselFilter extends Filter {
     @NotNull
     private String name;
 
-    VesselFilter(){
+    VesselFilter() {
         super(FilterType.vessel);
     }
 
     @Builder(builderMethodName = "VesselFilterBuilder")
-    public VesselFilter(Long id, String guid, String name){
+    public VesselFilter(Long id, String guid, String name) {
         super(FilterType.vessel);
         this.guid = guid;
         this.name = name;

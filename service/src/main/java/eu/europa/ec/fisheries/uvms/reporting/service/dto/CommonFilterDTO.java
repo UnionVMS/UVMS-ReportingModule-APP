@@ -26,22 +26,24 @@ public class CommonFilterDTO extends FilterDTO {
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date endDate;
 
+    public CommonFilterDTO() {
+        super(FilterType.common);
+    }
+
+    public CommonFilterDTO(Long id, Long reportId) {
+        super(FilterType.common, id, reportId);
+    }
+
     @Builder(builderMethodName = "CommonFilterDTOBuilder")
     public CommonFilterDTO(Long reportId, Long id, Date startDate, Date endDate, PositionSelectorDTO positionSelector) {
+        this(id, reportId);
         this.startDate = startDate;
         this.endDate = endDate;
         this.positionSelector = positionSelector;
-        setId(id);
-        setReportId(reportId);
-        setType(FilterType.common);
         validate();
     }
 
     private PositionSelectorDTO positionSelector;
-
-    public CommonFilterDTO() {
-
-    }
 
     @Override
     public Filter convertToFilter() {

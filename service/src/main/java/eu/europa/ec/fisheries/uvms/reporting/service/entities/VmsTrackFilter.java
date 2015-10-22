@@ -1,7 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("VMSTRACK")
 @EqualsAndHashCode(callSuper = true)
-public class TrackFilter extends Filter {
+public class VmsTrackFilter extends Filter {
 
     @Column(name = "MAX_TIME")
     private Float maxTime;
@@ -29,22 +30,21 @@ public class TrackFilter extends Filter {
     @Column(name = "MAX_DURATION")
     private Float maxDuration;
 
-    TrackFilter() {
+    public VmsTrackFilter() {
         super(FilterType.vmstrack);
     }
 
     @Builder(builderMethodName = "TrackFilterBuilder")
-    public TrackFilter(Long id,
-                       Float maxTime,
-                       Float maxDuration,
-                       Float minDuration,
-                       Float minTime) {
-        super(FilterType.vmstrack);
+    public VmsTrackFilter(Long id, Long reportId,
+                          Float maxTime,
+                          Float maxDuration,
+                          Float minDuration,
+                          Float minTime) {
+        super(FilterType.vmstrack, id, reportId);
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
         this.minTime = minTime;
         this.maxTime = maxTime;
-        setId(id);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TrackFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        TrackFilter incoming = (TrackFilter) filter;
+        VmsTrackFilter incoming = (VmsTrackFilter) filter;
         setMaxDuration(incoming.getMaxDuration());
         setMaxTime(incoming.getMaxTime());
         setMinDuration(incoming.getMinDuration());
@@ -62,10 +62,18 @@ public class TrackFilter extends Filter {
     }
 
     @Override
-    public List<ListCriteria> movementCriteria() {
-        ListCriteria listCriteria = new ListCriteria();
+    public List<RangeCriteria> movementRangeCriteria() {
+        RangeCriteria timeCriteria = new RangeCriteria();
+        timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
+        timeCriteria.setFrom(String.valueOf(minTime));
+        timeCriteria.setTo(String.valueOf(maxTime));
 
-        return Lists.newArrayList(listCriteria);
+        RangeCriteria durationCriteria = new RangeCriteria();
+        durationCriteria.setKey(RangeKeyType.TRACK_DURATION);
+        durationCriteria.setFrom(String.valueOf(minDuration));
+        durationCriteria.setTo(String.valueOf(maxDuration));
+
+        return Lists.newArrayList(timeCriteria, durationCriteria);
     }
 
     @Override

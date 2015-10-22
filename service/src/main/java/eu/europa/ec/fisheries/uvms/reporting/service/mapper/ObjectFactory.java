@@ -45,8 +45,8 @@ public class ObjectFactory {
         return VesselFilter.VesselFilterBuilder().build();
     }
 
-    public TrackFilter createTrackFilter(){
-        return TrackFilter.TrackFilterBuilder().build();
+    public VmsTrackFilter createTrackFilter(){
+        return VmsTrackFilter.TrackFilterBuilder().build();
     }
 
     public TrackFilterDTO createTrackFilterDTO(){

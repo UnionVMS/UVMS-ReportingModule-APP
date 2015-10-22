@@ -25,18 +25,19 @@ public class AreaFilterDTO extends FilterDTO {
     @JsonProperty(JSON_ATTR_AREA_ID)
     private Long areaId;
 
-    public AreaFilterDTO () {
-        setType(FilterType.areas);
+    public AreaFilterDTO() {
+        super(FilterType.areas);
     }
 
+    public AreaFilterDTO(Long id, Long reportId) {
+        super(FilterType.areas, id, reportId);
+    }
 
     @Builder(builderMethodName = "AreaFilterDTOBuilder")
-    public AreaFilterDTO(Long reportId, Long id,  Long areaId, String areaType) {
+    public AreaFilterDTO(Long reportId, Long id, Long areaId, String areaType) {
+        this(id, reportId);
         this.areaId = areaId;
         this.areaType = areaType;
-        setId(id);
-        setReportId(reportId);
-        setType(FilterType.areas);
         validate();
     }
 

@@ -32,6 +32,14 @@ public class VmsSegmentFilterDTO extends FilterDTO {
     @JsonProperty(SEG_CATEGORY)
     private String category;
 
+    public VmsSegmentFilterDTO() {
+        super(FilterType.vmsseg);
+    }
+
+    public VmsSegmentFilterDTO(Long id, Long reportId) {
+        super(FilterType.vmsseg, id, reportId);
+    }
+
     @Builder(builderMethodName = "VmsSegmentFilterDTOBuilder")
     public VmsSegmentFilterDTO(Long reportId,
                                Long id,
@@ -40,21 +48,14 @@ public class VmsSegmentFilterDTO extends FilterDTO {
                                Float minimumSpeed,
                                Float maximumSpeed,
                                String category) {
+        this(id, reportId);
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
         this.category = category;
-        setReportId(reportId);
-        setId(id);
-        setType(FilterType.vmsseg);
         validate();
     }
-
-    public VmsSegmentFilterDTO() {
-
-    }
-
 
     public String getCategory() {
         return category;

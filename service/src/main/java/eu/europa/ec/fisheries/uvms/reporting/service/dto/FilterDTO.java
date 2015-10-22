@@ -29,6 +29,16 @@ public abstract class FilterDTO {
 
     private FilterType type;
 
+    public FilterDTO(FilterType type) {
+        this.type = type;
+    }
+
+    public FilterDTO(FilterType type, Long id, Long reportId) {
+        this(type);
+        this.id = id;
+        this.reportId = reportId;
+    }
+
     public abstract Filter convertToFilter();
 
     public void validate() {

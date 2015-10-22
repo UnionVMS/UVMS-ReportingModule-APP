@@ -28,6 +28,14 @@ public class TrackFilterDTO extends FilterDTO {
     @JsonProperty(TRK_MAX_DURATION)
     private Float maxDuration;
 
+    public TrackFilterDTO() {
+        super(FilterType.vmstrack);
+    }
+
+    public TrackFilterDTO(Long id, Long reportId) {
+        super(FilterType.vmstrack, id, reportId);
+    }
+
     @Builder(builderMethodName = "TrackFilterDTOBuild")
     public TrackFilterDTO(Long id,
                           Long reportId,
@@ -35,18 +43,12 @@ public class TrackFilterDTO extends FilterDTO {
                           Float minTime,
                           Float minDuration,
                           Float maxDuration) {
+        this(id, reportId);
         this.maxTime = maxTime;
         this.minTime = minTime;
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
-        setId(id);
-        setReportId(reportId);
-        setType(FilterType.vmstrack);
         validate();
-    }
-
-    public TrackFilterDTO() {
-
     }
 
     @Override

@@ -24,17 +24,19 @@ public class VesselFilterDTO extends FilterDTO {
     @NotNull
     private String name;
 
-    public VesselFilterDTO(){
+    public VesselFilterDTO() {
+        super(FilterType.vessel);
+    }
 
+    public VesselFilterDTO(Long id, Long reportId) {
+        super(FilterType.vessel, id, reportId);
     }
 
     @Builder(builderMethodName = "VesselFilterDTOBuilder")
-    public VesselFilterDTO(Long reportId, Long id, String guid, String name) {
+    public VesselFilterDTO(Long id, Long reportId, String guid, String name) {
+        this(id, reportId);
         this.guid = guid;
         this.name = name;
-        setId(id);
-        setReportId(reportId);
-        setType(FilterType.vessel);
         validate();
     }
 

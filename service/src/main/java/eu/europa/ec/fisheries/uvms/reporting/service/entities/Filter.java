@@ -37,6 +37,12 @@ public abstract class Filter implements Serializable {
 
     public Filter(FilterType type) { this.type = type; }
 
+    public Filter(FilterType type, Long id, Long reportId) {
+        this(type);
+        this.id = id;
+        this.reportId = reportId;
+    }
+
     @ManyToOne(cascade = javax.persistence.CascadeType.ALL)
     @JoinColumn(name = "report_id", nullable = false)
     private Report report;

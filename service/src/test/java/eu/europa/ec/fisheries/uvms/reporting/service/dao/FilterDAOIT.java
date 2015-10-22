@@ -25,7 +25,7 @@ import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.TrackFilter.TrackFilterBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter.TrackFilterBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter.VmsSegmentFilterBuilder;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertTrue;
@@ -127,7 +127,7 @@ public class FilterDAOIT {
         expectedCollection.add(filter6);
         filterDAO.createEntity(filter6);
 
-        TrackFilter filter7 = TrackFilterBuilder()
+        VmsTrackFilter filter7 = TrackFilterBuilder()
                     .maxTime(10F)
                     .minDuration(11F)
                     .maxDuration(12F)
