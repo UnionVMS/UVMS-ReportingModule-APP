@@ -26,61 +26,25 @@ public class FilterProcessor {
 
     private final List<ListCriteria> movementListCriteria = new ArrayList<>();
     private final List<RangeCriteria> rangeCriteria = new ArrayList<>();
-
-    private final List<ListCriteria> connectIdMovements = new ArrayList<>();
     private final List<VesselListCriteriaPair> vesselListCriteriaPairs = new ArrayList<>();
     private final List<VesselGroup> vesselGroupList = new ArrayList<>();
 
     @Builder(builderMethodName = "FilterProcessorBuilder")
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
-        for (Object next : safe(filters)) {
-            Filter filter = (Filter) next;
-            
+    	if (filters != null && !filters.isEmpty()) {
+    		throw new ProcessorException("Unable to process empty filter list or filter list is null.");
+    	}
+        for (Filter filter : filters) {          
             vesselListCriteriaPairs.addAll(filter.vesselCriteria());
-            connectIdMovements.addAll(filter.movementCriteria());
             vesselGroupList.addAll(filter.vesselGroupCriteria());
             rangeCriteria.addAll(filter.movementRangeCriteria());
         	movementListCriteria.addAll(filter.movementCriteria());
-        	
-/*            switch (filter.getType()) {
-                case vessel:
-                    vesselListCriteriaPairs.addAll(filter.vesselCriteria());
-                    connectIdMovements.addAll(filter.movementCriteria());
-                    break;
-                case vgroup:
-                    vesselGroupList.addAll(filter.vesselGroupCriteria());
-                    break;
-                case common:
-                    rangeCriteria.addAll(filter.movementRangeCriteria());
-                    break;
-                case vmspos:
-                	rangeCriteria.addAll(filter.movementRangeCriteria());
-                	movementListCriteria.addAll(filter.movementCriteria());
-                    break;
-                case vmsseg:
-                	rangeCriteria.addAll(filter.movementRangeCriteria());
-                	movementListCriteria.addAll(filter.movementCriteria());
-                case vmstrack:
-                    movementListCriteria.addAll(filter.movementCriteria());
-                    rangeCriteria.addAll(filter.movementRangeCriteria());
-                    break;
-                default:
-                    break;
-            }*/
         }
-    }
-
-    private Set safe( Set other ) throws ProcessorException {
-        if (other == null || other.size() == 0) {
-            throw new ProcessorException("Unable to process empty filter list or filter list is null.");
-        }
-        return other;
     }
 
     public MovementQuery toMovementQuery() {
         MovementQuery movementQuery = new MovementQuery();
         movementQuery.getMovementSearchCriteria().addAll(movementListCriteria);
-        movementQuery.getMovementSearchCriteria().addAll(connectIdMovements);
         movementQuery.getMovementRangeSearchCriteria().addAll(rangeCriteria);
         ListPagination pagination = new ListPagination();
         pagination.setListSize(new BigInteger("10"));
@@ -126,10 +90,6 @@ public class FilterProcessor {
 
     public List<ListCriteria> getMovementListCriteria() {
         return movementListCriteria;
-    }
-
-    public List<ListCriteria> getConnectIdMovements() {
-        return connectIdMovements;
     }
 
     public List<VesselListCriteriaPair> getVesselListCriteriaPairs() {

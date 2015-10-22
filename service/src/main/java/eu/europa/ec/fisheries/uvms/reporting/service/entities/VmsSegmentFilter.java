@@ -1,5 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
@@ -9,20 +16,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapp
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
 @Entity
 @DiscriminatorValue("VMSSEG")
 @EqualsAndHashCode(callSuper = true)
 public class VmsSegmentFilter extends Filter {
 
-    @Column(name = "MIN_SPEED")
+	private static final long serialVersionUID = -8657712390731877147L;
+
+	@Column(name = "MIN_SPEED")
     private Float minimumSpeed = 0.0F;
 
     @Column(name = "MAX_SPEED")
@@ -81,7 +82,7 @@ public class VmsSegmentFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria(){
+    public List<RangeCriteria> movementRangeCriteria() {
     	RangeCriteria segmentSpeed = new RangeCriteria();
     	segmentSpeed.setKey(RangeKeyType.SEGMENT_SPEED);
     	segmentSpeed.setFrom(Float.toString(getMinimumSpeed()));

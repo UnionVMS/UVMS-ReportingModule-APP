@@ -41,15 +41,15 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         processor = new FilterProcessor(filterList);
 
         assertEquals(1, processor.getVesselListCriteriaPairs().size());
-        assertEquals(1, processor.getConnectIdMovements().size());
+        assertEquals(1, processor.getMovementListCriteria().size());
         assertEquals(0, processor.getVesselGroupList().size());
         assertEquals(0, processor.getMovementListCriteria().size());
 
         assertEquals(processor.getVesselListCriteriaPairs().get(0).getKey(), ConfigSearchField.GUID);
         assertEquals(processor.getVesselListCriteriaPairs().get(0).getValue(), "guid");
 
-        assertEquals(processor.getConnectIdMovements().get(0).getKey(), SearchKey.CONNECT_ID);
-        assertEquals(processor.getConnectIdMovements().get(0).getValue(), "guid");
+        assertEquals(processor.getMovementListCriteria().get(0).getKey(), SearchKey.CONNECT_ID);
+        assertEquals(processor.getMovementListCriteria().get(0).getValue(), "guid");
 
     }
 
@@ -68,7 +68,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         processor = new FilterProcessor(filterList);
 
         assertEquals(0, processor.getVesselListCriteriaPairs().size());
-        assertEquals(0, processor.getConnectIdMovements().size());
+        assertEquals(0, processor.getMovementListCriteria().size());
         assertEquals(1, processor.getVesselGroupList().size());
         assertEquals(0, processor.getMovementListCriteria().size());
 
@@ -100,7 +100,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         processor = new FilterProcessor(filterList);
 
         assertEquals(0, processor.getVesselListCriteriaPairs().size());
-        assertEquals(0, processor.getConnectIdMovements().size());
+        assertEquals(0, processor.getMovementListCriteria().size());
         assertEquals(0, processor.getVesselGroupList().size());
         assertEquals(2, processor.getMovementListCriteria().size());
 
@@ -150,7 +150,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         };
 
         assertEquals(0, processor.getVesselListCriteriaPairs().size());
-        assertEquals(0, processor.getConnectIdMovements().size());
+        assertEquals(0, processor.getMovementListCriteria().size());
         assertEquals(0, processor.getVesselGroupList().size());
         assertEquals(2, processor.getMovementListCriteria().size());
 

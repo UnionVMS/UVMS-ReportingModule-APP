@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -16,7 +15,6 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
-import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -25,7 +23,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class VmsPositionFilter extends Filter {
 
-    @Column(name = "MIN_SPEED")
+	private static final long serialVersionUID = -8391061757398510151L;
+
+	@Column(name = "MIN_SPEED")
     private Float minimumSpeed = 0.0F;
 
     @Column(name = "MAX_SPEED")
