@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,15 +72,20 @@ public class VmsPositionFilter extends Filter {
     
     @Override
     public List<ListCriteria> movementCriteria() {    	
-    	ListCriteria movementType = new ListCriteria();
-    	movementType.setKey(SearchKey.MOVEMENT_TYPE);
-    	movementType.setValue(getMovementType().name());
-    	
-    	ListCriteria momementActivity = new ListCriteria();
-    	momementActivity.setKey(SearchKey.ACTIVITY_TYPE);
-    	momementActivity.setValue(getMovementActivity().name());
-    	
-    	return Arrays.asList(movementType, momementActivity);
+    	List<ListCriteria> criteria = new ArrayList<ListCriteria>();    	
+    	if(getMovementType() != null) {
+    		ListCriteria movementType = new ListCriteria();
+    		movementType.setKey(SearchKey.MOVEMENT_TYPE);
+        	movementType.setValue(getMovementType().name());
+        	criteria.add(movementType);
+    	}    	
+    	if(getMovementActivity() != null) {
+    		ListCriteria momementActivity = new ListCriteria();
+        	momementActivity.setKey(SearchKey.ACTIVITY_TYPE);
+        	momementActivity.setValue(getMovementActivity().name());
+        	criteria.add(momementActivity);
+    	}
+    	return criteria;
     }
 
     @Override

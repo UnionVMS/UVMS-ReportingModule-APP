@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -75,10 +76,14 @@ public class VmsSegmentFilter extends Filter {
     
     @Override
     public List<ListCriteria> movementCriteria() {
-    	ListCriteria segmentCatagory = new ListCriteria();
-    	segmentCatagory.setKey(SearchKey.CATEGORY);
-    	segmentCatagory.setValue(getCategory());
-    	return Arrays.asList(segmentCatagory);
+    	List<ListCriteria> criteria = new ArrayList<ListCriteria>();
+    	if(getCategory() != null) {
+    		ListCriteria segmentCatagory = new ListCriteria();
+        	segmentCatagory.setKey(SearchKey.CATEGORY);
+        	segmentCatagory.setValue(getCategory());
+        	criteria.add(segmentCatagory);
+    	}    	
+    	return criteria;
     }
 
     @Override
