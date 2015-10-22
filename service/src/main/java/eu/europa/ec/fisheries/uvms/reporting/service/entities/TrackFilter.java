@@ -1,5 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import com.google.common.collect.Lists;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
@@ -8,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("VMSTRACK")
@@ -26,7 +29,7 @@ public class TrackFilter extends Filter {
     @Column(name = "MAX_DURATION")
     private Float maxDuration;
 
-    TrackFilter(){
+    TrackFilter() {
         super(FilterType.vmstrack);
     }
 
@@ -56,6 +59,13 @@ public class TrackFilter extends Filter {
         setMaxTime(incoming.getMaxTime());
         setMinDuration(incoming.getMinDuration());
         setMinTime(incoming.getMinTime());
+    }
+
+    @Override
+    public List<ListCriteria> movementListCriteria() {
+        ListCriteria listCriteria = new ListCriteria();
+
+        return Lists.newArrayList(listCriteria);
     }
 
     @Override

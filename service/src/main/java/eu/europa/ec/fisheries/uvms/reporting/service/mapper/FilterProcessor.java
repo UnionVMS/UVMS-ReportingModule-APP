@@ -41,16 +41,20 @@ public class FilterProcessor {
             switch (filter.getType()) {
 
                 case vessel:
-                    vesselListCriteriaPairs.add(filter.vesselCriteria());
-                    connectIdMovements.add(filter.movementCriteria());
+                    vesselListCriteriaPairs.addAll(filter.vesselCriteria());
+                    connectIdMovements.addAll(filter.movementCriteria());
                     break;
                 case vgroup:
-                    vesselGroupList.add(filter.vesselGroupCriteria());
+                    vesselGroupList.addAll(filter.vesselGroupCriteria());
                     break;
                 case common:
-                    rangeCriteria.add(filter.movementRangeCriteria());
+                    rangeCriteria.addAll(filter.movementRangeCriteria());
                     break;
                 case vmspos:
+                    break;
+                case vmstrack:
+                    movementListCriteria.addAll(filter.movementListCriteria());
+                    rangeCriteria.addAll(filter.movementRangeCriteria());
                     break;
                 default:
                     break;

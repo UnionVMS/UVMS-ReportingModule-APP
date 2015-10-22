@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
@@ -58,7 +59,7 @@ public class CommonFilter extends Filter {
     }
 
     @Override
-    public RangeCriteria movementRangeCriteria(){
+    public List<RangeCriteria> movementRangeCriteria(){
         PositionSelector positionSelector = getPositionSelector();
         RangeCriteria criteria = null;
 
@@ -86,7 +87,7 @@ public class CommonFilter extends Filter {
             default:
 
         }
-        return criteria;
+        return Lists.newArrayList(criteria);
     }
 
     private List<ListCriteria> processLastPositions(final CommonFilter dateTimeFilter) {

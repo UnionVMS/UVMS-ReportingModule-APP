@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("VESSEL")
@@ -54,19 +56,19 @@ public class VesselFilter extends Filter {
     }
 
     @Override
-    public VesselListCriteriaPair vesselCriteria() {
+    public List<VesselListCriteriaPair> vesselCriteria() {
         VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
         criteriaPair.setKey(ConfigSearchField.GUID);
         criteriaPair.setValue(guid);
-        return criteriaPair;
+        return Lists.newArrayList(criteriaPair);
     }
 
     @Override
-    public ListCriteria movementCriteria() {
+    public List<ListCriteria> movementCriteria() {
         ListCriteria listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.CONNECT_ID);
         listCriteria.setValue(getGuid());
-        return listCriteria;
+        return Lists.newArrayList(listCriteria);
     }
 
     public String getGuid() {

@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "filter", schema = "reporting")
@@ -76,23 +78,23 @@ public abstract class Filter implements Serializable {
 
     public abstract Object getUniqKey();
 
-    //Hook me
-    public VesselListCriteriaPair vesselCriteria() {
-        return new VesselListCriteriaPair(); // FIXME try with null
+    public List<VesselListCriteriaPair> vesselCriteria() {
+        return Collections.emptyList();
     }
 
-    //Hook me
-    public ListCriteria movementCriteria() {
-        return new ListCriteria(); // FIXME try with null
+    public List<ListCriteria> movementCriteria() {
+        return Collections.emptyList();
     }
 
-    //Hook me
-    public VesselGroup vesselGroupCriteria(){
-        return new VesselGroup(); // FIXME try with null
+    public List<VesselGroup> vesselGroupCriteria(){
+        return Collections.emptyList();
     }
 
-    //Hook me
-    public RangeCriteria movementRangeCriteria(){
-        return new RangeCriteria(); // FIXME try with null
+    public List<RangeCriteria> movementRangeCriteria(){
+        return Collections.emptyList();
+    }
+
+    public List<ListCriteria> movementListCriteria() {
+        return Collections.emptyList();
     }
 }
