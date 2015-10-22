@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
@@ -77,17 +78,21 @@ public abstract class Filter implements Serializable {
 
     //Hook me
     public VesselListCriteriaPair vesselCriteria() {
-        return new VesselListCriteriaPair();
+        return new VesselListCriteriaPair(); // FIXME try with null
     }
 
     //Hook me
     public ListCriteria movementCriteria() {
-        return new ListCriteria();
+        return new ListCriteria(); // FIXME try with null
     }
 
     //Hook me
     public VesselGroup vesselGroupCriteria(){
-        return new VesselGroup();
+        return new VesselGroup(); // FIXME try with null
     }
 
+    //Hook me
+    public RangeCriteria movementRangeCriteria(){
+        return new RangeCriteria(); // FIXME try with null
+    }
 }

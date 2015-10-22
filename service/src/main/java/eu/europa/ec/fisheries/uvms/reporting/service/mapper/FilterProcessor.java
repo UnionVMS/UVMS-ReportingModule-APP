@@ -40,7 +40,6 @@ public class FilterProcessor {
             Filter filter = (Filter) next;
             switch (filter.getType()) {
 
-                // FIXME trying to generify this
                 case vessel:
                     vesselListCriteriaPairs.add(filter.vesselCriteria());
                     connectIdMovements.add(filter.movementCriteria());
@@ -49,7 +48,7 @@ public class FilterProcessor {
                     vesselGroupList.add(filter.vesselGroupCriteria());
                     break;
                 case common:
-                    addToMovementCriteria(filter);
+                    rangeCriteria.add(filter.movementRangeCriteria());
                     break;
                 case vmspos:
                     break;
@@ -64,69 +63,6 @@ public class FilterProcessor {
             throw new ProcessorException("Unable to process empty filter list or filter list is null.");
         }
         return other;
-    }
-
-    private void addToMovementCriteria(final Filter filter) {
-        CommonFilter commonFilter = (CommonFilter) filter;
-
-        PositionSelector positionSelector = commonFilter.getPositionSelector();
-
-        switch(positionSelector.getSelector()){
-            case all:
-                rangeCriteria.addAll(processAll(commonFilter));
-                break;
-            case last:
-                Position position = positionSelector.getPosition();
-                switch(position){
-                    case hours:
-                        rangeCriteria.addAll(processLastHours(commonFilter));
-                        break;
-                    case positions:
-                        movementListCriteria.addAll(processLastPositions(commonFilter));
-                        break;
-                    default:
-
-                }
-
-                break;
-            default:
-
-        }
-    }
-
-    private List<ListCriteria> processLastPositions(final CommonFilter dateTimeFilter) {
-      //  Float positions = dateTimeFilter.getPositionSelector().getValue();
-        throw new NotImplementedException("Not implemented in Movement API");
-    }
-
-    private List<RangeCriteria> processLastHours(final CommonFilter dateTimeFilter) {
-        Float hours = dateTimeFilter.getPositionSelector().getValue();
-        DateTime currentDate = nowUTC();
-        Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
-        List<RangeCriteria> rangeCriterias = new ArrayList<>();
-        addRangeCriteria(DateUtils.dateToString(toDate),
-                DateUtils.dateToString(currentDate.toDate()), rangeCriterias, RangeKeyType.DATE);
-        return rangeCriterias;
-    }
-
-    private List<RangeCriteria> processAll(final CommonFilter dateTimeFilter) {
-        List<RangeCriteria> rangeCriteria = new ArrayList<>();
-        addRangeCriteria(DateUtils.dateToString(dateTimeFilter.getStartDate()),
-                DateUtils.dateToString(dateTimeFilter.getEndDate()), rangeCriteria, RangeKeyType.DATE);
-        return rangeCriteria;
-    }
-
-    private void addRangeCriteria(final String from, final String to, final List<RangeCriteria> rangeCriteria, final RangeKeyType key) {
-        RangeCriteria criteria = new RangeCriteria();
-        criteria.setKey(key);
-        criteria.setFrom(from);
-        criteria.setTo(to);
-        rangeCriteria.add(criteria);
-    }
-
-    // UT
-    protected DateTime nowUTC() {
-        return DateUtils.nowUTC();
     }
 
     public MovementQuery toMovementQuery() {
