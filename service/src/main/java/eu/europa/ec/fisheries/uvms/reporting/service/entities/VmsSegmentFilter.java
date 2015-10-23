@@ -120,7 +120,9 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMinimumSpeed(Float minimumSpeed) {
-        this.minimumSpeed = minimumSpeed;
+    	if (minimumSpeed != null) {
+    		this.minimumSpeed = minimumSpeed;
+    	}        
     }
 
     public Float getMaximumSpeed() {
@@ -128,7 +130,9 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMaximumSpeed(Float maximumSpeed) {
-        this.maximumSpeed = maximumSpeed;
+    	if (maximumSpeed != null) {
+    		this.maximumSpeed = maximumSpeed;
+    	}        
     }
 
     public Float getMinDuration() {
@@ -136,7 +140,9 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMinDuration(Float minDuration) {
-        this.minDuration = minDuration;
+    	if (minDuration != null) {
+    		this.minDuration = minDuration;
+    	}        
     }
 
     public Float getMaxDuration() {
@@ -144,6 +150,8 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMaxDuration(Float maxDuration) {
-        this.maxDuration = maxDuration;
+    	if (maxDuration != null) {
+    		this.maxDuration = maxDuration;
+    	}        
     }
 }

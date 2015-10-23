@@ -89,7 +89,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria(){    	
+    public List<RangeCriteria> movementRangeCriteria() {
     	RangeCriteria movementSpeed = new RangeCriteria();
     	movementSpeed.setKey(RangeKeyType.MOVEMENT_SPEED);
     	movementSpeed.setFrom(Float.toString(getMinimumSpeed()));
@@ -107,7 +107,9 @@ public class VmsPositionFilter extends Filter {
     }
 
     public void setMinimumSpeed(Float minimumSpeed) {
-        this.minimumSpeed = minimumSpeed;
+    	if (minimumSpeed != null) {
+    		this.minimumSpeed = minimumSpeed;
+    	}        
     }
 
     public MovementTypeType getMovementType() {
@@ -131,7 +133,9 @@ public class VmsPositionFilter extends Filter {
     }
 
     public void setMaximumSpeed(Float maximumSpeed) {
-        this.maximumSpeed = maximumSpeed;
+    	if (maximumSpeed != null) {
+    		this.maximumSpeed = maximumSpeed;
+    	}        
     }
 
 }
