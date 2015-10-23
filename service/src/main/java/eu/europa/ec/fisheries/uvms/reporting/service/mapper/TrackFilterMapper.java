@@ -5,13 +5,19 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = ObjectFactory.class)
-public interface TrackFilterMapper {
+@Mapper
+public abstract class TrackFilterMapper {
 
-    TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
+    abstract public TrackFilterDTO trackFilterToTrackFilterDTO(VmsTrackFilter vmsTrackFilter);
 
-    TrackFilterDTO trackFilterToTrackFilterDTO(VmsTrackFilter vmsTrackFilter);
-
-    VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO trackFilterDTO);
-
+    public VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO trackFilterDTO) {
+        return VmsTrackFilter.TrackFilterBuilder()
+                .id(trackFilterDTO.getId())
+                .reportId(trackFilterDTO.getReportId())
+                .minTime(trackFilterDTO.getMinTime())
+                .maxTime(trackFilterDTO.getMaxTime())
+                .minDuration(trackFilterDTO.getMinDuration())
+                .maxDuration(trackFilterDTO.getMaxDuration())
+                .build();
+    }
 }

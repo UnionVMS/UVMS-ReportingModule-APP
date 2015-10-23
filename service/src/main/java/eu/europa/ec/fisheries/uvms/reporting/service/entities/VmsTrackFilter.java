@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import org.mapstruct.factory.Mappers;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -19,10 +20,12 @@ import java.util.List;
 public class VmsTrackFilter extends Filter {
 
     @Column(name = "MIN_TIME")
-    private Float minTime = 0F;;
+    private Float minTime = 0F;
+    ;
 
     @Column(name = "MAX_TIME")
-    private Float maxTime = 5000F;;
+    private Float maxTime = 5000F;
+    ;
 
     @Column(name = "MIN_DURATION")
     private Float minDuration = 0F;
@@ -41,15 +44,16 @@ public class VmsTrackFilter extends Filter {
                           Float minDuration,
                           Float minTime) {
         super(FilterType.vmstrack, id, reportId);
-        this.minDuration = minDuration;
-        this.maxDuration = maxDuration;
-        this.minTime = minTime;
-        this.maxTime = maxTime;
+        setMinDuration(minDuration);
+        setMaxDuration(maxDuration);
+        setMinTime(minTime);
+        setMaxTime(maxTime);
     }
 
     @Override
     public FilterDTO convertToDTO() {
-        return TrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(this);
+        TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
+        return INSTANCE.trackFilterToTrackFilterDTO(this);
     }
 
     @Override
@@ -86,7 +90,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMaxTime(Float maxTime) {
-        this.maxTime = maxTime;
+        if (maxTime != null) {
+            this.maxTime = maxTime;
+        }
     }
 
     public Float getMinTime() {
@@ -94,7 +100,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMinTime(Float minTime) {
-        this.minTime = minTime;
+        if (minTime != null) {
+            this.minTime = minTime;
+        }
     }
 
     public Float getMinDuration() {
@@ -102,7 +110,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMinDuration(Float minDuration) {
-        this.minDuration = minDuration;
+        if (minDuration != null) {
+            this.minDuration = minDuration;
+        }
     }
 
     public Float getMaxDuration() {
@@ -110,7 +120,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMaxDuration(Float maxDuration) {
-        this.maxDuration = maxDuration;
+        if (maxDuration != null) {
+            this.maxDuration = maxDuration;
+        }
     }
 
 }

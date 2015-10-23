@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import org.mapstruct.factory.Mappers;
 
 @EqualsAndHashCode(callSuper = true)
 public class TrackFilterDTO extends FilterDTO {
@@ -53,7 +54,8 @@ public class TrackFilterDTO extends FilterDTO {
 
     @Override
     public Filter convertToFilter() {
-        return TrackFilterMapper.INSTANCE.trackFilterDTOToTrackFilter(this);
+        TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
+        return INSTANCE.trackFilterDTOToTrackFilter(this);
     }
 
     public Float getMaxTime() {
