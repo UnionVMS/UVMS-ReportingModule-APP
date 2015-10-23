@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import org.apache.commons.lang3.NotImplementedException;
 import org.geotools.feature.DefaultFeatureCollection;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
