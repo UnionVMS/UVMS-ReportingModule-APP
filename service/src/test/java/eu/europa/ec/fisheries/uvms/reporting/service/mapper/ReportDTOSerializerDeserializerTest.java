@@ -5,6 +5,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
@@ -348,7 +349,7 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
                 .minimumSpeed(45.5F)
                 .minDuration(33.3F)
                 .maxDuration(33.3f)
-                .category("TEST")
+                .category(SegmentCategoryType.ENTER_PORT)
                 .build());
 
         dto.setFilters(filterDTOList);

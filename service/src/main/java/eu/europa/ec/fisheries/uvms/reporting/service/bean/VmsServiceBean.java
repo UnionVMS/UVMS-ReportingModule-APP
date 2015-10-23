@@ -44,7 +44,7 @@ public class VmsServiceBean implements VmsService {
     @Transactional
     public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
 
-        VmsDTO vmsDto;
+        VmsDTO vmsDto = null;
 
         try {
             Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
@@ -57,7 +57,7 @@ public class VmsServiceBean implements VmsService {
                 List<MovementMapResponseType> movementMap = movement.getMovementMapResponseTypes(processor);
                 vmsDto = VmsDTO.getVmsDto(vesselMapByGuid, movementMap);
             } else {
-                throw new NotImplementedException("Please handle that case");
+                List<MovementMapResponseType> movementMapResponseTypes = movement.getMovementMapResponseTypes(processor);
             }
 
             reportByReportId.updateExecutionLog(username);

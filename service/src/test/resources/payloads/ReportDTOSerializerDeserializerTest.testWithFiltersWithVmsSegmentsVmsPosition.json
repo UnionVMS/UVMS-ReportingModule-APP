@@ -23,7 +23,7 @@
         "segMaxSpeed" : 234.2,
         "segMaxDuration" : 33.3,
         "segMinDuration" : 33.3,
-        "segCategory" : "TEST"
+        "segCategory" : "ENTER_PORT"
       }
     },
     "areas" : [ ],

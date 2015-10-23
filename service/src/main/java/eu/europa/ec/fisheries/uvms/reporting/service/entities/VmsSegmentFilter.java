@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import lombok.Builder;
@@ -37,7 +38,7 @@ public class VmsSegmentFilter extends Filter {
     private Float maxDuration = 1000F;
 
     @Column(name = "SEG_CATEGORY")
-    private String category;
+    private SegmentCategoryType category;
 
 
     VmsSegmentFilter(){
@@ -50,7 +51,7 @@ public class VmsSegmentFilter extends Filter {
                             Float minDuration,
                             Float maximumSpeed,
                             Float minimumSpeed,
-                            String category) {
+                            SegmentCategoryType category) {
         super(FilterType.vmsseg);
         setId(id);
         this.maxDuration = maxDuration;
@@ -78,10 +79,10 @@ public class VmsSegmentFilter extends Filter {
     public List<ListCriteria> movementCriteria() {
     	List<ListCriteria> criteria = new ArrayList<ListCriteria>();
     	if(getCategory() != null) {
-    		ListCriteria segmentCatagory = new ListCriteria();
-        	segmentCatagory.setKey(SearchKey.CATEGORY);
-        	segmentCatagory.setValue(getCategory());
-        	criteria.add(segmentCatagory);
+    		ListCriteria segmentCategory = new ListCriteria();
+            segmentCategory.setKey(SearchKey.CATEGORY);
+            segmentCategory.setValue(getCategory().value());
+        	criteria.add(segmentCategory);
     	}    	
     	return criteria;
     }
@@ -101,11 +102,11 @@ public class VmsSegmentFilter extends Filter {
     	return Arrays.asList(segmentSpeed, segmentDuration);
     }
 
-    public String getCategory() {
+    public SegmentCategoryType getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(SegmentCategoryType category) {
         this.category = category;
     }
 

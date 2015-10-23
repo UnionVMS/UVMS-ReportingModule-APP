@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
@@ -217,17 +218,22 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                         );
                         break;
                     case vmsseg:
-                        filterDTOList.add(
-                                VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder()
-                                        .reportId(reportId)
-                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)
-                                        .maxDuration(next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION).floatValue() : null)
-                                        .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
-                                        .minDuration(next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION).floatValue() : null)
-                                        .category(next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null ? next.get(VmsSegmentFilterDTO.SEG_CATEGORY).asText() : null)
-                                        .build()
-                        );
+                        VmsSegmentFilterDTO segmentFilterDTO = VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder()
+                                .reportId(reportId)
+                                .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                                .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)
+                                .maxDuration(next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION).floatValue() : null)
+                                .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
+                                .minDuration(next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION).floatValue() : null)
+                                .build();
+
+                        if (next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null){
+                            segmentFilterDTO.setCategory(SegmentCategoryType
+                                    .valueOf(next.get(VmsSegmentFilterDTO.SEG_CATEGORY).textValue()));
+                        }
+
+                        filterDTOList.add(segmentFilterDTO);
+
                         break;
                     default:
                         throw new InvalidParameterException("Unsupported parameter");

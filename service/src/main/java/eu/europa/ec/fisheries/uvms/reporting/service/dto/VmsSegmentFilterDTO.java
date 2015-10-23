@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
@@ -30,7 +31,7 @@ public class VmsSegmentFilterDTO extends FilterDTO {
     private Float minDuration;
 
     @JsonProperty(SEG_CATEGORY)
-    private String category;
+    private SegmentCategoryType category;
 
     public VmsSegmentFilterDTO() {
         super(FilterType.vmsseg);
@@ -47,7 +48,7 @@ public class VmsSegmentFilterDTO extends FilterDTO {
                                Float minDuration,
                                Float minimumSpeed,
                                Float maximumSpeed,
-                               String category) {
+                               SegmentCategoryType category) {
         this(id, reportId);
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
@@ -57,11 +58,11 @@ public class VmsSegmentFilterDTO extends FilterDTO {
         validate();
     }
 
-    public String getCategory() {
+    public SegmentCategoryType getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(SegmentCategoryType category) {
         this.category = category;
     }
 
