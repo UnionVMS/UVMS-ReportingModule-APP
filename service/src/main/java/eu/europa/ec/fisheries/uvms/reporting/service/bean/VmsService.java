@@ -9,6 +9,6 @@ public interface VmsService {
 
     VmsDTO getVmsDataByReportId(String username, String scopeName, Long id) throws ReportingServiceException, MessageException, VesselModelMapperException;
 
-    VmsDTO getVmsMockData(Long id);
+    VmsDTO getVmsMockData(Long id) throws ReportingServiceException;
 
 }

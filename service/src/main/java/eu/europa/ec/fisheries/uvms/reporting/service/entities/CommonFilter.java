@@ -13,7 +13,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class CommonFilter extends Filter {
     @Embedded
     private PositionSelector positionSelector;
 
-    CommonFilter(){
+    public CommonFilter(){
         super(FilterType.common);
     }
 
@@ -61,24 +60,41 @@ public class CommonFilter extends Filter {
     @Override
     public List<RangeCriteria> movementRangeCriteria(){
         PositionSelector positionSelector = getPositionSelector();
-        RangeCriteria criteria = null;
+        RangeCriteria criteria = new RangeCriteria();
 
-        switch(positionSelector.getSelector()){
+        switch (positionSelector.getSelector()){
+
             case all:
-                criteria = new RangeCriteria();
+
                 criteria.setKey(RangeKeyType.DATE);
                 criteria.setFrom(DateUtils.dateToString(getStartDate()));
                 criteria.setTo(DateUtils.dateToString(getEndDate()));
+
                 break;
+
             case last:
+
                 Position position = positionSelector.getPosition();
-                switch(position){
+
+                switch (position){
+
                     case hours:
-                       // rangeCriteria.addAll(processLastHours(commonFilter));
+
+                        Float hours = getPositionSelector().getValue();
+                        DateTime currentDate = nowUTC();
+                        Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
+                        criteria.setKey(RangeKeyType.DATE);
+                        criteria.setFrom(DateUtils.dateToString(toDate));
+                        criteria.setTo(DateUtils.dateToString(currentDate.toDate()));
+
                         break;
+
                     case positions:
+
                        // movementListCriteria.addAll(processLastPositions(commonFilter));
+
                         break;
+
                     default:
 
                 }
@@ -95,28 +111,9 @@ public class CommonFilter extends Filter {
         throw new NotImplementedException("Not implemented in Movement API");
     }
 
-    private List<RangeCriteria> processLastHours(final CommonFilter dateTimeFilter) {
-        Float hours = dateTimeFilter.getPositionSelector().getValue();
-        DateTime currentDate = nowUTC();
-        Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
-        List<RangeCriteria> rangeCriterias = new ArrayList<>();
-        addRangeCriteria(DateUtils.dateToString(toDate),
-                DateUtils.dateToString(currentDate.toDate()), rangeCriterias, RangeKeyType.DATE);
-        return rangeCriterias;
-    }
-
     // UT
     protected DateTime nowUTC() {
         return DateUtils.nowUTC();
-    }
-
-
-    private void addRangeCriteria(final String from, final String to, final List<RangeCriteria> rangeCriteria, final RangeKeyType key) {
-        RangeCriteria criteria = new RangeCriteria();
-        criteria.setKey(key);
-        criteria.setFrom(from);
-        criteria.setTo(to);
-        rangeCriteria.add(criteria);
     }
 
     @Override

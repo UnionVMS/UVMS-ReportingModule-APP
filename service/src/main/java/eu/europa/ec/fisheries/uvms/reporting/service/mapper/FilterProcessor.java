@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 /**
@@ -112,5 +112,9 @@ public class FilterProcessor {
 
     public List<VesselListCriteriaPair> getVesselListCriteriaPairs() {
         return vesselListCriteriaPairs;
+    }
+
+    public List<RangeCriteria> getRangeCriteria() {
+        return rangeCriteria;
     }
 }

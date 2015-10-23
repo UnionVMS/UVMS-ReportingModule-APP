@@ -7,6 +7,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.common.MockingUtils;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.experimental.Delegate;
@@ -16,11 +17,24 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.math.BigDecimal;
-
 public class MovementDTO {
 
-    public static final SimpleFeatureType MOVEMENT = buildFeatueType();
+    public static final SimpleFeatureType MOVEMENTYPE = buildFeatueType();
+
+    private static final String GEOMETRY = "geometry";
+    private static final String POSITION_TIME = "positionTime";
+    private static final String CONNECTION_ID = "connectionId";
+    private static final String STATUS = "status";
+    private static final String CALCULATED_COURSE = "calculatedCourse";
+    private static final String MOVEMENT_TYPE = "movementType";
+    private static final String ACTIVITY_TYPE = "activityType";
+    private static final String REPORTED_SPEED = "reportedSpeed";
+    private static final String COUNTRY_CODE = "countryCode";
+    private static final String IRCS = "ircs";
+    private static final String CFR = "cfr";
+    private static final String NAME = "name";
+    private static final String GUID = "guid";
+    private static final String MOVEMENT = "movement";
 
     @Delegate(types = Include.class)
     private MovementType movementType;
@@ -37,45 +51,52 @@ public class MovementDTO {
 
     private static SimpleFeatureType buildFeatueType() {
         SimpleFeatureTypeBuilder sb = new SimpleFeatureTypeBuilder();
-        sb.setName("Movement");
+        sb.setName(MOVEMENT);
         sb.setCRS(DefaultGeographicCRS.WGS84);
-        sb.add("geometry", Point.class);
-        sb.add("pos_tm", String.class);
-        //sb.add("m_spd", BigDecimal.class);
-        sb.add("con_id", String.class);
-        sb.add("stat", String.class);
-        sb.add("crs", Double.class);
-        sb.add("msg_tp", String.class);
-        sb.add("c_spd", Double.class);
-        sb.add("cfr", String.class);
-        sb.add("cc", String.class);
-        sb.add("ircs", String.class);
-        sb.add("name", String.class);
-        sb.add("guid", String.class);
+        sb.add(GEOMETRY, Point.class);
+        sb.add(POSITION_TIME, String.class);
+        sb.add(CONNECTION_ID, String.class);
+        sb.add(STATUS, String.class);
+        sb.add(CALCULATED_COURSE, Double.class);
+        sb.add(MOVEMENT_TYPE, String.class);
+        sb.add(ACTIVITY_TYPE, String.class);
+        sb.add(REPORTED_SPEED, Double.class);
+        sb.add(CFR, String.class);
+        sb.add(COUNTRY_CODE, String.class);
+        sb.add(IRCS, String.class);
+        sb.add(NAME, String.class);
+        sb.add(GUID, String.class);
         sb.add("color", String.class);
         return sb.buildFeatureType();
     }
 
-    public SimpleFeature toFeature(){
-        // FIXME add sanity check
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENT);
-        featureBuilder.add(getGeometry());
-        featureBuilder.add(getPositionTime());
-        featureBuilder.add(getConnectId());
-        featureBuilder.add(getStatus());
-        featureBuilder.add(getCalculatedCourse());
+    public SimpleFeature toFeature() throws ReportingServiceException {
+
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENTYPE);
+        featureBuilder.set(GEOMETRY, getGeometry());
+        featureBuilder.set(POSITION_TIME, getPositionTime());
+        featureBuilder.set(CONNECTION_ID, getConnectId());
+        featureBuilder.set(STATUS, getStatus());
+        featureBuilder.set(CALCULATED_COURSE, getCalculatedCourse());
+
         if (getMovementType() != null){
-            featureBuilder.add(getMovementType().value());
+            featureBuilder.set(MOVEMENT_TYPE, getMovementType().value());
         }
-        featureBuilder.add(getCalculatedSpeed());
-        featureBuilder.add(asset.getCfr());
-        featureBuilder.add(asset.getCountryCode());
-        featureBuilder.add(asset.getIrcs());
-        featureBuilder.add(asset.getName());
+        if (movementType.getActivity() != null){
+            featureBuilder.set(ACTIVITY_TYPE, movementType.getActivity().getMessageType().value());
+        }
+
+        featureBuilder.set(REPORTED_SPEED, getReportedSpeed());
+        featureBuilder.set(CFR, asset.getCfr());
+        featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
+        featureBuilder.set(IRCS, asset.getIrcs());
+        featureBuilder.set(NAME, asset.getName());
+
         if (asset.getVesselId() != null){
-            featureBuilder.add(asset.getVesselId().getGuid());
+            featureBuilder.set(GUID, asset.getVesselId().getGuid());
         }
-        featureBuilder.add(asset.getColor());
+
+        featureBuilder.set("color", asset.getColor());
         return featureBuilder.buildFeature(getGuid());
     }
 
@@ -88,20 +109,20 @@ public class MovementDTO {
         Double getCalculatedCourse();
         String getWkt();
         MovementTypeType getMovementType();
+        Double getReportedSpeed();
     }
 
     public String getPositionTime() {
         return positionTime;
     }
 
-    public Geometry getGeometry() {
-        WKTReader wktReader = new WKTReader(); // FIXME check if wktReader is thread safe?
+    public Geometry getGeometry() throws ReportingServiceException {
+        WKTReader wktReader = new WKTReader();
         try {
             return wktReader.read(getWkt());
         } catch (ParseException e) {
-            e.printStackTrace(); // FIXME
+            throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
         }
-        return null;
     }
 }
 

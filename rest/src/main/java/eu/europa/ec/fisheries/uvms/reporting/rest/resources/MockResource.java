@@ -39,7 +39,7 @@ public class MockResource {
     public ResponseDto getVmsMockData(@Context HttpServletRequest request,
                                       @Context HttpServletResponse response,
                                       @PathParam("id") Long id,
-                                      @HeaderParam("scopeName") String scopeName) {
+                                      @HeaderParam("scopeName") String scopeName) throws ReportingServiceException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode rootNode = objectMapper.createObjectNode();
@@ -55,8 +55,6 @@ public class MockResource {
             rootNode.set("movements", movementsNode);
             rootNode.set("segments", segmentsNode);
             rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
-
-           // reportingResource.runReport(request, response, id, scopeName); we don't need it for the mock
 
         } catch (IOException e) {
             e.printStackTrace();

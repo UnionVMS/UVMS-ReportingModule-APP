@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
+import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
 import org.unitils.mock.annotation.Dummy;
 
@@ -28,9 +29,7 @@ public class ReportTest extends UnitilsJUnit4 {
         report.assertInvoked().setDeletedBy(null);
         report.assertInvoked().setVisibility(null);
 
-        report.assertNotInvoked().setScopeName(null);
-        report.assertNotInvoked().setCreatedBy(null);
-        report.assertNotInvoked().setExecutionLogs(null);
+        MockUnitils.assertNoMoreInvocations();
 
     }
 }

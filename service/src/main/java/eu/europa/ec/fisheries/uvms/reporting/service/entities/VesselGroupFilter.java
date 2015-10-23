@@ -67,7 +67,7 @@ public class VesselGroupFilter extends Filter {
     @Override
     public Object getUniqKey() {
         return hashCode();
-    } //FIXME better to use GUID as unique key but test first
+    }
 
     public String getName() {
         return name;

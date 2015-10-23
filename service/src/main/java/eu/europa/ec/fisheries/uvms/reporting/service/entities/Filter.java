@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;

@@ -61,8 +61,8 @@ public class VmsServiceBean implements VmsService {
     }
 
     @Override
-    public VmsDTO getVmsMockData(Long id) {
-        DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDTO.MOVEMENT);
+    public VmsDTO getVmsMockData(Long id) throws ReportingServiceException {
+        DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDTO.MOVEMENTYPE);
         DefaultFeatureCollection segmentsFeatureCollection = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
         MockPointsReader mockPointsReader = new MockPointsReader();
         List<MovementSegment> segmentList = mockPointsReader.segmentList;

@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.Builder;
@@ -53,9 +54,9 @@ public class VmsDTO {
         this.segments = segments;
     }
 
-    public static VmsDTO getVmsDto(Map<String, Vessel> vesselMapByGuid, List<MovementMapResponseType> mapResponseTypes) {
+    public static VmsDTO getVmsDto(Map<String, Vessel> vesselMapByGuid, List<MovementMapResponseType> mapResponseTypes) throws ReportingServiceException {
         List<TrackDTO> tracks = new ArrayList<>();
-        DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDTO.MOVEMENT);
+        DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDTO.MOVEMENTYPE);
         DefaultFeatureCollection segmentsFeatureCollection = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
 
         for (MovementMapResponseType map : mapResponseTypes){
