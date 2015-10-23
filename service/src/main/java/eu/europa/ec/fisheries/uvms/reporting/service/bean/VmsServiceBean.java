@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,11 @@ public class VmsServiceBean implements VmsService {
     private MovementServiceBean movement;
 
     @Override
+    @Transactional
     public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
+
+        VmsDTO vmsDto;
+
         try {
             Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
             validate(id, reportByReportId);
@@ -51,13 +56,18 @@ public class VmsServiceBean implements VmsService {
             if (processor.hasVesselsOrVesselGroups()) {
                 ImmutableMap<String, Vessel> vesselMapByGuid = vessel.getVesselMapByGuid(processor);
                 List<MovementMapResponseType> movementMap = movement.getMovementMapResponseTypes(processor);
-                return VmsDTO.getVmsDto(vesselMapByGuid, movementMap);
+                vmsDto = VmsDTO.getVmsDto(vesselMapByGuid, movementMap);
             } else {
                 throw new NotImplementedException("Please handle that case");
             }
+
+            reportByReportId.updateExecutionLog(username);
+
         } catch (ProcessorException e) {
             throw new ReportingServiceException("Error while processing reporting filters.", e);
         }
+
+        return vmsDto;
     }
 
     @Override

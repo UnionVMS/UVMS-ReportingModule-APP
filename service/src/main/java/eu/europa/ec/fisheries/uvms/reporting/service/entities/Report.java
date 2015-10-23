@@ -118,7 +118,8 @@ public class Report implements Serializable {
             executionLogByUser.setExecutedOn(new Date());
         }
         else {
-            ExecutionLog executionLog = ExecutionLog.builder().executedBy(username).build();
+            ExecutionLog executionLog =
+                    ExecutionLog.builder().report(this).executedBy(username).build();
             if (executionLogs == null){
                 executionLogs = new HashSet<>();
             }
