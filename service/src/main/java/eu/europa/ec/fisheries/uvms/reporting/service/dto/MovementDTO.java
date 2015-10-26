@@ -30,7 +30,7 @@ public class MovementDTO extends GeoJsonDTO {
     private static final String IRCS = "ircs";
     private static final String CFR = "cfr";
     private static final String NAME = "name";
-    private static final String GUID = "guid";
+    private static final String MOVEMENT_GUID = "movementGuid";
     private static final String MOVEMENT = "movement";
 
     @Delegate(types = Include.class)
@@ -62,7 +62,7 @@ public class MovementDTO extends GeoJsonDTO {
         sb.add(CALCULATED_SPEED, Double.class);
         sb.add(IRCS, String.class);
         sb.add(NAME, String.class);
-        //sb.add(GUID, String.class);
+        sb.add(MOVEMENT_GUID, String.class);
         //sb.add("color", String.class);
         return sb.buildFeatureType();
     }
@@ -75,6 +75,7 @@ public class MovementDTO extends GeoJsonDTO {
         featureBuilder.set(CONNECTION_ID, getConnectId());
         featureBuilder.set(STATUS, getStatus());
         featureBuilder.set(CALCULATED_COURSE, getCalculatedCourse());
+        featureBuilder.set(MOVEMENT_GUID, getGuid());
 
         if (getMovementType() != null){
             featureBuilder.set(MOVEMENT_TYPE, getMovementType().value());

@@ -13,7 +13,8 @@
         "positionTime" : "2013-02-28T13:24:56.000+01:00",
         "name" : "name",
         "movementType" : "EXI",
-        "activityType" : "ANC"
+        "activityType" : "ANC",
+        "movementGuid" : "movementGuid"
       },
       "type" : "Feature",
       "geometry" : {
