@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.vividsolutions.jts.geom.Point;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -80,7 +81,7 @@ public class MovementDTO extends GeoJsonDTO {
         if (getMovementType() != null){
             featureBuilder.set(MOVEMENT_TYPE, getMovementType().value());
         }
-        if (movementType.getActivity() != null){
+        if (getActivity() != null && getActivity().getMessageType() != null){
             featureBuilder.set(ACTIVITY_TYPE, movementType.getActivity().getMessageType().value());
         }
 
@@ -106,6 +107,7 @@ public class MovementDTO extends GeoJsonDTO {
         Double getCalculatedSpeed();
         XMLGregorianCalendar getPositionTime();
         Double getReportedSpeed();
+        MovementActivityType getActivity();
         Double getCalculatedCourse();
         String getWkt();
         MovementTypeType getMovementType();

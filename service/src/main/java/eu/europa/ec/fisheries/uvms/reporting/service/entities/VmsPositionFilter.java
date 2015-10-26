@@ -73,17 +73,17 @@ public class VmsPositionFilter extends Filter {
     @Override
     public List<ListCriteria> movementCriteria() {    	
     	List<ListCriteria> criteria = new ArrayList<ListCriteria>();    	
-    	if(getMovementType() != null) {
+    	if (getMovementType() != null) {
     		ListCriteria movementType = new ListCriteria();
     		movementType.setKey(SearchKey.MOVEMENT_TYPE);
         	movementType.setValue(getMovementType().name());
         	criteria.add(movementType);
     	}    	
-    	if(getMovementActivity() != null) {
-    		ListCriteria momementActivity = new ListCriteria();
-        	momementActivity.setKey(SearchKey.ACTIVITY_TYPE);
-        	momementActivity.setValue(getMovementActivity().name());
-        	criteria.add(momementActivity);
+    	if (getMovementActivity() != null) {
+    		ListCriteria movementActivity = new ListCriteria();
+            movementActivity.setKey(SearchKey.ACTIVITY_TYPE);
+            movementActivity.setValue(getMovementActivity().name());
+        	criteria.add(movementActivity);
     	}
     	return criteria;
     }
