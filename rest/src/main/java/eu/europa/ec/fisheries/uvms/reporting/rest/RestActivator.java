@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest;
 
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
-import eu.europa.ec.fisheries.uvms.reporting.rest.resources.MockResource;
 import eu.europa.ec.fisheries.uvms.reporting.rest.resources.ReportingResource;
 
 import org.slf4j.Logger;
@@ -25,7 +24,6 @@ public class RestActivator extends Application {
     private final Set<Class<?>> set = new HashSet<>();
 
     public RestActivator() {
-        set.add(MockResource.class);
         set.add(ReportingResource.class);
         LOG.info(RestConstants.MODULE_NAME + " module starting up");
     }
