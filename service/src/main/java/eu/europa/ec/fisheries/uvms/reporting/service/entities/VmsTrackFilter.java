@@ -12,6 +12,8 @@ import org.mapstruct.factory.Mappers;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,17 +23,27 @@ public class VmsTrackFilter extends Filter {
 
     @Column(name = "MIN_TIME")
     private Float minTime = 0F;
-    ;
 
     @Column(name = "MAX_TIME")
     private Float maxTime = 5000F;
-    ;
 
     @Column(name = "MIN_DURATION")
     private Float minDuration = 0F;
 
     @Column(name = "MAX_DURATION")
     private Float maxDuration = 5000F;
+
+    @Transient
+    private Float minDistance = 0F;
+
+    @Transient
+    private Float maxDistance = 500000F;
+
+    @Transient
+    private Float minAvgSpeed = 0F;
+
+    @Transient
+    private Float maxAvgSpeed = 100F;
 
     public VmsTrackFilter() {
         super(FilterType.vmstrack);
@@ -67,17 +79,53 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
-        RangeCriteria timeCriteria = new RangeCriteria();
-        timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
-        timeCriteria.setFrom(String.valueOf(minTime));
-        timeCriteria.setTo(String.valueOf(maxTime));
+        RangeCriteria timeCriteria = createDurationAtSeaCriteria();
+        RangeCriteria durationCriteria = createTotalDurationCriteria();
+        ArrayList<RangeCriteria> rangeCriterias = Lists.newArrayList(timeCriteria, durationCriteria);
 
+        if (isImplementedInFrontendAndDB()) {
+            rangeCriterias.add(createSpeedCriteria());
+            rangeCriterias.add(createDistanceCriteria());
+        }
+
+        return rangeCriterias;
+    }
+
+    //TODO Please remove that method when functionality would be implemented in front-end and would be created new columns in 'filter' db table
+    private boolean isImplementedInFrontendAndDB() {
+        return false;
+    }
+
+    private RangeCriteria createSpeedCriteria() {
+        RangeCriteria lengthCriteria = new RangeCriteria();
+        lengthCriteria.setKey(RangeKeyType.TRACK_SPEED);
+        lengthCriteria.setFrom(String.valueOf(minAvgSpeed));
+        lengthCriteria.setTo(String.valueOf(maxAvgSpeed));
+        return lengthCriteria;
+    }
+
+    private RangeCriteria createDistanceCriteria() {
+        RangeCriteria lengthCriteria = new RangeCriteria();
+        lengthCriteria.setKey(RangeKeyType.TRACK_LENGTH);
+        lengthCriteria.setFrom(String.valueOf(minDistance));
+        lengthCriteria.setTo(String.valueOf(maxDistance));
+        return lengthCriteria;
+    }
+
+    private RangeCriteria createTotalDurationCriteria() {
         RangeCriteria durationCriteria = new RangeCriteria();
         durationCriteria.setKey(RangeKeyType.TRACK_DURATION);
         durationCriteria.setFrom(String.valueOf(minDuration));
         durationCriteria.setTo(String.valueOf(maxDuration));
+        return durationCriteria;
+    }
 
-        return Lists.newArrayList(timeCriteria, durationCriteria);
+    private RangeCriteria createDurationAtSeaCriteria() {
+        RangeCriteria timeCriteria = new RangeCriteria();
+        timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
+        timeCriteria.setFrom(String.valueOf(minTime));
+        timeCriteria.setTo(String.valueOf(maxTime));
+        return timeCriteria;
     }
 
     @Override
