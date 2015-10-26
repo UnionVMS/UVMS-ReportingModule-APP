@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
@@ -12,38 +11,46 @@ import org.mapstruct.factory.Mappers;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.valueOf;
 
 @Entity
 @DiscriminatorValue("VMSTRACK")
 @EqualsAndHashCode(callSuper = true)
 public class VmsTrackFilter extends Filter {
 
+    private static final float MIN_DEFAULT = 0F;
+    private static final float DEFAULT_MAX_AVG_SPEED = 9999999F;
+    private static final float DEFAULT_MAX_DISTANCE = 9999999F;
+    private static final float DEFAULT_MAX_TIME_AT_SEA = 9999999F;
+    private static final float DEFAULT_MAX_FULL_DURATION = 9999999F;
+
     @Column(name = "MIN_TIME")
-    private Float minTime = 0F;
+    private Float minTime;
 
     @Column(name = "MAX_TIME")
-    private Float maxTime = 5000F;
+    private Float maxTime;
 
     @Column(name = "MIN_DURATION")
-    private Float minDuration = 0F;
+    private Float minDuration;
 
     @Column(name = "MAX_DURATION")
-    private Float maxDuration = 5000F;
+    private Float maxDuration;
 
-    @Transient
-    private Float minDistance = 0F;
+    @Column(name = "MIN_DISTANCE")
+    private Float minDistance;
 
-    @Transient
-    private Float maxDistance = 500000F;
+    @Column(name = "MAX_DISTANCE")
+    private Float maxDistance;
 
-    @Transient
-    private Float minAvgSpeed = 0F;
+    @Column(name = "MIN_AVG_SPEED")
+    private Float minAvgSpeed;
 
-    @Transient
-    private Float maxAvgSpeed = 100F;
+    @Column(name = "MAX_AVG_SPEED")
+    private Float maxAvgSpeed;
 
     public VmsTrackFilter() {
         super(FilterType.vmstrack);
@@ -54,12 +61,20 @@ public class VmsTrackFilter extends Filter {
                           Float maxTime,
                           Float maxDuration,
                           Float minDuration,
-                          Float minTime) {
+                          Float minTime,
+                          Float minAvgSpeed,
+                          Float maxAvgSpeed,
+                          Float minDistance,
+                          Float maxDistance) {
         super(FilterType.vmstrack, id, reportId);
-        setMinDuration(minDuration);
-        setMaxDuration(maxDuration);
-        setMinTime(minTime);
-        setMaxTime(maxTime);
+        this.minDuration = minDuration;
+        this.maxDuration = maxDuration;
+        this.minTime = minTime;
+        this.maxTime = maxTime;
+        this.minAvgSpeed = minAvgSpeed;
+        this.maxAvgSpeed = maxAvgSpeed;
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
     }
 
     @Override
@@ -79,53 +94,54 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
-        RangeCriteria timeCriteria = createDurationAtSeaCriteria();
-        RangeCriteria durationCriteria = createTotalDurationCriteria();
-        ArrayList<RangeCriteria> rangeCriterias = Lists.newArrayList(timeCriteria, durationCriteria);
+        ArrayList<RangeCriteria> rangeCriterias = newArrayList();
 
-        if (isImplementedInFrontendAndDB()) {
-            rangeCriterias.add(createSpeedCriteria());
-            rangeCriterias.add(createDistanceCriteria());
-        }
+        addDurationAtSeaCriteria(rangeCriterias);
+        addTotalDurationCriteria(rangeCriterias);
+        addSpeedCriteria(rangeCriterias);
+        addDistanceCriteria(rangeCriterias);
 
         return rangeCriterias;
     }
 
-    //TODO Please remove that method when functionality would be implemented in front-end and would be created new columns in 'filter' db table
-    private boolean isImplementedInFrontendAndDB() {
-        return false;
+    private void addSpeedCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+        if (minAvgSpeed != null || maxAvgSpeed != null) {
+            RangeCriteria lengthCriteria = new RangeCriteria();
+            lengthCriteria.setKey(RangeKeyType.TRACK_SPEED);
+            lengthCriteria.setFrom(valueOf(minAvgSpeed != null ? minAvgSpeed : MIN_DEFAULT));
+            lengthCriteria.setTo(valueOf(maxAvgSpeed != null ? maxAvgSpeed : DEFAULT_MAX_AVG_SPEED));
+            rangeCriterias.add(lengthCriteria);
+        }
     }
 
-    private RangeCriteria createSpeedCriteria() {
-        RangeCriteria lengthCriteria = new RangeCriteria();
-        lengthCriteria.setKey(RangeKeyType.TRACK_SPEED);
-        lengthCriteria.setFrom(String.valueOf(minAvgSpeed));
-        lengthCriteria.setTo(String.valueOf(maxAvgSpeed));
-        return lengthCriteria;
+    private void addDistanceCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+        if (minDistance != null || maxDistance != null) {
+            RangeCriteria lengthCriteria = new RangeCriteria();
+            lengthCriteria.setKey(RangeKeyType.TRACK_LENGTH);
+            lengthCriteria.setFrom(valueOf(minDistance != null ? minDistance : MIN_DEFAULT));
+            lengthCriteria.setTo(valueOf(maxDistance != null ? maxDistance : DEFAULT_MAX_DISTANCE));
+            rangeCriterias.add(lengthCriteria);
+        }
     }
 
-    private RangeCriteria createDistanceCriteria() {
-        RangeCriteria lengthCriteria = new RangeCriteria();
-        lengthCriteria.setKey(RangeKeyType.TRACK_LENGTH);
-        lengthCriteria.setFrom(String.valueOf(minDistance));
-        lengthCriteria.setTo(String.valueOf(maxDistance));
-        return lengthCriteria;
+    private void addTotalDurationCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+        if (minDuration != null || maxDuration != null) {
+            RangeCriteria durationCriteria = new RangeCriteria();
+            durationCriteria.setKey(RangeKeyType.TRACK_DURATION);
+            durationCriteria.setFrom(valueOf(minDuration != null ? minDuration : MIN_DEFAULT));
+            durationCriteria.setTo(valueOf(maxDuration != null ? maxDuration : DEFAULT_MAX_FULL_DURATION));
+            rangeCriterias.add(durationCriteria);
+        }
     }
 
-    private RangeCriteria createTotalDurationCriteria() {
-        RangeCriteria durationCriteria = new RangeCriteria();
-        durationCriteria.setKey(RangeKeyType.TRACK_DURATION);
-        durationCriteria.setFrom(String.valueOf(minDuration));
-        durationCriteria.setTo(String.valueOf(maxDuration));
-        return durationCriteria;
-    }
-
-    private RangeCriteria createDurationAtSeaCriteria() {
-        RangeCriteria timeCriteria = new RangeCriteria();
-        timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
-        timeCriteria.setFrom(String.valueOf(minTime));
-        timeCriteria.setTo(String.valueOf(maxTime));
-        return timeCriteria;
+    private void addDurationAtSeaCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+        if (minTime != null || maxTime != null) {
+            RangeCriteria timeCriteria = new RangeCriteria();
+            timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
+            timeCriteria.setFrom(valueOf(minTime != null ? minTime : MIN_DEFAULT));
+            timeCriteria.setTo(valueOf(maxTime != null ? maxTime : DEFAULT_MAX_TIME_AT_SEA));
+            rangeCriterias.add(timeCriteria);
+        }
     }
 
     @Override
@@ -138,9 +154,7 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMaxTime(Float maxTime) {
-        if (maxTime != null) {
-            this.maxTime = maxTime;
-        }
+        this.maxTime = maxTime;
     }
 
     public Float getMinTime() {
@@ -148,9 +162,7 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMinTime(Float minTime) {
-        if (minTime != null) {
-            this.minTime = minTime;
-        }
+        this.minTime = minTime;
     }
 
     public Float getMinDuration() {
@@ -158,9 +170,7 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMinDuration(Float minDuration) {
-        if (minDuration != null) {
-            this.minDuration = minDuration;
-        }
+        this.minDuration = minDuration;
     }
 
     public Float getMaxDuration() {
@@ -168,9 +178,39 @@ public class VmsTrackFilter extends Filter {
     }
 
     public void setMaxDuration(Float maxDuration) {
-        if (maxDuration != null) {
-            this.maxDuration = maxDuration;
-        }
+        this.maxDuration = maxDuration;
+    }
+
+    public Float getMinDistance() {
+        return minDistance;
+    }
+
+    public void setMinDistance(Float minDistance) {
+        this.minDistance = minDistance;
+    }
+
+    public Float getMaxDistance() {
+        return maxDistance;
+    }
+
+    public void setMaxDistance(Float maxDistance) {
+        this.maxDistance = maxDistance;
+    }
+
+    public Float getMinAvgSpeed() {
+        return minAvgSpeed;
+    }
+
+    public void setMinAvgSpeed(Float minAvgSpeed) {
+        this.minAvgSpeed = minAvgSpeed;
+    }
+
+    public Float getMaxAvgSpeed() {
+        return maxAvgSpeed;
+    }
+
+    public void setMaxAvgSpeed(Float maxAvgSpeed) {
+        this.maxAvgSpeed = maxAvgSpeed;
     }
 
 }
