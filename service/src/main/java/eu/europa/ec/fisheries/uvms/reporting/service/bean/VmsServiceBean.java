@@ -68,44 +68,6 @@ public class VmsServiceBean implements VmsService {
         return vmsDto;
     }
 
-//    @Override
-//    public VmsDTO getVmsMockData(Long id) throws ReportingServiceException {
-//        DefaultFeatureCollection movementFeatureCollection = new DefaultFeatureCollection(null, MovementDTO.MOVEMENTYPE);
-//        DefaultFeatureCollection segmentsFeatureCollection = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
-//        MockPointsReader mockPointsReader = new MockPointsReader();
-//        List<MovementSegment> segmentList = mockPointsReader.segmentList;
-//        List<MovementType> movementList = mockPointsReader.movementTypeList;
-//        List<MovementTrack> movementTrackList = mockPointsReader.movementTrackList;
-//        List<Vessel> vesselDtoList = MockVesselData.getVesselDtoList(2);
-//        List<TrackDTO> tracks = new ArrayList<>();
-//        int trackid = 1;
-//
-//        for (Vessel vessel : vesselDtoList) {
-//            int r = MockingUtils.randIntOdd(0, movementList.size());
-//            List<MovementType> subList = movementList.subList(0, r);
-//            for (MovementType movementType : subList) {
-//                movementFeatureCollection.add(new MovementDTO(movementType, vessel).toFeature());
-//            }
-//            int i = r / 2;
-//            List<MovementSegment> segmentList1 = segmentList.subList(0, i);
-//            for (MovementSegment segment : segmentList1) {
-//                segment.setTrackId(String.valueOf(trackid));
-//                segmentsFeatureCollection.add(new SegmentDTO(segment, vessel).toFeature());
-//            }
-//
-//            List<MovementTrack> movementTracks = movementTrackList.subList(0, vesselDtoList.size());
-//            for (MovementTrack movementTrack : movementTracks) {
-//                movementTrack.setId(String.valueOf(trackid));
-//                tracks.add(new TrackDTO(movementTrack, vessel));
-//            }
-//
-//            movementTrackList.removeAll(movementTracks);
-//            movementList.removeAll(subList);
-//            segmentList.removeAll(segmentList1);
-//        }
-//        return new VmsDTO(movementFeatureCollection, segmentsFeatureCollection, tracks);
-//    }
-
     private void validate(Long id, Report reportByReportId) throws ReportingServiceException {
         if (reportByReportId == null) {
             throw new ReportingServiceException("No report found with id " + id);

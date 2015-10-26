@@ -34,7 +34,7 @@ public class SpatialServiceBean implements SpatialService {
 	public String getFilterArea(List<AreaIdentifierType> userAreas) throws ReportingServiceException {
 		try {
 			SpatialModuleRequestMapper requestMapper = new SpatialModuleRequestMapper();
-			String requestMsg = requestMapper.mapToFilterAreaSpatialRequest(Collections.<AreaIdentifierType>emptyList(), userAreas);
+			String requestMsg = SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(Collections.<AreaIdentifierType>emptyList(), userAreas);
 			String correlationId = spatialProducerBean.sendModuleMessage(requestMsg, spatialConsumerBean.getDestination());
 			Message message = spatialConsumerBean.getMessage(correlationId, TextMessage.class);
 			return getText(message);
