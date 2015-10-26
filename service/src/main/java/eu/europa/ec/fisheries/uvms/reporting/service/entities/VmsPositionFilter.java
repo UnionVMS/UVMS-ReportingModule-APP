@@ -27,10 +27,10 @@ public class VmsPositionFilter extends Filter {
 	private static final long serialVersionUID = -8391061757398510151L;
 
 	@Column(name = "MIN_SPEED")
-    private Float minimumSpeed = 0.0F;
+    private Float minimumSpeed;
 
     @Column(name = "MAX_SPEED")
-    private Float maximumSpeed = 1000F;
+    private Float maximumSpeed;
 
     @Column(name = "MOV_TYPE")
     private MovementTypeType movementType;
@@ -90,10 +90,13 @@ public class VmsPositionFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
+    	if (getMinimumSpeed() == null && getMaximumSpeed() == null) {
+    		return Arrays.asList();
+    	}
     	RangeCriteria movementSpeed = new RangeCriteria();
     	movementSpeed.setKey(RangeKeyType.MOVEMENT_SPEED);
-    	movementSpeed.setFrom(Float.toString(getMinimumSpeed()));
-    	movementSpeed.setTo(Float.toString(getMaximumSpeed()));
+    	movementSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : 0F));
+    	movementSpeed.setTo(Float.toString(getMaximumSpeed() != null ? getMaximumSpeed() : 1000F));
     	return Arrays.asList(movementSpeed);
     }
 
@@ -107,9 +110,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     public void setMinimumSpeed(Float minimumSpeed) {
-    	if (minimumSpeed != null) {
-    		this.minimumSpeed = minimumSpeed;
-    	}        
+    	this.minimumSpeed = minimumSpeed;       
     }
 
     public MovementTypeType getMovementType() {
@@ -133,9 +134,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     public void setMaximumSpeed(Float maximumSpeed) {
-    	if (maximumSpeed != null) {
-    		this.maximumSpeed = maximumSpeed;
-    	}        
+    	this.maximumSpeed = maximumSpeed;        
     }
 
 }
