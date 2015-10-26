@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import org.mapstruct.factory.Mappers;
 
+import javax.persistence.Column;
+
 @EqualsAndHashCode(callSuper = true)
 public class TrackFilterDTO extends FilterDTO {
 
@@ -29,6 +31,14 @@ public class TrackFilterDTO extends FilterDTO {
     @JsonProperty(TRK_MAX_DURATION)
     private Float maxDuration;
 
+    private Float minDistance;
+
+    private Float maxDistance;
+
+    private Float minAvgSpeed;
+
+    private Float maxAvgSpeed;
+
     public TrackFilterDTO() {
         super(FilterType.vmstrack);
     }
@@ -43,12 +53,20 @@ public class TrackFilterDTO extends FilterDTO {
                           Float maxTime,
                           Float minTime,
                           Float minDuration,
-                          Float maxDuration) {
+                          Float maxDuration,
+                          Float minDistance,
+                          Float maxDistance,
+                          Float minAvgSpeed,
+                          Float maxAvgSpeed) {
         this(id, reportId);
         this.maxTime = maxTime;
         this.minTime = minTime;
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
+        this.minAvgSpeed = minAvgSpeed;
+        this.maxAvgSpeed = maxAvgSpeed;
         validate();
     }
 
@@ -88,5 +106,37 @@ public class TrackFilterDTO extends FilterDTO {
 
     public void setMaxDuration(Float maxDuration) {
         this.maxDuration = maxDuration;
+    }
+
+    public Float getMinDistance() {
+        return minDistance;
+    }
+
+    public void setMinDistance(Float minDistance) {
+        this.minDistance = minDistance;
+    }
+
+    public Float getMaxDistance() {
+        return maxDistance;
+    }
+
+    public void setMaxDistance(Float maxDistance) {
+        this.maxDistance = maxDistance;
+    }
+
+    public Float getMinAvgSpeed() {
+        return minAvgSpeed;
+    }
+
+    public void setMinAvgSpeed(Float minAvgSpeed) {
+        this.minAvgSpeed = minAvgSpeed;
+    }
+
+    public Float getMaxAvgSpeed() {
+        return maxAvgSpeed;
+    }
+
+    public void setMaxAvgSpeed(Float maxAvgSpeed) {
+        this.maxAvgSpeed = maxAvgSpeed;
     }
 }

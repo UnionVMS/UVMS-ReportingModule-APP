@@ -18,6 +18,10 @@ public abstract class TrackFilterMapper {
                 .maxTime(trackFilterDTO.getMaxTime())
                 .minDuration(trackFilterDTO.getMinDuration())
                 .maxDuration(trackFilterDTO.getMaxDuration())
+                .minAvgSpeed(trackFilterDTO.getMinAvgSpeed())
+                .maxAvgSpeed(trackFilterDTO.getMaxAvgSpeed())
+                .minDistance(trackFilterDTO.getMinDistance())
+                .maxDistance(trackFilterDTO.getMaxDistance())
                 .build();
     }
 }

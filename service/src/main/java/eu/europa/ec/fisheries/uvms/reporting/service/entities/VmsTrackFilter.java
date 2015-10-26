@@ -88,8 +88,13 @@ public class VmsTrackFilter extends Filter {
         VmsTrackFilter incoming = (VmsTrackFilter) filter;
         setMaxDuration(incoming.getMaxDuration());
         setMaxTime(incoming.getMaxTime());
+        setMaxAvgSpeed(incoming.getMaxAvgSpeed());
+        setMaxDistance(incoming.getMaxDistance());
+
         setMinDuration(incoming.getMinDuration());
         setMinTime(incoming.getMinTime());
+        setMinAvgSpeed(incoming.getMinAvgSpeed());
+        setMinDistance(incoming.getMinDistance());
     }
 
     @Override
