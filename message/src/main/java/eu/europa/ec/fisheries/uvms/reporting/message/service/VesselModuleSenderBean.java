@@ -8,9 +8,6 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 
-/**
- * //TODO create test
- */
 @Stateless
 @LocalBean
 public class VesselModuleSenderBean extends AbstractProducer {

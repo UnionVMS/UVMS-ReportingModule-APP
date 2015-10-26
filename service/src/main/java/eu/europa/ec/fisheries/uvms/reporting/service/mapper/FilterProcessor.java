@@ -32,7 +32,6 @@ public class FilterProcessor {
     private final List<VesselListCriteriaPair> vesselListCriteriaPairs = new ArrayList<>();
     private final List<VesselGroup> vesselGroupList = new ArrayList<>();
 
-    @Builder(builderMethodName = "FilterProcessorBuilder")
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
         validate(filters);
 

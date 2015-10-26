@@ -1,74 +1,66 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.experimental.Delegate;
+import org.opengis.feature.simple.SimpleFeature;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackDTO {
+public class TrackDTO extends GeoJsonDTO {
 
     @Delegate(types = Include.class)
     private MovementTrack track;
 
     private AssetDTO asset;
-    private BigDecimal distance;
-    private BigDecimal duration;
-
-    @JsonIgnore
-    private Geometry geometry;
 
     private List<Double> nearestPoint;
 
     private List<Double> extent;
 
-    public TrackDTO(MovementTrack track, Vessel vessel){
+    public TrackDTO(MovementTrack track, Vessel vessel) throws ReportingServiceException {
         this.track = track;
         asset = new AssetDTO(vessel);
-        geometry = toGeometry();
+        toGeometry(track.getWkt());
         computeEnvelope();
         computerNearestPoint();
     }
 
     private void computerNearestPoint() {
         nearestPoint = new ArrayList<>();
-        DistanceOp distanceOp = new DistanceOp(geometry.getCentroid(), geometry);
-        Coordinate[] nearestPoints = distanceOp.nearestPoints();
-        nearestPoint.add(nearestPoints[0].x);
-        nearestPoint.add(nearestPoints[0].y);
+        if (geometry !=null && geometry.getCentroid() != null){
+            DistanceOp distanceOp = new DistanceOp(geometry.getCentroid(), geometry);
+            Coordinate[] nearestPoints = distanceOp.nearestPoints();
+            nearestPoint.add(nearestPoints[0].x);
+            nearestPoint.add(nearestPoints[0].y);
+        }
+    }
+
+    @Override
+    public SimpleFeature toFeature() throws ReportingServiceException {
+        return null;
     }
 
     private interface Include {
+        Double getDuration();
+        Double getDistance();
         String getId();
-    }
-
-    private Geometry toGeometry() {
-        WKTReader wktReader = new WKTReader();
-        try {
-            return wktReader.read(track.getWkt());
-        } catch (ParseException e) {
-            e.printStackTrace(); // FIXME
-        }
-        return null;
     }
 
     private void computeEnvelope() {
         extent = new ArrayList<>();
-        Envelope internal = geometry.getEnvelopeInternal();
-        extent.add(internal.getMinX());
-        extent.add(internal.getMinY());
-        extent.add(internal.getMaxX());
-        extent.add(internal.getMaxY());
+        if (geometry != null && geometry.getEnvelopeInternal() != null){
+            Envelope internal = geometry.getEnvelopeInternal();
+            extent.add(internal.getMinX());
+            extent.add(internal.getMinY());
+            extent.add(internal.getMaxX());
+            extent.add(internal.getMaxY());
+        }
     }
 
     public List<Double> getNearestPoint() {
@@ -81,16 +73,6 @@ public class TrackDTO {
 
     public List<Double> getExtent() {
         return extent;
-    }
-
-    @JsonProperty("dur")
-    public Double getDuration(){
-        return track.getDuration();
-    }
-
-    @JsonProperty("dist")
-    public Double getDistance(){
-        return track.getDistance();
     }
 
 }

@@ -1,0 +1,11 @@
+{
+  "movements" : {
+    "features" : [ ],
+    "type" : "FeatureCollection"
+  },
+  "segments" : {
+    "features" : [ ],
+    "type" : "FeatureCollection"
+  },
+  "tracks" : [ ]
+}

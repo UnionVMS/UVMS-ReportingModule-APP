@@ -2,8 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -15,6 +14,8 @@ import org.unitils.mock.MockUnitils;
 import java.util.HashSet;
 import java.util.Set;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.CommonFilterBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter.VesselFilterBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter.VesselGroupFilterBuilder;
 
@@ -43,13 +44,14 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
         report.returns(filterSet).getFilters();
 
-        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMapByGuid(null);
+        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null);
 
         service.getVmsDataByReportId("userName", "scope",  null);
 
-        vessel.assertInvoked().getVesselMapByGuid(null);
-        movement.assertInvoked().getMovementMapResponseTypes(null);
+        vessel.assertInvokedInSequence().getVesselMap(null);
+        movement.assertInvokedInSequence().getMovement(null);
+        report.assertInvokedInSequence().updateExecutionLog("userName");
         MockUnitils.assertNoMoreInvocations();
     }
 
@@ -60,12 +62,35 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         filterSet.add(VesselGroupFilterBuilder().groupId("123").build());
 
         report.returns(filterSet).getFilters();
-        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMapByGuid(null);
-        repository.returns(report).findReportByReportId(null, "test", null);
+        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
+        repository.returns(report.getMock()).findReportByReportId(null, "test", null);
         service.getVmsDataByReportId("test", null, null);
 
-        vessel.assertInvoked().getVesselMapByGuid(null);
-        movement.assertInvoked().getMovementMapResponseTypes(null);
+        vessel.assertInvokedInSequence().getVesselMap(null);
+        movement.assertInvokedInSequence().getMovement(null);
+        report.assertInvokedInSequence().updateExecutionLog("test");
+
+        MockUnitils.assertNoMoreInvocations();
+
+    }
+
+    @Test
+    public void testGetVmsDataByReportIdWithoutVessel() throws Exception {
+
+        Set<Filter> filterSet = new HashSet<>();
+        filterSet.add(CommonFilterBuilder()
+                .positionSelector(PositionSelectorBuilder().selector(Selector.all).build())
+                .build());
+
+        report.returns(filterSet).getFilters();
+        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
+        repository.returns(report.getMock()).findReportByReportId(null, "test", null);
+        service.getVmsDataByReportId("test", null, null);
+
+        movement.assertInvokedInSequence().getMovementMap(null);
+        vessel.assertInvokedInSequence().getVesselMap(null);
+        report.assertInvokedInSequence().updateExecutionLog("test");
+
         MockUnitils.assertNoMoreInvocations();
 
     }

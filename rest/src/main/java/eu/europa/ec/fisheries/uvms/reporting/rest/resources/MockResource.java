@@ -32,33 +32,33 @@ public class MockResource {
     @Inject
     private ReportingResource reportingResource;
 
-    @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
-    @Path("/mock/{id}")
-    @SuppressWarnings("unchecked")
-    public ResponseDto getVmsMockData(@Context HttpServletRequest request,
-                                      @Context HttpServletResponse response,
-                                      @PathParam("id") Long id,
-                                      @HeaderParam("scopeName") String scopeName) throws ReportingServiceException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode rootNode = objectMapper.createObjectNode();
-
-        try {
-
-            VmsDTO vmsDto = vmsService.getVmsMockData(id);
-
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
-            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
-
-            rootNode.set("movements", movementsNode);
-            rootNode.set("segments", segmentsNode);
-            rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
-    }
+//    @GET
+//    @Produces(value = {MediaType.APPLICATION_JSON})
+//    @Path("/mock/{id}")
+//    @SuppressWarnings("unchecked")
+//    public ResponseDto getVmsMockData(@Context HttpServletRequest request,
+//                                      @Context HttpServletResponse response,
+//                                      @PathParam("id") Long id,
+//                                      @HeaderParam("scopeName") String scopeName) throws ReportingServiceException {
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        ObjectNode rootNode = objectMapper.createObjectNode();
+//
+//        try {
+//
+//            VmsDTO vmsDto = vmsService.getVmsMockData(id);
+//
+//            ObjectMapper mapper = new ObjectMapper();
+//            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getMovements()));
+//            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(vmsDto.getSegments()));
+//
+//            rootNode.set("movements", movementsNode);
+//            rootNode.set("segments", segmentsNode);
+//            rootNode.set("tracks", mapper.readTree(objectMapper.writeValueAsString(vmsDto.getTracks())));
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return new ResponseDto(rootNode, HttpServletResponse.SC_OK);
+//    }
 }

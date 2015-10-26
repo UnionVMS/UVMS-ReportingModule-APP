@@ -1,0 +1,61 @@
+{
+  "movements" : {
+    "features" : [ {
+      "properties" : {
+        "calculatedCourse" : 23.0,
+        "calculatedSpeed" : 22.0,
+        "status" : "STATUS",
+        "reportedSpeed" : 12.0,
+        "connectionId" : "guid",
+        "countryCode" : "BE",
+        "ircs" : "Ircs",
+        "cfr" : "cfr",
+        "positionTime" : "2013-02-28T13:24:56.000+01:00",
+        "name" : "name",
+        "movementType" : "EXI",
+        "activityType" : "ANC"
+      },
+      "type" : "Feature",
+      "geometry" : {
+        "type" : "Point",
+        "coordinates" : [ 30, 10 ]
+      }
+    } ],
+    "type" : "FeatureCollection"
+  },
+  "segments" : {
+    "features" : [ {
+      "properties" : {
+        "cfr" : "cfr",
+        "trackId" : "trackId",
+        "distance" : 200.0,
+        "duration" : 100.0,
+        "name" : "name",
+        "countryCode" : "BE",
+        "ircs" : "Ircs",
+        "courseOverGround" : 10.4,
+        "speedOverGround" : 13.5
+      },
+      "type" : "Feature",
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 30, 10 ], [ 10, 30 ], [ 40, 40 ] ]
+      }
+    } ],
+    "type" : "FeatureCollection"
+  },
+  "tracks" : [ {
+    "asset" : {
+      "name" : "name",
+      "countryCode" : "BE",
+      "ircs" : "Ircs",
+      "cfr" : "cfr",
+      "guid" : null
+    },
+    "nearestPoint" : [ 25.58479532163743, 21.666666666666668 ],
+    "extent" : [ 10.0, 5.0, 45.0, 45.0 ],
+    "id" : null,
+    "distance" : 300.0,
+    "duration" : 212.0
+  } ]
+}

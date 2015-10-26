@@ -220,6 +220,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.skyscreamer</groupId>
+                <artifactId>jsonassert</artifactId>
+                <version>1.2.3</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>3.0.11.Final</version>
@@ -295,10 +302,6 @@
                     <exclusion>
                         <groupId>org.apache.httpcomponents</groupId>
                         <artifactId>httpclient</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.skyscreamer</groupId>
-                        <artifactId>jsonassert</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>xmlunit</groupId>

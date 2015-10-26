@@ -276,12 +276,12 @@ public class ReportingResource extends UnionVMSResource {
 
         LOG.info("{} is requesting shareReport(...), with a ID={}",username, id);
 
-        VmsDTO vmsDto = null;
+        VmsDTO vmsDto;
         ObjectNode jsonNodes;
 
         try {
             vmsDto = vmsService.getVmsDataByReportId(username, scopeName, id);
-            jsonNodes = vmsDto.toObjectNode();
+            jsonNodes = vmsDto.toJson();
             return createSuccessResponse(jsonNodes);
 
         } catch (ReportingServiceException | MessageException | VesselModelMapperException e) {

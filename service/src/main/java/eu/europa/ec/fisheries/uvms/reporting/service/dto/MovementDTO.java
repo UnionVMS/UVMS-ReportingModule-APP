@@ -1,14 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.common.MockingUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.mock.MockVesselData;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -17,11 +12,12 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-public class MovementDTO {
+import javax.xml.datatype.XMLGregorianCalendar;
+
+public class MovementDTO extends GeoJsonDTO {
 
     public static final SimpleFeatureType MOVEMENTYPE = buildFeatueType();
 
-    private static final String GEOMETRY = "geometry";
     private static final String POSITION_TIME = "positionTime";
     private static final String CONNECTION_ID = "connectionId";
     private static final String STATUS = "status";
@@ -29,6 +25,7 @@ public class MovementDTO {
     private static final String MOVEMENT_TYPE = "movementType";
     private static final String ACTIVITY_TYPE = "activityType";
     private static final String REPORTED_SPEED = "reportedSpeed";
+    private static final String CALCULATED_SPEED = "calculatedSpeed";
     private static final String COUNTRY_CODE = "countryCode";
     private static final String IRCS = "ircs";
     private static final String CFR = "cfr";
@@ -41,12 +38,10 @@ public class MovementDTO {
 
     private AssetDTO asset;
 
-    private String positionTime;
-
     public MovementDTO(MovementType movementType, Vessel vessel){
         this.movementType = movementType;
         asset = new AssetDTO(vessel);
-        asset.setColor(MockVesselData.COLORS.get(MockingUtils.randInt(0, 9)));// FIXME only for mock
+       // asset.setColor(MockVesselData.COLORS.get(MockingUtils.randInt(0, 9)));//
     }
 
     private static SimpleFeatureType buildFeatueType() {
@@ -58,22 +53,24 @@ public class MovementDTO {
         sb.add(CONNECTION_ID, String.class);
         sb.add(STATUS, String.class);
         sb.add(CALCULATED_COURSE, Double.class);
+        sb.add(CALCULATED_SPEED, Double.class);
         sb.add(MOVEMENT_TYPE, String.class);
         sb.add(ACTIVITY_TYPE, String.class);
         sb.add(REPORTED_SPEED, Double.class);
         sb.add(CFR, String.class);
         sb.add(COUNTRY_CODE, String.class);
+        sb.add(CALCULATED_SPEED, Double.class);
         sb.add(IRCS, String.class);
         sb.add(NAME, String.class);
-        sb.add(GUID, String.class);
-        sb.add("color", String.class);
+        //sb.add(GUID, String.class);
+        //sb.add("color", String.class);
         return sb.buildFeatureType();
     }
 
     public SimpleFeature toFeature() throws ReportingServiceException {
 
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENTYPE);
-        featureBuilder.set(GEOMETRY, getGeometry());
+        featureBuilder.set(GEOMETRY, toGeometry(getWkt()));
         featureBuilder.set(POSITION_TIME, getPositionTime());
         featureBuilder.set(CONNECTION_ID, getConnectId());
         featureBuilder.set(STATUS, getStatus());
@@ -87,42 +84,30 @@ public class MovementDTO {
         }
 
         featureBuilder.set(REPORTED_SPEED, getReportedSpeed());
+        featureBuilder.set(CALCULATED_SPEED, getCalculatedSpeed());
         featureBuilder.set(CFR, asset.getCfr());
         featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
         featureBuilder.set(IRCS, asset.getIrcs());
         featureBuilder.set(NAME, asset.getName());
 
-        if (asset.getVesselId() != null){
-            featureBuilder.set(GUID, asset.getVesselId().getGuid());
-        }
+//        if (asset.getVesselId() != null){
+//            featureBuilder.set(GUID, asset.getVesselId().getGuid());
+//        }
 
-        featureBuilder.set("color", asset.getColor());
+      //  featureBuilder.set("color", asset.getColor());
         return featureBuilder.buildFeature(getGuid());
     }
 
     private interface Include {
         String getGuid();
-        void setGuid(String id);
         String getConnectId();
         String getStatus();
         Double getCalculatedSpeed();
+        XMLGregorianCalendar getPositionTime();
+        Double getReportedSpeed();
         Double getCalculatedCourse();
         String getWkt();
         MovementTypeType getMovementType();
-        Double getReportedSpeed();
-    }
-
-    public String getPositionTime() {
-        return positionTime;
-    }
-
-    public Geometry getGeometry() throws ReportingServiceException {
-        WKTReader wktReader = new WKTReader();
-        try {
-            return wktReader.read(getWkt());
-        } catch (ParseException e) {
-            throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
-        }
     }
 }
 

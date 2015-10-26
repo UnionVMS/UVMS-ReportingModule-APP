@@ -30,7 +30,7 @@ public class VesselServiceBean {
     private VesselModuleReceiverBean vesselReceiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public ImmutableMap<String, Vessel> getVesselMapByGuid(final FilterProcessor processor) throws ReportingServiceException {
+    public ImmutableMap<String, Vessel> getVesselMap(final FilterProcessor processor) throws ReportingServiceException {
         Set<Vessel> vesselList = Sets.newHashSet();
 
         try {
@@ -53,6 +53,6 @@ public class VesselServiceBean {
             throw new ReportingServiceException("FAILED TO GET DATA FROM VESSEL", e);
         }
 
-        return ExtendedVesselMessageMapper.getVesselMapByGuid(vesselList);
+        return ExtendedVesselMessageMapper.getVesselMap(vesselList);
     }
 }

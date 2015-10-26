@@ -21,7 +21,6 @@ public class AssetDtoTest {
         AssetDTO dto = new AssetDTO(vessel);
 
         // then
-        assertEquals(dto.getVesselId().getGuid(), "1");
         assertEquals(dto.getCountryCode(), "SWE1");
         assertEquals(dto.getIrcs(), "IRCS-1");
         assertEquals(dto.getName(), "VESSEL-1");
