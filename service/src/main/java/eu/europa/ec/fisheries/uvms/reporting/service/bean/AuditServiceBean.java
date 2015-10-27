@@ -4,12 +4,12 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
+import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
+import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
-import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 @Local(value = AuditService.class)
 public class AuditServiceBean implements AuditService {
 	
-	private static Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class.getName());
 	
 	@EJB
 	private AuditMessageServiceBean auditProducerBean;

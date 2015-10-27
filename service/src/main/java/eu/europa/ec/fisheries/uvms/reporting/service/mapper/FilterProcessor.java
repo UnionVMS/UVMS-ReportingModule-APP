@@ -77,8 +77,8 @@ public class FilterProcessor {
 
     private VesselListPagination createPagination() {
         VesselListPagination pagination = new VesselListPagination();
-        pagination.setPage(BigInteger.valueOf(1));
-        pagination.setListSize(new BigInteger("1000"));
+        pagination.setPage(1);
+        pagination.setListSize(1000);
         return pagination;
     }
 

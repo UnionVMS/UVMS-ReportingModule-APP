@@ -10,6 +10,7 @@ import org.unitils.inject.annotation.TestedObject;
 import java.math.BigInteger;
 import java.util.List;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter.VesselGroupFilterBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -26,31 +27,22 @@ public class VesselGroupFilterTest extends UnitilsJUnit4 {
     @Test
     public void testVesselGroupCriteria(){
 
-        filter = VesselGroupFilter.VesselGroupFilterBuilder()
-                .groupId("5")
-                .name("GP5")
-                .build();
+        filter = VesselGroupFilterBuilder().groupId("5").name("GP5").userName("test").build();
 
         List<VesselGroup> vesselGroups = filter.vesselGroupCriteria();
 
         assertEquals(1, vesselGroups.size());
-        assertEquals(vesselGroups.get(0).getName(), null); // nme not needed in criteria
+        assertEquals(vesselGroups.get(0).getName(), filter.getName());
         assertEquals(vesselGroups.get(0).getUser(), filter.getUserName());
-        assertEquals(vesselGroups.get(0).getId(), new BigInteger(filter.getGuid()));
+        assertEquals(vesselGroups.get(0).getGuid(), filter.getGuid());
     }
 
     @Test
     public void testMerge(){
 
-       filter = VesselGroupFilter.VesselGroupFilterBuilder()
-                .groupId("2")
-                .name("GP2")
-                .build();
+       filter = VesselGroupFilterBuilder().groupId("2").name("GP2").build();
 
-        VesselGroupFilter incoming = VesselGroupFilter.VesselGroupFilterBuilder()
-                .groupId("1")
-                .name("GP1")
-                .build();
+        VesselGroupFilter incoming = VesselGroupFilterBuilder().groupId("1").name("GP1").build();
 
         assertNotEquals(filter, incoming);
 

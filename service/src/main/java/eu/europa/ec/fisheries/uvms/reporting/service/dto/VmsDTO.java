@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.RawValue;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
@@ -13,7 +12,6 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
-import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
 
@@ -42,40 +40,35 @@ public class VmsDTO {
 
         try {
 
-        if (CollectionUtils.isNotEmpty(movementMap)){
-            for (MovementMapResponseType map : movementMap){
-                Vessel vessel = vesselMap.get(map.getKey());
-                if (vessel != null){
-                    for (MovementType movement : map.getMovements()){
-                        movements.add(new MovementDTO(movement, vessel).toFeature());
-                    }
-                    for (MovementSegment segment : map.getSegments()){
-                        segments.add(new SegmentDTO(segment, vessel).toFeature());
-                    }
-                    for (MovementTrack track : map.getTracks()){
-                        tracks.add(new TrackDTO(track, vessel));
+            if (CollectionUtils.isNotEmpty(movementMap)){
+                for (MovementMapResponseType map : movementMap){
+                    Vessel vessel = vesselMap.get(map.getKey());
+                    if (vessel != null){
+                        for (MovementType movement : map.getMovements()){
+                            movements.add(new MovementDTO(movement, vessel).toFeature());
+                        }
+                        for (MovementSegment segment : map.getSegments()){
+                            segments.add(new SegmentDTO(segment, vessel).toFeature());
+                        }
+                        for (MovementTrack track : map.getTracks()){
+                            tracks.add(new TrackDTO(track, vessel));
+                        }
                     }
                 }
             }
-        }
 
-        ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper();
 
 
-        ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(movements));
+            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(movements));
 
-        ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(segments));
+            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(segments));
 
-        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-        rootNode = mapper.createObjectNode();
-        //FeatureToGeoJsonMapper featureToGeoJsonMapper = new FeatureToGeoJsonMapper();
-        //rootNode.putRawValue("movements", new RawValue(featureToGeoJsonMapper.convert(movements)));
-        //rootNode.putRawValue("segments", new RawValue(featureToGeoJsonMapper.convert(segments)));
-        //rootNode.putPOJO("tracks", tracks);
-
-         rootNode.set("movements", movementsNode);
-         rootNode.set("segments", segmentsNode);
-         rootNode.set("tracks", mapper.readTree(mapper.writeValueAsString(tracks)));
+            mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+            rootNode = mapper.createObjectNode();
+            rootNode.set("movements", movementsNode);
+            rootNode.set("segments", segmentsNode);
+            rootNode.putPOJO("tracks", tracks);
 
         } catch (IOException e) {
             throw new ReportingServiceException("ERROR");

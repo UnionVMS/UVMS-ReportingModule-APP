@@ -35,7 +35,7 @@ public class AssetDtoTest {
         dto.setCountryCode("SWE" + id);
         dto.setExternalMarking("MARKING" + 1);
         dto.setGrossTonnage(BigDecimal.valueOf(1.2));
-        dto.setHasIrcs(true);
+        dto.setHasIrcs("true");
         dto.setHasLicense(true);
         dto.setHomePort("PORT" + id);
 
@@ -62,9 +62,9 @@ public class AssetDtoTest {
         if (id % 5 == 0) {
             dto.setSource(CarrierSource.XEU);
             dto.setActive(true);
-            dto.setVesselType("VESSEL-TYPE: " + id);
+            //dto.setVesselType("VESSEL-TYPE: " + id);
         }
-        dto.setVesselType("VESSEL-TYPE: " + id);
+       // dto.setVesselType("VESSEL-TYPE: " + id);
         return dto;
     }
 }

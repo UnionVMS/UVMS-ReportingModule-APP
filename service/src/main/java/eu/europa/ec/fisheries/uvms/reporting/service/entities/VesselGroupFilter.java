@@ -58,7 +58,9 @@ public class VesselGroupFilter extends Filter {
     public List<VesselGroup> vesselGroupCriteria(){
         VesselGroup vesselGroup = new VesselGroup();
         if (StringUtils.isNotBlank(getGuid())) {
-            vesselGroup.setId(new BigInteger(getGuid()));
+            vesselGroup.setGuid(getGuid());
+            vesselGroup.setName(getName());
+            vesselGroup.setUser(getUserName());
             vesselGroup.setDynamic(false);
         }
         return Lists.newArrayList(vesselGroup);

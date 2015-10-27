@@ -72,9 +72,9 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         assertEquals(1, processor.getVesselGroupList().size());
         assertEquals(0, processor.getMovementListCriteria().size());
 
-        assertEquals(processor.getVesselGroupList().get(0).getId(), new BigInteger("1"));
+        assertEquals(processor.getVesselGroupList().get(0).getGuid(), "1");
         assertEquals(processor.getVesselGroupList().get(0).getName(), null);
-        assertEquals(processor.getVesselGroupList().get(0).getUser(), null);
+        assertEquals(processor.getVesselGroupList().get(0).getUser(), "test");
 
     }
 
