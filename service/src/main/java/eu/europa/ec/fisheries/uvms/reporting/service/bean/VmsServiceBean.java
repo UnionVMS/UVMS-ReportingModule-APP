@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtendedVesselMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtVesselMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -54,7 +54,7 @@ public class VmsServiceBean implements VmsService {
                 responseTypeMap = movement.getMovementMap(processor); //FIXME replace with other method if ready
                 Set<String> vesselGuids = responseTypeMap.keySet();
                 movementMap = responseTypeMap.values();
-                processor.getVesselListCriteriaPairs().addAll(ExtendedVesselMessageMapper.vesselCriteria(vesselGuids));
+                processor.getVesselListCriteriaPairs().addAll(ExtVesselMessageMapper.vesselCriteria(vesselGuids));
                 vesselMap = vessel.getVesselMap(processor);
             }
 

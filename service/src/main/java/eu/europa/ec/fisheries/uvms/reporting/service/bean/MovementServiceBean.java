@@ -1,9 +1,11 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtendedMovementMessageMapper;
+import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -31,7 +33,7 @@ public class MovementServiceBean {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) throws ReportingServiceException {
 
-        return ExtendedMovementMessageMapper.getMovementMap(getMovementMapResponseTypes(processor));
+        return ExtMovementMessageMapper.getMovementMap(getMovementMapResponseTypes(processor));
 
     }
 
@@ -45,13 +47,13 @@ public class MovementServiceBean {
 
         try {
 
-            String movementMapByQueryRequest = ExtendedMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
-            String moduleMessage = movementSender.sendModuleMessage(movementMapByQueryRequest, movementReceiver.getDestination());
+            String request = ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
+            String moduleMessage = movementSender.sendModuleMessage(request, movementReceiver.getDestination());
             TextMessage response = movementReceiver.getMessage(moduleMessage, TextMessage.class);
-            return ExtendedMovementMessageMapper.mapToMovementMapResponse(response);
+            return ExtMovementMessageMapper.mapToMovementMapResponse(response);
 
         } catch (ModelMapperException | JMSException | MessageException e) {
-            throw new ReportingServiceException("FAILED TO GET DATA FROM SPATIAL");
+            throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT");
         }
     }
 }

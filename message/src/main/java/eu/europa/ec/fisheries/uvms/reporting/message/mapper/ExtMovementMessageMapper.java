@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
@@ -15,7 +16,7 @@ import javax.jms.TextMessage;
 import java.util.List;
 import java.util.Map;
 
-public class ExtendedMovementMessageMapper extends MovementModuleRequestMapper {
+public class ExtMovementMessageMapper {
 
     public static String mapToGetMovementMapByQueryRequest(final MovementQuery query) throws ModelMarshallException {
         if (query == null){
@@ -37,5 +38,19 @@ public class ExtendedMovementMessageMapper extends MovementModuleRequestMapper {
                 return from.getKey();
             }
         });
+    }
+
+    public static List<MovementType> mapToMovementListResponse(TextMessage message) throws ModelMapperException, JMSException {
+        if (message == null){
+            throw new IllegalArgumentException("TextMessage can not be null.");
+        }
+        return MovementModuleResponseMapper.mapToMovementListResponse(message);
+    }
+
+    public static String mapToGetMovementListByQueryRequest(MovementQuery query) throws ModelMarshallException {
+        if (query == null){
+            throw new IllegalArgumentException("Movementquery can not be null.");
+        }
+        return MovementModuleRequestMapper.mapToGetMovementListByQueryRequest(query);
     }
 }

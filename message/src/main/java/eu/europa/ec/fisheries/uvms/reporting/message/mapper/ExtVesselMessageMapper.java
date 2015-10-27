@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ExtendedVesselMessageMapper extends VesselModuleRequestMapper {
+public class ExtVesselMessageMapper {
 
-    private ExtendedVesselMessageMapper(){}
+    private ExtVesselMessageMapper(){}
 
     public static String mapToGetVesselListByQueryRequest(final VesselListQuery query) throws VesselModelMapperException {
         if (query == null){
@@ -30,7 +30,7 @@ public class ExtendedVesselMessageMapper extends VesselModuleRequestMapper {
     }
 
     private static String getMapToGetVesselListByQueryRequest(final VesselListQuery query) throws VesselModelMapperException {
-        return createVesselListModuleRequest(query);
+        return VesselModuleRequestMapper.createVesselListModuleRequest(query);
     }
 
     public static List<Vessel> mapToVesselListFromResponse(final TextMessage textMessage, final String correlationId) throws VesselModelMapperException {
@@ -62,5 +62,19 @@ public class ExtendedVesselMessageMapper extends VesselModuleRequestMapper {
         }
 
         return pairList;
+    }
+
+    public static String createVesselListModuleRequest(VesselListQuery query) throws VesselModelMapperException {
+        if (query == null){
+            throw new IllegalArgumentException("VesselListQuery can not be null.");
+        }
+        return VesselModuleRequestMapper.createVesselListModuleRequest(query);
+    }
+
+    public static String createVesselListModuleRequest(List<VesselGroup> vesselGroup) throws VesselModelMapperException {
+        if (vesselGroup == null){
+            throw new IllegalArgumentException("List<VesselGroup> can not be null.");
+        }
+        return VesselModuleRequestMapper.createVesselListModuleRequest(vesselGroup);
     }
 }
