@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -69,4 +70,13 @@ public class AreaFilter extends Filter {
     public Object getUniqKey() {
         return hashCode();
     }
+    
+    @Override
+    public AreaIdentifierType getAreaIdentifierType() {
+        AreaIdentifierType areaIndentifierType = new AreaIdentifierType();
+    	areaIndentifierType.setAreaType(getAreaType());
+    	areaIndentifierType.setId(Long.toString(getAreaId()));
+    	return areaIndentifierType;
+    }
+
 }

@@ -1,5 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
@@ -8,13 +10,16 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +35,9 @@ public class VmsServiceBean implements VmsService {
 
     @EJB
     private MovementServiceBean movement;
+    
+    @EJB
+    private SpatialService SpatialService;
 
     @Override
     @Transactional
@@ -46,6 +54,7 @@ public class VmsServiceBean implements VmsService {
             validate(id, reportByReportId);
 
             FilterProcessor processor = new FilterProcessor(reportByReportId.getFilters());
+            addAreaCriteriaToProcessor(processor);            
 
             if (processor.hasVesselsOrVesselGroups()) {
                 vesselMap = vessel.getVesselMap(processor);
@@ -67,6 +76,21 @@ public class VmsServiceBean implements VmsService {
 
         return vmsDto;
     }
+    
+    private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
+    	if (isNotEmpty(processor.getAreaIdentifierList())) {
+    		String areaWkt = getFilterArea(processor.getAreaIdentifierList());
+        	processor.addAreaCriteria(areaWkt);
+    	}    	
+    }
+    
+	private String getFilterArea(List<AreaIdentifierType> areaIdentifierList) throws ReportingServiceException {
+		try {
+			return SpatialService.getFilterArea(areaIdentifierList);
+		} catch (ReportingServiceException e) {
+			throw new ReportingServiceException("Exception during retrieving filter area");
+		}
+	}
 
     private void validate(Long id, Report reportByReportId) throws ReportingServiceException {
         if (reportByReportId == null) {

@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.EqualsAndHashCode;
@@ -97,5 +98,9 @@ public abstract class Filter implements Serializable {
 
     public List<RangeCriteria> movementRangeCriteria(){
         return Collections.emptyList();
+    }
+    
+    public AreaIdentifierType getAreaIdentifierType() {
+    	return new AreaIdentifierType();
     }
 }

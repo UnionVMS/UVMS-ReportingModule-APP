@@ -1,25 +1,27 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
-import lombok.Builder;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 
 /**
  * This class is responsible reading the report filters and transform them
@@ -31,13 +33,24 @@ public class FilterProcessor {
     private final List<RangeCriteria> rangeCriteria = new ArrayList<>();
     private final List<VesselListCriteriaPair> vesselListCriteriaPairs = new ArrayList<>();
     private final List<VesselGroup> vesselGroupList = new ArrayList<>();
+    private final List<AreaIdentifierType> areaIndentifierList = new ArrayList<AreaIdentifierType>();
 
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
         validate(filters);
 
         for (Filter filter : filters) {
             addCriteria(filter);
+            addAreaIdentifier(filter);
         }
+    }
+    
+    public void addAreaCriteria(String areaWkt) {
+    	if (areaWkt != null) {
+    		ListCriteria areaCriteria = new ListCriteria();
+        	areaCriteria.setKey(SearchKey.AREA);
+        	areaCriteria.setValue(areaWkt);
+        	movementListCriteria.add(areaCriteria);
+    	}    	
     }
 
     private void addCriteria(Filter filter) {
@@ -45,6 +58,12 @@ public class FilterProcessor {
         vesselGroupList.addAll(filter.vesselGroupCriteria());
         rangeCriteria.addAll(filter.movementRangeCriteria());
         movementListCriteria.addAll(filter.movementCriteria());
+    }
+    
+    private void addAreaIdentifier(Filter filter) {
+    	if (filter instanceof AreaFilter) {
+    		areaIndentifierList.add(filter.getAreaIdentifierType());
+    	}
     }
 
     private void validate(Set<Filter> filters) throws ProcessorException {
@@ -115,5 +134,9 @@ public class FilterProcessor {
 
     public List<RangeCriteria> getRangeCriteria() {
         return rangeCriteria;
+    }
+    
+    public List<AreaIdentifierType> getAreaIdentifierList() {
+    	return areaIndentifierList;
     }
 }
