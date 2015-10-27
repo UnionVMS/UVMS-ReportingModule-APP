@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.message.mapper;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleRequestMapper;
@@ -26,10 +25,6 @@ public class ExtVesselMessageMapper {
         if (query == null){
             throw new IllegalArgumentException("VesselListQuery can not be null.");
         }
-        return getMapToGetVesselListByQueryRequest(query);
-    }
-
-    private static String getMapToGetVesselListByQueryRequest(final VesselListQuery query) throws VesselModelMapperException {
         return VesselModuleRequestMapper.createVesselListModuleRequest(query);
     }
 

@@ -61,7 +61,7 @@ public class VesselGroupFilter extends Filter {
             vesselGroup.setGuid(getGuid());
             vesselGroup.setName(getName());
             vesselGroup.setUser(getUserName());
-            vesselGroup.setDynamic(false);
+            vesselGroup.setDynamic(true);
         }
         return Lists.newArrayList(vesselGroup);
     }
