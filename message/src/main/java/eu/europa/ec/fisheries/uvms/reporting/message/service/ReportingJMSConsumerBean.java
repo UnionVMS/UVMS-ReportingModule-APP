@@ -11,7 +11,7 @@ import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
 @Stateless
 @Local
-public class SpatialConsumerBean extends AbstractConsumer {
+public class ReportingJMSConsumerBean extends AbstractConsumer {
 
     @Resource(mappedName = MessageConstants.QUEUE_REPORTING)
     private Destination destination;

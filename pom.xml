@@ -32,7 +32,7 @@
         <uvms.commons.version>1.4-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
-
+        <usm4uvms.version>0.0.11-SNAPSHOT</usm4uvms.version>
     </properties>
 
     <dependencyManagement>
@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>eu.europa.ec.mare.usm</groupId>
                 <artifactId>usm4uvms</artifactId>
-                <version>0.0.9-SNAPSHOT</version>
+                <version>${usm4uvms.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>

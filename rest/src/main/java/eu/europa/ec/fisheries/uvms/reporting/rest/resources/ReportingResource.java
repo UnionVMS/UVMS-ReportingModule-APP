@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
@@ -13,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,11 +52,9 @@ public class ReportingResource extends UnionVMSResource {
 
         LOG.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
-        Object featuresObj =  request.getServletContext().getAttribute(AuthConstants.HTTP_SERVLET_CONTEXT_ATTR_FEATURES);
+        Set<String> features = SecuritySessionUtils.getCachedUserFeatures(request.getSession());
 
-        if (featuresObj != null) {
-
-            Set<String> features = (Set<String>) featuresObj;
+        if (username != null && features != null) {
 
             Collection < ReportDTO > reportsList;
             try {

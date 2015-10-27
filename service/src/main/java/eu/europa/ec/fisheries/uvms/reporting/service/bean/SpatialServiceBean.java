@@ -13,7 +13,7 @@ import javax.jms.TextMessage;
 import org.apache.commons.lang3.NotImplementedException;
 
 import eu.europa.ec.fisheries.uvms.message.MessageException;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialConsumerBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingJMSConsumerBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
@@ -28,15 +28,15 @@ public class SpatialServiceBean implements SpatialService {
 	private SpatialProducerBean spatialProducerBean;
 	
 	@EJB
-	private SpatialConsumerBean spatialConsumerBean;
+	private ReportingJMSConsumerBean reportingJMSConsumerBean;
 	
 	@Override
 	public String getFilterArea(List<AreaIdentifierType> userAreas) throws ReportingServiceException {
 		try {
 			SpatialModuleRequestMapper requestMapper = new SpatialModuleRequestMapper();
 			String requestMsg = SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(Collections.<AreaIdentifierType>emptyList(), userAreas);
-			String correlationId = spatialProducerBean.sendModuleMessage(requestMsg, spatialConsumerBean.getDestination());
-			Message message = spatialConsumerBean.getMessage(correlationId, TextMessage.class);
+			String correlationId = spatialProducerBean.sendModuleMessage(requestMsg, reportingJMSConsumerBean.getDestination());
+			Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
 			return getText(message);
 		} catch (SpatialModelMapperException | MessageException | JMSException e) {
 			throw new ReportingServiceException(e);
