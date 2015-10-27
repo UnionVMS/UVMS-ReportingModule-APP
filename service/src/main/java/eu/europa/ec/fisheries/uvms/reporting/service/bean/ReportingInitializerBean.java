@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-@Singleton
-@Startup
+//@Singleton
+//@Startup
 public class ReportingInitializerBean extends AbstractModuleInitializerBean {
 
     @Override
