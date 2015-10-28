@@ -52,7 +52,7 @@ public class ReportingResource extends UnionVMSResource {
 
         LOG.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
-        Set<String> features = SecuritySessionUtils.getCachedUserFeatures(request.getSession());
+        Set<String> features = getCachedUserFeatures(request);
 
         if (username != null && features != null) {
 
@@ -72,6 +72,11 @@ public class ReportingResource extends UnionVMSResource {
         } else {
             return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
+    }
+
+    // UT
+    protected Set<String> getCachedUserFeatures(HttpServletRequest request) {
+        return SecuritySessionUtils.getCachedUserFeatures(request.getSession());
     }
 
     @GET
