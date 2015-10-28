@@ -9,8 +9,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonMapper;
+import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -59,15 +58,10 @@ public class VmsDTO {
 
             ObjectMapper mapper = new ObjectMapper();
 
-
-            ObjectNode movementsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(movements));
-
-            ObjectNode segmentsNode = (ObjectNode) mapper.readTree(new FeatureToGeoJsonMapper().convert(segments));
-
             mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
             rootNode = mapper.createObjectNode();
-            rootNode.set("movements", movementsNode);
-            rootNode.set("segments", segmentsNode);
+            rootNode.set("movements", new FeatureToGeoJsonJacksonMapper().convert(movements));
+            rootNode.set("segments", new FeatureToGeoJsonJacksonMapper().convert(segments));
             rootNode.putPOJO("tracks", tracks);
 
         } catch (IOException e) {
