@@ -36,7 +36,7 @@ public class AuthorizationCheckUtil {
     public static ReportFeatureEnum getRequiredFeatureToEditReport(ReportDTO report, String username) {
         ReportFeatureEnum requiredFeature = null;
 
-        if (!report.getCreatedBy().equals(username)) {
+        if (!username.equals(report.getCreatedBy())) {
             if (report.getVisibility() == SCOPE) {
                 requiredFeature = ReportFeatureEnum.MODIFY_SCOPE_REPORT;
             } else if (report.getVisibility() == PUBLIC) {
