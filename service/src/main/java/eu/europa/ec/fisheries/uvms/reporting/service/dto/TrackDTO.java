@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TrackDTO extends GeoJsonDTO {
 
-    @Delegate(types = Include.class)
+    @Delegate(excludes = Exclude.class)
     private MovementTrack track;
 
     private AssetDTO asset;
@@ -46,10 +46,8 @@ public class TrackDTO extends GeoJsonDTO {
         return null;
     }
 
-    private interface Include {
-        Double getDuration();
-        Double getDistance();
-        String getId();
+    private interface Exclude {
+        String getWkt();
     }
 
     private void computeEnvelope() {
