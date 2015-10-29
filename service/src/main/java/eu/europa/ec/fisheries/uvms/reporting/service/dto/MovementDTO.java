@@ -42,7 +42,6 @@ public class MovementDTO extends GeoJsonDTO {
     public MovementDTO(MovementType movementType, Vessel vessel){
         this.movementType = movementType;
         asset = new AssetDTO(vessel);
-       // asset.setColor(MockVesselData.COLORS.get(MockingUtils.randInt(0, 9)));//
     }
 
     private static SimpleFeatureType buildFeatueType() {
@@ -64,7 +63,6 @@ public class MovementDTO extends GeoJsonDTO {
         sb.add(IRCS, String.class);
         sb.add(NAME, String.class);
         sb.add(MOVEMENT_GUID, String.class);
-        //sb.add("color", String.class);
         return sb.buildFeatureType();
     }
 
@@ -91,12 +89,6 @@ public class MovementDTO extends GeoJsonDTO {
         featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
         featureBuilder.set(IRCS, asset.getIrcs());
         featureBuilder.set(NAME, asset.getName());
-
-//        if (asset.getVesselId() != null){
-//            featureBuilder.set(GUID, asset.getVesselId().getGuid());
-//        }
-
-      //  featureBuilder.set("color", asset.getColor());
         return featureBuilder.buildFeature(getGuid());
     }
 

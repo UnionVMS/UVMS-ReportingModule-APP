@@ -22,6 +22,11 @@ public class SegmentDTO extends GeoJsonDTO {
     private static final String DURATION = "duration";
     private static final String DISTANCE = "distance";
     private static final String TRACK_ID = "trackId";
+    private static final String CFR = "cfr";
+    private static final String COUNTRY_CODE = "countryCode";
+    private static final String IRCS = "ircs";
+    private static final String NAME = "name";
+    private static final String SEGMENTS = "segments";
 
     private AssetDTO asset;
 
@@ -30,25 +35,22 @@ public class SegmentDTO extends GeoJsonDTO {
 
     public SegmentDTO(MovementSegment segment, Vessel vessel) {
         asset = new AssetDTO(vessel);
-        //asset.setColor(MockVesselData.COLORS.get(MockingUtils.randInt(0, 9)));// FIXME only for mock
         this.segment = segment;
     }
 
     private static SimpleFeatureType build(){
         SimpleFeatureTypeBuilder sb = new SimpleFeatureTypeBuilder();
         sb.setCRS(DefaultGeographicCRS.WGS84);
-        sb.setName("Segments");
+        sb.setName(SEGMENTS);
         sb.add(GEOMETRY, LineString.class);
         sb.add(COURSE_OVER_GROUND, BigDecimal.class);
         sb.add(SPEED_OVER_GROUND, BigDecimal.class);
         sb.add(DURATION, BigDecimal.class);
         sb.add(DISTANCE, BigDecimal.class);
-        sb.add("cfr", String.class);
-        sb.add("countryCode", String.class);
-        sb.add("ircs", String.class);
-        sb.add("name", String.class);
-        //sb.add("guid", String.class);
-        //sb.add("color", String.class);
+        sb.add(CFR, String.class);
+        sb.add(COUNTRY_CODE, String.class);
+        sb.add(IRCS, String.class);
+        sb.add(NAME, String.class);
         sb.add(TRACK_ID, String.class);
         return sb.buildFeatureType();
     }
@@ -62,12 +64,10 @@ public class SegmentDTO extends GeoJsonDTO {
         featureBuilder.set(DISTANCE, getDistance());
         featureBuilder.set(DURATION, getDuration());
         featureBuilder.set(TRACK_ID, getTrackId());
-        featureBuilder.set("cfr", asset.getCfr());
-        featureBuilder.set("ircs", asset.getIrcs());
-        featureBuilder.set("countryCode", asset.getCountryCode());
-        featureBuilder.set("name", asset.getName());
-        //featureBuilder.set("color", asset.getColor());
-        //featureBuilder.add(asset.getVesselId().getGuid());
+        featureBuilder.set(CFR, asset.getCfr());
+        featureBuilder.set(IRCS, asset.getIrcs());
+        featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
+        featureBuilder.set(NAME, asset.getName());
         return featureBuilder.buildFeature(String.valueOf(getId()));
     }
 
