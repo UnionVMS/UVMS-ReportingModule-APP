@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
 
-	<!--<filter-mapping>
+	<filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
 		<url-pattern>/reporting/rest/*</url-pattern>
 	</filter-mapping>
@@ -17,16 +17,16 @@
 	<filter-mapping>
 		<filter-name>AuthorizationFilter</filter-name>
 		<url-pattern>/reporting/rest/*</url-pattern>
-	</filter-mapping>-->
+	</filter-mapping>
 
-	<filter>
+	<!--<filter>
 		<filter-name>TempSecurityFilter</filter-name>
 		<filter-class>eu.europa.ec.fisheries.uvms.reporting.rest.filter.TempSecurityFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>TempSecurityFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping>-->
 	<context-param>
 		<param-name>usmApplication</param-name>
 		<param-value>reporting</param-value>
