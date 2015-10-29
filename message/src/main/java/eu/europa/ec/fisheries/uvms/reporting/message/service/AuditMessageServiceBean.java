@@ -18,9 +18,6 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
  * @see {@link AbstractMessageService}
  *
  */
-/**
- * //TODO create test
- */
 @Stateless
 @LocalBean
 public class AuditMessageServiceBean extends AbstractMessageService {
