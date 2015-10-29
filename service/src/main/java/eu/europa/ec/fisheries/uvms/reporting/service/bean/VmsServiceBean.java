@@ -60,7 +60,7 @@ public class VmsServiceBean implements VmsService {
                 vesselMap = vessel.getVesselMap(processor);
                 movementMap = movement.getMovement(processor);
             } else {
-                responseTypeMap = movement.getMovementMap(processor); //FIXME replace with other method if ready
+                responseTypeMap = movement.getMovementMap(processor);
                 Set<String> vesselGuids = responseTypeMap.keySet();
                 movementMap = responseTypeMap.values();
                 processor.getVesselListCriteriaPairs().addAll(ExtVesselMessageMapper.vesselCriteria(vesselGuids));
