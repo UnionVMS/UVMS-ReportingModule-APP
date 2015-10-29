@@ -32,6 +32,9 @@ public class TempSecurityFilter extends CrossOriginFilter{
 
             UserRoleRequestWrapper wrapper = new UserRoleRequestWrapper("Hugo", allFeatures, (HttpServletRequest) request);
 
+            ((HttpServletRequest) request).getSession().setAttribute("servletContextUserFeatures", allFeatures);
+            ((HttpServletRequest) request).getSession().setAttribute("roleName", "rep_power_role");
+            ((HttpServletRequest) request).getSession().setAttribute("scopeName", "EC");
             super.doFilter(wrapper, response, chain);
         }
 
