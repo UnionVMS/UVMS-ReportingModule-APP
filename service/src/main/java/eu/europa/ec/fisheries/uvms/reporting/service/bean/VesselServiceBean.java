@@ -19,9 +19,6 @@ import javax.jms.TextMessage;
 import java.util.List;
 import java.util.Set;
 
-/**
- * //TODO create unit test
- */
 @LocalBean
 @Stateless
 public class VesselServiceBean {
@@ -41,7 +38,7 @@ public class VesselServiceBean {
                 String request = ExtVesselMessageMapper.createVesselListModuleRequest(processor.toVesselListQuery());
                 String moduleMessage = vesselSender.sendModuleMessage(request, vesselReceiver.getDestination());
                 TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
-                List<Vessel> vessels = ExtVesselMessageMapper.mapToVesselListFromResponse(response, moduleMessage);
+                List<Vessel> vessels = getVessels(moduleMessage, response);
                 vesselList.addAll(vessels);
             }
 
@@ -49,7 +46,7 @@ public class VesselServiceBean {
                 String request = ExtVesselMessageMapper.createVesselListModuleRequest(processor.getVesselGroupList());
                 String moduleMessage = vesselSender.sendModuleMessage(request, vesselReceiver.getDestination());
                 TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
-                List<Vessel> groupList = ExtVesselMessageMapper.mapToVesselListFromResponse(response, moduleMessage);
+                List<Vessel> groupList = getVessels(moduleMessage, response);
                 vesselList.addAll(groupList);
             }
         } catch (MessageException | VesselModelMapperException e) {
@@ -57,5 +54,10 @@ public class VesselServiceBean {
         }
 
         return ExtVesselMessageMapper.getVesselMap(vesselList);
+    }
+
+    // UT
+    protected List<Vessel> getVessels(String moduleMessage, TextMessage response) throws VesselModelMapperException {
+        return ExtVesselMessageMapper.mapToVesselListFromResponse(response, moduleMessage);
     }
 }
