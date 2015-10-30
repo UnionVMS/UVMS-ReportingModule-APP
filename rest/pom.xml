@@ -17,6 +17,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>eu.europa.ec.mare.usm</groupId>
             <artifactId>usm4uvms</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -36,6 +37,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>reporting-model</artifactId>
+           <scope>provided</scope>
        </dependency>
 
         <dependency>
