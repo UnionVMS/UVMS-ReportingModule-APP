@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.service.DAO;
@@ -64,7 +63,7 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
     @Transactional
     public Report findReportByReportId(final Long id, String username, String scopeName) throws ReportingServiceException {
         Report result = null;
-        List<Report> reports = null;
+        List<Report> reports;
         try {
             reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).parameters(), 1);
         } catch (ServiceException exc) {
