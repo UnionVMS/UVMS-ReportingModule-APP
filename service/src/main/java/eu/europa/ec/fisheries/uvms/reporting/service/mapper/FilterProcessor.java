@@ -1,18 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListPagination;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.schema.movement.search.v1.*;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -22,6 +10,14 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 /**
  * This class is responsible reading the report filters and transform them
@@ -33,7 +29,7 @@ public class FilterProcessor {
     private final List<RangeCriteria> rangeCriteria = new ArrayList<>();
     private final List<VesselListCriteriaPair> vesselListCriteriaPairs = new ArrayList<>();
     private final List<VesselGroup> vesselGroupList = new ArrayList<>();
-    private final List<AreaIdentifierType> areaIndentifierList = new ArrayList<AreaIdentifierType>();
+    private final List<AreaIdentifierType> areaIdentifierList = new ArrayList<AreaIdentifierType>();
 
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
         validate(filters);
@@ -62,13 +58,13 @@ public class FilterProcessor {
     
     private void addAreaIdentifier(Filter filter) {
     	if (filter instanceof AreaFilter) {
-    		areaIndentifierList.add(filter.getAreaIdentifierType());
+    		areaIdentifierList.add(filter.getAreaIdentifierType());
     	}
     }
 
     private void validate(Set<Filter> filters) throws ProcessorException {
         if (isEmpty(filters)) {
-            throw new ProcessorException("Unable to process empty filter list or filter list is null.");
+            throw new ProcessorException("");
         }
     }
 
@@ -137,6 +133,6 @@ public class FilterProcessor {
     }
     
     public List<AreaIdentifierType> getAreaIdentifierList() {
-    	return areaIndentifierList;
+    	return areaIdentifierList;
     }
 }
