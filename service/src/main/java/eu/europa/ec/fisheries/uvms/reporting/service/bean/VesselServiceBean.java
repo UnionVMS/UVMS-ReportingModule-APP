@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtVesselMessageMapper;
@@ -10,13 +9,11 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+
+import javax.ejb.*;
 import javax.jms.TextMessage;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @LocalBean
@@ -30,7 +27,7 @@ public class VesselServiceBean {
     private VesselModuleReceiverBean vesselReceiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public ImmutableMap<String, Vessel> getVesselMap(final FilterProcessor processor) throws ReportingServiceException {
+    public Map<String, Vessel> getVesselMap(final FilterProcessor processor) throws ReportingServiceException {
         Set<Vessel> vesselList = Sets.newHashSet();
 
         try {
@@ -49,6 +46,8 @@ public class VesselServiceBean {
                 List<Vessel> groupList = getVessels(moduleMessage, response);
                 vesselList.addAll(groupList);
             }
+
+
         } catch (MessageException | VesselModelMapperException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM VESSEL", e);
         }

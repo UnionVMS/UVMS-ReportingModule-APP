@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -28,7 +27,7 @@ public class VmsDTO {
     private Map<String, Vessel> vesselMap;
     private Collection<MovementMapResponseType> movementMap;
 
-    public VmsDTO(ImmutableMap<String, Vessel> vesselMap, Collection<MovementMapResponseType> movementMap) {
+    public VmsDTO(Map<String, Vessel> vesselMap, Collection<MovementMapResponseType> movementMap) {
         this.vesselMap = vesselMap;
         this.movementMap = movementMap;
     }

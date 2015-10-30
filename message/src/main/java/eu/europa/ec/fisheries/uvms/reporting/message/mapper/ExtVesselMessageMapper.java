@@ -1,8 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.message.mapper;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.vessel.model.mapper.VesselModuleResponseMapper;
@@ -13,9 +10,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 
 import javax.jms.TextMessage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ExtVesselMessageMapper {
 
@@ -38,12 +33,15 @@ public class ExtVesselMessageMapper {
         return VesselModuleResponseMapper.mapToVesselListFromResponse(textMessage, correlationId);
     }
 
-    public static ImmutableMap<String, Vessel> getVesselMap(Set<Vessel> vesselList) {
-        return Maps.uniqueIndex(vesselList, new Function<Vessel, String>() {
-            public String apply(Vessel from) {
-                return from.getVesselId().getGuid();
-            }
-        });
+    public static Map<String, Vessel> getVesselMap(Set<Vessel> vesselList) {
+
+        Map<String, Vessel> map = new HashMap<>();
+        
+        for(Vessel vessel : vesselList){
+            map.put(vessel.getVesselId().getGuid(), vessel);
+        }
+        return map;
+
     }
 
     public static List<VesselListCriteriaPair> vesselCriteria(Set<String> guids) {

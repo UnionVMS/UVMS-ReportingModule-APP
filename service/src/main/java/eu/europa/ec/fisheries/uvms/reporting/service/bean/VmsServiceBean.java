@@ -1,8 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-
-import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtVesselMessageMapper;
@@ -17,11 +14,12 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(value = VmsService.class)
@@ -44,7 +42,7 @@ public class VmsServiceBean implements VmsService {
     public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
 
         VmsDTO vmsDto;
-        ImmutableMap<String, Vessel> vesselMap;
+        Map<String, Vessel> vesselMap;
         Collection<MovementMapResponseType> movementMap;
         Map<String, MovementMapResponseType> responseTypeMap;
 
