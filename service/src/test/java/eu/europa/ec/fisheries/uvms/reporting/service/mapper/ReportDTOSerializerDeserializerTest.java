@@ -17,6 +17,8 @@ import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.unitils.UnitilsJUnit4;
 
 import java.net.URL;
@@ -33,7 +35,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilte
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO.VmsPositionFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder;
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
 
@@ -69,11 +70,13 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
 
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithoutFilters.json");
-        String expected = Resources.toString(url, Charsets.UTF_8);
+        String expectedJSONString = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        //assertEquals(expectedJSONString, serialized);
 
-        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+        JSONAssert.assertEquals(expectedJSONString, serialized, JSONCompareMode.LENIENT);
+
+        ReportDTO deserialized = mapper.readValue(expectedJSONString, ReportDTO.class);
 
         assertTrue(deserialized.equals(dto));
 
@@ -87,11 +90,13 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
 
         String serialized = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithoutFiltersWithoutDescription.json");
-        String expected = Resources.toString(url, Charsets.UTF_8);
+        String expectedJSONString = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        //assertEquals(expectexpectedJSONStringed, serialized);
 
-        ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
+        JSONAssert.assertEquals(expectedJSONString, serialized, JSONCompareMode.LENIENT);
+
+        ReportDTO deserialized = mapper.readValue(expectedJSONString, ReportDTO.class);
 
         assertTrue(deserialized.equals(dto));
     }
@@ -111,7 +116,8 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVessel.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        //assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -135,7 +141,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVesselAndVesselGroup.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -161,7 +169,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorAll.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -189,7 +199,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastHours.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -216,7 +228,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositions.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -247,7 +261,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
                 .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -274,7 +290,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithTracks.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -301,7 +319,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsPositions.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -326,7 +346,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsPositionsWithoutSomeFields.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -362,7 +384,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsSegmentsVmsPosition.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
@@ -387,7 +411,9 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/ReportDTOSerializerDeserializerTest.testWithAreaFilters.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, serialized);
+        JSONAssert.assertEquals(expected, serialized, JSONCompareMode.LENIENT);
+
+        //assertEquals(expected, serialized);
 
         ReportDTO deserialized = mapper.readValue(expected, ReportDTO.class);
 
