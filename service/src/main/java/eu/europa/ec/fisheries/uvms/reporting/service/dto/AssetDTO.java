@@ -1,10 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
 import lombok.experimental.Delegate;
 
 public class AssetDTO {
