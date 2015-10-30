@@ -8,7 +8,9 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.SneakyThrows;
@@ -16,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -224,7 +227,7 @@ public class ReportDTOSerializerDeserializerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate() {
 
-        Calendar calendar = new GregorianCalendar(2013,1,28,13,24,00);
+        Calendar calendar = new GregorianCalendar(2013,1,28,13,24,0);
 
         List<FilterDTO> filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder()
