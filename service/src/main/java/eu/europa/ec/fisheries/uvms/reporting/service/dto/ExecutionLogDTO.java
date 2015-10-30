@@ -9,6 +9,8 @@ import java.util.Date;
 
 public class ExecutionLogDTO implements Serializable {
 
+	public final static String EXECUTED_BY = "executedBy";
+
 	private long id;
 	private String executedBy;
 

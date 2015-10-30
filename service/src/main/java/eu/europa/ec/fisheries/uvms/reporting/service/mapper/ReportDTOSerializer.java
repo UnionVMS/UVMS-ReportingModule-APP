@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.*;
@@ -28,8 +30,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
         if (filters != null && !filters.isEmpty()) {
             serializeFilterFields(jgen, filters);
-        }
-        else {
+        } else {
             serializeAccessFields(reportDTO, jgen);
         }
 
@@ -83,10 +84,10 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         writeCommonFields(jgen, commonFilter);
 
         jgen.writeFieldName("vms");
-            jgen.writeStartObject();
-            writeVmsPosition(jgen, position);
-            writeVmsTrack(jgen, track);
-            writeVmsSegments(jgen, segment);
+        jgen.writeStartObject();
+        writeVmsPosition(jgen, position);
+        writeVmsTrack(jgen, track);
+        writeVmsSegments(jgen, segment);
         jgen.writeEndObject();
 
         writeAreaFilters(jgen, areaFilterDTOList);
@@ -100,14 +101,14 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     }
 
     private void writeVmsTrack(JsonGenerator jgen, TrackFilterDTO track) throws IOException {
-        if (track != null){
+        if (track != null) {
             jgen.writeFieldName(TrackFilterDTO.TRACKS);
             jgen.writeObject(track);
         }
     }
 
     private void writeVmsSegments(JsonGenerator jgen, VmsSegmentFilterDTO vmsSegmentFilterDTO) throws IOException {
-        if (vmsSegmentFilterDTO != null){
+        if (vmsSegmentFilterDTO != null) {
             jgen.writeFieldName(VmsSegmentFilterDTO.VMS_SEGMENT);
             jgen.writeObject(vmsSegmentFilterDTO);
         }
@@ -118,7 +119,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     }
 
     private void writeVmsPosition(JsonGenerator jgen, VmsPositionFilterDTO position) throws IOException {
-        if (position != null){
+        if (position != null) {
             jgen.writeFieldName(VmsPositionFilterDTO.VMS_POSITION);
             jgen.writeObject(position);
         }
@@ -127,27 +128,36 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     private void serializeReportFields(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
         jgen.writeNumberField(ID, reportDTO.getId());
         jgen.writeStringField(NAME, reportDTO.getName());
-        if (reportDTO.getDescription() != null){
+        if (reportDTO.getDescription() != null) {
             jgen.writeStringField(DESC, reportDTO.getDescription());
         }
         jgen.writeStringField(VISIBILITY, reportDTO.getVisibility().getName());
         jgen.writeStringField(CREATED_ON, UI_FORMATTER.print(new DateTime(reportDTO.getAudit().getCreatedOn())));
+
+        Set<ExecutionLogDTO> executionLogDTOs = reportDTO.filterLogsByUser(reportDTO.getName());
+        if (CollectionUtils.isNotEmpty(executionLogDTOs)) {
+            ExecutionLogDTO userExecutionLog = executionLogDTOs.iterator().next();
+            String executedOn = UI_FORMATTER.print(new DateTime(userExecutionLog.getExecutedOn()));
+            jgen.writeStringField(ExecutionLogDTO.EXECUTED_BY, executedOn);
+        } else {
+            jgen.writeStringField(ExecutionLogDTO.EXECUTED_BY, null);
+        }
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
         jgen.writeBooleanField(WITH_MAP, reportDTO.getWithMap());
     }
 
     private void writeCommonFields(JsonGenerator jgen, CommonFilterDTO commonFilter) throws IOException {
-        if(commonFilter != null){
+        if (commonFilter != null) {
             jgen.writeFieldName(CommonFilterDTO.COMMON);
             jgen.writeStartObject();
             Long id = commonFilter.getId();
-            if (id != null){
+            if (id != null) {
                 jgen.writeNumberField(FilterDTO.ID, commonFilter.getId());
             }
             PositionSelectorDTO positionSelector = commonFilter.getPositionSelector();
-            if (positionSelector != null){
+            if (positionSelector != null) {
                 jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().name());
-                switch (positionSelector.getSelector()){
+                switch (positionSelector.getSelector()) {
                     case last:
                         jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().toString());
                         jgen.writeNumberField(PositionSelectorDTO.X_VALUE, positionSelector.getValue());
@@ -156,12 +166,12 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             }
             Date startDate = commonFilter.getStartDate();
             Date endDate = commonFilter.getEndDate();
-            if (startDate != null){
-                jgen.writeStringField(CommonFilterDTO.START_DATE,UI_FORMATTER.print(new DateTime(startDate)));
+            if (startDate != null) {
+                jgen.writeStringField(CommonFilterDTO.START_DATE, UI_FORMATTER.print(new DateTime(startDate)));
 
             }
-            if (endDate != null){
-                jgen.writeStringField(CommonFilterDTO.END_DATE,UI_FORMATTER.print(new DateTime(endDate)));
+            if (endDate != null) {
+                jgen.writeStringField(CommonFilterDTO.END_DATE, UI_FORMATTER.print(new DateTime(endDate)));
             }
 
             jgen.writeEndObject();
