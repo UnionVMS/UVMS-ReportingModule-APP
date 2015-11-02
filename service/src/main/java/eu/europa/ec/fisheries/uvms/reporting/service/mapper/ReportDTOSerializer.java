@@ -134,7 +134,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeStringField(VISIBILITY, reportDTO.getVisibility().getName());
         jgen.writeStringField(CREATED_ON, UI_FORMATTER.print(new DateTime(reportDTO.getAudit().getCreatedOn())));
 
-        Set<ExecutionLogDTO> executionLogDTOs = reportDTO.filterLogsByUser(reportDTO.getName());
+        Set<ExecutionLogDTO> executionLogDTOs = reportDTO.filterLogsByUser(reportDTO.getCreatedBy());
         if (CollectionUtils.isNotEmpty(executionLogDTOs)) {
             ExecutionLogDTO userExecutionLog = executionLogDTOs.iterator().next();
             String executedOn = UI_FORMATTER.print(new DateTime(userExecutionLog.getExecutedOn()));
