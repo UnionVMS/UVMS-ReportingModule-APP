@@ -138,9 +138,9 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         if (CollectionUtils.isNotEmpty(executionLogDTOs)) {
             ExecutionLogDTO userExecutionLog = executionLogDTOs.iterator().next();
             String executedOn = UI_FORMATTER.print(new DateTime(userExecutionLog.getExecutedOn()));
-            jgen.writeStringField(ExecutionLogDTO.EXECUTED_BY, executedOn);
+            jgen.writeStringField(ExecutionLogDTO.EXECUTED_ON, executedOn);
         } else {
-            jgen.writeStringField(ExecutionLogDTO.EXECUTED_BY, null);
+            jgen.writeStringField(ExecutionLogDTO.EXECUTED_ON, null);
         }
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
         jgen.writeBooleanField(WITH_MAP, reportDTO.getWithMap());
