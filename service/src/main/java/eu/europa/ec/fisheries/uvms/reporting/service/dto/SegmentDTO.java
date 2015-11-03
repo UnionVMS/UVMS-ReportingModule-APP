@@ -43,10 +43,10 @@ public class SegmentDTO extends GeoJsonDTO {
         sb.setCRS(DefaultGeographicCRS.WGS84);
         sb.setName(SEGMENTS);
         sb.add(GEOMETRY, LineString.class);
-        sb.add(COURSE_OVER_GROUND, BigDecimal.class);
-        sb.add(SPEED_OVER_GROUND, BigDecimal.class);
-        sb.add(DURATION, BigDecimal.class);
-        sb.add(DISTANCE, BigDecimal.class);
+        sb.add(COURSE_OVER_GROUND, Double.class);
+        sb.add(SPEED_OVER_GROUND, Double.class);
+        sb.add(DURATION, Double.class);
+        sb.add(DISTANCE, Double.class);
         sb.add(CFR, String.class);
         sb.add(COUNTRY_CODE, String.class);
         sb.add(IRCS, String.class);

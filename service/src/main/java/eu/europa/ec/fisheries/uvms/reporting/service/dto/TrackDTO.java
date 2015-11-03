@@ -48,6 +48,7 @@ public class TrackDTO extends GeoJsonDTO {
 
     private interface Exclude {
         String getWkt();
+        Double getTotalTimeAtSea();
     }
 
     private void computeEnvelope() {
