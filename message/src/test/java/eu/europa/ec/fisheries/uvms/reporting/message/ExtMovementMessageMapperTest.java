@@ -18,9 +18,11 @@ public class ExtMovementMessageMapperTest {
     public void testMapToGetMovementMapByQueryRequest() {
 
         URL url = Resources.getResource("ExtendedMovementMessageMapperTests.getMovementMapByQueryRequest.xml");
-        String expected = Resources.toString(url, Charsets.UTF_8).replaceAll("\r", "");
+        String expected = Resources.toString(url, Charsets.UTF_8);
 
         assertEquals(expected, ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(new MovementQuery()));
+
+
     }
 
     @Test(expected = IllegalArgumentException.class)
