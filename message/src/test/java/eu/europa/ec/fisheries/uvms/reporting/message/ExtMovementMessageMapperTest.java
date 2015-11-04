@@ -22,7 +22,7 @@ public class ExtMovementMessageMapperTest {
         URL url = Resources.getResource("ExtendedMovementMessageMapperTests.getMovementMapByQueryRequest.xml");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertTrue(new Diff(expected, expected).identical());
+        assertTrue(new Diff(expected, ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(new MovementQuery())).identical());
 
     }
 
