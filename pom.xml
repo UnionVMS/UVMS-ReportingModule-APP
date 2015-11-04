@@ -20,7 +20,7 @@
         <jackson.version>2.4.1</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
         <vessel.model.version>1.0.10-SNAPSHOT</vessel.model.version>
-        <audit.model.version>1.0.3</audit.model.version>
+        <audit.model.version>1.0.4-SNAPSHOT</audit.model.version>
         <movement.model.version>1.0.6-SNAPSHOT</movement.model.version>
         <spatial.model.version>1.0-SNAPSHOT</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
