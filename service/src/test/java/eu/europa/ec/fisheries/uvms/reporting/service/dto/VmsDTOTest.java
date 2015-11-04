@@ -58,9 +58,9 @@ public class VmsDTOTest extends UnitilsJUnit4 {
         vessel.setActive(true);
 
         MovementType movement = new MovementType();
-        movement.setCalculatedCourse(23D);
-        movement.setReportedSpeed(12D);
-        movement.setCalculatedSpeed(22D);
+        movement.setCalculatedCourse(23.0);
+        movement.setReportedSpeed(12.0);
+        movement.setCalculatedSpeed(22.0);
         movement.setGuid("movementGuid");
         movement.setMovementType(MovementTypeType.EXI);
         MovementActivityType movementActivityType = new MovementActivityType();
@@ -78,18 +78,18 @@ public class VmsDTOTest extends UnitilsJUnit4 {
         MovementSegment segment = new MovementSegment();
         segment.setTrackId("trackId");
         segment.setCategory(SegmentCategoryType.GAP);
-        segment.setCourseOverGround(10.4D);
-        segment.setDistance(200D);
-        segment.setSpeedOverGround(13.5D);
-        segment.setDuration(100D);
+        segment.setCourseOverGround(10.4);
+        segment.setDistance(200.0);
+        segment.setSpeedOverGround(13.5);
+        segment.setDuration(100.0);
         segment.setWkt("LINESTRING (30 10, 10 30, 40 40)");
 
         movementMapResponseType.getSegments().add(segment);
 
         MovementTrack track = new MovementTrack();
-        track.setTotalTimeAtSea(200D);
-        track.setDuration(212D);
-        track.setDistance(300D);
+        track.setTotalTimeAtSea(200.0);
+        track.setDuration(212.0);
+        track.setDistance(300.0);
         track.setWkt("MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)),\n" +
                 "((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),\n" +
                 "(30 20, 20 15, 20 25, 30 20)))");

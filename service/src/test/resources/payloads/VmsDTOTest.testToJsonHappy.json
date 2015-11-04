@@ -48,10 +48,10 @@
   "tracks" : [ {
     "asset" : {
       "name" : "name",
-      "guid" : null,
       "countryCode" : "BE",
       "ircs" : "Ircs",
-      "cfr" : "cfr"
+      "cfr" : "cfr",
+      "guid" : null
     },
     "nearestPoint" : [ 25.58479532163743, 21.666666666666668 ],
     "extent" : [ 10.0, 5.0, 45.0, 45.0 ],
