@@ -16,7 +16,6 @@
         <dependency>
             <groupId>eu.europa.ec.mare.usm</groupId>
             <artifactId>usm4uvms</artifactId>
-            <scope>provided</scope>
         </dependency>
 
     	<dependency>
