@@ -5,10 +5,12 @@ import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import lombok.SneakyThrows;
+import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
 
 import java.net.URL;
 
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 
 public class ExtMovementMessageMapperTest {
@@ -20,8 +22,7 @@ public class ExtMovementMessageMapperTest {
         URL url = Resources.getResource("ExtendedMovementMessageMapperTests.getMovementMapByQueryRequest.xml");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
-        assertEquals(expected, ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(new MovementQuery()));
-
+        assertTrue(new Diff(expected, expected).identical());
 
     }
 
