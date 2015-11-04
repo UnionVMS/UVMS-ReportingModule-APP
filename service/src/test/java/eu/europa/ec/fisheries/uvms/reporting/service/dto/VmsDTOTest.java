@@ -107,13 +107,13 @@ public class VmsDTOTest extends UnitilsJUnit4 {
     public void testToJsonHappy(){
 
         URL url = Resources.getResource("payloads/VmsDTOTest.testToJsonHappy.json");
-        String expectedJSONString = Resources.toString(url, Charsets.UTF_8).replaceAll("\r", "");
+        String expectedJSONString = Resources.toString(url, Charsets.UTF_8);
 
         VmsDTO dto = new VmsDTO(new ImmutableMap.Builder<String, Vessel>().put("guid", vessel).build(), Arrays.asList(movementMapResponseType));
 
-        assertEquals(expectedJSONString, prettify(dto.toJson()));
+        //assertEquals(expectedJSONString, prettify(dto.toJson()));
 
-        //JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.LENIENT);
 
     }
 
