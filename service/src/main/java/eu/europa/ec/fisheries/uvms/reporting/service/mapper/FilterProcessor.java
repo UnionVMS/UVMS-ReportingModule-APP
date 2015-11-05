@@ -72,6 +72,7 @@ public class FilterProcessor {
         MovementQuery movementQuery = new MovementQuery();
         movementQuery.getMovementSearchCriteria().addAll(movementListCriteria);
         movementQuery.getMovementRangeSearchCriteria().addAll(rangeCriteria);
+        movementQuery.setExcludeFirstAndLastSegment(true);
         ListPagination pagination = new ListPagination();
         pagination.setListSize(new BigInteger("10"));
         pagination.setPage(new BigInteger("1"));
