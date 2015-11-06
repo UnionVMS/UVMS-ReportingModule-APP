@@ -14,7 +14,7 @@ import java.net.URL;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 
-@Ignore
+//@Ignore
 public class ExtMovementMessageMapperTest {
 
     @Test
