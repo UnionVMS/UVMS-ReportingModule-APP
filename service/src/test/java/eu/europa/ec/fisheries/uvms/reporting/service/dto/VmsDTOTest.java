@@ -18,6 +18,8 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.unitils.UnitilsJUnit4;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+
 
 import java.net.URL;
 import java.util.Arrays;
@@ -113,7 +115,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
 
         //assertEquals(expectedJSONString, prettify(dto.toJson()));
 
-        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.STRICT );
+        assertJsonEquals(expectedJSONString, prettify(dto.toJson()));
 
     }
 
