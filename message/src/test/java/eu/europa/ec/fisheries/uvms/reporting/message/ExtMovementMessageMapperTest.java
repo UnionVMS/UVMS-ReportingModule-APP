@@ -6,15 +6,12 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import lombok.SneakyThrows;
 import org.custommonkey.xmlunit.Diff;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
 
 import static junit.framework.Assert.assertTrue;
-import static junit.framework.TestCase.assertEquals;
 
-//@Ignore
 public class ExtMovementMessageMapperTest {
 
     @Test
