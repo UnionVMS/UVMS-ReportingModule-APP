@@ -41,7 +41,8 @@
         "countryCode" : "BE",
         "ircs" : "Ircs",
         "name" : "name",
-        "trackId" : "trackId"
+        "trackId" : "trackId",
+        "segmentCategory" : "GAP"
       }
     } ]
   },
@@ -57,6 +58,7 @@
     "extent" : [ 10.0, 5.0, 45.0, 45.0 ],
     "id" : null,
     "distance" : 300.0,
-    "duration" : 212.0
+    "duration" : 212.0,
+    "totalTimeAtSea" : 200.0
   } ]
 }

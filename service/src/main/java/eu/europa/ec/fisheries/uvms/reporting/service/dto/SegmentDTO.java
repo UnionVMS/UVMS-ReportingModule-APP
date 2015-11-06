@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.vividsolutions.jts.geom.LineString;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.experimental.Delegate;
@@ -27,6 +28,7 @@ public class SegmentDTO extends GeoJsonDTO {
     private static final String IRCS = "ircs";
     private static final String NAME = "name";
     private static final String SEGMENTS = "segments";
+    private static final String SEGMENT_CATEGORY_TYPE = "segmentCategory";
 
     private AssetDTO asset;
 
@@ -52,6 +54,7 @@ public class SegmentDTO extends GeoJsonDTO {
         sb.add(IRCS, String.class);
         sb.add(NAME, String.class);
         sb.add(TRACK_ID, String.class);
+        sb.add(SEGMENT_CATEGORY_TYPE, String.class);
         return sb.buildFeatureType();
     }
 
@@ -68,6 +71,7 @@ public class SegmentDTO extends GeoJsonDTO {
         featureBuilder.set(IRCS, asset.getIrcs());
         featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
         featureBuilder.set(NAME, asset.getName());
+        featureBuilder.set(SEGMENT_CATEGORY_TYPE, getCategory());
         return featureBuilder.buildFeature(String.valueOf(getId()));
     }
 
@@ -79,6 +83,7 @@ public class SegmentDTO extends GeoJsonDTO {
         Double getDistance();
         String getWkt();
         String getTrackId();
+        SegmentCategoryType getCategory();
     }
 
 }
