@@ -42,7 +42,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
 
         //assertEquals(expectedJSONString, prettify(dto.toJson()));
 
-        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.STRICT);
 
     }
 
@@ -113,7 +113,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
 
         //assertEquals(expectedJSONString, prettify(dto.toJson()));
 
-        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.STRICT );
 
     }
 
