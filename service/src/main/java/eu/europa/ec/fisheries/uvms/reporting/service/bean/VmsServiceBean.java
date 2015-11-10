@@ -33,7 +33,7 @@ public class VmsServiceBean implements VmsService {
     private MovementServiceBean movement;
     
     @EJB
-    private SpatialService SpatialService;
+    private SpatialService spatialService;
 
     @Override
     @Transactional
@@ -85,7 +85,7 @@ public class VmsServiceBean implements VmsService {
 		try {
             List<AreaIdentifierType> areaIdentifierTypeList = new ArrayList<>();
             areaIdentifierTypeList.addAll(areaIdentifierList);
-			return SpatialService.getFilterArea(areaIdentifierTypeList);
+			return spatialService.getFilterArea(areaIdentifierTypeList);
 		} catch (ReportingServiceException e) {
 			throw new ReportingServiceException("Exception during retrieving filter area");
 		}
