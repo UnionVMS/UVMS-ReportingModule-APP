@@ -26,7 +26,6 @@ public class RestDTOUtil {
         dto.setDescription(description);
         dto.setName(name);
         dto.setWithMap(withMap);
-        dto.setExecutionLogs(new HashSet());
         dto.setScopeName(scopeName);
         dto.setVisibility(visibilityEnum);
 

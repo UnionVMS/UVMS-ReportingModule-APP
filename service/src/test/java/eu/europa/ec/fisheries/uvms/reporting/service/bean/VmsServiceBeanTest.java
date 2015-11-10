@@ -3,7 +3,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -53,7 +55,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null);
 
-        service.getVmsDataByReportId("userName", "scope",  null);
+        service.getVmsDataByReportId("userName", "scope", null);
 
         vessel.assertInvokedInSequence().getVesselMap(null);
         movement.assertInvokedInSequence().getMovement(null);

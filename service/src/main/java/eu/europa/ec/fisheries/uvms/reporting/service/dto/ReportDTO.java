@@ -2,8 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTODeserializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
@@ -15,13 +13,11 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @JsonDeserialize(using = ReportDTODeserializer.class)
 @JsonSerialize(using = ReportDTOSerializer.class)
-@EqualsAndHashCode(of = {"description" ,"withMap" ,"visibility", "name" ,
+@EqualsAndHashCode(of = {"description", "withMap", "visibility", "name",
         "shareable", "deletable", "editable", "filters", "isDeleted"})
 @Data
 public class ReportDTO implements Serializable {
@@ -59,9 +55,10 @@ public class ReportDTO implements Serializable {
 
     private List<FilterDTO> filters = new ArrayList<>();
 
-    private Set<ExecutionLogDTO> executionLogs;
+    private ExecutionLogDTO executionLog;
 
-    public ReportDTO(){}
+    public ReportDTO() {
+    }
 
     @Builder(builderMethodName = "ReportDTOBuilder")
     public ReportDTO(Long id,
@@ -87,22 +84,10 @@ public class ReportDTO implements Serializable {
         this.deletedOn = deletedOn;
         this.deletedBy = deletedBy;
         this.filters = filters;
-        if(audit == null){
+        if (audit == null) {
             audit = new AuditDTO();
         }
         audit.setCreatedOn(createdOn);
     }
 
-    public Set<ExecutionLogDTO> filterLogsByUser(final String user){// FIXME try hibernate filter
-        Set<ExecutionLogDTO> filter = null;
-        if (getExecutionLogs() != null){
-            Predicate<ExecutionLogDTO> isUserPredicate = new Predicate<ExecutionLogDTO>() {
-                public boolean apply(ExecutionLogDTO p) {
-                    return p != null && user.equals(p.getExecutedBy());
-                }
-            };
-            filter = new HashSet<>(Collections2.filter(getExecutionLogs(), isUserPredicate));
-        }
-        return filter;
-    }
 }

@@ -56,16 +56,12 @@ public class ReportingResource extends UnionVMSResource {
 
         if (username != null && features != null) {
 
-            Collection < ReportDTO > reportsList;
+            Collection<ReportDTO> reportsList;
             try {
                 reportsList = reportService.listByUsernameAndScope(features, username, scopeName);
             } catch (ReportingServiceException e) {
                 LOG.error("Failed to list reports.", e);
                 return createErrorResponse();
-            }
-
-            for (ReportDTO report : reportsList) {
-                report.setExecutionLogs(report.filterLogsByUser(username));
             }
 
             return createSuccessResponse(reportsList);
@@ -89,7 +85,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting getReport(...), with an ID={}", username, id );
+        LOG.info("{} is requesting getReport(...), with an ID={}", username, id);
 
         ReportDTO report;
         try {
@@ -132,15 +128,15 @@ public class ReportingResource extends UnionVMSResource {
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport, username);
 
-        if ( requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+        if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
             createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
 
         try {
             reportService.delete(id, username, scopeName);
         } catch (ReportingServiceException exc) {
-            LOG.error("Report deletion failed." , exc);
-            return  createErrorResponse(ErrorCodes.DELETE_FAILED);
+            LOG.error("Report deletion failed.", exc);
+            return createErrorResponse(ErrorCodes.DELETE_FAILED);
         }
 
         return createSuccessResponse();
@@ -170,7 +166,7 @@ public class ReportingResource extends UnionVMSResource {
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport, username);
 
-        if ( requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+        if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
             createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
 
@@ -184,7 +180,7 @@ public class ReportingResource extends UnionVMSResource {
 
         Response restResponse;
 
-        if (isUpdate){
+        if (isUpdate) {
             restResponse = createSuccessResponse();
         } else {
             restResponse = createErrorResponse(ErrorCodes.UPDATE_FAILED);
@@ -234,7 +230,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id,visibility);
+        LOG.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
 
         ReportDTO reportToUpdate;
 
@@ -277,7 +273,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting shareReport(...), with a ID={}",username, id);
+        LOG.info("{} is requesting shareReport(...), with a ID={}", username, id);
 
         VmsDTO vmsDto;
         ObjectNode jsonNodes;

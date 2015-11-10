@@ -1,6 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.Builder;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.Filters;
+import org.hibernate.annotations.ParamDef;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;

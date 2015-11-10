@@ -28,7 +28,6 @@ public class DTOUtil {
         entity.setDescription(description);
         entity.setName(name);
         entity.setWithMap(withMap);
-        entity.setExecutionLogs(new HashSet());
         entity.setScopeName(scopeName);
         entity.setVisibility(visibilityEnum);
 

@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
@@ -31,6 +34,7 @@ public class ReportMapperTest extends UnitilsJUnit4 {
                 .name("name")
                 .withMap(true)
                 .scopeName("scopeName")
+                .executionLogs(new HashSet<ExecutionLog>())
                 .build();
     }
 

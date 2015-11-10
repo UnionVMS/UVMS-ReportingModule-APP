@@ -5,14 +5,12 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import org.apache.commons.collections4.CollectionUtils;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.*;
@@ -133,11 +131,9 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         }
         jgen.writeStringField(VISIBILITY, reportDTO.getVisibility().getName());
         jgen.writeStringField(CREATED_ON, UI_FORMATTER.print(new DateTime(reportDTO.getAudit().getCreatedOn())));
-
-        Set<ExecutionLogDTO> executionLogDTOs = reportDTO.filterLogsByUser(reportDTO.getCreatedBy());
-        if (CollectionUtils.isNotEmpty(executionLogDTOs)) {
-            ExecutionLogDTO userExecutionLog = executionLogDTOs.iterator().next();
-            String executedOn = UI_FORMATTER.print(new DateTime(userExecutionLog.getExecutedOn()));
+        ExecutionLogDTO executionLog = reportDTO.getExecutionLog();
+        if (executionLog != null) {
+            String executedOn = UI_FORMATTER.print(new DateTime(executionLog.getExecutedOn()));
             jgen.writeStringField(ExecutionLogDTO.EXECUTED_ON, executedOn);
         } else {
             jgen.writeStringField(ExecutionLogDTO.EXECUTED_ON, null);
