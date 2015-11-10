@@ -58,13 +58,7 @@ public class VmsServiceBean implements VmsService {
 
             if (processor.hasVesselsOrVesselGroups()) {
                 vesselMap = vessel.getVesselMap(processor);
-                Collection<? extends ListCriteria> listCriteria = ExtMovementMessageMapper.movementListCriteria(vesselMap.keySet());
-                List<ListCriteria> movementListCriteria = processor.getMovementListCriteria();
-                for(ListCriteria criteria : listCriteria){
-                    if (!movementListCriteria.contains(criteria)){
-                        movementListCriteria.add(criteria);
-                    }
-                }
+                addConnectIdsToProcessor(vesselMap.keySet(), processor);
                 movementMap = movement.getMovement(processor);
             } else {
                 responseTypeMap = movement.getMovementMap(processor);
@@ -83,7 +77,17 @@ public class VmsServiceBean implements VmsService {
 
         return vmsDto;
     }
-    
+
+    private void addConnectIdsToProcessor(Set<String> ids, FilterProcessor processor) {
+        Collection<? extends ListCriteria> listCriteria = ExtMovementMessageMapper.movementListCriteria(ids);
+        List<ListCriteria> movementListCriteria = processor.getMovementListCriteria();
+        for(ListCriteria criteria : listCriteria){
+            if (!movementListCriteria.contains(criteria)){
+                movementListCriteria.add(criteria);
+            }
+        }
+    }
+
     private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
     	if (isNotEmpty(processor.getAreaIdentifierList())) {
     		String areaWkt = getFilterArea(processor.getAreaIdentifierList());
