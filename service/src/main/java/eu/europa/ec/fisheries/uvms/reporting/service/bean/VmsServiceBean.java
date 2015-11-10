@@ -1,7 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtVesselMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
@@ -56,6 +58,13 @@ public class VmsServiceBean implements VmsService {
 
             if (processor.hasVesselsOrVesselGroups()) {
                 vesselMap = vessel.getVesselMap(processor);
+                Collection<? extends ListCriteria> listCriteria = ExtMovementMessageMapper.movementListCriteria(vesselMap.keySet());
+                List<ListCriteria> movementListCriteria = processor.getMovementListCriteria();
+                for(ListCriteria criteria : listCriteria){
+                    if (!movementListCriteria.contains(criteria)){
+                        movementListCriteria.add(criteria);
+                    }
+                }
                 movementMap = movement.getMovement(processor);
             } else {
                 responseTypeMap = movement.getMovementMap(processor);

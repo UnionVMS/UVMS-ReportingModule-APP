@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
@@ -10,7 +11,10 @@ import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
+import org.unitils.mock.PartialMock;
 
+import javax.ejb.EJB;
+import javax.jms.TextMessage;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +39,8 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
     private Mock<Report> report;
 
+    private PartialMock<TextMessage> vesselResponse;
+
     @Test
     @SneakyThrows
     public void testGetVmsDataByReportId() {
@@ -56,7 +62,8 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     }
 
     @Test
-    public void testGetVmsDataByReportIdWithVesselGroupFilters() throws Exception {
+    @SneakyThrows
+    public void testGetVmsDataByReportIdWithVesselGroupFilters() {
 
         Set<Filter> filterSet = new HashSet<>();
         filterSet.add(VesselGroupFilterBuilder().groupId("123").build());
@@ -75,7 +82,8 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     }
 
     @Test
-    public void testGetVmsDataByReportIdWithoutVessel() throws Exception {
+    @SneakyThrows
+    public void testGetVmsDataByReportIdWithoutVessel() {
 
         Set<Filter> filterSet = new HashSet<>();
         filterSet.add(CommonFilterBuilder()
@@ -92,6 +100,17 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         report.assertInvokedInSequence().updateExecutionLog("test");
 
         MockUnitils.assertNoMoreInvocations();
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void testWithVesselsAndVesselGroup(){
+
+        //vesselResponse.returns().getText();
+
+        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
+
 
     }
 
