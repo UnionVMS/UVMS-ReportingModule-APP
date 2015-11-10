@@ -124,7 +124,6 @@ public class Report implements Serializable {
         } else {
             executionLog = executionLogs.iterator().next();
             executionLog.setExecutedOn(new Date());
-            executionLog.setExecutedBy(username);
         }
     }
 
