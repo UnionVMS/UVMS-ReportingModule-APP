@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
