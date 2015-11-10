@@ -83,9 +83,9 @@ public class VmsServiceBean implements VmsService {
         Collection<? extends ListCriteria> listCriteria = ExtMovementMessageMapper.movementListCriteria(ids);
         List<ListCriteria> movementListCriteria = processor.getMovementListCriteria();
         for(ListCriteria criteria : listCriteria){
-            if (!movementListCriteria.contains(criteria)){
-                movementListCriteria.add(criteria);
-            }
+            //if (!movementListCriteria.contains(criteria)){
+            movementListCriteria.add(criteria);
+            //}
         }
     }
 
