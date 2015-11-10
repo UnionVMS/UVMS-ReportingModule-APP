@@ -59,7 +59,7 @@ public class VmsServiceBean implements VmsService {
 
             if (processor.hasVesselsOrVesselGroups()) {
                 vesselMap = vessel.getVesselMap(processor);
-                addConnectIdsToProcessor(vesselMap.keySet(), processor);
+                processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(vesselMap.keySet()));
                 movementMap = movement.getMovement(processor);
             } else {
                 responseTypeMap = movement.getMovementMap(processor);
@@ -77,16 +77,6 @@ public class VmsServiceBean implements VmsService {
         }
 
         return vmsDto;
-    }
-
-    private void addConnectIdsToProcessor(Set<String> ids, FilterProcessor processor) {
-        Collection<? extends ListCriteria> listCriteria = ExtMovementMessageMapper.movementListCriteria(ids);
-        List<ListCriteria> movementListCriteria = processor.getMovementListCriteria();
-        for(ListCriteria criteria : listCriteria){
-            //if (!movementListCriteria.contains(criteria)){
-            movementListCriteria.add(criteria);
-            //}
-        }
     }
 
     private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
