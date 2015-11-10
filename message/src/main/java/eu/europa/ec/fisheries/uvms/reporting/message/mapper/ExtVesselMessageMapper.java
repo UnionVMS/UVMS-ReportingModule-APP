@@ -64,10 +64,12 @@ public class ExtVesselMessageMapper {
         return VesselModuleRequestMapper.createVesselListModuleRequest(query);
     }
 
-    public static String createVesselListModuleRequest(List<VesselGroup> vesselGroup) throws VesselModelMapperException {
+    public static String createVesselListModuleRequest(Set<VesselGroup> vesselGroup) throws VesselModelMapperException {
         if (vesselGroup == null){
             throw new IllegalArgumentException("List<VesselGroup> can not be null.");
         }
-        return VesselModuleRequestMapper.createVesselListModuleRequest(vesselGroup);
+        List<VesselGroup> vesselGroupList = new ArrayList<>();
+        vesselGroupList.addAll(vesselGroup);
+        return VesselModuleRequestMapper.createVesselListModuleRequest(vesselGroupList);
     }
 }

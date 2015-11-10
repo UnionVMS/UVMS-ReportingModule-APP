@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 
 import javax.ejb.*;
 import javax.jms.TextMessage;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class VesselServiceBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Map<String, Vessel> getVesselMap(final FilterProcessor processor) throws ReportingServiceException {
-        Set<Vessel> vesselList = Sets.newHashSet();
+        Set<Vessel> vesselList = new HashSet<>();
 
         try {
             if (processor.hasVessels()) {

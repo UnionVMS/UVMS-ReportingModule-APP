@@ -16,6 +16,7 @@ import org.unitils.mock.PartialMock;
 import javax.jms.Destination;
 import javax.jms.TextMessage;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class VesselServiceBeanTest extends UnitilsJUnit4 {
 
@@ -60,7 +61,7 @@ public class VesselServiceBeanTest extends UnitilsJUnit4 {
         processor.returns(true).hasVesselGroups();
 
         processor.returns(new VesselListQuery()).toVesselListQuery();
-        processor.returns(new ArrayList<>()).getVesselGroupList();
+        processor.returns(new HashSet<>()).getVesselGroupList();
 
         vesselReceiver.returns(message).getMessage(null, null);
         service.returns(new ArrayList<>()).getVessels(null, null);

@@ -1,11 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
+import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Ignore;
@@ -14,10 +17,7 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
 import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.CommonFilterBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
@@ -45,11 +45,18 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         assertEquals(0, processor.getVesselGroupList().size());
         assertEquals(1, processor.getMovementListCriteria().size());
 
-        assertEquals(processor.getVesselListCriteriaPairs().get(0).getKey(), ConfigSearchField.GUID);
-        assertEquals(processor.getVesselListCriteriaPairs().get(0).getValue(), "guid");
+        List<VesselListCriteriaPair> vesselListCriteriaPairList = new ArrayList<>();
+        vesselListCriteriaPairList.addAll(processor.getVesselListCriteriaPairs());
 
-        assertEquals(processor.getMovementListCriteria().get(0).getKey(), SearchKey.CONNECT_ID);
-        assertEquals(processor.getMovementListCriteria().get(0).getValue(), "guid");
+        List<ListCriteria> listCriteria = new ArrayList<>();
+        listCriteria.addAll(processor.getMovementListCriteria());
+
+        processor.getVesselListCriteriaPairs();
+        assertEquals(vesselListCriteriaPairList.get(0).getKey(), ConfigSearchField.GUID);
+        assertEquals(vesselListCriteriaPairList.get(0).getValue(), "guid");
+
+        assertEquals(listCriteria.get(0).getKey(), SearchKey.CONNECT_ID);
+        assertEquals(listCriteria.get(0).getValue(), "guid");
 
     }
 
@@ -67,14 +74,17 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         processor = new FilterProcessor(filterList);
 
+        List<VesselGroup> vesselGroupList = new ArrayList<>();
+        vesselGroupList.addAll(processor.getVesselGroupList());
+
         assertEquals(0, processor.getVesselListCriteriaPairs().size());
         assertEquals(0, processor.getRangeCriteria().size());
         assertEquals(1, processor.getVesselGroupList().size());
         assertEquals(0, processor.getMovementListCriteria().size());
 
-        assertEquals(processor.getVesselGroupList().get(0).getGuid(), "1");
-        assertEquals(processor.getVesselGroupList().get(0).getName(), null);
-        assertEquals(processor.getVesselGroupList().get(0).getUser(), "test");
+        assertEquals(vesselGroupList.get(0).getGuid(), "1");
+        assertEquals(vesselGroupList.get(0).getName(), null);
+        assertEquals(vesselGroupList.get(0).getUser(), "test");
 
     }
 

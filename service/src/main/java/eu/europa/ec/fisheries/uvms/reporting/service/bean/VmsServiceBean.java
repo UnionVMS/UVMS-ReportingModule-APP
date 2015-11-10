@@ -17,10 +17,7 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -86,9 +83,11 @@ public class VmsServiceBean implements VmsService {
     	}    	
     }
     
-	private String getFilterArea(List<AreaIdentifierType> areaIdentifierList) throws ReportingServiceException {
+	private String getFilterArea(Set<AreaIdentifierType> areaIdentifierList) throws ReportingServiceException {
 		try {
-			return SpatialService.getFilterArea(areaIdentifierList);
+            List<AreaIdentifierType> areaIdentifierTypeList = new ArrayList<>();
+            areaIdentifierTypeList.addAll(areaIdentifierList);
+			return SpatialService.getFilterArea(areaIdentifierTypeList);
 		} catch (ReportingServiceException e) {
 			throw new ReportingServiceException("Exception during retrieving filter area");
 		}

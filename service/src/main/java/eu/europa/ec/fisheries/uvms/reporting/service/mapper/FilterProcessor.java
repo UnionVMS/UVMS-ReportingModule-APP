@@ -13,6 +13,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,11 +26,11 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
  */
 public class FilterProcessor {
 
-    private final List<ListCriteria> movementListCriteria = new ArrayList<>();
-    private final List<RangeCriteria> rangeCriteria = new ArrayList<>();
-    private final List<VesselListCriteriaPair> vesselListCriteriaPairs = new ArrayList<>();
-    private final List<VesselGroup> vesselGroupList = new ArrayList<>();
-    private final List<AreaIdentifierType> areaIdentifierList = new ArrayList<AreaIdentifierType>();
+    private final Set<ListCriteria> movementListCriteria = new HashSet<>();
+    private final Set<RangeCriteria> rangeCriteria = new HashSet<>();
+    private final Set<VesselListCriteriaPair> vesselListCriteriaPairs = new HashSet<>();
+    private final Set<VesselGroup> vesselGroupList = new HashSet<>();
+    private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<AreaIdentifierType>();
 
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
         validate(filters);
@@ -105,7 +106,7 @@ public class FilterProcessor {
         return vesselListCriteria;
     }
 
-    public List<VesselGroup> getVesselGroupList() {
+    public Set<VesselGroup> getVesselGroupList() {
         return vesselGroupList;
     }
 
@@ -121,19 +122,19 @@ public class FilterProcessor {
         return vesselGroupList.size() > 0;
     }
 
-    public List<ListCriteria> getMovementListCriteria() {
+    public Set<ListCriteria> getMovementListCriteria() {
         return movementListCriteria;
     }
 
-    public List<VesselListCriteriaPair> getVesselListCriteriaPairs() {
+    public Set<VesselListCriteriaPair> getVesselListCriteriaPairs() {
         return vesselListCriteriaPairs;
     }
 
-    public List<RangeCriteria> getRangeCriteria() {
+    public Set<RangeCriteria> getRangeCriteria() {
         return rangeCriteria;
     }
     
-    public List<AreaIdentifierType> getAreaIdentifierList() {
+    public Set<AreaIdentifierType> getAreaIdentifierList() {
     	return areaIdentifierList;
     }
 }
