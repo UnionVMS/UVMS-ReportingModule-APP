@@ -57,6 +57,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
         vessel.setCountryCode("BE");
         vessel.setIrcs("Ircs");
         vessel.setCfr("cfr");
+        vessel.setExternalMarking("em");
         vessel.setActive(true);
 
         MovementType movement = new MovementType();

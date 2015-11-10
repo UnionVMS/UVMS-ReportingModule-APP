@@ -33,6 +33,7 @@ public class MovementDTO extends GeoJsonDTO {
     private static final String NAME = "name";
     private static final String MOVEMENT_GUID = "movementGuid";
     private static final String MOVEMENT = "movement";
+    private static final String EXTERNAL_MARKING = "externalMarking";
 
     @Delegate(types = Include.class)
     private MovementType movementType;
@@ -63,6 +64,7 @@ public class MovementDTO extends GeoJsonDTO {
         sb.add(IRCS, String.class);
         sb.add(NAME, String.class);
         sb.add(MOVEMENT_GUID, String.class);
+        sb.add(EXTERNAL_MARKING, String.class);
         return sb.buildFeatureType();
     }
 
@@ -89,6 +91,8 @@ public class MovementDTO extends GeoJsonDTO {
         featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
         featureBuilder.set(IRCS, asset.getIrcs());
         featureBuilder.set(NAME, asset.getName());
+        featureBuilder.set(EXTERNAL_MARKING, asset.getExternalMarking());
+
         return featureBuilder.buildFeature(getGuid());
     }
 

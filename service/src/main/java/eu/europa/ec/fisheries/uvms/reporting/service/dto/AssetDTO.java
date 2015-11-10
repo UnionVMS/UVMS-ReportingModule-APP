@@ -17,6 +17,7 @@ public class AssetDTO {
         String getCfr();
         String getName();
         String getCountryCode();
+        String getExternalMarking();
     }
 
     public String getGuid(){

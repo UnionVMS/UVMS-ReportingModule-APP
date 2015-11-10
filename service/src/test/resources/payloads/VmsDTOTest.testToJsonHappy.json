@@ -16,6 +16,7 @@
         "movementType" : "EXI",
         "activityType" : "ANC",
         "reportedSpeed" : 12.0,
+        "externalMarking" : "em",
         "cfr" : "cfr",
         "countryCode" : "BE",
         "ircs" : "Ircs",
@@ -39,6 +40,7 @@
         "distance" : 200.0,
         "cfr" : "cfr",
         "countryCode" : "BE",
+        "externalMarking" : "em",
         "ircs" : "Ircs",
         "name" : "name",
         "trackId" : "trackId",
@@ -51,6 +53,7 @@
       "name" : "name",
       "countryCode" : "BE",
       "ircs" : "Ircs",
+      "externalMarking" : "em",
       "cfr" : "cfr",
       "guid" : null
     },

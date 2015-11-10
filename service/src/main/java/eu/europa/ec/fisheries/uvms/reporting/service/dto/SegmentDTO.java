@@ -29,6 +29,7 @@ public class SegmentDTO extends GeoJsonDTO {
     private static final String NAME = "name";
     private static final String SEGMENTS = "segments";
     private static final String SEGMENT_CATEGORY_TYPE = "segmentCategory";
+    private static final String EXTERNAL_MARKING = "externalMarking";
 
     private AssetDTO asset;
 
@@ -55,6 +56,7 @@ public class SegmentDTO extends GeoJsonDTO {
         sb.add(NAME, String.class);
         sb.add(TRACK_ID, String.class);
         sb.add(SEGMENT_CATEGORY_TYPE, String.class);
+        sb.add(EXTERNAL_MARKING, String.class);
         return sb.buildFeatureType();
     }
 
@@ -69,6 +71,7 @@ public class SegmentDTO extends GeoJsonDTO {
         featureBuilder.set(TRACK_ID, getTrackId());
         featureBuilder.set(CFR, asset.getCfr());
         featureBuilder.set(IRCS, asset.getIrcs());
+        featureBuilder.set(EXTERNAL_MARKING, asset.getExternalMarking());
         featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
         featureBuilder.set(NAME, asset.getName());
         featureBuilder.set(SEGMENT_CATEGORY_TYPE, getCategory());
