@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
@@ -12,7 +11,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
