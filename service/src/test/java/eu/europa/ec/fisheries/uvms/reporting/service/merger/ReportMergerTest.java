@@ -5,7 +5,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import lombok.SneakyThrows;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -33,7 +32,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-        public void testMergeUpdated(){
+        public void shouldUpdateWhenValuesModified(){
 
         Report existingReport = ReportBuilder().id(1L).description("desc").createdBy("me").build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).createdBy("you").description("desc").build();
@@ -52,7 +51,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testMergeUnTouched(){
+    public void shouldNotUpdateWhenNothingHasChanged(){
 
         Report existingReport = ReportBuilder().id(1L).description("desc").createdBy("you").build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).
