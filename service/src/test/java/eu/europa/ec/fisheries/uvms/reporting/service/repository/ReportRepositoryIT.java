@@ -250,6 +250,7 @@ public class ReportRepositoryIT {
     }
 
     @Test
+    @Transactional(value = TransactionMode.ROLLBACK)
     public void testCreateFilters() throws ReportingServiceException {
 
         Set<Filter> expectedCollection = new HashSet<>();
