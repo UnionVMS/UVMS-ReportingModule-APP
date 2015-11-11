@@ -90,7 +90,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
     @Test(expected = ProcessorException.class)
     @SneakyThrows
-    public void testSanityFilterNull() {
+    public void shouldThrowExceptionWhenEmptyFilterList() {
         Set<Filter> filterList = new HashSet<>();
         processor = new FilterProcessor(filterList);
     }
