@@ -11,7 +11,7 @@
         "positionTime" : "2013-02-28T13:24:56.000+01:00",
         "connectionId" : "guid",
         "status" : "STATUS",
-        "calculatedCourse" : 23.0,
+        "reportedCourse" : 23.0,
         "calculatedSpeed" : 22.0,
         "movementType" : "EXI",
         "activityType" : "ANC",

@@ -17,12 +17,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 public class MovementDTO extends GeoJsonDTO {
 
-    public static final SimpleFeatureType MOVEMENTYPE = buildFeatueType();
+    public static final SimpleFeatureType MOVEMENTYPE = buildFeatureType();
 
     private static final String POSITION_TIME = "positionTime";
     private static final String CONNECTION_ID = "connectionId";
     private static final String STATUS = "status";
-    private static final String CALCULATED_COURSE = "calculatedCourse";
+    private static final String REPORTED_COURSE = "reportedCourse";
     private static final String MOVEMENT_TYPE = "movementType";
     private static final String ACTIVITY_TYPE = "activityType";
     private static final String REPORTED_SPEED = "reportedSpeed";
@@ -45,7 +45,7 @@ public class MovementDTO extends GeoJsonDTO {
         asset = new AssetDTO(vessel);
     }
 
-    private static SimpleFeatureType buildFeatueType() {
+    private static SimpleFeatureType buildFeatureType() {
         SimpleFeatureTypeBuilder sb = new SimpleFeatureTypeBuilder();
         sb.setName(MOVEMENT);
         sb.setCRS(DefaultGeographicCRS.WGS84);
@@ -53,7 +53,7 @@ public class MovementDTO extends GeoJsonDTO {
         sb.add(POSITION_TIME, String.class);
         sb.add(CONNECTION_ID, String.class);
         sb.add(STATUS, String.class);
-        sb.add(CALCULATED_COURSE, Double.class);
+        sb.add(REPORTED_COURSE, Double.class);
         sb.add(CALCULATED_SPEED, Double.class);
         sb.add(MOVEMENT_TYPE, String.class);
         sb.add(ACTIVITY_TYPE, String.class);
@@ -75,7 +75,7 @@ public class MovementDTO extends GeoJsonDTO {
         featureBuilder.set(POSITION_TIME, getPositionTime());
         featureBuilder.set(CONNECTION_ID, getConnectId());
         featureBuilder.set(STATUS, getStatus());
-        featureBuilder.set(CALCULATED_COURSE, getCalculatedCourse());
+        featureBuilder.set(REPORTED_COURSE, getReportedCourse());
         featureBuilder.set(MOVEMENT_GUID, getGuid());
 
         if (getMovementType() != null){
@@ -104,7 +104,7 @@ public class MovementDTO extends GeoJsonDTO {
         XMLGregorianCalendar getPositionTime();
         Double getReportedSpeed();
         MovementActivityType getActivity();
-        Double getCalculatedCourse();
+        Double getReportedCourse();
         String getWkt();
         MovementTypeType getMovementType();
     }

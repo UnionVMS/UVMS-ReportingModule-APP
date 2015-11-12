@@ -61,7 +61,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
         vessel.setActive(true);
 
         MovementType movement = new MovementType();
-        movement.setCalculatedCourse(23.0);
+        movement.setReportedCourse(23.0);
         movement.setReportedSpeed(12.0);
         movement.setCalculatedSpeed(22.0);
         movement.setGuid("movementGuid");
