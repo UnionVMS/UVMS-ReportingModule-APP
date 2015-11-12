@@ -4,7 +4,6 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import eu.europa.ec.fisheries.uvms.service.DAO;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import java.util.List;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
 import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
 
-public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
+public class ReportDAO extends AbstractDAO<Report> {
 
     private static final Logger log = LoggerFactory.getLogger(ReportDAO.class);
 
@@ -69,7 +68,7 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
         List<Report> reports;
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
-            reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).parameters(), 1);
+            reports = findEntityByNamedQuery(Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).parameters(), 1);
         } catch (ServiceException exc) {
             log.error("findReport failed", exc);
             throw new ReportingServiceException("findReport failed", exc);
@@ -86,7 +85,7 @@ public class ReportDAO extends AbstractDAO<Report> implements DAO<Report> {
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
             List<Report> listReports =
-                    findEntityByNamedQuery(Report.class, Report.LIST_BY_USERNAME_AND_SCOPE,
+                    findEntityByNamedQuery(Report.LIST_BY_USERNAME_AND_SCOPE,
                             with("scopeName", scopeName).and("username", username).parameters());
             log.debug("list successful");
 
