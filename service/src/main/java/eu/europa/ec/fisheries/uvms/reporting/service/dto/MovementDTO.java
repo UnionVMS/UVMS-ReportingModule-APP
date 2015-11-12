@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.vividsolutions.jts.geom.Point;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -34,6 +35,7 @@ public class MovementDTO extends GeoJsonDTO {
     private static final String MOVEMENT_GUID = "movementGuid";
     private static final String MOVEMENT = "movement";
     private static final String EXTERNAL_MARKING = "externalMarking";
+    private static final String SOURCE = "source";
 
     @Delegate(types = Include.class)
     private MovementType movementType;
@@ -65,6 +67,7 @@ public class MovementDTO extends GeoJsonDTO {
         sb.add(NAME, String.class);
         sb.add(MOVEMENT_GUID, String.class);
         sb.add(EXTERNAL_MARKING, String.class);
+        sb.add(SOURCE, String.class);
         return sb.buildFeatureType();
     }
 
@@ -92,6 +95,7 @@ public class MovementDTO extends GeoJsonDTO {
         featureBuilder.set(IRCS, asset.getIrcs());
         featureBuilder.set(NAME, asset.getName());
         featureBuilder.set(EXTERNAL_MARKING, asset.getExternalMarking());
+        featureBuilder.set(SOURCE, getSource());
 
         return featureBuilder.buildFeature(getGuid());
     }
@@ -107,6 +111,7 @@ public class MovementDTO extends GeoJsonDTO {
         Double getReportedCourse();
         String getWkt();
         MovementTypeType getMovementType();
+        MovementSourceType getSource();
     }
 }
 

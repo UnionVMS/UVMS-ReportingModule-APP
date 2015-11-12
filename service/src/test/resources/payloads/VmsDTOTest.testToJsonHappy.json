@@ -21,7 +21,8 @@
         "countryCode" : "BE",
         "ircs" : "Ircs",
         "name" : "name",
-        "movementGuid" : "movementGuid"
+        "movementGuid" : "movementGuid",
+        "source" : "AIS"
       }
     } ]
   },
