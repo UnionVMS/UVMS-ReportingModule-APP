@@ -12,7 +12,12 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.DateTime;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 
@@ -37,10 +42,10 @@ public class CommonFilter extends Filter {
     }
 
     @Builder(builderMethodName = "CommonFilterBuilder")
-    public CommonFilter(Long id, Date startDate, Date endDate, PositionSelector positionSelector) {
+    public CommonFilter(final Long id, final Date startDate, final Date endDate, final PositionSelector positionSelector) {
         super(FilterType.common);
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startDate = new Date(startDate.getTime());
+        this.endDate = new Date(endDate.getTime());
         this.positionSelector = positionSelector;
         setId(id);
     }
