@@ -49,14 +49,12 @@
     } ]
   },
   "tracks" : [ {
-    "asset" : {
-      "name" : "name",
-      "countryCode" : "BE",
-      "ircs" : "Ircs",
-      "externalMarking" : "em",
-      "cfr" : "cfr",
-      "guid" : null
-    },
+    "name" : "name",
+    "countryCode" : "BE",
+    "ircs" : "Ircs",
+    "externalMarking" : "em",
+    "cfr" : "cfr",
+    "guid" : null,
     "nearestPoint" : [ 25.58479532163743, 21.666666666666668 ],
     "extent" : [ 10.0, 5.0, 45.0, 45.0 ],
     "id" : null,

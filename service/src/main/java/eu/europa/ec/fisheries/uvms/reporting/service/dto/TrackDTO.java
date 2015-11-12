@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
@@ -17,6 +18,7 @@ public class TrackDTO extends GeoJsonDTO {
     @Delegate(excludes = Exclude.class)
     private MovementTrack track;
 
+    @JsonUnwrapped
     private AssetDTO asset;
 
     private List<Double> nearestPoint;
