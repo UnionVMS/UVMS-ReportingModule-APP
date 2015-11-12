@@ -44,8 +44,8 @@ public class CommonFilter extends Filter {
     @Builder(builderMethodName = "CommonFilterBuilder")
     public CommonFilter(final Long id, final Date startDate, final Date endDate, final PositionSelector positionSelector) {
         super(FilterType.common);
-        this.startDate = new Date(startDate.getTime());
-        this.endDate = new Date(endDate.getTime());
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.positionSelector = positionSelector;
         setId(id);
     }
