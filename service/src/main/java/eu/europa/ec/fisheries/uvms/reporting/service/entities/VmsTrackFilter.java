@@ -12,7 +12,6 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -81,7 +80,7 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
-        ArrayList<RangeCriteria> rangeCriteria = newArrayList();
+        List<RangeCriteria> rangeCriteria = newArrayList();
         addDurationAtSeaCriteria(rangeCriteria);
         addTotalDurationCriteria(rangeCriteria);
         addSpeedCriteria(rangeCriteria);
@@ -89,7 +88,7 @@ public class VmsTrackFilter extends Filter {
         return rangeCriteria;
     }
 
-    private void addSpeedCriteria(ArrayList<RangeCriteria> rangeCriteria) {
+    private void addSpeedCriteria(List<RangeCriteria> rangeCriteria) {
         if (minAvgSpeed != null || maxAvgSpeed != null) {
             RangeCriteria lengthCriteria = new RangeCriteria();
             lengthCriteria.setKey(RangeKeyType.TRACK_SPEED);
@@ -99,7 +98,7 @@ public class VmsTrackFilter extends Filter {
         }
     }
 
-    private void addDistanceCriteria(ArrayList<RangeCriteria> rangeCriteria) {
+    private void addDistanceCriteria(List<RangeCriteria> rangeCriteria) {
         Float maxDistance = distanceRange.getMaxDistance();
         Float minDistance = distanceRange.getMinDistance();
         if (minDistance != null || maxDistance != null) {
@@ -111,7 +110,7 @@ public class VmsTrackFilter extends Filter {
         }
     }
 
-    private void addTotalDurationCriteria(ArrayList<RangeCriteria> rangeCriteria) {
+    private void addTotalDurationCriteria(List<RangeCriteria> rangeCriteria) {
         Float maxDuration = durationRange.getMaxDuration();
         Float minDuration = durationRange.getMinDuration();
         if (minDuration != null || maxDuration != null) {
@@ -123,7 +122,7 @@ public class VmsTrackFilter extends Filter {
         }
     }
 
-    private void addDurationAtSeaCriteria(ArrayList<RangeCriteria> rangeCriteria) {
+    private void addDurationAtSeaCriteria(List<RangeCriteria> rangeCriteria) {
         Float minTime = timeRange.getMinTime();
         Float maxTime = timeRange.getMaxTime();
         if (minTime != null || maxTime != null) {
