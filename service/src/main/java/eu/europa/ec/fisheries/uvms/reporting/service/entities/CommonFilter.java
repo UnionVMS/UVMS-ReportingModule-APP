@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
@@ -9,7 +8,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.NotImplementedException;
 import org.joda.time.DateTime;
 
 import javax.persistence.Column;
