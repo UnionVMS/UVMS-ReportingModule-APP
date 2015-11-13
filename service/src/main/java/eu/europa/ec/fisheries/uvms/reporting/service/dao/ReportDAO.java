@@ -4,9 +4,8 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -16,9 +15,8 @@ import java.util.List;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
 import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
 
+@Slf4j
 public class ReportDAO extends AbstractDAO<Report> {
-
-    private static final Logger log = LoggerFactory.getLogger(ReportDAO.class);
 
     private EntityManager em;
 
@@ -73,7 +71,7 @@ public class ReportDAO extends AbstractDAO<Report> {
             log.error("findReport failed", exc);
             throw new ReportingServiceException("findReport failed", exc);
         }
-        if (reports != null && reports.size() > 0) {
+        if (reports != null && !reports.isEmpty()) {
             result = reports.get(0);
         }
         return result;
