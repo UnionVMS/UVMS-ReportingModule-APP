@@ -253,8 +253,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                                     <reportOutputDirectory>src/main/webapp</reportOutputDirectory>
                                     <useStandardDocletOptions>false</useStandardDocletOptions>
                                     <additionalparam>-apiVersion ${project.version}
-                                        -docBasePath http://${hostname}:${port}/${project.parent.artifactId}/apidocs
-                                        -apiBasePath http://${hostname}:${port}/${project.parent.artifactId}/rest</additionalparam>
+                                        -docBasePath /${project.parent.artifactId}/apidocs
+                                        -apiBasePath /${project.parent.artifactId}/rest</additionalparam>
                                 </configuration>
                                 <goals>
                                     <goal>javadoc</goal>
