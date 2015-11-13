@@ -10,6 +10,7 @@ import org.mapstruct.factory.Mappers;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,23 +29,14 @@ public class VmsTrackFilter extends Filter {
     private static final float DEFAULT_MAX_TIME_AT_SEA = 9999999F;
     private static final float DEFAULT_MAX_FULL_DURATION = 9999999F;
 
-    @Column(name = "MIN_TIME")
-    private Float minTime;
+    @Embedded
+    private TimeRange timeRange;
 
-    @Column(name = "MAX_TIME")
-    private Float maxTime;
+    @Embedded
+    private DurationRange durationRange;
 
-    @Column(name = "MIN_DURATION")
-    private Float minDuration;
-
-    @Column(name = "MAX_DURATION")
-    private Float maxDuration;
-
-    @Column(name = "MIN_DISTANCE")
-    private Float minDistance;
-
-    @Column(name = "MAX_DISTANCE")
-    private Float maxDistance;
+    @Embedded
+    private DistanceRange distanceRange;
 
     @Column(name = "MIN_AVG_SPEED")
     private Float minAvgSpeed;
@@ -58,23 +50,17 @@ public class VmsTrackFilter extends Filter {
 
     @Builder(builderMethodName = "TrackFilterBuilder")
     public VmsTrackFilter(Long id, Long reportId,
-                          Float maxTime,
-                          Float maxDuration,
-                          Float minDuration,
-                          Float minTime,
+                          TimeRange timeRange,
+                          DurationRange durationRange,
+                          DistanceRange distanceRange,
                           Float minAvgSpeed,
-                          Float maxAvgSpeed,
-                          Float minDistance,
-                          Float maxDistance) {
+                          Float maxAvgSpeed) {
         super(FilterType.vmstrack, id, reportId);
-        this.minDuration = minDuration;
-        this.maxDuration = maxDuration;
-        this.minTime = minTime;
-        this.maxTime = maxTime;
+        this.timeRange = timeRange;
+        this.distanceRange = distanceRange;
+        this.durationRange = durationRange;
         this.minAvgSpeed = minAvgSpeed;
         this.maxAvgSpeed = maxAvgSpeed;
-        this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
     }
 
     @Override
@@ -86,120 +72,96 @@ public class VmsTrackFilter extends Filter {
     @Override
     public void merge(Filter filter) {
         VmsTrackFilter incoming = (VmsTrackFilter) filter;
-        setMaxDuration(incoming.getMaxDuration());
-        setMaxTime(incoming.getMaxTime());
+        setDurationRange(incoming.getDurationRange());
+        setTimeRange(incoming.getTimeRange());
+        setDistanceRange(incoming.getDistanceRange());
         setMaxAvgSpeed(incoming.getMaxAvgSpeed());
-        setMaxDistance(incoming.getMaxDistance());
-
-        setMinDuration(incoming.getMinDuration());
-        setMinTime(incoming.getMinTime());
         setMinAvgSpeed(incoming.getMinAvgSpeed());
-        setMinDistance(incoming.getMinDistance());
     }
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
-        ArrayList<RangeCriteria> rangeCriterias = newArrayList();
-
-        addDurationAtSeaCriteria(rangeCriterias);
-        addTotalDurationCriteria(rangeCriterias);
-        addSpeedCriteria(rangeCriterias);
-        addDistanceCriteria(rangeCriterias);
-
-        return rangeCriterias;
+        ArrayList<RangeCriteria> rangeCriteria = newArrayList();
+        addDurationAtSeaCriteria(rangeCriteria);
+        addTotalDurationCriteria(rangeCriteria);
+        addSpeedCriteria(rangeCriteria);
+        addDistanceCriteria(rangeCriteria);
+        return rangeCriteria;
     }
 
-    private void addSpeedCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+    private void addSpeedCriteria(ArrayList<RangeCriteria> rangeCriteria) {
         if (minAvgSpeed != null || maxAvgSpeed != null) {
             RangeCriteria lengthCriteria = new RangeCriteria();
             lengthCriteria.setKey(RangeKeyType.TRACK_SPEED);
             lengthCriteria.setFrom(valueOf(minAvgSpeed != null ? minAvgSpeed : MIN_DEFAULT));
             lengthCriteria.setTo(valueOf(maxAvgSpeed != null ? maxAvgSpeed : DEFAULT_MAX_AVG_SPEED));
-            rangeCriterias.add(lengthCriteria);
+            rangeCriteria.add(lengthCriteria);
         }
     }
 
-    private void addDistanceCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+    private void addDistanceCriteria(ArrayList<RangeCriteria> rangeCriteria) {
+        Float maxDistance = distanceRange.getMaxDistance();
+        Float minDistance = distanceRange.getMinDistance();
         if (minDistance != null || maxDistance != null) {
             RangeCriteria lengthCriteria = new RangeCriteria();
             lengthCriteria.setKey(RangeKeyType.TRACK_LENGTH);
             lengthCriteria.setFrom(valueOf(minDistance != null ? minDistance : MIN_DEFAULT));
             lengthCriteria.setTo(valueOf(maxDistance != null ? maxDistance : DEFAULT_MAX_DISTANCE));
-            rangeCriterias.add(lengthCriteria);
+            rangeCriteria.add(lengthCriteria);
         }
     }
 
-    private void addTotalDurationCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+    private void addTotalDurationCriteria(ArrayList<RangeCriteria> rangeCriteria) {
+        Float maxDuration = durationRange.getMaxDuration();
+        Float minDuration = durationRange.getMinDuration();
         if (minDuration != null || maxDuration != null) {
             RangeCriteria durationCriteria = new RangeCriteria();
             durationCriteria.setKey(RangeKeyType.TRACK_DURATION);
             durationCriteria.setFrom(valueOf(minDuration != null ? minDuration : MIN_DEFAULT));
             durationCriteria.setTo(valueOf(maxDuration != null ? maxDuration : DEFAULT_MAX_FULL_DURATION));
-            rangeCriterias.add(durationCriteria);
+            rangeCriteria.add(durationCriteria);
         }
     }
 
-    private void addDurationAtSeaCriteria(ArrayList<RangeCriteria> rangeCriterias) {
+    private void addDurationAtSeaCriteria(ArrayList<RangeCriteria> rangeCriteria) {
+        Float minTime = timeRange.getMinTime();
+        Float maxTime = timeRange.getMaxTime();
         if (minTime != null || maxTime != null) {
             RangeCriteria timeCriteria = new RangeCriteria();
             timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
             timeCriteria.setFrom(valueOf(minTime != null ? minTime : MIN_DEFAULT));
             timeCriteria.setTo(valueOf(maxTime != null ? maxTime : DEFAULT_MAX_TIME_AT_SEA));
-            rangeCriterias.add(timeCriteria);
+            rangeCriteria.add(timeCriteria);
         }
+    }
+
+    public TimeRange getTimeRange() {
+        return timeRange;
+    }
+
+    public void setTimeRange(TimeRange timeRange) {
+        this.timeRange = timeRange;
+    }
+
+    public DurationRange getDurationRange() {
+        return durationRange;
+    }
+
+    public void setDurationRange(DurationRange durationRange) {
+        this.durationRange = durationRange;
+    }
+
+    public DistanceRange getDistanceRange() {
+        return distanceRange;
+    }
+
+    public void setDistanceRange(DistanceRange distanceRange) {
+        this.distanceRange = distanceRange;
     }
 
     @Override
     public Object getUniqKey() {
         return getId();
-    }
-
-    public Float getMaxTime() {
-        return maxTime;
-    }
-
-    public void setMaxTime(Float maxTime) {
-        this.maxTime = maxTime;
-    }
-
-    public Float getMinTime() {
-        return minTime;
-    }
-
-    public void setMinTime(Float minTime) {
-        this.minTime = minTime;
-    }
-
-    public Float getMinDuration() {
-        return minDuration;
-    }
-
-    public void setMinDuration(Float minDuration) {
-        this.minDuration = minDuration;
-    }
-
-    public Float getMaxDuration() {
-        return maxDuration;
-    }
-
-    public void setMaxDuration(Float maxDuration) {
-        this.maxDuration = maxDuration;
-    }
-
-    public Float getMinDistance() {
-        return minDistance;
-    }
-
-    public void setMinDistance(Float minDistance) {
-        this.minDistance = minDistance;
-    }
-
-    public Float getMaxDistance() {
-        return maxDistance;
-    }
-
-    public void setMaxDistance(Float maxDistance) {
-        this.maxDistance = maxDistance;
     }
 
     public Float getMinAvgSpeed() {

@@ -128,10 +128,8 @@ public class FilterDAOIT {
         filterDAO.createEntity(filter6);
 
         VmsTrackFilter filter7 = TrackFilterBuilder()
-                    .maxTime(10F)
-                    .minDuration(11F)
-                    .maxDuration(12F)
-                    .minTime(13F)
+                .timeRange(new TimeRange(13F, 10F))
+                .durationRange(new DurationRange(11F, 12F))
                 .build();
         filter7.setReport(savedReport);
         expectedCollection.add(filter7);
