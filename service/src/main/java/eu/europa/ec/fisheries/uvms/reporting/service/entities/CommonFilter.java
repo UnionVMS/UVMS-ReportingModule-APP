@@ -44,9 +44,9 @@ public class CommonFilter extends Filter {
     @Builder(builderMethodName = "CommonFilterBuilder")
     public CommonFilter(final Long id, final Date startDate, final Date endDate, final PositionSelector positionSelector) {
         super(FilterType.common);
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.positionSelector = positionSelector;
+        setStartDate(startDate);
+        setEndDate(endDate);
+        setPositionSelector(positionSelector);
         setId(id);
     }
 
@@ -64,17 +64,13 @@ public class CommonFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(){
-        PositionSelector positionSelector = getPositionSelector();
+
         RangeCriteria criteria = new RangeCriteria();
 
         switch (positionSelector.getSelector()){
 
             case all:
-
-                criteria.setKey(RangeKeyType.DATE);
-                criteria.setFrom(DateUtils.dateToString(getStartDate()));
-                criteria.setTo(DateUtils.dateToString(getEndDate()));
-
+                setDateCriteria(criteria, startDate, endDate);
                 break;
 
             case last:
@@ -84,19 +80,13 @@ public class CommonFilter extends Filter {
                 switch (position){
 
                     case hours:
-
                         Float hours = getPositionSelector().getValue();
                         DateTime currentDate = nowUTC();
                         Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
-                        criteria.setKey(RangeKeyType.DATE);
-                        criteria.setFrom(DateUtils.dateToString(toDate));
-                        criteria.setTo(DateUtils.dateToString(currentDate.toDate()));
-
+                        setDateCriteria(criteria, toDate, currentDate.toDate());
                         break;
 
                     case positions:
-
-                       // movementListCriteria.addAll(processLastPositions(commonFilter));
 
                         break;
 
@@ -111,9 +101,10 @@ public class CommonFilter extends Filter {
         return Lists.newArrayList(criteria);
     }
 
-    private List<ListCriteria> processLastPositions(final CommonFilter dateTimeFilter) {
-        //  Float positions = dateTimeFilter.getPositionSelector().getValue();
-        throw new NotImplementedException("Not implemented in Movement API");
+    private void setDateCriteria(final RangeCriteria criteria, final Date to, final Date from) {
+        criteria.setKey(RangeKeyType.DATE);
+        criteria.setFrom(DateUtils.dateToString(to));
+        criteria.setTo(DateUtils.dateToString(from));
     }
 
     // UT
@@ -131,7 +122,9 @@ public class CommonFilter extends Filter {
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        if (startDate != null){
+            this.startDate = new Date(startDate.getTime());
+        }
     }
 
     public Date getEndDate() {
@@ -139,7 +132,9 @@ public class CommonFilter extends Filter {
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        if (endDate != null){
+            this.endDate = new Date(endDate.getTime());
+        }
     }
 
     public PositionSelector getPositionSelector() {
