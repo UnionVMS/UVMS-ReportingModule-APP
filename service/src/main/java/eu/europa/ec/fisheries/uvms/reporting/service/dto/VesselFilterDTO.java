@@ -12,15 +12,18 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true, of = {"guid", "name"})
 public class VesselFilterDTO extends FilterDTO {
 
+    private static final int MAX_SIZE = 255;
+    private static final int MIN_SIZE = 1;
+
     public static final String NAME = "name";
     public static final String GUID = "guid";
     public static final String VESSELS = "vessels";
 
-    @Size(min = 1, max = 255)
+    @Size(min = MIN_SIZE, max = MAX_SIZE)
     @NotNull
     private String guid;
 
-    @Size(min = 1, max = 255)
+    @Size(min = MIN_SIZE, max = MAX_SIZE)
     @NotNull
     private String name;
 
