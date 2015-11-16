@@ -17,6 +17,7 @@ import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter.VmsSegmentFilterBuilder;
 import static junitparams.JUnitParamsRunner.$;
+import static org.junit.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertLenientEquals;
 
 @RunWith(JUnitParamsRunner.class)
@@ -35,6 +36,22 @@ public class VmsSegmentFilterTest {
     public void shouldReturnListRangeCriteria(VmsSegmentFilter filter, List<RangeCriteria> expected){
 
         assertLenientEquals(expected, filter.movementRangeCriteria());
+
+    }
+
+    @Test
+    public void shouldReturnSameAfterMerge(){
+
+        Filter segmentFilter = VmsSegmentFilterBuilder()
+                .category(SegmentCategoryType.ANCHORED)
+                .maxDuration(100F).minDuration(10F)
+                .maximumSpeed(50F).minimumSpeed(5F)
+                .build();
+        Filter merged = VmsSegmentFilterBuilder().build();
+
+        segmentFilter.merge(merged);
+
+        assertEquals(merged, segmentFilter);
 
     }
 
