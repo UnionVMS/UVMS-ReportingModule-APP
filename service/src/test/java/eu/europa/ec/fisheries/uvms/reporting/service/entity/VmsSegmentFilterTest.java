@@ -40,6 +40,17 @@ public class VmsSegmentFilterTest {
     }
 
     @Test
+    public void shouldReturnId(){
+
+        Filter segmentFilter = VmsSegmentFilterBuilder().id(1L).build();
+
+        segmentFilter.getUniqKey();
+
+        assertEquals(1L, segmentFilter.getUniqKey());
+
+    }
+
+    @Test
     public void shouldReturnSameAfterMerge(){
 
         Filter segmentFilter = VmsSegmentFilterBuilder()
@@ -57,15 +68,16 @@ public class VmsSegmentFilterTest {
 
     protected Object[] criteriaValues(){
 
-        Filter filter =
-                VmsSegmentFilterBuilder().category(SegmentCategoryType.ANCHORED).build();
+        Filter filter = VmsSegmentFilterBuilder().category(SegmentCategoryType.ANCHORED).build();
+        Filter filter2 = VmsSegmentFilterBuilder().build();
 
         ListCriteria listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.CATEGORY);
         listCriteria.setValue(SegmentCategoryType.ANCHORED.value());
 
         return $(
-                $(filter, Arrays.asList(listCriteria))
+               $(filter, Arrays.asList(listCriteria)),
+               $(filter2, null)
         );
     }
 
@@ -83,9 +95,21 @@ public class VmsSegmentFilterTest {
         rangeCriteria2.setFrom("6.45");
         rangeCriteria2.setTo("15.5");
 
+        Filter filter3 = VmsSegmentFilterBuilder().maximumSpeed(15.5F).build();
+        RangeCriteria rangeCriteria3 = new RangeCriteria();
+        rangeCriteria2.setKey(RangeKeyType.SEGMENT_SPEED);
+        rangeCriteria2.setTo("15.5");
+
+        Filter filter4 =  VmsSegmentFilterBuilder().maxDuration(13F).build();
+        RangeCriteria rangeCriteria4 = new RangeCriteria();
+        rangeCriteria4.setKey(RangeKeyType.SEGMENT_DURATION);
+        rangeCriteria4.setTo("13.0");
+
         return $(
             $(filter1, Arrays.asList(rangeCriteria)),
-            $(filter2, Arrays.asList(rangeCriteria2))
+            $(filter2, Arrays.asList(rangeCriteria2)),
+            $(filter3, Arrays.asList(rangeCriteria3)),
+            $(filter4, Arrays.asList(rangeCriteria4))
         );
     }
 }
