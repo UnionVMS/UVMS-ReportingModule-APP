@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 public class ExtMovementMessageMapper {
@@ -35,7 +36,7 @@ public class ExtMovementMessageMapper {
 
     public static Map<String, MovementMapResponseType> getMovementMap(List<MovementMapResponseType> movementMapResponseTypes) {
         return Maps.uniqueIndex(movementMapResponseTypes, new Function<MovementMapResponseType, String>() {
-            public String apply(MovementMapResponseType from) {
+            public String apply(@NotNull MovementMapResponseType from) {
                 return from.getKey();
             }
         });
