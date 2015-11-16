@@ -18,7 +18,8 @@ public abstract class GeoJsonDTO {
         if (wkt != null){
             WKTReader wktReader = new WKTReader();
             try {
-                return geometry = wktReader.read(wkt);
+                geometry = wktReader.read(wkt);
+                return geometry;
             } catch (ParseException e) {
                 throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
             }
