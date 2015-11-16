@@ -77,6 +77,8 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case vgroup:
                     vesselFilterDTOList.add(filterDTO);
                     break;
+                default:
+                    break;
             }
         }
         writeCommonFields(jgen, commonFilter);
@@ -157,6 +159,8 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                     case last:
                         jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().toString());
                         jgen.writeNumberField(PositionSelectorDTO.X_VALUE, positionSelector.getValue());
+                        break;
+                    default:
                         break;
                 }
             }

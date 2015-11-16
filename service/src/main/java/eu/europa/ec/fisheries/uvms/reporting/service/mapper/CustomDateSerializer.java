@@ -9,11 +9,10 @@ import java.io.IOException;
 import java.util.Date;
 
 // TODO create unit test
-public class CustomDateSerializer extends JsonSerializer<Date> {
+class CustomDateSerializer extends JsonSerializer<Date> {
 
     @Override
-    public void serialize (Date value, JsonGenerator gen, SerializerProvider arg2)
-      throws IOException {
+    public void serialize (Date value, JsonGenerator gen, SerializerProvider arg2) throws IOException {
         gen.writeString(DateUtils.UI_FORMATTER.print(value.getTime()));
     }
 }

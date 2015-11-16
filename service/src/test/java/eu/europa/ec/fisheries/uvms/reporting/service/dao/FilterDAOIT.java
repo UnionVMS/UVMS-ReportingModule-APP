@@ -21,15 +21,16 @@ import org.unitils.reflectionassert.ReflectionAssert;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.File;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter.TrackFilterBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter.VmsSegmentFilterBuilder;
 import static junit.framework.Assert.assertNull;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
 @RunWith(Arquillian.class)
@@ -76,8 +77,8 @@ public class FilterDAOIT {
         Set<Filter> expectedCollection = new HashSet<>();
         Report report = DTOUtil.createRandomReportEntity();
         String user = "georgiTestttt12";
-        report.setCreatedBy(user);
-        report.setScopeName("356456731");
+        report.getDetails().setCreatedBy(user);
+        report.getDetails().setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
         Report savedReport = reportDAO.createEntity(report);
 
@@ -173,8 +174,8 @@ public class FilterDAOIT {
 
         Report report = DTOUtil.createRandomReportEntity();
         String user = "georgiTestttt12";
-        report.setCreatedBy(user);
-        report.setScopeName("356456731");
+        report.getDetails().setCreatedBy(user);
+        report.getDetails().setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
         Report savedReport = reportDAO.createEntity(report);
 

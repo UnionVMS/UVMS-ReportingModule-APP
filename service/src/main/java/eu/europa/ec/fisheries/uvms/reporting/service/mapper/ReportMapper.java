@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.Builder;
 
 import java.util.*;
@@ -37,12 +38,12 @@ public class ReportMapper {
         }
         ReportDTO reportDTO = factory.createReportDTO();
         reportDTO.setId(report.getId());
-        reportDTO.setName(report.getName());
-        reportDTO.setDescription(report.getDescription());
-        reportDTO.setWithMap(report.getWithMap());
-        reportDTO.setScopeName(report.getScopeName());
+        reportDTO.setName(report.getDetails().getName());
+        reportDTO.setDescription(report.getDetails().getDescription());
+        reportDTO.setWithMap(report.getDetails().getWithMap());
+        reportDTO.setScopeName(report.getDetails().getScopeName());
         reportDTO.setAudit(auditMapper.auditToAuditDTO(report.getAudit()));
-        reportDTO.setCreatedBy(report.getCreatedBy());
+        reportDTO.setCreatedBy(report.getDetails().getCreatedBy());
         if (report.getIsDeleted() != null) {
             reportDTO.setDeleted(report.getIsDeleted());
         }
@@ -73,13 +74,11 @@ public class ReportMapper {
         }
         Report report = factory.createReport();
         report.setId(dto.getId());
-        report.setName(dto.getName());
-        report.setDescription(dto.getDescription());
+        report.setDetails(new ReportDetails(
+                dto.getDescription(), dto.getName(), dto.getWithMap(), dto.getScopeName(), dto.getCreatedBy())
+        );
         report.setFilters(filterDTOSetToFilterSet(dto.getFilters(), report));
         report.setExecutionLogs(executionLogDTOToExecutionLogSet(dto.getExecutionLog(), report));
-        report.setWithMap(dto.getWithMap());
-        report.setScopeName(dto.getScopeName());
-        report.setCreatedBy(dto.getCreatedBy());
         report.setIsDeleted(dto.isDeleted());
         report.setDeletedOn(dto.getDeletedOn());
         report.setDeletedBy(dto.getDeletedBy());

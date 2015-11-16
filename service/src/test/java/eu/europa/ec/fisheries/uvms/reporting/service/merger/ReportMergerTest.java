@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 import static junit.framework.TestCase.assertTrue;
 
 public class ReportMergerTest extends UnitilsJUnit4 {
@@ -34,7 +35,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
         public void shouldUpdateWhenValuesModified(){
 
-        Report existingReport = ReportBuilder().id(1L).description("desc").createdBy("me").build();
+        Report existingReport = ReportBuilder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("me").build()).build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).createdBy("you").description("desc").build();
 
         daoMock.returns(existingReport).findEntityById(Report.class, null);
@@ -53,7 +54,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void shouldNotUpdateWhenNothingHasChanged(){
 
-        Report existingReport = ReportBuilder().id(1L).description("desc").createdBy("you").build();
+        Report existingReport = ReportBuilder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("you").build()).build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).
                 visibility(VisibilityEnum.PRIVATE).createdBy("you").description("desc").build();
 

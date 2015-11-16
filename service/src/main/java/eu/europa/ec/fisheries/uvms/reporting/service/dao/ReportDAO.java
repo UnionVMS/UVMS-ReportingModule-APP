@@ -41,8 +41,10 @@ public class ReportDAO extends AbstractDAO<Report> {
             session.flush();
             log.debug("softDelete successful");
         } catch (RuntimeException re) {
-            log.error("softDelete failed", re);
-            throw new ReportingServiceException("softDelete failed", re);
+            String errorMessage = "softDelete failed";
+
+            log.error(errorMessage, re);
+            throw new ReportingServiceException(errorMessage, re);
         }
     }
 
@@ -51,6 +53,7 @@ public class ReportDAO extends AbstractDAO<Report> {
      *
      * @param entityId
      */
+    @Transactional
     public void softDelete(Long entityId, String username, String scopeName) throws ReportingServiceException {
         Report persistentInstance = this.findReportByReportId(entityId, username, scopeName);
         if (persistentInstance == null) {

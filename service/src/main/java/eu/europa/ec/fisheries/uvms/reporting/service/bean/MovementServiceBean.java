@@ -1,10 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
@@ -53,7 +51,7 @@ public class MovementServiceBean {
             return ExtMovementMessageMapper.mapToMovementMapResponse(response);
 
         } catch (ModelMapperException | JMSException | MessageException e) {
-            throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT");
+            throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT", e);
         }
     }
 }

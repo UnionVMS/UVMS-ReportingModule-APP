@@ -24,18 +24,23 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id"})
 public abstract class Filter implements Serializable {
 
+    public static final String REPORT_ID = "report_id";
+    public static final String FILTER_ID = "filter_id";
+
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
     public static final String DELETE_BY_ID = "Filter.deleteById";
 
     @Id
-    @Column(name = "filter_id")
+    @Column(name = FILTER_ID)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Transient
     final private FilterType type;
 
-    public Filter(FilterType type) { this.type = type; }
+    public Filter(FilterType type) {
+        this.type = type;
+    }
 
     public Filter(FilterType type, Long id, Long reportId) {
         this(type);
@@ -44,7 +49,7 @@ public abstract class Filter implements Serializable {
     }
 
     @ManyToOne(cascade = javax.persistence.CascadeType.ALL)
-    @JoinColumn(name = "report_id", nullable = false)
+    @JoinColumn(name = REPORT_ID, nullable = false)
     private Report report;
 
     @Transient

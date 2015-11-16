@@ -24,12 +24,15 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, of = {"startDate", "endDate"})
 public class CommonFilter extends Filter {
 
+    public static final String END_DATE = "end_date";
+    public static final String START_DATE = "start_date";
+
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "START_DATE")
+    @Column(name = START_DATE)
     private Date startDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "END_DATE")
+    @Column(name = END_DATE)
     private Date endDate;
 
     @Embedded
@@ -64,39 +67,48 @@ public class CommonFilter extends Filter {
     public List<RangeCriteria> movementRangeCriteria(){
 
         RangeCriteria criteria = new RangeCriteria();
+        Selector selector = positionSelector.getSelector();
 
-        switch (positionSelector.getSelector()){
+        switch (selector){
 
             case all:
                 setDateCriteria(criteria, startDate, endDate);
                 break;
 
             case last:
-
-                Position position = positionSelector.getPosition();
-
-                switch (position){
-
-                    case hours:
-                        Float hours = getPositionSelector().getValue();
-                        DateTime currentDate = nowUTC();
-                        Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
-                        setDateCriteria(criteria, toDate, currentDate.toDate());
-                        break;
-
-                    case positions:
-
-                        break;
-
-                    default:
-
-                }
-
+                handlePosition(criteria);
                 break;
+
             default:
+                break;
 
         }
         return Lists.newArrayList(criteria);
+    }
+
+    private void handlePosition(RangeCriteria criteria) {
+
+        Position position = positionSelector.getPosition();
+
+        switch (position){
+
+            case hours:
+                handleHours(criteria);
+                break;
+
+            case positions:
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void handleHours(RangeCriteria criteria) {
+        Float hours = getPositionSelector().getValue();
+        DateTime currentDate = nowUTC();
+        Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
+        setDateCriteria(criteria, toDate, currentDate.toDate());
     }
 
     private void setDateCriteria(final RangeCriteria criteria, final Date to, final Date from) {

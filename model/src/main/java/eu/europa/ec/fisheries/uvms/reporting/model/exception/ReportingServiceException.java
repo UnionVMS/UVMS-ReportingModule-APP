@@ -1,8 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.model.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 
  * Reporting Exception extending exception for handling all exception in the Reporting module

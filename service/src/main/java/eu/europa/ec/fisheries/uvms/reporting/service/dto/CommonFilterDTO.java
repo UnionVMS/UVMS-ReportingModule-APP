@@ -7,24 +7,24 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.NotImplementedException;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true, of = {"startDate", "endDate"})
 public class CommonFilterDTO extends FilterDTO {
 
-    public final static String START_DATE = "startDate";
-    public final static String END_DATE = "endDate";
-    public final static String POSITION_SELECTOR = "positionSelector";
-    public final static String COMMON = "common";
+    public static final String START_DATE = "startDate";
+    public static final String END_DATE = "endDate";
+    public static final String POSITION_SELECTOR = "positionSelector";
+    public static final String COMMON = "common";
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date startDate;
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date endDate;
+
+    private PositionSelectorDTO positionSelector;
 
     public CommonFilterDTO() {
         super(FilterType.common);
@@ -42,8 +42,6 @@ public class CommonFilterDTO extends FilterDTO {
         this.positionSelector = positionSelector;
         validate();
     }
-
-    private PositionSelectorDTO positionSelector;
 
     @Override
     public Filter convertToFilter() {

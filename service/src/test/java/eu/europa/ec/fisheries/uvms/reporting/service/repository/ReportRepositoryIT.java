@@ -3,7 +3,15 @@ package eu.europa.ec.fisheries.uvms.reporting.service.repository;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -22,10 +30,17 @@ import org.unitils.reflectionassert.ReflectionAssert;
 import javax.ejb.EJB;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
@@ -65,10 +80,12 @@ public class ReportRepositoryIT {
 
     private Report buildReport() {
         Date currentDate = new Date();
-        return Report.ReportBuilder().createdBy("georgi").description("This is a report description created on "
-                + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate)).filters(new HashSet<Filter>())
-                .name("ReportName" + currentDate.getTime()).withMap(true)
-                .executionLogs(new HashSet<ExecutionLog>()).scopeName("123").build();
+        return ReportBuilder()
+                .details(ReportDetailsBuilder().createdBy("georgi")
+                        .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
+                        .name("ReportName" + currentDate.getTime()).withMap(true).scopeName("123").build())
+                .filters(new HashSet<Filter>())
+                .executionLogs(new HashSet<ExecutionLog>()).build();
     }
 
     @After
@@ -80,12 +97,15 @@ public class ReportRepositoryIT {
     @SuppressWarnings("unchecked")
     public void testRemove() throws Exception {
         Report reportEntity = report;
-        reportEntity.setName("RemoveTest");
+        reportEntity.setDetails(ReportDetailsBuilder().name("RemoveTest").build());
         repository.createEntity(reportEntity);
 
-        repository.remove(reportEntity.getId(), reportEntity.getCreatedBy(), reportEntity.getScopeName());
+        repository.remove(
+                reportEntity.getId(), reportEntity.getDetails().getCreatedBy(), reportEntity.getDetails().getScopeName());
 
-        Report result = repository.findReportByReportId(reportEntity.getId(), reportEntity.getCreatedBy(), reportEntity.getScopeName());
+        Report result =
+                repository.findReportByReportId(
+                        reportEntity.getId(), reportEntity.getDetails().getCreatedBy(), reportEntity.getDetails().getScopeName());
 
         assertNull(result);
 
@@ -94,9 +114,11 @@ public class ReportRepositoryIT {
         Report reportEntity2 = buildReport();
         repository.createEntity(reportEntity2);
 
-        repository.remove(reportEntity2.getId(), reportEntity2.getCreatedBy(), reportEntity2.getScopeName());
+        repository.remove(
+                reportEntity2.getId(), reportEntity2.getDetails().getCreatedBy(), reportEntity2.getDetails().getScopeName());
 
-        result = repository.findReportByReportId(reportEntity2.getId(), reportEntity2.getCreatedBy(), reportEntity2.getScopeName());
+        result = repository.findReportByReportId(
+                reportEntity2.getId(), reportEntity2.getDetails().getCreatedBy(), reportEntity2.getDetails().getScopeName());
 
         assertNull(result);
 
@@ -107,7 +129,8 @@ public class ReportRepositoryIT {
     @SuppressWarnings("unchecked")
     public void testFindReportByReportId() throws ReportingServiceException {
         repository.createEntity(report);
-        Report reportByReportId = repository.findReportByReportId(report.getId(), report.getCreatedBy(), report.getScopeName());
+        Report reportByReportId = repository.findReportByReportId(
+                report.getId(), report.getDetails().getCreatedBy(), report.getDetails().getScopeName());
         assertTrue(reportByReportId.getId() > 0);
         assertNotNull(reportByReportId);
     }
@@ -117,8 +140,8 @@ public class ReportRepositoryIT {
     @SuppressWarnings("unchecked")
     public void testFindByUsernameAndScope() throws ReportingServiceException {
 
-        report.setCreatedBy("georgiTestttt12");
-        report.setScopeName("945563456");
+        report.getDetails().setCreatedBy("georgiTestttt12");
+        report.getDetails().setScopeName("945563456");
         repository.createEntity(report);
 
         Collection<Report> reports = repository.listByUsernameAndScope("georgiTestttt12", "945563456");
@@ -138,7 +161,7 @@ public class ReportRepositoryIT {
         assertTrue(reports.isEmpty());
 
         Report reportEntity2 = buildReport();
-        reportEntity2.setScopeName("58437239");
+        reportEntity2.getDetails().setScopeName("58437239");
         reportEntity2.setVisibility(VisibilityEnum.SCOPE);
         repository.createEntity(reportEntity2);
 
@@ -165,8 +188,8 @@ public class ReportRepositoryIT {
     @Transactional(value = TransactionMode.ROLLBACK)
     public void testAddReportExecLog() throws ReportingServiceException {
 
-        report.setCreatedBy("georgiTestttt12");
-        report.setScopeName("356456731");
+        report.getDetails().setCreatedBy("georgiTestttt12");
+        report.getDetails().setScopeName("356456731");
 
         ExecutionLog repExecLog = new ExecutionLog();
         repExecLog.setExecutedBy("someUser");
@@ -178,7 +201,8 @@ public class ReportRepositoryIT {
 
         repository.createEntity(report);
 
-        Report result = repository.findReportByReportId(report.getId(), report.getCreatedBy(), report.getScopeName());
+        Report result = repository.findReportByReportId(
+                report.getId(), report.getDetails().getCreatedBy(), report.getDetails().getScopeName());
 
         assertNotNull(result);
         assertNotNull(report.getExecutionLogs());
@@ -192,8 +216,8 @@ public class ReportRepositoryIT {
     public void testLatestReportExecLog() throws ReportingServiceException {
 
         String user = "georgiTestttt12";
-        report.setCreatedBy(user);
-        report.setScopeName("356456731");
+        report.getDetails().setCreatedBy(user);
+        report.getDetails().setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
         ExecutionLog repExecLog = new ExecutionLog();
         repExecLog.setExecutedBy(user);
@@ -219,8 +243,8 @@ public class ReportRepositoryIT {
             }
         }
         assert foundReport != null;
-        assertEquals(user, foundReport.getCreatedBy());
-        assertEquals("356456731", foundReport.getScopeName());
+        assertEquals(user, foundReport.getDetails().getCreatedBy());
+        assertEquals("356456731", foundReport.getDetails().getScopeName());
         assertEquals(VisibilityEnum.PRIVATE, foundReport.getVisibility());
         Set<ExecutionLog> executionLogs = foundReport.getExecutionLogs();
         assertEquals(2, executionLogs.size());
@@ -233,8 +257,8 @@ public class ReportRepositoryIT {
     public void testUniqueLogByUser() throws ReportingServiceException {
 
         String user = "georgiTestttt12";
-        report.setCreatedBy(user);
-        report.setScopeName("356456731");
+        report.getDetails().setCreatedBy(user);
+        report.getDetails().setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
         ExecutionLog repExecLog = new ExecutionLog();
         repExecLog.setExecutedBy(user);
@@ -256,8 +280,8 @@ public class ReportRepositoryIT {
         Set<Filter> expectedCollection = new HashSet<>();
 
         String user = "georgiTestttt12";
-        report.setCreatedBy(user);
-        report.setScopeName("356456731");
+        report.getDetails().setCreatedBy(user);
+        report.getDetails().setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
 
         VesselFilter filter1 = VesselFilter.VesselFilterBuilder().build();
@@ -312,7 +336,7 @@ public class ReportRepositoryIT {
         report.getFilters().add(filter6);
 
         Report savedReport = repository.createEntity(report);
-        Report byId = repository.findReportByReportId(savedReport.getId(), savedReport.getCreatedBy(), savedReport.getScopeName());
+        Report byId = repository.findReportByReportId(savedReport.getId(), savedReport.getDetails().getCreatedBy(), savedReport.getDetails().getScopeName());
 
         Set<Filter> filters = byId.getFilters();
 

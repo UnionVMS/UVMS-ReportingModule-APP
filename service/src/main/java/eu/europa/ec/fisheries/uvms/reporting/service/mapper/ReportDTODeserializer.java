@@ -13,12 +13,15 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 
+@Slf4j
 public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
     @Override
@@ -63,67 +66,70 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
             switch (positionSelector){
                 case all:
-                    String startDate = common.get("startDate").asText();
-                    String endDate = common.get("endDate").asText();
-                    if (startDate == null){
-                        throw new InvalidParameterException("StartDate is mandatory when selecting ALL");
-                    }
-                    if (endDate == null){
-                        throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
-                    }
-                    try{
-                        filterDTOList.add(
-                                CommonFilterDTO.CommonFilterDTOBuilder()
-                                        .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
-                                        .reportId(reportId)
-                                        .endDate(UI_FORMATTER.parseDateTime(endDate).toDate())
-                                        .startDate(UI_FORMATTER.parseDateTime(startDate).toDate())
-                                        .positionSelector(
-                                                PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
-                                        )
-                                        .build()
-                        );
-                    }
-                    catch (Exception e){
-                        throw new InvalidParameterException("Invalid parameters");
-                    }
-
+                    handleAll(common, filterDTOList, reportId, positionSelector);
                     break;
                 case last:
-                    String startDateLast = null;
-                    String endDateLast = null;
-                    try{
-
-                        if (common.get("startDate") != null){
-                            startDateLast = common.get("startDate").asText();
-                        }
-                        if (common.get("endDate") != null){
-                            endDateLast = common.get("endDate").asText();
-                        }
-                        Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
-                        CommonFilterDTO dto = CommonFilterDTO.CommonFilterDTOBuilder()
-                                .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
-                                .reportId(reportId)
-                                .startDate(startDateLast != null ? UI_FORMATTER.parseDateTime(startDateLast).toDate() : null)
-                                .endDate(endDateLast != null ? UI_FORMATTER.parseDateTime(endDateLast).toDate() : null)
-                                .build();
-                        filterDTOList.add(dto);
-
-                        JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
-                        if(selectorNode != null){
-                            dto.setPositionSelector(PositionSelectorDTO.PositionSelectorDTOBuilder()
-                                    .value(value)
-                                    .position(Position.valueOf(selectorType.textValue()))
-                                    .selector(positionSelector).build());
-
-                        }
-                    }
-
-                    catch (Exception e){
-                        throw new InvalidParameterException("Invalid parameters");
-                    }
+                    handleLast(common, filterDTOList, reportId, selectorNode, positionSelector);
+                    break;
+                default:
+                    break;
             }
         }
+    }
+
+    private void handleLast(JsonNode common, List<FilterDTO> filterDTOList, Long reportId, String selectorNode, Selector positionSelector) {
+
+        String startDateLast = null;
+        String endDateLast = null;
+
+        if (common.get("startDate") != null){
+            startDateLast = common.get("startDate").asText();
+        }
+        if (common.get("endDate") != null){
+            endDateLast = common.get("endDate").asText();
+        }
+        Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
+
+        CommonFilterDTO dto = CommonFilterDTO.CommonFilterDTOBuilder()
+                .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
+                .reportId(reportId)
+                .startDate(startDateLast != null ? UI_FORMATTER.parseDateTime(startDateLast).toDate() : null)
+                .endDate(endDateLast != null ? UI_FORMATTER.parseDateTime(endDateLast).toDate() : null)
+                .build();
+        filterDTOList.add(dto);
+
+        JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
+
+        if(selectorNode != null){
+            dto.setPositionSelector(PositionSelectorDTO.PositionSelectorDTOBuilder()
+                    .value(value)
+                    .position(Position.valueOf(selectorType.textValue()))
+                    .selector(positionSelector).build());
+
+        }
+    }
+
+    private void handleAll(JsonNode common, List<FilterDTO> filterDTOList, Long reportId, Selector positionSelector) {
+        String startDate = common.get("startDate").asText();
+        String endDate = common.get("endDate").asText();
+        if (startDate == null){
+            throw new InvalidParameterException("StartDate is mandatory when selecting ALL");
+        }
+        if (endDate == null){
+            throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
+        }
+        filterDTOList.add(
+                CommonFilterDTO.CommonFilterDTOBuilder()
+                        .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
+                        .reportId(reportId)
+                        .endDate(UI_FORMATTER.parseDateTime(endDate).toDate())
+                        .startDate(UI_FORMATTER.parseDateTime(startDate).toDate())
+                        .positionSelector(
+                                PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
+                        )
+                        .build()
+        );
+
     }
 
     private void addArea(JsonNode area, List<FilterDTO> filterDTOList, Long reportId) {
@@ -151,25 +157,10 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch(type){
                     case vessel:
-                        filterDTOList.add(
-                                VesselFilterDTO.VesselFilterDTOBuilder()
-                                        .reportId(reportId)
-                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .guid(next.get(VesselFilterDTO.GUID).textValue())
-                                        .name(next.get(VesselFilterDTO.NAME).textValue())
-                                        .build()
-                        );
+                        addVesselFilterDTO(filterDTOList, reportId, next);
                         break;
                     case vgroup:
-                        filterDTOList.add(
-                                VesselGroupFilterDTO.VesselGroupFilterDTOBuilder()
-                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .reportId(reportId)
-                                        .guid(next.get(VesselGroupFilterDTO.GUID).textValue())
-                                        .userName(next.get(VesselGroupFilterDTO.USER).textValue())
-                                        .name(next.get(VesselGroupFilterDTO.NAME).textValue())
-                                        .build()
-                        );
+                        addVesselGroupFilterDTO(filterDTOList, reportId, next);
                         break;
                     default:
                         throw new InvalidParameterException("Unsupported parameter value");
@@ -177,6 +168,29 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 }
             }
         }
+    }
+
+    private void addVesselGroupFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
+        filterDTOList.add(
+                VesselGroupFilterDTO.VesselGroupFilterDTOBuilder()
+                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                        .reportId(reportId)
+                        .guid(next.get(VesselGroupFilterDTO.GUID).textValue())
+                        .userName(next.get(VesselGroupFilterDTO.USER).textValue())
+                        .name(next.get(VesselGroupFilterDTO.NAME).textValue())
+                        .build()
+        );
+    }
+
+    private void addVesselFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
+        filterDTOList.add(
+                VesselFilterDTO.VesselFilterDTOBuilder()
+                        .reportId(reportId)
+                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                        .guid(next.get(VesselFilterDTO.GUID).textValue())
+                        .name(next.get(VesselFilterDTO.NAME).textValue())
+                        .build()
+        );
     }
 
     private void addVmsFilters(JsonNode vms, List<FilterDTO> filterDTOList, Long reportId) {
@@ -187,53 +201,13 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch (type) {
                     case vmspos:
-                        VmsPositionFilterDTO dto = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
-                                .reportId(reportId)
-                                .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
-                                .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
-                                .build();
-
-                        if (next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null){
-                            dto.setMovementActivity(MovementActivityTypeType
-                                    .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()));
-                        }
-                        if (next.get(VmsPositionFilterDTO.MOV_TYPE) != null){
-                            dto.setMovementType(MovementTypeType
-                                    .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE).textValue()));
-                        }
-                        filterDTOList.add(dto);
-
+                        addVmsPostisionFilterDTO(filterDTOList, reportId, next);
                         break;
                     case vmstrack:
-                        filterDTOList.add(
-                                TrackFilterDTO.TrackFilterDTOBuild()
-                                        .reportId(reportId)
-                                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                        .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)
-                                        .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
-                                        .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
-                                        .minTime(next.get(TrackFilterDTO.TRK_MIN_TIME) != null ? next.get(TrackFilterDTO.TRK_MIN_TIME).floatValue() : null)
-                                        .build()
-                        );
+                        addTrackFilterDTO(filterDTOList, reportId, next);
                         break;
                     case vmsseg:
-                        VmsSegmentFilterDTO segmentFilterDTO = VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder()
-                                .reportId(reportId)
-                                .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                                .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)
-                                .maxDuration(next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION).floatValue() : null)
-                                .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
-                                .minDuration(next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION).floatValue() : null)
-                                .build();
-
-                        if (next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null){
-                            segmentFilterDTO.setCategory(SegmentCategoryType
-                                    .valueOf(next.get(VmsSegmentFilterDTO.SEG_CATEGORY).textValue()));
-                        }
-
-                        filterDTOList.add(segmentFilterDTO);
-
+                        addVmsSegmentFilterDTO(filterDTOList, reportId, next);
                         break;
                     default:
                         throw new InvalidParameterException("Unsupported parameter");
@@ -241,5 +215,55 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 }
             }
         }
+    }
+
+    private void addVmsPostisionFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
+        VmsPositionFilterDTO dto = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder()
+                .reportId(reportId)
+                .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
+                .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
+                .build();
+
+        if (next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null){
+            dto.setMovementActivity(MovementActivityTypeType
+                    .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()));
+        }
+        if (next.get(VmsPositionFilterDTO.MOV_TYPE) != null){
+            dto.setMovementType(MovementTypeType
+                    .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE).textValue()));
+        }
+        filterDTOList.add(dto);
+    }
+
+    private void addVmsSegmentFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
+        VmsSegmentFilterDTO segmentFilterDTO = VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder()
+                .reportId(reportId)
+                .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)
+                .maxDuration(next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_DURATION).floatValue() : null)
+                .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
+                .minDuration(next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION).floatValue() : null)
+                .build();
+
+        if (next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null){
+            segmentFilterDTO.setCategory(SegmentCategoryType
+                    .valueOf(next.get(VmsSegmentFilterDTO.SEG_CATEGORY).textValue()));
+        }
+
+        filterDTOList.add(segmentFilterDTO);
+    }
+
+    private void addTrackFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
+        filterDTOList.add(
+                TrackFilterDTO.TrackFilterDTOBuild()
+                    .reportId(reportId)
+                    .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                    .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)
+                    .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
+                    .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
+                    .minTime(next.get(TrackFilterDTO.TRK_MIN_TIME) != null ? next.get(TrackFilterDTO.TRK_MIN_TIME).floatValue() : null)
+                    .build()
+        );
     }
 }

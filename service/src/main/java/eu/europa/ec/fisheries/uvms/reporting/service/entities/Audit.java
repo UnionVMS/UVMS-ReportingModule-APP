@@ -11,8 +11,10 @@ import java.util.Date;
 @Embeddable
 public class Audit {
 
+    public static final String CREATED_ON = "created_on";
+
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_on", nullable = false)
+    @Column(name = CREATED_ON, nullable = false)
     private Date createdOn;
 
     Audit() {

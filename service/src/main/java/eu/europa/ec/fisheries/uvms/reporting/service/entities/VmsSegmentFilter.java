@@ -26,9 +26,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class VmsSegmentFilter extends Filter {
 
-	private static final long serialVersionUID = -8657712390731877147L;
+    private static final long serialVersionUID = -8657712390731877147L;
 
-	@Column(name = "MIN_SPEED")
+    @Column(name = "MIN_SPEED")
     private Float minimumSpeed;
 
     @Column(name = "MAX_SPEED")
@@ -43,14 +43,13 @@ public class VmsSegmentFilter extends Filter {
     @Column(name = "SEG_CATEGORY")
     private SegmentCategoryType category;
 
-
     VmsSegmentFilter(){
         super(FilterType.vmsseg);
     }
 
     @Builder(builderMethodName = "VmsSegmentFilterBuilder")
     public VmsSegmentFilter(Long id,
-                            Float maxDuration,
+                            Float maxDuration, //FIXME replace with DurationRange
                             Float minDuration,
                             Float maximumSpeed,
                             Float minimumSpeed,
@@ -61,7 +60,7 @@ public class VmsSegmentFilter extends Filter {
         this.maximumSpeed = maximumSpeed;
         this.minimumSpeed = minimumSpeed;
         this.minDuration = minDuration;
-        this.category   = category;
+        this.category = category;
     }
     @Override
     public FilterDTO convertToDTO() {
@@ -80,41 +79,41 @@ public class VmsSegmentFilter extends Filter {
     
     @Override
     public List<ListCriteria> movementCriteria() {
-    	List<ListCriteria> criteria = new ArrayList<ListCriteria>();
-    	if(getCategory() != null) {
-    		ListCriteria segmentCategory = new ListCriteria();
+        List<ListCriteria> criteria = new ArrayList<>();
+        if(getCategory() != null) {
+            ListCriteria segmentCategory = new ListCriteria();
             segmentCategory.setKey(SearchKey.CATEGORY);
             segmentCategory.setValue(getCategory().value());
-        	criteria.add(segmentCategory);
-    	}    	
-    	return criteria;
+            criteria.add(segmentCategory);
+        }
+        return criteria;
     }
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
-    	return ListUtils.union(getSegmentSpeedCriteria(), getSegmentDurationCriteria());
+        return ListUtils.union(getSegmentSpeedCriteria(), getSegmentDurationCriteria());
     }
     
     private List<RangeCriteria> getSegmentSpeedCriteria() {
-    	if (getMinimumSpeed() == null && getMaximumSpeed() == null) {
-    		return Collections.emptyList();
-    	}
-    	RangeCriteria segmentSpeed = new RangeCriteria();
-    	segmentSpeed.setKey(RangeKeyType.SEGMENT_SPEED);
-    	segmentSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : 0F));
-    	segmentSpeed.setTo(Float.toString(getMaximumSpeed()!= null ? getMaximumSpeed() : 1000F));
-    	return Arrays.asList(segmentSpeed);
+        if (getMinimumSpeed() == null && getMaximumSpeed() == null) {
+            return Collections.emptyList();
+        }
+        RangeCriteria segmentSpeed = new RangeCriteria();
+        segmentSpeed.setKey(RangeKeyType.SEGMENT_SPEED);
+        segmentSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : 0F));
+        segmentSpeed.setTo(Float.toString(getMaximumSpeed()!= null ? getMaximumSpeed() : 1000F));
+        return Arrays.asList(segmentSpeed);
     }
     
     private List<RangeCriteria> getSegmentDurationCriteria() {
-    	if (getMinDuration() == null && getMaxDuration() == null) {
-    		return Collections.emptyList();
-    	}
-    	RangeCriteria segmentDuration = new RangeCriteria();
-    	segmentDuration.setKey(RangeKeyType.SEGMENT_DURATION);
-    	segmentDuration.setFrom(Float.toString(getMinDuration() != null ? getMinDuration() : 0F));
-    	segmentDuration.setTo(Float.toString(getMaxDuration() != null ? getMaxDuration() : 10000F));
-    	return Arrays.asList(segmentDuration);
+        if (getMinDuration() == null && getMaxDuration() == null) {
+            return Collections.emptyList();
+        }
+        RangeCriteria segmentDuration = new RangeCriteria();
+        segmentDuration.setKey(RangeKeyType.SEGMENT_DURATION);
+        segmentDuration.setFrom(Float.toString(getMinDuration() != null ? getMinDuration() : 0F));
+        segmentDuration.setTo(Float.toString(getMaxDuration() != null ? getMaxDuration() : 10000F));
+        return Arrays.asList(segmentDuration);
     }
 
     public SegmentCategoryType getCategory() {
@@ -135,7 +134,7 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMinimumSpeed(Float minimumSpeed) {
-    	this.minimumSpeed = minimumSpeed;       
+        this.minimumSpeed = minimumSpeed;
     }
 
     public Float getMaximumSpeed() {
@@ -143,7 +142,7 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMaximumSpeed(Float maximumSpeed) {
-    	this.maximumSpeed = maximumSpeed;        
+        this.maximumSpeed = maximumSpeed;
     }
 
     public Float getMinDuration() {
@@ -151,7 +150,7 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMinDuration(Float minDuration) {
-    	this.minDuration = minDuration;       
+        this.minDuration = minDuration;
     }
 
     public Float getMaxDuration() {
@@ -159,6 +158,6 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public void setMaxDuration(Float maxDuration) {
-    	this.maxDuration = maxDuration;       
+        this.maxDuration = maxDuration;
     }
 }

@@ -13,6 +13,8 @@ import org.unitils.inject.annotation.TestedObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 
@@ -26,17 +28,11 @@ public class ReportMapperTest extends UnitilsJUnit4 {
 
     @Before
     public void before(){
-        report = Report.ReportBuilder()
-                .id(1L)
-                .createdBy("you")
-                .description("desc")
-                .name("name")
-                .withMap(true)
-                .scopeName("scopeName")
+        report = ReportBuilder().id(1L).createdBy("you").details(
+                    ReportDetailsBuilder().description("desc").scopeName("scopeName").name("name").withMap(true).build())
                 .executionLogs(new HashSet<ExecutionLog>())
                 .build();
     }
-
 
     @Test
     public void testReportDTOToReportWithNull(){

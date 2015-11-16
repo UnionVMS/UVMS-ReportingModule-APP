@@ -24,10 +24,12 @@ public class AreaFilter extends Filter {
     @Column(name = "area_id")
     private Long areaId;
 
+    public AreaFilter() {
+        super(FilterType.areas);
+    }
+
     @Builder(builderMethodName = "AreaFilterBuilder")
-    public AreaFilter(Long id,
-                      Long areaId,
-                      String areaType) {
+    public AreaFilter(Long id, Long areaId, String areaType) {
         super(FilterType.areas);
         setId(id);
         this.areaId = areaId;
@@ -48,10 +50,6 @@ public class AreaFilter extends Filter {
 
     public void setAreaId(Long areaId) {
         this.areaId = areaId;
-    }
-
-    public AreaFilter() {
-        super(FilterType.areas);
     }
 
     @Override

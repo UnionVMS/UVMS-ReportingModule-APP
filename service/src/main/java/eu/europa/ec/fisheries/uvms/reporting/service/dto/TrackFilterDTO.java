@@ -72,8 +72,7 @@ public class TrackFilterDTO extends FilterDTO {
 
     @Override
     public Filter convertToFilter() {
-        TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
-        return INSTANCE.trackFilterDTOToTrackFilter(this);
+        return TrackFilterMapper.INSTANCE.trackFilterDTOToTrackFilter(this);
     }
 
     public Float getMaxTime() {

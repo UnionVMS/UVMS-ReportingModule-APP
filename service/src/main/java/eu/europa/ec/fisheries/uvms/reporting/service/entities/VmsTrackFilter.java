@@ -64,8 +64,7 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public FilterDTO convertToDTO() {
-        TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
-        return INSTANCE.trackFilterToTrackFilterDTO(this);
+        return TrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(this);
     }
 
     @Override

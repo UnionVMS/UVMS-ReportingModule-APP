@@ -2,15 +2,17 @@ package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 
 public class DTOUtil {
 
@@ -50,10 +52,10 @@ public class DTOUtil {
     public static Report createRandomReportEntity() {
         Date currentDate = new Date();
 
-        return Report.ReportBuilder().name("ReportName" + currentDate.getTime())
-                .createdBy("georgi")
+        return ReportBuilder().details(ReportDetailsBuilder().name("ReportName" + currentDate.getTime())
+                .createdBy("georgi").scopeName("123")
                 .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
-                .withMap(true).audit(new Audit(currentDate)).scopeName("123").build();
+                .withMap(true).build()).audit(new Audit(currentDate)).build();
 
     }
 }

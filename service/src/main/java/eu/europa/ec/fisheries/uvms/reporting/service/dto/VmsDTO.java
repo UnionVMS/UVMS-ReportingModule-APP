@@ -64,7 +64,7 @@ public class VmsDTO {
             rootNode.putPOJO("tracks", tracks);
 
         } catch (IOException e) {
-            throw new ReportingServiceException("ERROR");
+            throw new ReportingServiceException("ERROR WHILE CREATING GEOJSON", e);
         }
 
         return rootNode;

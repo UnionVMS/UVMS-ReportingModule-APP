@@ -12,6 +12,10 @@ import static eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum.*;
 //TODO unit tests!!!
 public class AuthorizationCheckUtil {
 
+    private AuthorizationCheckUtil(){
+
+    }
+
     /**
      *
      * @param username
@@ -21,8 +25,14 @@ public class AuthorizationCheckUtil {
     public static ReportFeatureEnum getRequiredFeatureToShareReport(ReportDTO report, String username) {
         ReportFeatureEnum requiredFeature = null;
         switch (report.getVisibility()) {
-            case SCOPE : requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE; break;
-            case PUBLIC : requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC; break;
+            case SCOPE :
+                requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE;
+                break;
+            case PUBLIC :
+                requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
+                break;
+            default:
+                break;
         }
         return requiredFeature;
     }

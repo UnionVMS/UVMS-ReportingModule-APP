@@ -41,9 +41,9 @@ public class ReportDTO implements Serializable {
     private Boolean withMap;
     private String scopeName;
     private String createdBy;
-    private boolean shareable;
-    private boolean editable;
-    private boolean deletable;
+    private boolean shareable; //NOSONAR
+    private boolean editable; //NOSONAR
+    private boolean deletable; //NOSONAR
     private AuditDTO audit;
     private VisibilityEnum visibility;
     private boolean isDeleted;
@@ -55,7 +55,7 @@ public class ReportDTO implements Serializable {
 
     private List<FilterDTO> filters = new ArrayList<>();
 
-    private ExecutionLogDTO executionLog;
+    private ExecutionLogDTO executionLog; //NOSONAR
 
     public ReportDTO() {
     }

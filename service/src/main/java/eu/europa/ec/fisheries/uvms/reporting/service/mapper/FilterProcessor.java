@@ -115,11 +115,11 @@ public class FilterProcessor {
     }
 
     public boolean hasVessels() {
-        return vesselListCriteriaPairs.size() > 0;
+        return !vesselListCriteriaPairs.isEmpty();
     }
 
     public boolean hasVesselGroups() {
-        return vesselGroupList.size() > 0;
+        return !vesselGroupList.isEmpty();
     }
 
     public Set<ListCriteria> getMovementListCriteria() {
