@@ -283,7 +283,7 @@ public class ReportingResource extends UnionVMSResource {
             jsonNodes = vmsDto.toJson();
             return createSuccessResponse(jsonNodes);
 
-        } catch (ReportingServiceException | MessageException | VesselModelMapperException e) {
+        } catch (ReportingServiceException e) {
             LOG.error("Report execution failed.", e);
             return createErrorResponse();
         }
