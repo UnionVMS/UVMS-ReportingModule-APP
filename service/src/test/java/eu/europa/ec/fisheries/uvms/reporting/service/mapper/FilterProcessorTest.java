@@ -2,26 +2,23 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.SneakyThrows;
-import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.CommonFilterBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter.VesselFilterBuilder;
 import static junit.framework.TestCase.assertEquals;
 
 public class FilterProcessorTest extends UnitilsJUnit4 {
@@ -35,7 +32,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         Set<Filter> filterList = new HashSet<>();
 
-        VesselFilter vesselFilter = VesselFilterBuilder().guid("guid").build();
+        VesselFilter vesselFilter = VesselFilter.builder().guid("guid").build();
         filterList.add(vesselFilter);
 
         processor = new FilterProcessor(filterList);

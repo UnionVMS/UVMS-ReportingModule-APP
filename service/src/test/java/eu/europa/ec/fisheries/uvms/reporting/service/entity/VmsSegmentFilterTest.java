@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter.VmsSegmentFilterBuilder;
 import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertLenientEquals;
@@ -42,7 +41,7 @@ public class VmsSegmentFilterTest {
     @Test
     public void shouldReturnId(){
 
-        Filter segmentFilter = VmsSegmentFilterBuilder().id(1L).build();
+        Filter segmentFilter = VmsSegmentFilter.builder().id(1L).build();
 
         segmentFilter.getUniqKey();
 
@@ -53,12 +52,12 @@ public class VmsSegmentFilterTest {
     @Test
     public void shouldReturnSameAfterMerge(){
 
-        Filter segmentFilter = VmsSegmentFilterBuilder()
+        Filter segmentFilter = VmsSegmentFilter.builder()
                 .category(SegmentCategoryType.ANCHORED)
                 .maxDuration(100F).minDuration(10F)
                 .maximumSpeed(50F).minimumSpeed(5F)
                 .build();
-        Filter merged = VmsSegmentFilterBuilder().build();
+        Filter merged = VmsSegmentFilter.builder().build();
 
         segmentFilter.merge(merged);
 
@@ -68,8 +67,8 @@ public class VmsSegmentFilterTest {
 
     protected Object[] criteriaValues(){
 
-        Filter filter = VmsSegmentFilterBuilder().category(SegmentCategoryType.ANCHORED).build();
-        Filter filter2 = VmsSegmentFilterBuilder().build();
+        Filter filter = VmsSegmentFilter.builder().category(SegmentCategoryType.ANCHORED).build();
+        Filter filter2 = VmsSegmentFilter.builder().build();
 
         ListCriteria listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.CATEGORY);
@@ -83,24 +82,24 @@ public class VmsSegmentFilterTest {
 
     protected Object[] rangeCriteriaValues(){
 
-        Filter filter1 = VmsSegmentFilterBuilder().minDuration(12F).maxDuration(13F).build();
+        Filter filter1 = VmsSegmentFilter.builder().minDuration(12F).maxDuration(13F).build();
         RangeCriteria rangeCriteria = new RangeCriteria();
         rangeCriteria.setKey(RangeKeyType.SEGMENT_DURATION);
         rangeCriteria.setFrom("12.0");
         rangeCriteria.setTo("13.0");
 
-        Filter filter2 = VmsSegmentFilterBuilder().minimumSpeed(6.45F).maximumSpeed(15.5F).build();
+        Filter filter2 = VmsSegmentFilter.builder().minimumSpeed(6.45F).maximumSpeed(15.5F).build();
         RangeCriteria rangeCriteria2 = new RangeCriteria();
         rangeCriteria2.setKey(RangeKeyType.SEGMENT_SPEED);
         rangeCriteria2.setFrom("6.45");
         rangeCriteria2.setTo("15.5");
 
-        Filter filter3 = VmsSegmentFilterBuilder().maximumSpeed(15.5F).build();
+        Filter filter3 = VmsSegmentFilter.builder().maximumSpeed(15.5F).build();
         RangeCriteria rangeCriteria3 = new RangeCriteria();
         rangeCriteria2.setKey(RangeKeyType.SEGMENT_SPEED);
         rangeCriteria2.setTo("15.5");
 
-        Filter filter4 =  VmsSegmentFilterBuilder().maxDuration(13F).build();
+        Filter filter4 =  VmsSegmentFilter.builder().maxDuration(13F).build();
         RangeCriteria rangeCriteria4 = new RangeCriteria();
         rangeCriteria4.setKey(RangeKeyType.SEGMENT_DURATION);
         rangeCriteria4.setTo("13.0");

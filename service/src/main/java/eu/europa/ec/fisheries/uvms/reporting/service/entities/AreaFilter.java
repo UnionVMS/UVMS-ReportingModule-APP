@@ -9,9 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-/**
- * Created by georgige on 10/13/2015.
- */
 @Entity
 @DiscriminatorValue("areas")
 @EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
@@ -27,7 +24,7 @@ public class AreaFilter extends Filter {
         super(FilterType.areas);
     }
 
-    @Builder(builderMethodName = "AreaFilterBuilder")
+    @Builder
     public AreaFilter(Long id, Long areaId, String areaType) {
         super(FilterType.areas);
         setId(id);

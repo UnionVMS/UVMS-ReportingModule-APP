@@ -41,7 +41,7 @@ public class CommonFilter extends Filter {
         super(FilterType.common);
     }
 
-    @Builder(builderMethodName = "CommonFilterBuilder")
+    @Builder
     public CommonFilter(final Long id, final Date startDate, final Date endDate, final PositionSelector positionSelector) {
         super(FilterType.common);
         setStartDate(startDate);

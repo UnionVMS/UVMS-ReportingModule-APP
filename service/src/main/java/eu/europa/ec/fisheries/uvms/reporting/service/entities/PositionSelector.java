@@ -22,7 +22,7 @@ public class PositionSelector {
 
     }
 
-    @Builder(builderMethodName = "PositionSelectorBuilder")
+    @Builder
     public PositionSelector(Float value, Selector selector, Position position) {
         this.value = value;
         this.selector = selector;

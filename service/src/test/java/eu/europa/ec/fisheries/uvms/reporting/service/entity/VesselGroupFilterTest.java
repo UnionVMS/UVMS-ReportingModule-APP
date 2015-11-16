@@ -7,10 +7,8 @@ import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
 
-import java.math.BigInteger;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter.VesselGroupFilterBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -27,7 +25,7 @@ public class VesselGroupFilterTest extends UnitilsJUnit4 {
     @Test
     public void testVesselGroupCriteria(){
 
-        filter = VesselGroupFilterBuilder().groupId("5").name("GP5").userName("test").build();
+        filter = VesselGroupFilter.builder().groupId("5").name("GP5").userName("test").build();
 
         List<VesselGroup> vesselGroups = filter.vesselGroupCriteria();
 
@@ -40,9 +38,9 @@ public class VesselGroupFilterTest extends UnitilsJUnit4 {
     @Test
     public void testMerge(){
 
-       filter = VesselGroupFilterBuilder().groupId("2").name("GP2").build();
+       filter = VesselGroupFilter.builder().groupId("2").name("GP2").build();
 
-        VesselGroupFilter incoming = VesselGroupFilterBuilder().groupId("1").name("GP1").build();
+        VesselGroupFilter incoming = VesselGroupFilter.builder().groupId("1").name("GP1").build();
 
         assertNotEquals(filter, incoming);
 

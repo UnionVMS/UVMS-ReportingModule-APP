@@ -30,7 +30,7 @@ public class VesselGroupFilter extends Filter {
         super(FilterType.vgroup);
     }
 
-    @Builder(builderMethodName = "VesselGroupFilterBuilder")
+    @Builder
     public VesselGroupFilter(Long id, String groupId, String userName, String name){
         super(FilterType.vgroup);
         this.guid = groupId;

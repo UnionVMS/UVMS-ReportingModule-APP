@@ -44,7 +44,7 @@ public class VmsTrackFilter extends Filter {
         super(FilterType.vmstrack);
     }
 
-    @Builder(builderMethodName = "TrackFilterBuilder")
+    @Builder
     public VmsTrackFilter(Long id, Long reportId,
                           TimeRange timeRange,
                           DurationRange durationRange,

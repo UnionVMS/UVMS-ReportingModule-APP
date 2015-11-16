@@ -1,9 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -13,15 +18,9 @@ import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
 
-import javax.ejb.EJB;
 import javax.jms.TextMessage;
 import java.util.HashSet;
 import java.util.Set;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.CommonFilterBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter.VesselFilterBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter.VesselGroupFilterBuilder;
 
 public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
@@ -46,7 +45,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     public void testGetVmsDataByReportId() {
 
         Set<Filter> filterSet = new HashSet<>();
-        filterSet.add(VesselFilterBuilder().guid("1234").build());
+        filterSet.add(VesselFilter.builder().guid("1234").build());
 
         report.returns(filterSet).getFilters();
 
@@ -66,7 +65,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     public void testGetVmsDataByReportIdWithVesselGroupFilters() {
 
         Set<Filter> filterSet = new HashSet<>();
-        filterSet.add(VesselGroupFilterBuilder().groupId("123").build());
+        filterSet.add(VesselGroupFilter.builder().groupId("123").build());
 
         report.returns(filterSet).getFilters();
         vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
@@ -86,8 +85,8 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     public void testGetVmsDataByReportIdWithoutVessel() {
 
         Set<Filter> filterSet = new HashSet<>();
-        filterSet.add(CommonFilterBuilder()
-                .positionSelector(PositionSelectorBuilder().selector(Selector.all).build())
+        filterSet.add(CommonFilter.builder()
+                .positionSelector(PositionSelector.builder().selector(Selector.all).build())
                 .build());
 
         report.returns(filterSet).getFilters();

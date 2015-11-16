@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -17,8 +18,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.CommonFilterBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -44,7 +43,7 @@ public class CommonFilterTest extends UnitilsJUnit4 {
 
         };
 
-        filter.setPositionSelector(PositionSelectorBuilder()
+        filter.setPositionSelector(PositionSelector.builder()
                         .selector(Selector.last)
                         .value(1F)
                         .position(Position.hours)
@@ -75,7 +74,7 @@ public class CommonFilterTest extends UnitilsJUnit4 {
 
         };
 
-        filter.setPositionSelector(PositionSelectorBuilder().selector(Selector.all).build());
+        filter.setPositionSelector(PositionSelector.builder().selector(Selector.all).build());
         filter.setEndDate(endDate);
         filter.setStartDate(startDate);
 
@@ -96,14 +95,14 @@ public class CommonFilterTest extends UnitilsJUnit4 {
         calendar.add(Calendar.DAY_OF_MONTH, -10);
         Date endDate = calendar.getTime();
 
-        CommonFilter incoming = CommonFilterBuilder()
-                .positionSelector(PositionSelectorBuilder().selector(Selector.all).build())
+        CommonFilter incoming = CommonFilter.builder()
+                .positionSelector(PositionSelector.builder().selector(Selector.all).build())
                 .endDate(endDate)
                 .startDate(startDate)
                 .build();
 
-        filter = CommonFilterBuilder()
-                .positionSelector(PositionSelectorBuilder().selector(Selector.last).value(1F).position(Position.hours).build())
+        filter = CommonFilter.builder()
+                .positionSelector(PositionSelector.builder().selector(Selector.last).value(1F).position(Position.hours).build())
                 .endDate(new Date())
                 .startDate(new Date())
                 .build();

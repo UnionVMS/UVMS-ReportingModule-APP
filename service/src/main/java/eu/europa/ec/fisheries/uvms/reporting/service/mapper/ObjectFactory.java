@@ -1,7 +1,20 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 
 public class ObjectFactory {
 
@@ -10,7 +23,7 @@ public class ObjectFactory {
     }
 
     public CommonFilter createCommonFilter() {
-        return CommonFilter.CommonFilterBuilder().build();
+        return CommonFilter.builder().build();
     }
 
     public ReportDTO createReportDTO() {
@@ -18,7 +31,7 @@ public class ObjectFactory {
     }
 
     public PositionSelector createPositionSelector() {
-        return PositionSelector.PositionSelectorBuilder().build();
+        return PositionSelector.builder().build();
     }
 
     public VesselFilterDTO createVesselFilterDTO() {
@@ -42,11 +55,11 @@ public class ObjectFactory {
     }
 
     public VesselFilter createVesselFilter(){
-        return VesselFilter.VesselFilterBuilder().build();
+        return VesselFilter.builder().build();
     }
 
     public VmsTrackFilter createTrackFilter(){
-        return VmsTrackFilter.TrackFilterBuilder().build();
+        return VmsTrackFilter.builder().build();
     }
 
     public TrackFilterDTO createTrackFilterDTO(){
@@ -54,11 +67,11 @@ public class ObjectFactory {
     }
 
     public VmsPositionFilter createVmsPositionFilter(){
-        return  VmsPositionFilter.VmsPositionFilterBuilder().build();
+        return  VmsPositionFilter.builder().build();
     }
 
     public VmsSegmentFilter createVmsSegmentFilter(){
-        return VmsSegmentFilter.VmsSegmentFilterBuilder().build();
+        return VmsSegmentFilter.builder().build();
     }
 
     public VmsSegmentFilterDTO createVmsSegmentFilterDTO(){

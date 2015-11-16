@@ -46,7 +46,7 @@ public class VmsSegmentFilter extends Filter {
         super(FilterType.vmsseg);
     }
 
-    @Builder(builderMethodName = "VmsSegmentFilterBuilder")
+    @Builder
     public VmsSegmentFilter(Long id,
                             Float maxDuration, //FIXME replace with DurationRange
                             Float minDuration,

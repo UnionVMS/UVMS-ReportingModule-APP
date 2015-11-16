@@ -16,7 +16,7 @@ public abstract class TrackFilterMapper {
     abstract public TrackFilterDTO trackFilterToTrackFilterDTO(VmsTrackFilter vmsTrackFilter);
 
     public VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO trackFilterDTO) {
-        return VmsTrackFilter.TrackFilterBuilder()
+        return VmsTrackFilter.builder()
                 .id(trackFilterDTO.getId())
                 .reportId(trackFilterDTO.getReportId())
                 .timeRange(new TimeRange(trackFilterDTO.getMinTime(), trackFilterDTO.getMaxTime()))

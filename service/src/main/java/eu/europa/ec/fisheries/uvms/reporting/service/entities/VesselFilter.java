@@ -29,7 +29,7 @@ public class VesselFilter extends Filter {
         super(FilterType.vessel);
     }
 
-    @Builder(builderMethodName = "VesselFilterBuilder")
+    @Builder
     public VesselFilter(Long id, String guid, String name) {
         super(FilterType.vessel);
         this.guid = guid;

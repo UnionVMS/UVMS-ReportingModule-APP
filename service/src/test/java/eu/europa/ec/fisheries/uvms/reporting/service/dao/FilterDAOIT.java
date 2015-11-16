@@ -26,10 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter.TrackFilterBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter.VmsSegmentFilterBuilder;
 import static junit.framework.Assert.assertNull;
 import static org.unitils.reflectionassert.ReflectionComparatorMode.*;
 
@@ -82,21 +78,21 @@ public class FilterDAOIT {
         report.setVisibility(VisibilityEnum.PRIVATE);
         Report savedReport = reportDAO.createEntity(report);
 
-        VesselFilter filter1 = VesselFilter.VesselFilterBuilder().build();
+        VesselFilter filter1 = VesselFilter.builder().build();
         filter1.setReport(savedReport);
         filter1.setGuid("guid1");
         filter1.setName("vessel1");
         expectedCollection.add(filter1);
         filterDAO.createEntity(filter1);
 
-        VesselFilter filter2 = VesselFilter.VesselFilterBuilder().build();
+        VesselFilter filter2 = VesselFilter.builder().build();
         filter2.setReport(savedReport);
         filter2.setGuid("guid2");
         filter2.setName("vessel2");
         expectedCollection.add(filter2);
         filterDAO.createEntity(filter2);
 
-        VmsPositionFilter filter3 = VmsPositionFilter.VmsPositionFilterBuilder().build();
+        VmsPositionFilter filter3 = VmsPositionFilter.builder().build();
         filter3.setMaximumSpeed(123F);
         filter3.setMinimumSpeed(54654F);
         filter3.setReport(savedReport);
@@ -119,16 +115,16 @@ public class FilterDAOIT {
         expectedCollection.add(filter5);
         filterDAO.createEntity(filter5);
 
-        CommonFilter filter6 = CommonFilterBuilder().build();
+        CommonFilter filter6 = CommonFilter.builder().build();
         filter6.setReport(savedReport);
         filter6.setPositionSelector(
-                PositionSelectorBuilder().selector(Selector.last).position(Position.hours).value(24F).build()
+                PositionSelector.builder().selector(Selector.last).position(Position.hours).value(24F).build()
         );
         filter6.setReport(savedReport);
         expectedCollection.add(filter6);
         filterDAO.createEntity(filter6);
 
-        VmsTrackFilter filter7 = TrackFilterBuilder()
+        VmsTrackFilter filter7 = VmsTrackFilter.builder()
                 .timeRange(new TimeRange(13F, 10F))
                 .durationRange(new DurationRange(11F, 12F))
                 .build();
@@ -136,7 +132,7 @@ public class FilterDAOIT {
         expectedCollection.add(filter7);
         filterDAO.createEntity(filter7);
 
-        VmsSegmentFilter segmentFilter = VmsSegmentFilterBuilder()
+        VmsSegmentFilter segmentFilter = VmsSegmentFilter.builder()
                 .maxDuration(12F)
                 .maximumSpeed(164F)
                 .minDuration(156F)
@@ -147,18 +143,18 @@ public class FilterDAOIT {
         expectedCollection.add(segmentFilter);
         filterDAO.createEntity(segmentFilter);
 
-        CommonFilter commonFilter2 = CommonFilterBuilder().build();
+        CommonFilter commonFilter2 = CommonFilter.builder().build();
         commonFilter2.setReport(savedReport);
         commonFilter2.setEndDate(new Date());
         commonFilter2.setPositionSelector(
-                PositionSelectorBuilder().selector(Selector.last).
+                PositionSelector.builder().selector(Selector.last).
                         position(Position.hours).value(24F).build()
         );
         commonFilter2.setReport(savedReport);
         expectedCollection.add(commonFilter2);
         filterDAO.createEntity(commonFilter2);
 
-        AreaFilter filter8 = AreaFilter.AreaFilterBuilder().areaId(123456L).areaType("eez").build();
+        AreaFilter filter8 = AreaFilter.builder().areaId(123456L).areaType("eez").build();
         filter8.setReport(savedReport);
         expectedCollection.add(filter8);
         filterDAO.createEntity(filter8);
@@ -179,7 +175,7 @@ public class FilterDAOIT {
         report.setVisibility(VisibilityEnum.PRIVATE);
         Report savedReport = reportDAO.createEntity(report);
 
-        AreaFilter filter8 = AreaFilter.AreaFilterBuilder().areaId(123456L).areaType("eez").build();
+        AreaFilter filter8 = AreaFilter.builder().areaId(123456L).areaType("eez").build();
         filter8.setReport(savedReport);
         Filter entity = filterDAO.createEntity(filter8);
 

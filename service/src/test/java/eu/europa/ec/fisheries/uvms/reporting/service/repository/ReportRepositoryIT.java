@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
@@ -37,8 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter.*;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector.PositionSelectorBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 import static junit.framework.Assert.assertEquals;
@@ -284,19 +283,19 @@ public class ReportRepositoryIT {
         report.getDetails().setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
 
-        VesselFilter filter1 = VesselFilter.VesselFilterBuilder().build();
+        VesselFilter filter1 = VesselFilter.builder().build();
         filter1.setReport(report);
         filter1.setGuid("guid1");
         filter1.setName("vessel1");
         expectedCollection.add(filter1);
 
-        VesselFilter filter2 = VesselFilter.VesselFilterBuilder().build();
+        VesselFilter filter2 = VesselFilter.builder().build();
         filter2.setReport(report);
         filter2.setGuid("guid2");
         filter2.setName("vessel2");
         expectedCollection.add(filter2);
 
-        VmsPositionFilter filter3 = VmsPositionFilter.VmsPositionFilterBuilder().build();
+        VmsPositionFilter filter3 = VmsPositionFilter.builder().build();
         filter3.setMaximumSpeed(123F);
         filter3.setMinimumSpeed(54654F);
         filter3.setReport(report);
@@ -314,10 +313,10 @@ public class ReportRepositoryIT {
         filter5.setUserName("ffsdfsdfds");
         expectedCollection.add(filter5);
 
-        CommonFilter filter6 = CommonFilterBuilder().build();
+        CommonFilter filter6 = CommonFilter.builder().build();
         filter6.setReport(report);
         filter6.setPositionSelector(
-                PositionSelectorBuilder().selector(Selector.last).position(Position.hours).value(24F).build()
+                PositionSelector.builder().selector(Selector.last).position(Position.hours).value(24F).build()
         );
 
         ExecutionLog executionLog = new ExecutionLog();
