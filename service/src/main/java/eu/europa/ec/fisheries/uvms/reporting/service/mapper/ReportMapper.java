@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterToDTOVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -12,7 +13,11 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.Builder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -107,7 +112,7 @@ public class ReportMapper {
         }
         List<FilterDTO> filterDTOSet = new ArrayList<>();
         for (Filter filter : filterSet) {
-            FilterDTO filterDTO = filter.convertToDTO();
+            FilterDTO filterDTO = filter.accept(new FilterToDTOVisitor());
             filterDTO.setType(filter.getType());
             filterDTOSet.add(filterDTO);
         }

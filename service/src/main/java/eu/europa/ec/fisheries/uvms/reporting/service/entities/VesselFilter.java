@@ -3,8 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.Builder;
@@ -39,8 +38,8 @@ public class VesselFilter extends Filter {
     }
 
     @Override
-    public FilterDTO convertToDTO() {
-        return VesselFilterMapper.INSTANCE.vesselFilterToVesselFilterDTO(this);
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitVesselFilter(this);
     }
 
     @Override

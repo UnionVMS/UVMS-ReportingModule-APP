@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
@@ -48,14 +49,14 @@ public abstract class Filter implements Serializable {
         this.reportId = reportId;
     }
 
+    public abstract <T> T accept(FilterVisitor<T> visitor);
+
     @ManyToOne(cascade = javax.persistence.CascadeType.ALL)
     @JoinColumn(name = REPORT_ID, nullable = false)
     private Report report;
 
     @Transient
     private Long reportId;
-
-    public abstract FilterDTO convertToDTO();
 
     public abstract void merge(Filter filter);
 

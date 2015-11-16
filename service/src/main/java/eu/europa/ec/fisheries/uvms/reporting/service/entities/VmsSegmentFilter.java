@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import org.apache.commons.collections4.ListUtils;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
@@ -16,8 +17,6 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -62,10 +61,6 @@ public class VmsSegmentFilter extends Filter {
         this.minDuration = minDuration;
         this.category = category;
     }
-    @Override
-    public FilterDTO convertToDTO() {
-        return VmsSegmentFilterMapper.INSTANCE.vmsSegmentFilterToVmsSegmentFilterDTO(this);
-    }
 
     @Override
     public void merge(Filter filter) {
@@ -87,6 +82,11 @@ public class VmsSegmentFilter extends Filter {
             criteria.add(segmentCategory);
         }
         return criteria;
+    }
+
+    @Override
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitVmsSegmentFilter(this);
     }
 
     @Override

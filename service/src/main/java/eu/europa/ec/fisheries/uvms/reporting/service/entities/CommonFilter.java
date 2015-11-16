@@ -4,8 +4,7 @@ import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import org.joda.time.DateTime;
@@ -52,8 +51,8 @@ public class CommonFilter extends Filter {
     }
 
     @Override
-    public FilterDTO convertToDTO() {
-        return DateTimeFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(this);
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitCommonFilter(this);
     }
 
     @Override

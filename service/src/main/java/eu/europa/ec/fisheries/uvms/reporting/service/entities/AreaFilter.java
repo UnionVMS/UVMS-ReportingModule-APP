@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -53,8 +52,8 @@ public class AreaFilter extends Filter {
     }
 
     @Override
-    public FilterDTO convertToDTO() {
-        return AreaFilterMapper.INSTANCE.areaFilterToAreaFilterDTO(this);
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitAreaFilter(this);
     }
 
     @Override

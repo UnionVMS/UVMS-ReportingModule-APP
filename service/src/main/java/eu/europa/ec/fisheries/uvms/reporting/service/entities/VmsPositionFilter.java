@@ -14,8 +14,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -57,8 +56,8 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Override
-    public FilterDTO convertToDTO() {
-        return VmsPositionFilterMapper.INSTANCE.vmsPositionFilterToVmsPositionFilterDTO(this);
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitVmsPositionFilter(this);
     }
 
     @Override

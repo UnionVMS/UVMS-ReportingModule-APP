@@ -2,12 +2,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import org.mapstruct.factory.Mappers;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -63,8 +60,8 @@ public class VmsTrackFilter extends Filter {
     }
 
     @Override
-    public FilterDTO convertToDTO() {
-        return TrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(this);
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitVmsTrackFilter(this);
     }
 
     @Override

@@ -1,8 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
 import java.util.List;
 
 @Entity
@@ -42,8 +40,8 @@ public class VesselGroupFilter extends Filter {
     }
 
     @Override
-    public FilterDTO convertToDTO() {
-        return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroupFilterDTO(this);
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitVesselGroupFilter(this);
     }
 
     @Override
