@@ -25,8 +25,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class VmsSegmentFilter extends Filter {
 
-    private static final long serialVersionUID = -8657712390731877147L;
-
     @Column(name = "MIN_SPEED")
     private Float minimumSpeed;
 

@@ -1,9 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@EqualsAndHashCode
 public class DistanceRange {
 
     @Column(name = "MIN_DISTANCE")

@@ -1,7 +1,13 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.dto;
+package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 
 public class FilterToDTOVisitor implements FilterVisitor<FilterDTO> {
 
