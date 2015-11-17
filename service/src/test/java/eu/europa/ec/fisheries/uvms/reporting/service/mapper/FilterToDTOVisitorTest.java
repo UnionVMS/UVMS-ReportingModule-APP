@@ -26,7 +26,7 @@ public class FilterToDTOVisitorTest {
                 .id(1L)
                 .build();
 
-        TrackFilterDTO expected = TrackFilterDTO.TrackFilterDTOBuild()
+        TrackFilterDTO expected = TrackFilterDTO.builder()
                 .minDistance(10F).maxDistance(100F)
                 .minDuration(5F).maxDuration(500F)
                 .minAvgSpeed(50F).maxAvgSpeed(100F)

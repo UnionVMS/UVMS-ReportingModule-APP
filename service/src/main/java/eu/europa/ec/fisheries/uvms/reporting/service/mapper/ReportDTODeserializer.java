@@ -256,7 +256,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
     private void addTrackFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
         filterDTOList.add(
-                TrackFilterDTO.TrackFilterDTOBuild()
+                TrackFilterDTO.builder()
                     .reportId(reportId)
                     .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                     .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)

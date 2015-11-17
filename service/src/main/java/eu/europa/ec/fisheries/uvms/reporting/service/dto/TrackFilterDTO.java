@@ -44,7 +44,7 @@ public class TrackFilterDTO extends FilterDTO {
         super(FilterType.vmstrack, id, reportId);
     }
 
-    @Builder(builderMethodName = "TrackFilterDTOBuild")
+    @Builder
     public TrackFilterDTO(Long id,
                           Long reportId,
                           Float maxTime,

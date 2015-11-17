@@ -8,10 +8,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import junitparams.JUnitParamsRunner;
@@ -31,11 +28,9 @@ import java.util.List;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO.TrackFilterDTOBuild;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.VesselFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO.VmsPositionFilterDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder;
 import static junit.framework.TestCase.assertTrue;
 import static junitparams.JUnitParamsRunner.$;
 
@@ -114,7 +109,7 @@ public class ReportDTOSerializerDeserializerTest {
 
         ReportDTO report9 = createReport();
         filterDTOList = new ArrayList<>();
-        filterDTOList.add(TrackFilterDTOBuild().id(1L).maxDuration(200.345F).maxTime(20.345F).minDuration(40.5F)
+        filterDTOList.add(TrackFilterDTO.builder().id(1L).maxDuration(200.345F).maxTime(20.345F).minDuration(40.5F)
                 .minTime(10F).build());
         report9.setFilters(filterDTOList);
 
