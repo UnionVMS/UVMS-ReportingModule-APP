@@ -11,12 +11,15 @@ import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMarshallException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExtMovementMessageMapper {
 
