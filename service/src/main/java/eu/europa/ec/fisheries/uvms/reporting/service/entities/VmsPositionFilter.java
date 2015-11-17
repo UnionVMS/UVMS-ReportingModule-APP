@@ -23,7 +23,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class VmsPositionFilter extends Filter {
 
-	private static final long serialVersionUID = -8391061757398510151L;
+    private static final float MIN_SPEED = 0F;
+    private static final float MAX_SPEED = 1000F;
 
 	@Column(name = "MIN_SPEED")
     private Float minimumSpeed;
@@ -56,7 +57,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Override
-    public <T> T accept(FilterVisitor<T> visitor) {
+    public <T> T accept(FilterVisitor<T> visitor) { // NO SONAR
         return visitor.visitVmsPositionFilter(this);
     }
 
@@ -94,8 +95,8 @@ public class VmsPositionFilter extends Filter {
     	}
     	RangeCriteria movementSpeed = new RangeCriteria();
     	movementSpeed.setKey(RangeKeyType.MOVEMENT_SPEED);
-    	movementSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : 0F));
-    	movementSpeed.setTo(Float.toString(getMaximumSpeed() != null ? getMaximumSpeed() : 1000F));
+    	movementSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : MIN_SPEED));
+    	movementSpeed.setTo(Float.toString(getMaximumSpeed() != null ? getMaximumSpeed() : MAX_SPEED));
     	return Arrays.asList(movementSpeed);
     }
 
