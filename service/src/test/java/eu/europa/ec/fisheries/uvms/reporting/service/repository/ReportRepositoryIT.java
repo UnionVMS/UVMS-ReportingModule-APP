@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
@@ -38,8 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
@@ -80,7 +79,7 @@ public class ReportRepositoryIT {
     private Report buildReport() {
         Date currentDate = new Date();
         return Report.builder()
-                .details(ReportDetailsBuilder().createdBy("georgi")
+                .details(ReportDetails.builder().createdBy("georgi")
                         .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
                         .name("ReportName" + currentDate.getTime()).withMap(true).scopeName("123").build())
                 .filters(new HashSet<Filter>())
@@ -96,7 +95,7 @@ public class ReportRepositoryIT {
     @SuppressWarnings("unchecked")
     public void testRemove() throws Exception {
         Report reportEntity = report;
-        reportEntity.setDetails(ReportDetailsBuilder().name("RemoveTest").build());
+        reportEntity.setDetails(ReportDetails.builder().name("RemoveTest").build());
         repository.createEntity(reportEntity);
 
         repository.remove(

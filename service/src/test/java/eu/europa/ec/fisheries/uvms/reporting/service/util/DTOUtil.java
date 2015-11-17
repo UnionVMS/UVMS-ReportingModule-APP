@@ -11,8 +11,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 
 public class DTOUtil {
 
@@ -52,7 +50,7 @@ public class DTOUtil {
     public static Report createRandomReportEntity() {
         Date currentDate = new Date();
 
-        return Report.builder().details(ReportDetailsBuilder().name("ReportName" + currentDate.getTime())
+        return Report.builder().details(ReportDetails.builder().name("ReportName" + currentDate.getTime())
                 .createdBy("georgi").scopeName("123")
                 .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
                 .withMap(true).build()).audit(new Audit(currentDate)).build();

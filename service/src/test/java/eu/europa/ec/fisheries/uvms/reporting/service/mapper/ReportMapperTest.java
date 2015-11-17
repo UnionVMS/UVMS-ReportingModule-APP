@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -13,7 +14,6 @@ import org.unitils.inject.annotation.TestedObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 
@@ -28,7 +28,7 @@ public class ReportMapperTest extends UnitilsJUnit4 {
     @Before
     public void before(){
         report = Report.builder().id(1L).createdBy("you").details(
-                 ReportDetailsBuilder().description("desc").scopeName("scopeName").name("name").withMap(true).build())
+                ReportDetails.builder().description("desc").scopeName("scopeName").name("name").withMap(true).build())
                 .executionLogs(new HashSet<ExecutionLog>())
                 .build();
     }

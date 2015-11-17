@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -16,8 +17,6 @@ import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.ReportBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails.ReportDetailsBuilder;
 import static junit.framework.TestCase.assertTrue;
 
 public class ReportMergerTest extends UnitilsJUnit4 {
@@ -35,7 +34,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
         public void shouldUpdateWhenValuesModified(){
 
-        Report existingReport = Report.builder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("me").build()).build();
+        Report existingReport = Report.builder().id(1L).details(ReportDetails.builder().description("desc").createdBy("me").build()).build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).createdBy("you").description("desc").build();
 
         daoMock.returns(existingReport).findEntityById(Report.class, null);
@@ -54,7 +53,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void shouldNotUpdateWhenNothingHasChanged(){
 
-        Report existingReport = Report.builder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("you").build()).build();
+        Report existingReport = Report.builder().id(1L).details(ReportDetails.builder().description("desc").createdBy("you").build()).build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).
                 visibility(VisibilityEnum.PRIVATE).createdBy("you").description("desc").build();
 

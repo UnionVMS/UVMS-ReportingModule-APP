@@ -1,13 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
+import lombok.Data;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Embeddable
+@Data
 public class PositionSelector {
 
     private Float value;

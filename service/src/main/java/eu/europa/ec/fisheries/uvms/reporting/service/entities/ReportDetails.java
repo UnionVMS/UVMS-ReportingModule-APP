@@ -18,33 +18,35 @@ public class ReportDetails {
     public static final String DESCRIPTION = "description";
     public static final String WITH_MAP = "with_map";
     public static final String SCOPE_NAME = "scope_name";
+    public static final int LENGTH_255 = 255;
+    public static final int LENGTH_1 = 1;
 
     @NotNull
-    @Column(name = NAME, nullable = false, length = 255)
-    private String name; //NOSONAR
+    @Column(name = NAME, nullable = false, length = LENGTH_255)
+    private String name;
 
-    @Column(name = DESCRIPTION, nullable = true, length = 255)
-    private String description; //NOSONAR
+    @Column(name = DESCRIPTION, nullable = true, length = LENGTH_255)
+    private String description;
 
-    @Column(name = WITH_MAP, nullable = false, length = 1)
+    @Column(name = WITH_MAP, nullable = false, length = LENGTH_1)
     @Convert(converter = CharBooleanConverter.class)
-    private Boolean withMap; //NOSONAR
+    private Boolean withMap;
 
     @Column(name = SCOPE_NAME)
     @NotNull
-    private String scopeName; //NOSONAR
+    private String scopeName;
 
-    @Column(name = CREATED_BY, nullable = false, length = 255)
+    @Column(name = CREATED_BY, nullable = false, length = LENGTH_255)
     @NotNull
-    private String createdBy; //NOSONAR
+    private String createdBy;
 
-    @Builder(builderMethodName = "ReportDetailsBuilder")
+    @Builder
     public ReportDetails(String description, String name, Boolean withMap, String scopeName, String createdBy){
-        setName(name);
-        setWithMap(withMap);
-        setScopeName(scopeName);
-        setCreatedBy(createdBy);
-        setDescription(description);
+        this.name = name;
+        this.withMap = withMap;
+        this.scopeName = scopeName;
+        this.createdBy = createdBy;
+        this.description = description;
     }
 
     ReportDetails() {
