@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
@@ -32,7 +31,7 @@ public abstract class Filter implements Serializable {
     public static final String DELETE_BY_ID = "Filter.deleteById";
 
     @Transient
-    final private FilterType type;
+    private final FilterType type;
 
     @Id
     @Column(name = FILTER_ID)

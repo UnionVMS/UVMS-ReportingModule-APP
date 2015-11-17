@@ -25,6 +25,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class VmsSegmentFilter extends Filter {
 
+    private static final float MIN_SPEED = 0F;
+    private static final float MAX_SPEED = 1000F;
+    private static final float MIN_DURATION = 0F;
+    private static final float MAX_DURATION = 10000F;
+
     @Column(name = "MIN_SPEED")
     private Float minimumSpeed;
 
@@ -98,8 +103,8 @@ public class VmsSegmentFilter extends Filter {
         }
         RangeCriteria segmentSpeed = new RangeCriteria();
         segmentSpeed.setKey(RangeKeyType.SEGMENT_SPEED);
-        segmentSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : 0F));
-        segmentSpeed.setTo(Float.toString(getMaximumSpeed()!= null ? getMaximumSpeed() : 1000F));
+        segmentSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : MIN_SPEED));
+        segmentSpeed.setTo(Float.toString(getMaximumSpeed()!= null ? getMaximumSpeed() : MAX_SPEED));
         return Arrays.asList(segmentSpeed);
     }
     
@@ -109,8 +114,8 @@ public class VmsSegmentFilter extends Filter {
         }
         RangeCriteria segmentDuration = new RangeCriteria();
         segmentDuration.setKey(RangeKeyType.SEGMENT_DURATION);
-        segmentDuration.setFrom(Float.toString(getMinDuration() != null ? getMinDuration() : 0F));
-        segmentDuration.setTo(Float.toString(getMaxDuration() != null ? getMaxDuration() : 10000F));
+        segmentDuration.setFrom(Float.toString(getMinDuration() != null ? getMinDuration() : MIN_DURATION));
+        segmentDuration.setTo(Float.toString(getMaxDuration() != null ? getMaxDuration() : MAX_DURATION));
         return Arrays.asList(segmentDuration);
     }
 
