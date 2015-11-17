@@ -7,7 +7,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTODeserialize
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import java.util.List;
 @JsonSerialize(using = ReportDTOSerializer.class)
 @EqualsAndHashCode(of = {"description", "withMap", "visibility", "name",
         "shareable", "deletable", "editable", "filters", "isDeleted"})
-@Data
 public class ReportDTO implements Serializable {
 
     public static final String DESC = "desc";
@@ -90,4 +88,137 @@ public class ReportDTO implements Serializable {
         audit.setCreatedOn(createdOn);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getWithMap() {
+        return withMap;
+    }
+
+    public void setWithMap(Boolean withMap) {
+        this.withMap = withMap;
+    }
+
+    public String getScopeName() {
+        return scopeName;
+    }
+
+    public void setScopeName(String scopeName) {
+        this.scopeName = scopeName;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public boolean isShareable() {
+        return shareable;
+    }
+
+    public void setShareable(boolean shareable) {
+        this.shareable = shareable;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
+    public AuditDTO getAudit() {
+        return audit;
+    }
+
+    public void setAudit(AuditDTO audit) {
+        this.audit = audit;
+    }
+
+    public VisibilityEnum getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(VisibilityEnum visibility) {
+        this.visibility = visibility;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Date getDeletedOn() {
+        Date deletedOn = null;
+        if (this.deletedOn != null){
+            deletedOn = new Date(this.deletedOn.getTime());
+        }
+        return deletedOn;
+    }
+
+    public void setDeletedOn(Date deletedOn) {
+        if (deletedOn != null){
+            this.deletedOn = new Date(deletedOn.getTime());
+        }
+    }
+
+    public String getDeletedBy() {
+        return deletedBy;
+    }
+
+    public void setDeletedBy(String deletedBy) {
+        this.deletedBy = deletedBy;
+    }
+
+    public List<FilterDTO> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<FilterDTO> filters) {
+        this.filters = filters;
+    }
+
+    public ExecutionLogDTO getExecutionLog() {
+        return executionLog;
+    }
+
+    public void setExecutionLog(ExecutionLogDTO executionLog) {
+        this.executionLog = executionLog;
+    }
 }
