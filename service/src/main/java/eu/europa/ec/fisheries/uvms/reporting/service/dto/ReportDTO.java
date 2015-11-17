@@ -22,18 +22,18 @@ import java.util.List;
 @Data
 public class ReportDTO implements Serializable {
 
-    public final static String DESC = "desc";
-    public final static String CREATED_BY = "createdBy";
-    public final static String ID = "id";
-    public final static String NAME = "name";
-    public final static String WITH_MAP = "withMap";
-    public final static String CREATED_ON = "createdOn";
-    public final static String SCOPE_ID = "scopeId";
-    public final static String VISIBILITY = "visibility";
-    public final static String FILTER_EXPRESSION = "filterExpression";
-    public final static String SHAREABLE = "shareable";
-    public final static String DELETABLE = "deletable";
-    public final static String EDITABLE = "editable";
+    public static final String DESC = "desc";
+    public static final String CREATED_BY = "createdBy";
+    public static final String ID = "id";
+    public static final String NAME = "name";
+    public static final String WITH_MAP = "withMap";
+    public static final String CREATED_ON = "createdOn";
+    public static final String SCOPE_ID = "scopeId";
+    public static final String VISIBILITY = "visibility";
+    public static final String FILTER_EXPRESSION = "filterExpression";
+    public static final String SHAREABLE = "shareable";
+    public static final String DELETABLE = "deletable";
+    public static final String EDITABLE = "editable";
 
     private Long id;
     private String name;
