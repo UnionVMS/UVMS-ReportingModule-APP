@@ -6,10 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
 import java.util.Date;
 
 @Embeddable
-public class Audit {
+public class Audit implements Serializable {
 
     public static final String CREATED_ON = "created_on";
 

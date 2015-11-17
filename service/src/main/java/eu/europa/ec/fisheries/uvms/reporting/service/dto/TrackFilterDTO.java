@@ -6,9 +6,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import org.mapstruct.factory.Mappers;
-
-import javax.persistence.Column;
 
 @EqualsAndHashCode(callSuper = true)
 public class TrackFilterDTO extends FilterDTO {

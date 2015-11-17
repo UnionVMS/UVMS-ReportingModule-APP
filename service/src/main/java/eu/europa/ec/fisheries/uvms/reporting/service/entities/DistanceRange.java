@@ -4,10 +4,11 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
 @EqualsAndHashCode
-public class DistanceRange {
+public class DistanceRange implements Serializable {
 
     @Column(name = "MIN_DISTANCE")
     private Float minDistance;

@@ -4,10 +4,11 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
 @EqualsAndHashCode
-public class DurationRange {
+public class DurationRange implements Serializable {
 
     @Column(name = "MIN_DURATION")
     private Float minDuration;
