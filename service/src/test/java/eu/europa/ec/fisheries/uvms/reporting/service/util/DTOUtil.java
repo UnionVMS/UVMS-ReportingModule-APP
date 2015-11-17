@@ -52,7 +52,7 @@ public class DTOUtil {
     public static Report createRandomReportEntity() {
         Date currentDate = new Date();
 
-        return ReportBuilder().details(ReportDetailsBuilder().name("ReportName" + currentDate.getTime())
+        return Report.builder().details(ReportDetailsBuilder().name("ReportName" + currentDate.getTime())
                 .createdBy("georgi").scopeName("123")
                 .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
                 .withMap(true).build()).audit(new Audit(currentDate)).build();

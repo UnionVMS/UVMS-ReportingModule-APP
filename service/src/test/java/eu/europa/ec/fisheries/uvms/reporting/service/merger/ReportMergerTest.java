@@ -35,7 +35,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
         public void shouldUpdateWhenValuesModified(){
 
-        Report existingReport = ReportBuilder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("me").build()).build();
+        Report existingReport = Report.builder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("me").build()).build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).createdBy("you").description("desc").build();
 
         daoMock.returns(existingReport).findEntityById(Report.class, null);
@@ -54,7 +54,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void shouldNotUpdateWhenNothingHasChanged(){
 
-        Report existingReport = ReportBuilder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("you").build()).build();
+        Report existingReport = Report.builder().id(1L).details(ReportDetailsBuilder().description("desc").createdBy("you").build()).build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).
                 visibility(VisibilityEnum.PRIVATE).createdBy("you").description("desc").build();
 

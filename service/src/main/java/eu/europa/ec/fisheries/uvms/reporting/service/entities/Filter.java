@@ -2,7 +2,15 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
@@ -119,5 +127,43 @@ public abstract class Filter implements Serializable {
     
     public AreaIdentifierType getAreaIdentifierType() {
     	return new AreaIdentifierType();
+    }
+
+    public static class FilterToDTOVisitor implements FilterVisitor<FilterDTO> {
+
+        @Override
+        public FilterDTO visitVmsTrackFilter(VmsTrackFilter trackFilter) {
+            return TrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(trackFilter);
+        }
+
+        @Override
+        public FilterDTO visitVmsSegmentFilter(VmsSegmentFilter segmentFilter) {
+            return VmsSegmentFilterMapper.INSTANCE.vmsSegmentFilterToVmsSegmentFilterDTO(segmentFilter);
+        }
+
+        @Override
+        public FilterDTO visitVmsPositionFilter(VmsPositionFilter positionFilter) {
+            return VmsPositionFilterMapper.INSTANCE.vmsPositionFilterToVmsPositionFilterDTO(positionFilter);
+        }
+
+        @Override
+        public FilterDTO visitVesselFilter(VesselFilter vesselFilter) {
+            return VesselFilterMapper.INSTANCE.vesselFilterToVesselFilterDTO(vesselFilter);
+        }
+
+        @Override
+        public FilterDTO visitVesselGroupFilter(VesselGroupFilter vesselGroupFilter) {
+            return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroupFilterDTO(vesselGroupFilter);
+        }
+
+        @Override
+        public FilterDTO visitAreaFilter(AreaFilter areaFilter) {
+            return AreaFilterMapper.INSTANCE.areaFilterToAreaFilterDTO(areaFilter);
+        }
+
+        @Override
+        public FilterDTO visitCommonFilter(CommonFilter commonFilter) {
+            return DateTimeFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(commonFilter);
+        }
     }
 }

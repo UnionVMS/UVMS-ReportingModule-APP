@@ -27,8 +27,8 @@ public class VmsSegmentFilter extends Filter {
 
     private static final float MIN_SPEED = 0F;
     private static final float MAX_SPEED = 1000F;
-    private static final float MIN_DURATION = 0F;
-    private static final float MAX_DURATION = 10000F;
+    private static final float MIN_DUR = 0F;
+    private static final float MAX_DUR = 1000F;
 
     @Column(name = "MIN_SPEED")
     private Float minimumSpeed;
@@ -114,8 +114,8 @@ public class VmsSegmentFilter extends Filter {
         }
         RangeCriteria segmentDuration = new RangeCriteria();
         segmentDuration.setKey(RangeKeyType.SEGMENT_DURATION);
-        segmentDuration.setFrom(Float.toString(getMinDuration() != null ? getMinDuration() : MIN_DURATION));
-        segmentDuration.setTo(Float.toString(getMaxDuration() != null ? getMaxDuration() : MAX_DURATION));
+        segmentDuration.setFrom(Float.toString(getMinDuration() != null ? getMinDuration() : 0F));
+        segmentDuration.setTo(Float.toString(getMaxDuration() != null ? getMaxDuration() : 10000F));
         return Arrays.asList(segmentDuration);
     }
 

@@ -19,7 +19,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 public class ObjectFactory {
 
     public Report createReport() {
-        return Report.ReportBuilder().build();
+        return Report.builder().build();
     }
 
     public CommonFilter createCommonFilter() {

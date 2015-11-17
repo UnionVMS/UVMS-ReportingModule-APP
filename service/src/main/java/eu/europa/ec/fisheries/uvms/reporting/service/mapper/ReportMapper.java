@@ -111,7 +111,7 @@ public class ReportMapper {
         }
         List<FilterDTO> filterDTOSet = new ArrayList<>();
         for (Filter filter : filterSet) {
-            FilterDTO filterDTO = filter.accept(new FilterToDTOVisitor());
+            FilterDTO filterDTO = filter.accept(new Filter.FilterToDTOVisitor());
             filterDTO.setType(filter.getType());
             filterDTOSet.add(filterDTO);
         }

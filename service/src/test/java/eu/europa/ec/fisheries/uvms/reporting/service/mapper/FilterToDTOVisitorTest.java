@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DistanceRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import org.junit.Test;
@@ -11,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 public class FilterToDTOVisitorTest {
 
-    private FilterToDTOVisitor visitor = new FilterToDTOVisitor();
+    private Filter.FilterToDTOVisitor visitor = new Filter.FilterToDTOVisitor();
 
     @Test
     public void shouldReturnTrackFilterDTO(){

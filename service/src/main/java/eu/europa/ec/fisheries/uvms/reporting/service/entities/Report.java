@@ -87,10 +87,10 @@ public class Report implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_on")
-    private Date deletedOn; //NOSONAR
+    private Date deletedOn;
 
     @Column(name = "deleted_by")
-    private String deletedBy; //NOSONAR
+    private String deletedBy;
 
     @Embedded
     private ReportDetails details = new ReportDetails();
@@ -98,7 +98,7 @@ public class Report implements Serializable {
     @Embedded
     private Audit audit;
 
-    @Builder(builderMethodName = "ReportBuilder")
+    @Builder
     public Report(Long id, ReportDetails details, String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
         this.id = id;
@@ -134,7 +134,7 @@ public class Report implements Serializable {
         setVisibility(incoming.getVisibility());
     }
 
-    @PrePersist //NOSONAR
+    @PrePersist
     private void onCreate() {
         audit = new Audit(DateUtils.nowUTC().toDate());
     }

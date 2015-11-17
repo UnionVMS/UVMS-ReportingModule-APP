@@ -79,7 +79,7 @@ public class ReportRepositoryIT {
 
     private Report buildReport() {
         Date currentDate = new Date();
-        return ReportBuilder()
+        return Report.builder()
                 .details(ReportDetailsBuilder().createdBy("georgi")
                         .description("This is a report description created on " + new SimpleDateFormat("yyyy/MM/dd HH:mm").format(currentDate))
                         .name("ReportName" + currentDate.getTime()).withMap(true).scopeName("123").build())
