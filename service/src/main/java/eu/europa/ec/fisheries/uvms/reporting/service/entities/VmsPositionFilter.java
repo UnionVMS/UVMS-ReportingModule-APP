@@ -14,7 +14,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor; // NO SONAR
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -57,7 +57,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Override
-    public <T> T accept(FilterVisitor<T> visitor) { // NO SONAR
+    public <T> T accept(FilterVisitor<T> visitor) {
         return visitor.visitVmsPositionFilter(this);
     }
 
