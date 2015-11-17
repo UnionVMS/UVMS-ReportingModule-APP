@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import junitparams.JUnitParamsRunner;
@@ -133,7 +134,7 @@ public class ReportDTOSerializerDeserializerTest {
         filterDTOList = new ArrayList<>();
         filterDTOList.add(VmsPositionFilterDTOBuilder().id(5L).maximumSpeed(234.2F).minimumSpeed(45.5F)
                 .movementType(MovementTypeType.EXI).movementActivity(MovementActivityTypeType.CAN).build());
-        filterDTOList.add(VmsSegmentFilterDTOBuilder().id(5L).maximumSpeed(234.2F).minimumSpeed(45.5F)
+        filterDTOList.add(VmsSegmentFilterDTO.builder().id(5L).maximumSpeed(234.2F).minimumSpeed(45.5F)
                 .minDuration(33.3F).maxDuration(33.3f).category(SegmentCategoryType.ENTER_PORT).build());
         report12.setFilters(filterDTOList);
 

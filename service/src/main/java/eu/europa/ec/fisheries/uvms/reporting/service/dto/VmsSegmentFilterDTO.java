@@ -41,7 +41,7 @@ public class VmsSegmentFilterDTO extends FilterDTO {
         super(FilterType.vmsseg, id, reportId);
     }
 
-    @Builder(builderMethodName = "VmsSegmentFilterDTOBuilder")
+    @Builder
     public VmsSegmentFilterDTO(Long reportId,
                                Long id,
                                Float maxDuration,

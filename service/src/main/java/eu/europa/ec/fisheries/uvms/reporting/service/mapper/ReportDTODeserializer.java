@@ -237,7 +237,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private void addVmsSegmentFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
-        VmsSegmentFilterDTO segmentFilterDTO = VmsSegmentFilterDTO.VmsSegmentFilterDTOBuilder()
+        VmsSegmentFilterDTO segmentFilterDTO = VmsSegmentFilterDTO.builder()
                 .reportId(reportId)
                 .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                 .minimumSpeed(next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_SPEED).floatValue() : null)

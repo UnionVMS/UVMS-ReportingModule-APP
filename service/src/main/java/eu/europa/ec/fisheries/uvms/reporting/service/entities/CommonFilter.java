@@ -127,6 +127,10 @@ public class CommonFilter extends Filter {
     }
 
     public Date getStartDate() {
+        Date startDate = null;
+        if (this.startDate != null){
+            startDate = new Date(this.startDate.getTime());
+        }
         return startDate;
     }
 
@@ -137,6 +141,10 @@ public class CommonFilter extends Filter {
     }
 
     public Date getEndDate() {
+        Date endDate = null;
+        if (this.endDate != null){
+            endDate = new Date(this.endDate.getTime());
+        }
         return endDate;
     }
 
