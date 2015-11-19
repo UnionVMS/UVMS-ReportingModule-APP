@@ -29,9 +29,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "filter", schema = "reporting")
@@ -43,6 +49,9 @@ import java.util.List;
 })
 @EqualsAndHashCode(of = {"id"})
 public abstract class Filter implements Serializable {
+
+    @Transient
+    protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     public static final String REPORT_ID = "report_id";
     public static final String FILTER_ID = "filter_id";
@@ -76,6 +85,16 @@ public abstract class Filter implements Serializable {
 
     @Transient
     private Long reportId;
+
+    protected void validate() {
+        Set<ConstraintViolation<Filter>> violations =
+                validator.validate(this);
+
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(
+                    new HashSet<ConstraintViolation<?>>(violations));
+        }
+    }
 
     public abstract void merge(Filter filter);
 

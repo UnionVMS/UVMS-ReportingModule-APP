@@ -103,8 +103,6 @@ public class CommonFilterTest extends UnitilsJUnit4 {
 
         filter = CommonFilter.builder()
                 .positionSelector(PositionSelector.builder().selector(Selector.last).value(1F).position(Position.hours).build())
-                .endDate(new Date())
-                .startDate(new Date())
                 .build();
 
         assertNotEquals(filter, incoming);

@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import org.joda.time.DateTime;
@@ -21,6 +22,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("DATETIME")
 @EqualsAndHashCode(callSuper = true, of = {"startDate", "endDate"})
+@CommonFilterIsValid
 public class CommonFilter extends Filter {
 
     public static final String END_DATE = "end_date";
@@ -48,6 +50,7 @@ public class CommonFilter extends Filter {
         setEndDate(endDate);
         setPositionSelector(positionSelector);
         setId(id);
+        validate();
     }
 
     @Override
