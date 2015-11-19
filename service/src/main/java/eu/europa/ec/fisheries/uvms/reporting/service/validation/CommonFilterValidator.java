@@ -26,9 +26,8 @@ public class CommonFilterValidator implements ConstraintValidator<CommonFilterIs
         }
 
         else if (positionSelector != null && Selector.last.equals(positionSelector.getSelector())){
-            valid = commonFilter.getDateRange() == null ||
-                    commonFilter.getDateRange().getEndDate() == null &&
-                    commonFilter.getDateRange().getStartDate() == null;
+            valid = commonFilter.getEndDate() == null &&
+                    commonFilter.getStartDate() == null;
         }
 
         return valid;
