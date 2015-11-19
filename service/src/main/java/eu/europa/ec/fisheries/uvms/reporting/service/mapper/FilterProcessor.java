@@ -12,9 +12,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -54,7 +52,7 @@ public class FilterProcessor {
         vesselListCriteriaPairs.addAll(filter.vesselCriteria());
         vesselGroupList.addAll(filter.vesselGroupCriteria());
         rangeCriteria.addAll(filter.movementRangeCriteria());
-        movementListCriteria.addAll(filter.movementCriteria());
+        movementListCriteria.addAll(filter.movementListCriteria());
     }
     
     private void addAreaIdentifier(Filter filter) {

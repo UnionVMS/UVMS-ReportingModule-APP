@@ -76,7 +76,7 @@ public class VmsSegmentFilter extends Filter {
     }
     
     @Override
-    public List<ListCriteria> movementCriteria() {
+    public List<ListCriteria> movementListCriteria() {
         List<ListCriteria> criteria = new ArrayList<>();
         if(getCategory() != null) {
             ListCriteria segmentCategory = new ListCriteria();

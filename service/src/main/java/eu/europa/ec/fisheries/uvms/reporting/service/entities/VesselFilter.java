@@ -63,7 +63,7 @@ public class VesselFilter extends Filter {
     }
 
     @Override
-    public List<ListCriteria> movementCriteria() {
+    public List<ListCriteria> movementListCriteria() {
         ListCriteria listCriteria = new ListCriteria();
         listCriteria.setKey(SearchKey.CONNECT_ID);
         listCriteria.setValue(getGuid());
