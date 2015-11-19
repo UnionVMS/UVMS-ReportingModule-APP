@@ -110,14 +110,19 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private void handleAll(JsonNode common, List<FilterDTO> filterDTOList, Long reportId, Selector positionSelector) {
-        String startDate = common.get("startDate").asText();
-        String endDate = common.get("endDate").asText();
-        if (startDate == null){
+        JsonNode startDateNode = common.get("startDate");
+        JsonNode endDateNode = common.get("endDate");
+
+        if (startDateNode == null){
             throw new InvalidParameterException("StartDate is mandatory when selecting ALL");
         }
-        if (endDate == null){
+        if (endDateNode == null){
             throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
         }
+
+        String startDate = startDateNode.asText();
+        String endDate = endDateNode.asText();
+
         filterDTOList.add(
                 CommonFilterDTO.CommonFilterDTOBuilder()
                         .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
