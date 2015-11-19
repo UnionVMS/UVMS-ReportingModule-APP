@@ -43,7 +43,7 @@ public class FilterToDTOVisitor implements FilterVisitor<FilterDTO> {
 
     @Override
     public FilterDTO visitCommonFilter(CommonFilter commonFilter) {
-        return DateTimeFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(commonFilter);
+        return CommonFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(commonFilter);
     }
 
 

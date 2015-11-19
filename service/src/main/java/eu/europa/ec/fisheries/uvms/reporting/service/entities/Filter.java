@@ -3,14 +3,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
@@ -182,7 +176,7 @@ public abstract class Filter implements Serializable {
 
         @Override
         public FilterDTO visitCommonFilter(CommonFilter commonFilter) {
-            return DateTimeFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(commonFilter);
+            return CommonFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(commonFilter);
         }
     }
 }

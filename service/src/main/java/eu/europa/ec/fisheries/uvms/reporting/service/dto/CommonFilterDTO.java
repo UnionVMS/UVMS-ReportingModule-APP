@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.DateTimeFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -45,7 +45,7 @@ public class CommonFilterDTO extends FilterDTO {
 
     @Override
     public Filter convertToFilter() {
-        return DateTimeFilterMapper.INSTANCE.dateTimeFilterDTOToDateTimeFilter(this);
+        return CommonFilterMapper.INSTANCE.dateTimeFilterDTOToDateTimeFilter(this);
     }
 
     public Date getStartDate() {
