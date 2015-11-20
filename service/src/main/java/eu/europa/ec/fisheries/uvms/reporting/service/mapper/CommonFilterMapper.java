@@ -49,5 +49,10 @@ public interface CommonFilterMapper {
     })
     ListCriteria positionToListCriteria(CommonFilter filter);
 
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "report", ignore = true),
+            @Mapping(target = "reportId", ignore = true)
+    })
     void merge(CommonFilter incoming, @MappingTarget CommonFilter current);
 }
