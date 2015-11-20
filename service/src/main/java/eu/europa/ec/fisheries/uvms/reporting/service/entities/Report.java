@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
 import lombok.Builder;
 import lombok.Data;
