@@ -19,7 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-
 import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -35,7 +34,6 @@ public class CommonFilterTest {
 
         if (iterator.hasNext()) {
             assertEquals(rangeCriteria, iterator.next());
-
         }
     }
 
@@ -66,47 +64,61 @@ public class CommonFilterTest {
 
     protected Object[] rangeCriteria(){
 
-        final String from = "2013-02-28 12:24:56 +0100";
+        final String beginningOfTime = "292269055-12-02 17:47:04 +0100";
+        final String now = "2013-02-28 12:24:56 +0100";
+
         String fromMinus24Hours = "2013-02-27 12:24:56 +0100";
 
         CommonFilter filter1 = new CommonFilter(){
             protected DateTime nowUTC() {
-                return new DateTime(DateUtils.stringToDate(from));
+                return new DateTime(DateUtils.stringToDate(now));
             }
         };
+
         filter1.setPositionSelector(PositionSelector.builder()
                         .selector(Selector.last).value(24F)
                         .position(Position.hours).build()
         );
-        RangeCriteria criteria1 = new RangeCriteria();
-        criteria1.setKey(RangeKeyType.DATE);
-        criteria1.setFrom(fromMinus24Hours);
-        criteria1.setTo(from);
+        RangeCriteria expectedCriteria = new RangeCriteria();
+        expectedCriteria.setKey(RangeKeyType.DATE);
+        expectedCriteria.setFrom(fromMinus24Hours);
+        expectedCriteria.setTo(now);
+        setDefaultValues(expectedCriteria);
 
         String to = "2014-02-28 12:24:56 +0100";
         CommonFilter filter2 = CommonFilter.builder()
                 .positionSelector(PositionSelector.builder()
                         .selector(Selector.all).build())
-                .dateRange(new DateRange(DateUtils.stringToDate(from), DateUtils.stringToDate(to)))
+                .dateRange(new DateRange(DateUtils.stringToDate(now), DateUtils.stringToDate(to)))
                 .build();
 
-        RangeCriteria criteria2 = new RangeCriteria();
-        criteria2.setKey(RangeKeyType.DATE);
-        criteria2.setFrom(from);
-        criteria2.setTo(to);
+        RangeCriteria expectedCriteria2 = new RangeCriteria();
+        expectedCriteria2.setKey(RangeKeyType.DATE);
+        expectedCriteria2.setFrom(now);
+        expectedCriteria2.setTo(to);
+        setDefaultValues(expectedCriteria2);
 
+        final Float hours = 100F;
 
-        CommonFilter filter3 = CommonFilter.builder()
-                .positionSelector(PositionSelector.builder()
-                        .selector(Selector.last).position(Position.positions).value(100F).build())
-                .build();
-        RangeCriteria empty = new RangeCriteria();
-        empty.setKey(RangeKeyType.DATE);
+        CommonFilter filter3 = new CommonFilter(){
+            @Override
+            protected DateTime nowUTC() {
+                return new DateTime(DateUtils.stringToDate(now));
+            }
+        };
+
+        filter3.setPositionSelector(PositionSelector.builder()
+                .selector(Selector.last).position(Position.positions).value(hours).build());
+
+        RangeCriteria expectedCriteria3 = new RangeCriteria();
+        expectedCriteria3.setKey(RangeKeyType.DATE);
+        expectedCriteria3.setFrom(beginningOfTime);
+        expectedCriteria3.setTo(now);
 
         return $(
-                $(filter1, criteria1),
-                $(filter2, criteria2),
-                $(filter3, empty)
+                $(filter1, expectedCriteria),
+                $(filter2, expectedCriteria2),
+                $(filter3, expectedCriteria3)
         );
     }
 
@@ -137,5 +149,15 @@ public class CommonFilterTest {
         assertEquals(filter, incoming);
 
     }
+
+    private void setDefaultValues(final RangeCriteria date) {
+        if (date.getTo() == null) {
+            date.setFrom(DateUtils.dateToString(DateUtils.nowUTC().toDate())); // FIXME use offset
+        }
+        if (date.getFrom() == null) {
+            date.setFrom(DateUtils.dateToString(new Date(Long.MIN_VALUE)));
+        }
+    }
+
 
 }

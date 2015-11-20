@@ -58,10 +58,7 @@ public class CommonFilter extends Filter {
         CommonFilterMapper mapper = CommonFilterMapper.INSTANCE;
         List<RangeCriteria> rangeCriteria = Lists.newArrayList();
         RangeCriteria date = mapper.dateRangeToRangeCriteria(this);
-
-        if (date != null && date.getFrom() != null && date.getTo() != null) {
-            rangeCriteria.add(date);
-        }
+        setDefaultValues(date);
 
         if (Position.hours.equals(positionSelector.getPosition())) {
             Float hours = positionSelector.getValue();
@@ -69,7 +66,20 @@ public class CommonFilter extends Filter {
             Date to = DateUtils.nowUTCMinusSeconds(from, hours).toDate();
             rangeCriteria.add(mapper.dateRangeToRangeCriteria(to, from.toDate()));
         }
+        else {
+            rangeCriteria.add(date);
+        }
+
         return rangeCriteria;
+    }
+
+    private void setDefaultValues(final RangeCriteria date) {
+        if (date.getTo() == null) {
+            date.setTo(DateUtils.dateToString(nowUTC().toDate())); // FIXME use offset
+        }
+        if (date.getFrom() == null) {
+            date.setFrom(DateUtils.dateToString(new Date(Long.MIN_VALUE)));
+        }
     }
 
     @Override
