@@ -20,7 +20,7 @@ public interface CommonFilterMapper {
             @Mapping(source = "dateRange.startDate", target = "startDate"),
             @Mapping(source = "dateRange.endDate", target = "endDate")
     })
-    CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter commonFilter); //TODO unit test
+    CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter commonFilter);
 
     @Mappings({
             @Mapping(target = "dateRange", expression = "java(new DateRange(dto.getStartDate(), dto.getEndDate()))")

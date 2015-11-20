@@ -111,7 +111,7 @@ public class CommonFilterTest {
     }
 
     @Test
-    public void shouldBeEqualWhenMerging(){
+    public void shouldBeEqualWhenMerging() {
 
         CommonFilter filter;
 
@@ -137,4 +137,5 @@ public class CommonFilterTest {
         assertEquals(filter, incoming);
 
     }
+
 }
