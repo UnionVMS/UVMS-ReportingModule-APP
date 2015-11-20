@@ -53,7 +53,6 @@ public class ReportDAO extends AbstractDAO<Report> {
      *
      * @param entityId
      */
-    @Transactional
     public void softDelete(Long entityId, String username, String scopeName) throws ReportingServiceException {
         Report persistentInstance = this.findReportByReportId(entityId, username, scopeName);
         if (persistentInstance == null) {

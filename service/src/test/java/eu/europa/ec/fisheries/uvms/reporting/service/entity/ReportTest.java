@@ -22,7 +22,7 @@ public class ReportTest extends UnitilsJUnit4 {
         report.getMock().merge(dummy);
 
         report.assertInvoked().setId(null);
-        //report.assertInvoked().setDetails(null); we don't use this anymore ... we use ReportDetails.merge instead
+        report.assertInvoked().mergeDetails(null);
         report.assertInvoked().setIsDeleted(null);
         report.assertInvoked().setDeletedBy(null);
         report.assertInvoked().setVisibility(null);

@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
 import lombok.Builder;
 import lombok.Data;
@@ -127,7 +128,7 @@ public class Report implements Serializable {
 
     public void merge(Report incoming) {
         setId(incoming.getId());
-        this.details.merge(incoming.getDetails());
+        mergeDetails(incoming.getDetails());
         setIsDeleted(incoming.getIsDeleted());
         setDeletedOn(incoming.getDeletedOn());
         setDeletedBy(incoming.getDeletedBy());
@@ -139,4 +140,8 @@ public class Report implements Serializable {
         audit = new Audit(DateUtils.nowUTC().toDate());
     }
 
+
+    public void mergeDetails(ReportDetails reportDetails){
+        this.details.merge(reportDetails);
+    }
 }
