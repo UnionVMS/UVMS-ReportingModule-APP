@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DateRange;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import java.util.Date;
@@ -47,4 +48,6 @@ public interface CommonFilterMapper {
                     expression = "java(String.valueOf(Math.round(filter.getPositionSelector().getValue())))")
     })
     ListCriteria positionToListCriteria(CommonFilter filter);
+
+    void merge(CommonFilter incoming, @MappingTarget CommonFilter current);
 }

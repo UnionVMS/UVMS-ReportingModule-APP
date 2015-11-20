@@ -48,9 +48,7 @@ public class CommonFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        CommonFilter incoming = (CommonFilter) filter;
-        this.dateRange = incoming.dateRange;
-        this.positionSelector = incoming.positionSelector;
+       CommonFilterMapper.INSTANCE.merge(this, (CommonFilter) filter);
     }
 
     @Override

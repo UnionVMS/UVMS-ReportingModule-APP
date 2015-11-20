@@ -1,16 +1,16 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDetailsMapper;
 import lombok.Builder;
-import lombok.Data;
-
+import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 @Embeddable
-@Data
+@EqualsAndHashCode
 public class ReportDetails {
 
     public static final String CREATED_BY = "created_by";
@@ -40,6 +40,10 @@ public class ReportDetails {
     @NotNull
     private String createdBy;
 
+    ReportDetails() {
+
+    }
+
     @Builder
     public ReportDetails(String description, String name, Boolean withMap, String scopeName, String createdBy){
         this.name = name;
@@ -49,15 +53,47 @@ public class ReportDetails {
         this.description = description;
     }
 
-    ReportDetails() {
-
+    public void merge(ReportDetails incoming) {
+        ReportDetailsMapper.INSTANCE.merge(incoming, this);
     }
 
-    public void merge(ReportDetails incoming) {
-        if(incoming != null) {
-            setName(incoming.getName());
-            setDescription(incoming.getDescription());
-            setWithMap(incoming.getWithMap());
-        }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getWithMap() {
+        return withMap;
+    }
+
+    public void setWithMap(Boolean withMap) {
+        this.withMap = withMap;
+    }
+
+    public String getScopeName() {
+        return scopeName;
+    }
+
+    public void setScopeName(String scopeName) {
+        this.scopeName = scopeName;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }
