@@ -52,4 +52,12 @@ public class ReportDetails {
     ReportDetails() {
 
     }
+
+    public void merge(ReportDetails incoming) {
+        if(incoming != null) {
+            setName(incoming.getName());
+            setDescription(incoming.getDescription());
+            setWithMap(incoming.getWithMap());
+        }
+    }
 }

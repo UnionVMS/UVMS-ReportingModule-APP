@@ -127,7 +127,7 @@ public class Report implements Serializable {
 
     public void merge(Report incoming) {
         setId(incoming.getId());
-        setDetails(incoming.getDetails());
+        this.details.merge(incoming.getDetails());
         setIsDeleted(incoming.getIsDeleted());
         setDeletedOn(incoming.getDeletedOn());
         setDeletedBy(incoming.getDeletedBy());

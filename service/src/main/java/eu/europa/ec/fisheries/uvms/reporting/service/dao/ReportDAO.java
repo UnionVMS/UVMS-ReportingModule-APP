@@ -63,7 +63,6 @@ public class ReportDAO extends AbstractDAO<Report> {
         softDelete(persistentInstance, username);
     }
 
-    @Transactional
     public Report findReportByReportId(final Long id, String username, String scopeName) throws ReportingServiceException {
         Report result = null;
         List<Report> reports;

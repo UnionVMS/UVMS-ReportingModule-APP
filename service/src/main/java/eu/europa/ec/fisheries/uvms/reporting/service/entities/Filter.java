@@ -73,7 +73,7 @@ public abstract class Filter implements Serializable {
 
     public abstract <T> T accept(FilterVisitor<T> visitor);
 
-    @ManyToOne(cascade = javax.persistence.CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = REPORT_ID, nullable = false)
     private Report report;
 
