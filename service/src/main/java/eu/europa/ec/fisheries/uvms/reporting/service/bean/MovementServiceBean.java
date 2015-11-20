@@ -8,17 +8,15 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleRecei
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
-
-import javax.ejb.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.util.List;
 import java.util.Map;
 
-/**
- * //TODO create test
- */
-@LocalBean
 @Stateless
 public class MovementServiceBean {
 

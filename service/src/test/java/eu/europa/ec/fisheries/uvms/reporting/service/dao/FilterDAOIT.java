@@ -145,7 +145,7 @@ public class FilterDAOIT {
 
         CommonFilter commonFilter2 = CommonFilter.builder().build();
         commonFilter2.setReport(savedReport);
-        commonFilter2.setEndDate(new Date());
+        commonFilter2.getDateRange().setEndDate(new Date());
         commonFilter2.setPositionSelector(
                 PositionSelector.builder().selector(Selector.last).
                         position(Position.hours).value(24F).build()

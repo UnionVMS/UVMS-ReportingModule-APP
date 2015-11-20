@@ -1,108 +1,133 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entity;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.TestedObject;
-
+import org.junit.runner.RunWith;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.Iterator;
 
+import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class CommonFilterTest extends UnitilsJUnit4 {
+@RunWith(JUnitParamsRunner.class)
+public class CommonFilterTest {
 
-    @TestedObject
-    private CommonFilter filter;
+    @Test
+    @Parameters(method = "rangeCriteria")
+    public void shouldReturnRangeCriteria(CommonFilter filter, RangeCriteria rangeCriteria){
 
-    @Before
-    public void before(){
-        filter = new CommonFilter();
+        Iterator<RangeCriteria> iterator = filter.movementRangeCriteria().iterator();
+
+        if (iterator.hasNext()) {
+            assertEquals(rangeCriteria, iterator.next());
+
+        }
     }
 
     @Test
-    public void testMovementRangeCriteriaWithCommonFilterWithLastHours(){
+    @Parameters(method = "listCriteria")
+    public void shouldReturnListCriteria(CommonFilter filter, ListCriteria listCriteria){
 
-        final Calendar calendar = new GregorianCalendar(2013,1,28,13,24,56);
+        assertEquals(listCriteria, filter.movementListCriteria().iterator().next());
 
-        filter = new CommonFilter(){
-            protected DateTime nowUTC() {
-                return new DateTime(calendar.getTime());
-            }
+    }
 
-        };
+    protected Object[] listCriteria(){
 
-        filter.setPositionSelector(PositionSelector.builder()
+        CommonFilter filter = CommonFilter.builder()
+                .positionSelector(PositionSelector.builder()
                         .selector(Selector.last)
-                        .value(1F)
-                        .position(Position.hours)
-                        .build()
+                        .position(Position.positions).value(100.1F).build())
+                .build();
+
+        ListCriteria criteria = new ListCriteria();
+        criteria.setKey(SearchKey.NR_OF_LATEST_REPORTS);
+        criteria.setValue(String.valueOf(100));
+
+        return $(
+                $(filter, criteria)
         );
-
-        List<RangeCriteria> rangeCriteria = filter.movementRangeCriteria();
-
-        assertEquals(1, rangeCriteria.size());
-        assertEquals(DateUtils.stringToDate(rangeCriteria.get(0).getTo()), calendar.getTime());
-        calendar.add(Calendar.HOUR, -1);
-        assertEquals(DateUtils.stringToDate(rangeCriteria.get(0).getFrom()), calendar.getTime());
-        assertEquals(rangeCriteria.get(0).getKey(), RangeKeyType.DATE);
-
     }
 
-    @Test
-    public void testMovementRangeCriteriaWithCommonFilterWithAll(){
+    protected Object[] rangeCriteria(){
 
-        final Calendar calendar = new GregorianCalendar(2013,1,28,13,24,56);
-        Date startDate = calendar.getTime();
-        Date endDate = new Date();
+        final String from = "2013-02-28 12:24:56 +0100";
+        String fromMinus24Hours = "2013-02-27 12:24:56 +0100";
 
-        filter = new CommonFilter(){
+        CommonFilter filter1 = new CommonFilter(){
             protected DateTime nowUTC() {
-                return new DateTime(calendar.getTime());
+                return new DateTime(DateUtils.stringToDate(from));
             }
-
         };
+        filter1.setPositionSelector(PositionSelector.builder()
+                        .selector(Selector.last).value(24F)
+                        .position(Position.hours).build()
+        );
+        RangeCriteria criteria1 = new RangeCriteria();
+        criteria1.setKey(RangeKeyType.DATE);
+        criteria1.setFrom(fromMinus24Hours);
+        criteria1.setTo(from);
 
-        filter.setPositionSelector(PositionSelector.builder().selector(Selector.all).build());
-        filter.setEndDate(endDate);
-        filter.setStartDate(startDate);
+        String to = "2014-02-28 12:24:56 +0100";
+        CommonFilter filter2 = CommonFilter.builder()
+                .positionSelector(PositionSelector.builder()
+                        .selector(Selector.all).build())
+                .dateRange(new DateRange(DateUtils.stringToDate(from), DateUtils.stringToDate(to)))
+                .build();
 
-        List<RangeCriteria> rangeCriteria = filter.movementRangeCriteria();
+        RangeCriteria criteria2 = new RangeCriteria();
+        criteria2.setKey(RangeKeyType.DATE);
+        criteria2.setFrom(from);
+        criteria2.setTo(to);
 
-        assertEquals(1, rangeCriteria.size());
-        assertEquals(rangeCriteria.get(0).getFrom(), DateUtils.parseUTCDateToString(startDate));
-        assertEquals(rangeCriteria.get(0).getTo(), DateUtils.parseUTCDateToString(endDate));
-        assertEquals(rangeCriteria.get(0).getKey(), RangeKeyType.DATE);
 
+        CommonFilter filter3 = CommonFilter.builder()
+                .positionSelector(PositionSelector.builder()
+                        .selector(Selector.last).position(Position.positions).value(100F).build())
+                .build();
+        RangeCriteria empty = new RangeCriteria();
+        empty.setKey(RangeKeyType.DATE);
+
+        return $(
+                $(filter1, criteria1),
+                $(filter2, criteria2),
+                $(filter3, empty)
+        );
     }
 
     @Test
-    public void testMerge(){
+    public void shouldBeEqualWhenMerging(){
 
-        final Calendar calendar = new GregorianCalendar(2013,1,28,13,24,56);
+        CommonFilter filter;
+
+        final Calendar calendar = new GregorianCalendar(2013, 1, 28, 13, 24, 56);
         Date startDate = calendar.getTime();
         calendar.add(Calendar.DAY_OF_MONTH, -10);
         Date endDate = calendar.getTime();
 
         CommonFilter incoming = CommonFilter.builder()
                 .positionSelector(PositionSelector.builder().selector(Selector.all).build())
-                .endDate(endDate)
-                .startDate(startDate)
+                .dateRange(new DateRange(startDate, endDate))
                 .build();
 
         filter = CommonFilter.builder()
-                .positionSelector(PositionSelector.builder().selector(Selector.last).value(1F).position(Position.hours).build())
+                .positionSelector(PositionSelector.builder()
+                        .selector(Selector.last).value(1F).position(Position.hours).build())
                 .build();
 
         assertNotEquals(filter, incoming);

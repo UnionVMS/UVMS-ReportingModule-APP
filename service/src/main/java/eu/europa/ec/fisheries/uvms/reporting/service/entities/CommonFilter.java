@@ -1,40 +1,32 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.collect.Lists;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import org.joda.time.DateTime;
-
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @DiscriminatorValue("DATETIME")
-@EqualsAndHashCode(callSuper = true, of = {"startDate", "endDate"})
+@EqualsAndHashCode(callSuper = true)
 @CommonFilterIsValid
 public class CommonFilter extends Filter {
 
     public static final String END_DATE = "end_date";
     public static final String START_DATE = "start_date";
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = START_DATE)
-    private Date startDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = END_DATE)
-    private Date endDate;
+    @Embedded
+    private DateRange dateRange;
 
     @Embedded
     private PositionSelector positionSelector;
@@ -44,11 +36,10 @@ public class CommonFilter extends Filter {
     }
 
     @Builder
-    public CommonFilter(final Long id, final Date startDate, final Date endDate, final PositionSelector positionSelector) {
+    public CommonFilter(Long id, DateRange dateRange, PositionSelector positionSelector) {
         super(FilterType.common);
-        setStartDate(startDate);
-        setEndDate(endDate);
-        setPositionSelector(positionSelector);
+        this.dateRange = dateRange;
+        this.positionSelector = positionSelector;
         setId(id);
         validate();
     }
@@ -61,62 +52,40 @@ public class CommonFilter extends Filter {
     @Override
     public void merge(Filter filter) {
         CommonFilter incoming = (CommonFilter) filter;
-        setEndDate(incoming.getEndDate());
-        setStartDate(incoming.getStartDate());
+        this.dateRange = incoming.dateRange;
+        this.positionSelector = incoming.positionSelector;
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria(){
+    public List<RangeCriteria> movementRangeCriteria() {
+        CommonFilterMapper mapper = CommonFilterMapper.INSTANCE;
+        List<RangeCriteria> rangeCriteria = Lists.newArrayList();
+        RangeCriteria date = mapper.dateRangeToRangeCriteria(this);
 
-        RangeCriteria criteria = new RangeCriteria();
-        Selector selector = positionSelector.getSelector();
-
-        switch (selector){
-
-            case all:
-                setDateCriteria(criteria, startDate, endDate);
-                break;
-
-            case last:
-                handlePosition(criteria);
-                break;
-
-            default:
-                break;
-
+        if (date != null && date.getFrom() != null && date.getTo() != null) {
+            rangeCriteria.add(date);
         }
-        return Lists.newArrayList(criteria);
-    }
 
-    private void handlePosition(RangeCriteria criteria) {
-
-        Position position = positionSelector.getPosition();
-
-        switch (position){
-
-            case hours:
-                handleHours(criteria);
-                break;
-
-            case positions:
-                break;
-
-            default:
-                break;
+        if (Position.hours.equals(positionSelector.getPosition())) {
+            Float hours = positionSelector.getValue();
+            DateTime from = nowUTC();
+            Date to = DateUtils.nowUTCMinusSeconds(from, hours).toDate();
+            rangeCriteria.add(CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(to, from.toDate()));
         }
+        return rangeCriteria;
     }
 
-    private void handleHours(RangeCriteria criteria) {
-        Float hours = getPositionSelector().getValue();
-        DateTime currentDate = nowUTC();
-        Date toDate = DateUtils.nowUTCMinusSeconds(currentDate, hours).toDate();
-        setDateCriteria(criteria, toDate, currentDate.toDate());
-    }
-
-    private void setDateCriteria(final RangeCriteria criteria, final Date to, final Date from) {
-        criteria.setKey(RangeKeyType.DATE);
-        criteria.setFrom(DateUtils.dateToString(to));
-        criteria.setTo(DateUtils.dateToString(from));
+    @Override
+    public List<ListCriteria> movementListCriteria() {
+        ListCriteria criteria = new ListCriteria();
+        List<ListCriteria> listCriteria = Lists.newArrayList();
+        if (Position.positions.equals(positionSelector.getPosition())) {
+            criteria = CommonFilterMapper.INSTANCE.positionToListCriteria(this);
+        }
+        if (criteria.getKey() != null) {
+            listCriteria.add(criteria);
+        }
+        return listCriteria;
     }
 
     // UT
@@ -129,32 +98,12 @@ public class CommonFilter extends Filter {
         return getId();
     }
 
-    public Date getStartDate() {
-        Date startDate = null;
-        if (this.startDate != null){
-            startDate = new Date(this.startDate.getTime());
-        }
-        return startDate;
+    public DateRange getDateRange() {
+        return dateRange;
     }
 
-    public void setStartDate(Date startDate) {
-        if (startDate != null){
-            this.startDate = new Date(startDate.getTime());
-        }
-    }
-
-    public Date getEndDate() {
-        Date endDate = null;
-        if (this.endDate != null){
-            endDate = new Date(this.endDate.getTime());
-        }
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        if (endDate != null){
-            this.endDate = new Date(endDate.getTime());
-        }
+    public void setDateRange(DateRange dateRange) {
+        this.dateRange = dateRange;
     }
 
     public PositionSelector getPositionSelector() {

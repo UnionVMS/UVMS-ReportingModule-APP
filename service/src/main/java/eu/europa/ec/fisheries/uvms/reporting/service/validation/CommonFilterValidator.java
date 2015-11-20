@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.validation;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -26,8 +25,9 @@ public class CommonFilterValidator implements ConstraintValidator<CommonFilterIs
         }
 
         else if (positionSelector != null && Selector.last.equals(positionSelector.getSelector())){
-            valid = commonFilter.getEndDate() == null &&
-                    commonFilter.getStartDate() == null;
+            valid = commonFilter.getDateRange() == null ||
+                    commonFilter.getDateRange().getEndDate() == null &&
+                    commonFilter.getDateRange().getStartDate() == null;
         }
 
         return valid;

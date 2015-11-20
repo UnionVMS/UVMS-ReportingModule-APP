@@ -6,9 +6,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-/**
- * Created by georgige on 10/13/2015.
- */
 @Mapper(uses = ObjectFactory.class)
 public interface AreaFilterMapper {
 
