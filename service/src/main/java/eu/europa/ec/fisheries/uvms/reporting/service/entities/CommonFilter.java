@@ -22,9 +22,6 @@ import java.util.List;
 @CommonFilterIsValid
 public class CommonFilter extends Filter {
 
-    public static final String END_DATE = "end_date";
-    public static final String START_DATE = "start_date";
-
     @Embedded
     private DateRange dateRange;
 
@@ -70,7 +67,7 @@ public class CommonFilter extends Filter {
             Float hours = positionSelector.getValue();
             DateTime from = nowUTC();
             Date to = DateUtils.nowUTCMinusSeconds(from, hours).toDate();
-            rangeCriteria.add(CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(to, from.toDate()));
+            rangeCriteria.add(mapper.dateRangeToRangeCriteria(to, from.toDate()));
         }
         return rangeCriteria;
     }
