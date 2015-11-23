@@ -32,6 +32,7 @@ public class ReportDTO implements Serializable {
     public static final String SHAREABLE = "shareable";
     public static final String DELETABLE = "deletable";
     public static final String EDITABLE = "editable";
+    public static final String MAP_CONFIGURATION = "mapConfiguration";
 
     private Long id;
     private String name;
@@ -55,6 +56,8 @@ public class ReportDTO implements Serializable {
 
     private ExecutionLogDTO executionLog;
 
+    private MapConfigurationDTO mapConfiguration;
+
     public ReportDTO() {
     }
 
@@ -70,7 +73,8 @@ public class ReportDTO implements Serializable {
                      Date createdOn,
                      Date deletedOn,
                      String deletedBy,
-                     List<FilterDTO> filters) {
+                     List<FilterDTO> filters,
+                     MapConfigurationDTO mapConfiguration) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -82,10 +86,11 @@ public class ReportDTO implements Serializable {
         this.deletedOn = deletedOn;
         this.deletedBy = deletedBy;
         this.filters = filters;
-        if (audit == null) {
-            audit = new AuditDTO();
+        if (this.audit == null) {
+            this.audit = new AuditDTO();
         }
-        audit.setCreatedOn(createdOn);
+        this.audit.setCreatedOn(createdOn);
+        this.mapConfiguration = mapConfiguration;
     }
 
     public Long getId() {
@@ -220,5 +225,13 @@ public class ReportDTO implements Serializable {
 
     public void setExecutionLog(ExecutionLogDTO executionLog) {
         this.executionLog = executionLog;
+    }
+
+    public MapConfigurationDTO getMapConfiguration() {
+        return mapConfiguration;
+    }
+
+    public void setMapConfiguration(MapConfigurationDTO mapConfiguration) {
+        this.mapConfiguration = mapConfiguration;
     }
 }

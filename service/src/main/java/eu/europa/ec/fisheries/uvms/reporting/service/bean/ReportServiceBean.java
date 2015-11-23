@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingJMSConsumerBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -29,11 +31,15 @@ public class ReportServiceBean {
     @EJB
     private ReportRepository repository;
 
+    @EJB
+    private SpatialService spatialService;
+
     @IAuditInterceptor(auditActionType=AuditActionEnum.CREATE)
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
     	Report reportEntity = mapper.reportDTOToReport(report);
 		reportEntity = repository.createEntity(reportEntity);
+        spatialService.saveMapConfiguration(report.getMapConfiguration());
     	return mapper.reportToReportDTO(reportEntity);
     }
 	

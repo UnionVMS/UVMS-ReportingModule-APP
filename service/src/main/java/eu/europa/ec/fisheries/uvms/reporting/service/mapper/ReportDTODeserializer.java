@@ -17,7 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 
@@ -34,7 +36,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
         JsonNode reportIdNode = node.get(ReportDTO.ID);
         Long reportId = null;
-        if (reportIdNode != null){
+        if (reportIdNode != null) {
             reportId = reportIdNode.longValue();
         }
 
@@ -48,23 +50,44 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
 
         return ReportDTO.ReportDTOBuilder()
-                .description(node.get(ReportDTO.DESC) != null? node.get(ReportDTO.DESC).textValue() : null)
+                .description(node.get(ReportDTO.DESC) != null ? node.get(ReportDTO.DESC).textValue() : null)
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
                 .withMap(node.get(ReportDTO.WITH_MAP).booleanValue())
-                .createdBy(node.get(ReportDTO.CREATED_BY)!= null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
+                .createdBy(node.get(ReportDTO.CREATED_BY) != null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
                 .filters(filterDTOList)
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
+                .mapConfiguration(createMapConfigurationDTO(node.get(ReportDTO.MAP_CONFIGURATION)))
                 .build();
     }
 
+    private MapConfigurationDTO createMapConfigurationDTO(JsonNode mapConfigJsonNode) {
+        if (mapConfigJsonNode != null) {
+            Integer mapProjection = (mapConfigJsonNode.get("mapProjection") != null) ? mapConfigJsonNode.get("mapProjection").intValue() : null;
+            Integer displayProjection = (mapConfigJsonNode.get("displayProjection") != null) ? mapConfigJsonNode.get("displayProjection").intValue() : null;
+            String coordinatesFormat = (mapConfigJsonNode.get("coordinatesFormat") != null) ? mapConfigJsonNode.get("coordinatesFormat").textValue() : null;
+            String scaleBarUnits = (mapConfigJsonNode.get("scaleBarUnits") != null) ? mapConfigJsonNode.get("scaleBarUnits").textValue() : null;
+
+            return MapConfigurationDTO.MapConfigurationDTOBuilder()
+                    .mapProjection(mapProjection)
+                    .displayProjection(displayProjection)
+                    .coordinatesFormat(coordinatesFormat)
+                    .scaleBarUnits(scaleBarUnits)
+                    .build();
+        }
+        else {
+            return null;
+
+        }
+    }
+
     private void addCommon(JsonNode common, List<FilterDTO> filterDTOList, Long reportId) throws InvalidParameterException {
-        if (common != null){
+        if (common != null) {
 
             String selectorNode = common.get("positionSelector").asText();
             Selector positionSelector = Selector.valueOf(selectorNode);
 
-            switch (positionSelector){
+            switch (positionSelector) {
                 case all:
                     handleAll(common, filterDTOList, reportId, positionSelector);
                     break;
@@ -82,10 +105,10 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         String startDateLast = null;
         String endDateLast = null;
 
-        if (common.get("startDate") != null){
+        if (common.get("startDate") != null) {
             startDateLast = common.get("startDate").asText();
         }
-        if (common.get("endDate") != null){
+        if (common.get("endDate") != null) {
             endDateLast = common.get("endDate").asText();
         }
         Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
@@ -100,7 +123,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
         JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
 
-        if(selectorNode != null){
+        if (selectorNode != null) {
             dto.setPositionSelector(PositionSelectorDTO.PositionSelectorDTOBuilder()
                     .value(value)
                     .position(Position.valueOf(selectorType.textValue()))
@@ -113,10 +136,10 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         JsonNode startDateNode = common.get("startDate");
         JsonNode endDateNode = common.get("endDate");
 
-        if (startDateNode == null){
+        if (startDateNode == null) {
             throw new InvalidParameterException("StartDate is mandatory when selecting ALL");
         }
-        if (endDateNode == null){
+        if (endDateNode == null) {
             throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
         }
 
@@ -155,12 +178,12 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private void addVessels(JsonNode vessel, List<FilterDTO> filterDTOList, Long reportId) {
-        if (vessel != null){
+        if (vessel != null) {
             Iterator<JsonNode> elements = vessel.elements();
-            while(elements.hasNext()) {
+            while (elements.hasNext()) {
                 JsonNode next = elements.next();
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
-                switch(type){
+                switch (type) {
                     case vessel:
                         addVesselFilterDTO(filterDTOList, reportId, next);
                         break;
@@ -230,11 +253,11 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
                 .build();
 
-        if (next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null){
+        if (next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null) {
             dto.setMovementActivity(MovementActivityTypeType
                     .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()));
         }
-        if (next.get(VmsPositionFilterDTO.MOV_TYPE) != null){
+        if (next.get(VmsPositionFilterDTO.MOV_TYPE) != null) {
             dto.setMovementType(MovementTypeType
                     .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE).textValue()));
         }
@@ -251,7 +274,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .minDuration(next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION).floatValue() : null)
                 .build();
 
-        if (next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null){
+        if (next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null) {
             segmentFilterDTO.setCategory(SegmentCategoryType
                     .valueOf(next.get(VmsSegmentFilterDTO.SEG_CATEGORY).textValue()));
         }
@@ -262,13 +285,13 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     private void addTrackFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
         filterDTOList.add(
                 TrackFilterDTO.builder()
-                    .reportId(reportId)
-                    .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                    .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)
-                    .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
-                    .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
-                    .minTime(next.get(TrackFilterDTO.TRK_MIN_TIME) != null ? next.get(TrackFilterDTO.TRK_MIN_TIME).floatValue() : null)
-                    .build()
+                        .reportId(reportId)
+                        .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
+                        .minDuration(next.get(TrackFilterDTO.TRK_MIN_DURATION) != null ? next.get(TrackFilterDTO.TRK_MIN_DURATION).floatValue() : null)
+                        .maxTime(next.get(TrackFilterDTO.TRK_MAX_TIME) != null ? next.get(TrackFilterDTO.TRK_MAX_TIME).floatValue() : null)
+                        .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
+                        .minTime(next.get(TrackFilterDTO.TRK_MIN_TIME) != null ? next.get(TrackFilterDTO.TRK_MIN_TIME).floatValue() : null)
+                        .build()
         );
     }
 }

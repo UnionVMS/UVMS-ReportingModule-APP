@@ -1,7 +1,16 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import java.util.Collections;
-import java.util.List;
+import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingJMSConsumerBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
+import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
+import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
+import org.apache.commons.lang3.NotImplementedException;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -9,59 +18,71 @@ import javax.ejb.Stateless;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
-
-import org.apache.commons.lang3.NotImplementedException;
-
-import eu.europa.ec.fisheries.uvms.message.MessageException;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingJMSConsumerBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
-import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
+import java.util.Collections;
+import java.util.List;
 
 @Stateless
 @Local(SpatialService.class)
 public class SpatialServiceBean implements SpatialService {
-	
-	@EJB
-	private SpatialProducerBean spatialProducerBean;
-	
-	@EJB
-	private ReportingJMSConsumerBean reportingJMSConsumerBean;
-	
-	@Override
-	public String getFilterArea(List<AreaIdentifierType> userAreas) throws ReportingServiceException {
-		try {
-			String correlationId = spatialProducerBean.sendModuleMessage(getRequest(userAreas), reportingJMSConsumerBean.getDestination());
-			Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
-			return getResponse(message, correlationId);
-		} catch (SpatialModelMapperException | MessageException | JMSException e) {
-			throw new ReportingServiceException(e);
-		}
-	}
 
-	@Override
-	public String getFilterArea(List<AreaIdentifierType> scopeAreas, List<AreaIdentifierType> userAreas) throws ReportingServiceException {
-		throw new NotImplementedException("Not implemented");
-	}
-	
-	private String getRequest(List<AreaIdentifierType> userAreas) throws SpatialModelMarshallException {
-		return SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(Collections.<AreaIdentifierType>emptyList(), userAreas);
-	}
-	
-	private String getResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
-		FilterAreasSpatialRS filterAreaSpatialResponse =  SpatialModuleResponseMapper.mapToFilterAreasSpatialRSFromResponse(getText(message), correlationId);
-		return filterAreaSpatialResponse.getGeometry();
-	}
-	
-	private TextMessage getText(Message message) throws JMSException {
-		if(message instanceof TextMessage) {
-			return (TextMessage)message;
-		}
-		return null;
-	}
+    @EJB
+    private SpatialProducerBean spatialProducerBean;
+
+    @EJB
+    private ReportingJMSConsumerBean reportingJMSConsumerBean;
+
+    @Override
+    public String getFilterArea(List<AreaIdentifierType> userAreas) throws ReportingServiceException {
+        try {
+            String correlationId = spatialProducerBean.sendModuleMessage(getFilterAreaRequest(userAreas), reportingJMSConsumerBean.getDestination());
+            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            return getFilterAreaResponse(message, correlationId);
+        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+            throw new ReportingServiceException(e);
+        }
+    }
+
+    @Override
+    public String getFilterArea(List<AreaIdentifierType> scopeAreas, List<AreaIdentifierType> userAreas) throws ReportingServiceException {
+        throw new NotImplementedException("Not implemented");
+    }
+
+    @Override
+    public SpatialSaveMapConfigurationRS saveMapConfiguration(MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+        try {
+            Integer mapProjection = mapConfiguration.getMapProjection();
+            Integer displayProjection = mapConfiguration.getDisplayProjection();
+            CoordinatesFormat coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat());
+            ScaleBarUnits scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits());
+            String correlationId = spatialProducerBean.sendModuleMessage(getSaveMapConfigurationRequest(mapProjection, displayProjection, coordinatesFormat, scaleBarUnits), reportingJMSConsumerBean.getDestination());
+            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            return getSaveMapConfigurationResponse(message, correlationId);
+        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+            throw new ReportingServiceException(e);
+        }
+    }
+
+    private String getSaveMapConfigurationRequest(Integer mapProjection, Integer displayProjection, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(mapProjection, displayProjection, coordinatesFormat, scaleBarUnits);
+    }
+
+    private SpatialSaveMapConfigurationRS getSaveMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
+        return SpatialModuleResponseMapper.mapToSpatialSaveMapConfigurationRS(getText(message), correlationId);
+    }
+
+    private String getFilterAreaRequest(List<AreaIdentifierType> userAreas) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(Collections.<AreaIdentifierType>emptyList(), userAreas);
+    }
+
+    private String getFilterAreaResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
+        FilterAreasSpatialRS filterAreaSpatialResponse = SpatialModuleResponseMapper.mapToFilterAreasSpatialRSFromResponse(getText(message), correlationId);
+        return filterAreaSpatialResponse.getGeometry();
+    }
+
+    private TextMessage getText(Message message) throws JMSException {
+        if (message instanceof TextMessage) {
+            return (TextMessage) message;
+        }
+        return null;
+    }
 }
