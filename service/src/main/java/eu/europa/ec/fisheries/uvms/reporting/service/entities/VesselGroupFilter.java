@@ -45,10 +45,7 @@ public class VesselGroupFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        VesselGroupFilter incoming = (VesselGroupFilter) filter;
-        setUserName(incoming.getUserName());
-        setGuid(incoming.getGuid());
-        setName(incoming.getName());
+        VesselGroupFilterMapper.INSTANCE.merge((VesselGroupFilter) filter, this);
     }
 
     @Override
