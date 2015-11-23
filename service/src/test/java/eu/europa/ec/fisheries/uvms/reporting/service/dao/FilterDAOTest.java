@@ -4,7 +4,10 @@ import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,8 +41,6 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
 
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
-        dbSetup.launch();
-
         dbSetupTracker.launchIfNecessary(dbSetup);
     }
 
