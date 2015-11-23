@@ -10,6 +10,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import org.apache.commons.collections4.ListUtils;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
@@ -67,12 +68,7 @@ public class VmsSegmentFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        VmsSegmentFilter incoming = (VmsSegmentFilter) filter;
-        setMaximumSpeed(incoming.getMaximumSpeed());
-        setMinimumSpeed(incoming.getMinimumSpeed());
-        setMinDuration(incoming.getMinDuration());
-        setMaxDuration(incoming.getMaxDuration());
-        setCategory(incoming.getCategory());
+        VmsSegmentFilterMapper.INSTANCE.merge((VmsSegmentFilter) filter, this);
     }
     
     @Override
