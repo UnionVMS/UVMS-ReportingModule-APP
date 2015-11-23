@@ -38,8 +38,6 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
 
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
-        dbSetup.launch();
-
         dbSetupTracker.launchIfNecessary(dbSetup);
     }
 
