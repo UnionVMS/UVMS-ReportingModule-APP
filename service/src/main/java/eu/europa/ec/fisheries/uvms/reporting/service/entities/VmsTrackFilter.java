@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
@@ -66,12 +67,7 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        VmsTrackFilter incoming = (VmsTrackFilter) filter;
-        setDurationRange(incoming.getDurationRange());
-        setTimeRange(incoming.getTimeRange());
-        setDistanceRange(incoming.getDistanceRange());
-        setMaxAvgSpeed(incoming.getMaxAvgSpeed());
-        setMinAvgSpeed(incoming.getMinAvgSpeed());
+        TrackFilterMapper.INSTANCE.merge((VmsTrackFilter) filter, this);
     }
 
     @Override

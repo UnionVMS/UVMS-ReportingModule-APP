@@ -7,13 +7,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
-public abstract class TrackFilterMapper {
+@Mapper(imports = {DurationRange.class, DistanceRange.class, TimeRange.class})
+public interface TrackFilterMapper {
 
-    static final public TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
+   TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
 
     @Mappings({
             @Mapping(source = "durationRange.minDuration", target = "minDuration"),
@@ -23,17 +24,19 @@ public abstract class TrackFilterMapper {
             @Mapping(source = "timeRange.minTime", target = "minTime"),
             @Mapping(source = "timeRange.maxTime", target = "maxTime")
     })
-    abstract public TrackFilterDTO trackFilterToTrackFilterDTO(VmsTrackFilter vmsTrackFilter);
+    TrackFilterDTO trackFilterToTrackFilterDTO(VmsTrackFilter vmsTrackFilter);
 
-    public VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO dto) {
-        return VmsTrackFilter.builder()
-                .id(dto.getId())
-                .reportId(dto.getReportId())
-                .timeRange(new TimeRange(dto.getMinTime(), dto.getMaxTime()))
-                .durationRange(new DurationRange(dto.getMinDuration(), dto.getMaxDuration()))
-                .distanceRange(new DistanceRange(dto.getMinDistance(), dto.getMaxDistance()))
-                .minAvgSpeed(dto.getMinAvgSpeed())
-                .maxAvgSpeed(dto.getMaxAvgSpeed())
-                .build();
-    }
+    @Mappings({
+            @Mapping(target = "durationRange", expression = "java(new DurationRange(dto.getMinDuration(), dto.getMaxDuration()))"),
+            @Mapping(target = "distanceRange", expression = "java(new DistanceRange(dto.getMinDistance(), dto.getMaxDistance()))"),
+            @Mapping(target = "timeRange", expression = "java(new TimeRange(dto.getMinTime(), dto.getMaxTime()))")
+    })
+    VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO dto);
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "report", ignore = true),
+            @Mapping(target = "reportId", ignore = true)
+    })
+    void merge(VmsTrackFilter incoming, @MappingTarget VmsTrackFilter current);
 }

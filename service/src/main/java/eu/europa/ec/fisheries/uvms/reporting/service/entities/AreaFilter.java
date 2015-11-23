@@ -1,10 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -55,9 +55,7 @@ public class AreaFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        AreaFilter incoming = (AreaFilter) filter;
-        setAreaId(incoming.getAreaId());
-        setAreaType(incoming.getAreaType());
+        AreaFilterMapper.INSTANCE.merge((AreaFilter) filter, this);
     }
 
     @Override
@@ -67,10 +65,7 @@ public class AreaFilter extends Filter {
     
     @Override
     public AreaIdentifierType getAreaIdentifierType() {
-        AreaIdentifierType areaIndentifierType = new AreaIdentifierType();
-    	areaIndentifierType.setAreaType(getAreaType());
-    	areaIndentifierType.setId(Long.toString(getAreaId()));
-    	return areaIndentifierType;
+        return AreaFilterMapper.INSTANCE.areaIdentifierTypeToAreaFilter(this);
     }
 
 }

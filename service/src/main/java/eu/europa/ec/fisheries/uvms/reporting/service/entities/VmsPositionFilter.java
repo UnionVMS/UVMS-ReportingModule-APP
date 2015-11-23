@@ -10,11 +10,11 @@ import javax.persistence.Entity;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor; // NO SONAR
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -22,9 +22,6 @@ import lombok.EqualsAndHashCode;
 @DiscriminatorValue("VMSPOS")
 @EqualsAndHashCode(callSuper = true)
 public class VmsPositionFilter extends Filter {
-
-    private static final float MIN_SPEED = 0F;
-    private static final float MAX_SPEED = 1000F;
 
 	@Column(name = "MIN_SPEED")
     private Float minimumSpeed;
@@ -63,11 +60,7 @@ public class VmsPositionFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        VmsPositionFilter incoming = (VmsPositionFilter) filter;
-        setMaximumSpeed(incoming.getMaximumSpeed());
-        setMinimumSpeed(incoming.getMinimumSpeed());
-        setMovementActivity(incoming.getMovementActivity());
-        setMovementType(incoming.getMovementType());
+        VmsPositionFilterMapper.INSTANCE.merge((VmsPositionFilter) filter, this);
     }
     
     @Override
@@ -90,14 +83,7 @@ public class VmsPositionFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
-    	if (getMinimumSpeed() == null && getMaximumSpeed() == null) {
-    		return Arrays.asList();
-    	}
-    	RangeCriteria movementSpeed = new RangeCriteria();
-    	movementSpeed.setKey(RangeKeyType.MOVEMENT_SPEED);
-    	movementSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : MIN_SPEED));
-    	movementSpeed.setTo(Float.toString(getMaximumSpeed() != null ? getMaximumSpeed() : MAX_SPEED));
-    	return Arrays.asList(movementSpeed);
+        return Arrays.asList(VmsPositionFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
 
     @Override
