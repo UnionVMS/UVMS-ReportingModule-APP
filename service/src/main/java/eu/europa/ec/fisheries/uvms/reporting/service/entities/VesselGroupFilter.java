@@ -1,15 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -54,14 +53,7 @@ public class VesselGroupFilter extends Filter {
 
     @Override
     public List<VesselGroup> vesselGroupCriteria(){
-        VesselGroup vesselGroup = new VesselGroup();
-        if (StringUtils.isNotBlank(getGuid())) {
-            vesselGroup.setGuid(getGuid());
-            vesselGroup.setName(getName());
-            vesselGroup.setUser(getUserName());
-            vesselGroup.setDynamic(true);
-        }
-        return Lists.newArrayList(vesselGroup);
+        return Arrays.asList(VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroup(this));
     }
 
     @Override
