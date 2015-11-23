@@ -2,13 +2,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
-import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -44,9 +42,7 @@ public class VesselFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        VesselFilter incoming = (VesselFilter) filter;
-        setGuid(incoming.getGuid());
-        setName(incoming.getName());
+        VesselFilterMapper.INSTANCE.merge((VesselFilter) filter, this);
     }
 
     @Override
@@ -56,18 +52,12 @@ public class VesselFilter extends Filter {
 
     @Override
     public List<VesselListCriteriaPair> vesselCriteria() {
-        VesselListCriteriaPair criteriaPair = new VesselListCriteriaPair();
-        criteriaPair.setKey(ConfigSearchField.GUID);
-        criteriaPair.setValue(guid);
-        return Lists.newArrayList(criteriaPair);
+        return Lists.newArrayList(VesselFilterMapper.INSTANCE.vesselFilterToVesselListCriteriaPair(this));
     }
 
     @Override
     public List<ListCriteria> movementListCriteria() {
-        ListCriteria listCriteria = new ListCriteria();
-        listCriteria.setKey(SearchKey.CONNECT_ID);
-        listCriteria.setValue(getGuid());
-        return Lists.newArrayList(listCriteria);
+        return Lists.newArrayList(VesselFilterMapper.INSTANCE.vesselFilterToListCriteria(this));
     }
 
     public String getGuid() {

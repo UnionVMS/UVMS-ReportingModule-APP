@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -29,5 +30,12 @@ public interface VesselFilterMapper {
             @Mapping(constant = "CONNECT_ID", target = "key"),
     })
     ListCriteria vesselFilterToListCriteria(VesselFilter vesselFilter);
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "report", ignore = true),
+            @Mapping(target = "reportId", ignore = true)
+    })
+    void merge(VesselFilter incoming, @MappingTarget VesselFilter current);
 
 }
