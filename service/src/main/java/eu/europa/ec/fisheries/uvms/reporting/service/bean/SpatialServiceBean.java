@@ -48,8 +48,10 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public SpatialSaveMapConfigurationRS saveMapConfiguration(MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+    public SpatialSaveMapConfigurationRS saveMapConfiguration(Long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         try {
+            validate(mapConfiguration);
+
             Integer mapProjection = mapConfiguration.getMapProjection();
             Integer displayProjection = mapConfiguration.getDisplayProjection();
             CoordinatesFormat coordinatesFormat = null;
@@ -60,7 +62,7 @@ public class SpatialServiceBean implements SpatialService {
             if (mapConfiguration.getScaleBarUnits() != null) {
                 scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits());
             }
-            String correlationId = spatialProducerBean.sendModuleMessage(getSaveMapConfigurationRequest(mapProjection, displayProjection, coordinatesFormat, scaleBarUnits), reportingJMSConsumerBean.getDestination());
+            String correlationId = spatialProducerBean.sendModuleMessage(getSaveMapConfigurationRequest(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits), reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             return getSaveMapConfigurationResponse(message, correlationId);
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
@@ -68,8 +70,14 @@ public class SpatialServiceBean implements SpatialService {
         }
     }
 
-    private String getSaveMapConfigurationRequest(Integer mapProjection, Integer displayProjection, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(null, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits); // FIXME
+    private void validate(MapConfigurationDTO mapConfiguration) {
+        if (mapConfiguration.getCoordinatesFormat() == null && mapConfiguration.getDisplayProjection() == null && mapConfiguration.getMapProjection() == null && mapConfiguration.getScaleBarUnits() == null) {
+            throw new IllegalArgumentException("At least one map configuration attribute should be specified");
+        }
+    }
+
+    private String getSaveMapConfigurationRequest(Long reportId, Integer mapProjection, Integer displayProjection, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits);
     }
 
     private SpatialSaveMapConfigurationRS getSaveMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {

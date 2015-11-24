@@ -39,11 +39,18 @@ public class ReportServiceBean {
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
     	Report reportEntity = mapper.reportDTOToReport(report);
 		reportEntity = repository.createEntity(reportEntity);
-        spatialService.saveMapConfiguration(report.getMapConfiguration());
-    	return mapper.reportToReportDTO(reportEntity);
+        saveMapConfiguration(reportEntity.getId(), report);
+        return mapper.reportToReportDTO(reportEntity);
     }
-	
-	public ReportDTO findById(long id, String username, String scopeName) throws ReportingServiceException {
+
+    private void saveMapConfiguration(Long reportId, ReportDTO report) throws ReportingServiceException {
+        // TODO validate response correctness?
+        if (report.getMapConfiguration() != null) {
+            spatialService.saveMapConfiguration(reportId, report.getMapConfiguration());
+        }
+    }
+
+    public ReportDTO findById(long id, String username, String scopeName) throws ReportingServiceException {
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
 		return mapper.reportToReportDTO(repository.findReportByReportId(id, username, scopeName));
 	}
