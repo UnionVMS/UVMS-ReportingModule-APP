@@ -69,7 +69,7 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     private String getSaveMapConfigurationRequest(Integer mapProjection, Integer displayProjection, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(mapProjection, displayProjection, coordinatesFormat, scaleBarUnits);
+        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(null, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits); // FIXME
     }
 
     private SpatialSaveMapConfigurationRS getSaveMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
