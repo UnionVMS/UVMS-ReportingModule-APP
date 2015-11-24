@@ -56,11 +56,11 @@ public class SpatialServiceBean implements SpatialService {
             Integer displayProjection = mapConfiguration.getDisplayProjection();
             CoordinatesFormat coordinatesFormat = null;
             if (mapConfiguration.getCoordinatesFormat() != null) {
-                coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat());
+                coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat().toUpperCase());
             }
             ScaleBarUnits scaleBarUnits = null;
             if (mapConfiguration.getScaleBarUnits() != null) {
-                scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits());
+                scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits().toUpperCase());
             }
             String correlationId = spatialProducerBean.sendModuleMessage(getSaveMapConfigurationRequest(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits), reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
