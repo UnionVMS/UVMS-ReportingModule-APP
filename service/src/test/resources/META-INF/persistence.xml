@@ -12,7 +12,7 @@
             <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
             <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
             <property name="javax.persistence.schema-generation.scripts.create-target" value="target/jpa/sql/create-schema.sql"/>
-            <property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS reporting;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=2"/>
+            <property name="hibernate.connection.url" value="jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS reporting;DATABASE_TO_UPPER=false;TRACE_LEVEL_SYSTEM_OUT=2;MVCC=true"/>
             <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
