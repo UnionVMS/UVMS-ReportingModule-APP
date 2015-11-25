@@ -52,8 +52,8 @@ public class SpatialServiceBean implements SpatialService {
         try {
             validate(mapConfiguration);
 
-            Long mapProjection = mapConfiguration.getMapProjection();
-            Long displayProjection = mapConfiguration.getDisplayProjection();
+            Long mapProjectionId = mapConfiguration.getMapProjectionId();
+            Long displayProjectionId = mapConfiguration.getDisplayProjectionId();
             CoordinatesFormat coordinatesFormat = null;
             if (mapConfiguration.getCoordinatesFormat() != null) {
                 coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat().toUpperCase());
@@ -62,7 +62,7 @@ public class SpatialServiceBean implements SpatialService {
             if (mapConfiguration.getScaleBarUnits() != null) {
                 scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits().toUpperCase());
             }
-            String request = getSaveMapConfigurationRequest(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits);
+            String request = getSaveMapConfigurationRequest(reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             return getSaveMapConfigurationResponse(message, correlationId);
@@ -72,13 +72,13 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     private void validate(MapConfigurationDTO mapConfiguration) {
-        if (mapConfiguration.getCoordinatesFormat() == null && mapConfiguration.getDisplayProjection() == null && mapConfiguration.getMapProjection() == null && mapConfiguration.getScaleBarUnits() == null) {
+        if (mapConfiguration.getCoordinatesFormat() == null && mapConfiguration.getDisplayProjectionId() == null && mapConfiguration.getMapProjectionId() == null && mapConfiguration.getScaleBarUnits() == null) {
             throw new IllegalArgumentException("At least one map configuration attribute should be specified");
         }
     }
 
-    private String getSaveMapConfigurationRequest(Long reportId, Long mapProjection, Long displayProjection, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits);
+    private String getSaveMapConfigurationRequest(Long reportId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
     }
 
     private SpatialSaveMapConfigurationRS getSaveMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {

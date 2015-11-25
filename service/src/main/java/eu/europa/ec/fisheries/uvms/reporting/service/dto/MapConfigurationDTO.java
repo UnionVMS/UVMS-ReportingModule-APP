@@ -7,17 +7,17 @@ import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "mapProjection",
-        "displayProjection",
+        "mapProjectionId",
+        "displayProjectionId",
         "coordinatesFormat",
         "scaleBarUnits"
 })
 public class MapConfigurationDTO {
 
-    @JsonProperty("mapProjection")
-    private Long mapProjection;
-    @JsonProperty("displayProjection")
-    private Long displayProjection;
+    @JsonProperty("mapProjectionId")
+    private Long mapProjectionId;
+    @JsonProperty("displayProjectionId")
+    private Long displayProjectionId;
     @JsonProperty("coordinatesFormat")
     private String coordinatesFormat;
     @JsonProperty("scaleBarUnits")
@@ -30,41 +30,31 @@ public class MapConfigurationDTO {
     }
 
     @Builder(builderMethodName = "MapConfigurationDTOBuilder")
-    public MapConfigurationDTO(Long mapProjection, Long displayProjection, String coordinatesFormat, String scaleBarUnits) {
-        this.mapProjection = mapProjection;
-        this.displayProjection = displayProjection;
+    public MapConfigurationDTO(Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits) {
+        this.mapProjectionId = mapProjectionId;
+        this.displayProjectionId = displayProjectionId;
         this.coordinatesFormat = coordinatesFormat;
         this.scaleBarUnits = scaleBarUnits;
     }
 
-    @JsonProperty("mapProjection")
-    public Long getMapProjection() {
-        return mapProjection;
+    @JsonProperty("mapProjectionId")
+    public Long getMapProjectionId() {
+        return mapProjectionId;
     }
 
-    @JsonProperty("mapProjection")
-    public void setMapProjection(Long mapProjection) {
-        this.mapProjection = mapProjection;
+    @JsonProperty("mapProjectionId")
+    public void setMapProjectionId(Long mapProjectionId) {
+        this.mapProjectionId = mapProjectionId;
     }
 
-    public MapConfigurationDTO withMapProjection(Long mapProjection) {
-        this.mapProjection = mapProjection;
-        return this;
+    @JsonProperty("displayProjectionId")
+    public Long getDisplayProjectionId() {
+        return displayProjectionId;
     }
 
-    @JsonProperty("displayProjection")
-    public Long getDisplayProjection() {
-        return displayProjection;
-    }
-
-    @JsonProperty("displayProjection")
-    public void setDisplayProjection(Long displayProjection) {
-        this.displayProjection = displayProjection;
-    }
-
-    public MapConfigurationDTO withDisplayProjection(Long displayProjection) {
-        this.displayProjection = displayProjection;
-        return this;
+    @JsonProperty("displayProjectionId")
+    public void setDisplayProjectionId(Long displayProjectionId) {
+        this.displayProjectionId = displayProjectionId;
     }
 
     @JsonProperty("coordinatesFormat")
@@ -77,11 +67,6 @@ public class MapConfigurationDTO {
         this.coordinatesFormat = coordinatesFormat;
     }
 
-    public MapConfigurationDTO withCoordinatesFormat(String coordinatesFormat) {
-        this.coordinatesFormat = coordinatesFormat;
-        return this;
-    }
-
     @JsonProperty("scaleBarUnits")
     public String getScaleBarUnits() {
         return scaleBarUnits;
@@ -90,11 +75,6 @@ public class MapConfigurationDTO {
     @JsonProperty("scaleBarUnits")
     public void setScaleBarUnits(String scaleBarUnits) {
         this.scaleBarUnits = scaleBarUnits;
-    }
-
-    public MapConfigurationDTO withScaleBarUnits(String scaleBarUnits) {
-        this.scaleBarUnits = scaleBarUnits;
-        return this;
     }
 
 }
