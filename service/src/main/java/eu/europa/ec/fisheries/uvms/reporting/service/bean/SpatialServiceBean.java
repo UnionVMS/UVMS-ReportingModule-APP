@@ -62,7 +62,8 @@ public class SpatialServiceBean implements SpatialService {
             if (mapConfiguration.getScaleBarUnits() != null) {
                 scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits().toUpperCase());
             }
-            String correlationId = spatialProducerBean.sendModuleMessage(getSaveMapConfigurationRequest(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits), reportingJMSConsumerBean.getDestination());
+            String request = getSaveMapConfigurationRequest(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits);
+            String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             return getSaveMapConfigurationResponse(message, correlationId);
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
