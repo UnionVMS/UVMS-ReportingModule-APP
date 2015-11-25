@@ -52,8 +52,8 @@ public class SpatialServiceBean implements SpatialService {
         try {
             validate(mapConfiguration);
 
-            Integer mapProjection = mapConfiguration.getMapProjection();
-            Integer displayProjection = mapConfiguration.getDisplayProjection();
+            Long mapProjection = Long.valueOf(mapConfiguration.getMapProjection());
+            Long displayProjection = Long.valueOf(mapConfiguration.getDisplayProjection());
             CoordinatesFormat coordinatesFormat = null;
             if (mapConfiguration.getCoordinatesFormat() != null) {
                 coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat().toUpperCase());
@@ -76,7 +76,7 @@ public class SpatialServiceBean implements SpatialService {
         }
     }
 
-    private String getSaveMapConfigurationRequest(Long reportId, Integer mapProjection, Integer displayProjection, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
+    private String getSaveMapConfigurationRequest(Long reportId, Long mapProjection, Long displayProjection, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
         return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(reportId, mapProjection, displayProjection, coordinatesFormat, scaleBarUnits);
     }
 
