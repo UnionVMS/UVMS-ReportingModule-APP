@@ -52,8 +52,8 @@ public class SpatialServiceBean implements SpatialService {
         try {
             validate(mapConfiguration);
 
-            Long mapProjection = Long.valueOf(mapConfiguration.getMapProjection());
-            Long displayProjection = Long.valueOf(mapConfiguration.getDisplayProjection());
+            Long mapProjection = mapConfiguration.getMapProjection();
+            Long displayProjection = mapConfiguration.getDisplayProjection();
             CoordinatesFormat coordinatesFormat = null;
             if (mapConfiguration.getCoordinatesFormat() != null) {
                 coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat().toUpperCase());
