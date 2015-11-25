@@ -15,9 +15,9 @@ import lombok.Builder;
 public class MapConfigurationDTO {
 
     @JsonProperty("mapProjection")
-    private Integer mapProjection;
+    private Long mapProjection;
     @JsonProperty("displayProjection")
-    private Integer displayProjection;
+    private Long displayProjection;
     @JsonProperty("coordinatesFormat")
     private String coordinatesFormat;
     @JsonProperty("scaleBarUnits")
@@ -30,7 +30,7 @@ public class MapConfigurationDTO {
     }
 
     @Builder(builderMethodName = "MapConfigurationDTOBuilder")
-    public MapConfigurationDTO(Integer mapProjection, Integer displayProjection, String coordinatesFormat, String scaleBarUnits) {
+    public MapConfigurationDTO(Long mapProjection, Long displayProjection, String coordinatesFormat, String scaleBarUnits) {
         this.mapProjection = mapProjection;
         this.displayProjection = displayProjection;
         this.coordinatesFormat = coordinatesFormat;
@@ -38,31 +38,31 @@ public class MapConfigurationDTO {
     }
 
     @JsonProperty("mapProjection")
-    public Integer getMapProjection() {
+    public Long getMapProjection() {
         return mapProjection;
     }
 
     @JsonProperty("mapProjection")
-    public void setMapProjection(Integer mapProjection) {
+    public void setMapProjection(Long mapProjection) {
         this.mapProjection = mapProjection;
     }
 
-    public MapConfigurationDTO withMapProjection(Integer mapProjection) {
+    public MapConfigurationDTO withMapProjection(Long mapProjection) {
         this.mapProjection = mapProjection;
         return this;
     }
 
     @JsonProperty("displayProjection")
-    public Integer getDisplayProjection() {
+    public Long getDisplayProjection() {
         return displayProjection;
     }
 
     @JsonProperty("displayProjection")
-    public void setDisplayProjection(Integer displayProjection) {
+    public void setDisplayProjection(Long displayProjection) {
         this.displayProjection = displayProjection;
     }
 
-    public MapConfigurationDTO withDisplayProjection(Integer displayProjection) {
+    public MapConfigurationDTO withDisplayProjection(Long displayProjection) {
         this.displayProjection = displayProjection;
         return this;
     }

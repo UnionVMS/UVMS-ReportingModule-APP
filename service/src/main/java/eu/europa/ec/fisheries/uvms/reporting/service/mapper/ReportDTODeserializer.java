@@ -63,8 +63,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
     private MapConfigurationDTO createMapConfigurationDTO(JsonNode mapConfigJsonNode) {
         if (mapConfigJsonNode != null) {
-            Integer mapProjection = (mapConfigJsonNode.get("mapProjection") != null) ? mapConfigJsonNode.get("mapProjection").intValue() : null;
-            Integer displayProjection = (mapConfigJsonNode.get("displayProjection") != null) ? mapConfigJsonNode.get("displayProjection").intValue() : null;
+            Long mapProjection = (mapConfigJsonNode.get("mapProjection") != null) ? mapConfigJsonNode.get("mapProjection").longValue() : null;
+            Long displayProjection = (mapConfigJsonNode.get("displayProjection") != null) ? mapConfigJsonNode.get("displayProjection").longValue() : null;
             String coordinatesFormat = (mapConfigJsonNode.get("coordinatesFormat") != null) ? mapConfigJsonNode.get("coordinatesFormat").textValue() : null;
             String scaleBarUnits = (mapConfigJsonNode.get("scaleBarUnits") != null) ? mapConfigJsonNode.get("scaleBarUnits").textValue() : null;
 
@@ -74,8 +74,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     .coordinatesFormat(coordinatesFormat)
                     .scaleBarUnits(scaleBarUnits)
                     .build();
-        }
-        else {
+        } else {
             return null;
 
         }
