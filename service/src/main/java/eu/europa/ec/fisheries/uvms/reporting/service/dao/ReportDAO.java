@@ -67,7 +67,7 @@ public class ReportDAO extends AbstractDAO<Report> {
         List<Report> reports;
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
-            reports = findEntityByNamedQuery(Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).parameters(), 1);
+            reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).parameters(), 1);
         } catch (ServiceException exc) {
             log.error("findReport failed", exc);
             throw new ReportingServiceException("findReport failed", exc);
@@ -84,7 +84,7 @@ public class ReportDAO extends AbstractDAO<Report> {
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
             List<Report> listReports =
-                    findEntityByNamedQuery(Report.LIST_BY_USERNAME_AND_SCOPE,
+                    findEntityByNamedQuery(Report.class, Report.LIST_BY_USERNAME_AND_SCOPE,
                             with("scopeName", scopeName).and("username", username).parameters());
             log.debug("list successful");
 

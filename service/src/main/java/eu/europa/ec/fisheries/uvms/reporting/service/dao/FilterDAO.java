@@ -25,7 +25,7 @@ public class FilterDAO extends AbstractDAO<Filter> {
     }
 
     public List<Filter> listByReportId(final Long reportId) throws ServiceException {
-        return findEntityByNamedQuery(LIST_BY_REPORT_ID, with("reportId", reportId).parameters());
+        return findEntityByNamedQuery(Filter.class, LIST_BY_REPORT_ID, with("reportId", reportId).parameters());
     }
 
     public void deleteBy(final Long id) throws ServiceException {
