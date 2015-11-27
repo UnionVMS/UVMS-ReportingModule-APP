@@ -10,13 +10,7 @@ import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperExc
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.CoordinatesFormat;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.MapConfigurationType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ScaleBarUnits;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRQ;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
 import org.apache.commons.lang3.NotImplementedException;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -26,6 +20,8 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 import java.util.Collections;
 import java.util.List;
+
+import static eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialModuleMethod.*;
 
 @Stateless
 @Local(SpatialService.class)
@@ -82,7 +78,8 @@ public class SpatialServiceBean implements SpatialService {
 
         try {
 
-            final SpatialSaveOrUpdateMapConfigurationRQ request = SpatialModuleMapper.INSTANCE.mapToUpdateMapRequest(config);
+            final SpatialSaveOrUpdateMapConfigurationRQ request =
+                    SpatialModuleMapper.INSTANCE.configToSaveOrUpdateRequest(config, UPDATE_MAP_CONFIG);
 
             final String marshaled = SpatialModuleMapper.INSTANCE.marshal(request).getValue();
 

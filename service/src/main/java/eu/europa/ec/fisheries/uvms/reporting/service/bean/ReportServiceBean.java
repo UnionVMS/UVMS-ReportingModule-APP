@@ -43,20 +43,6 @@ public class ReportServiceBean {
         return reportDTO;
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    private ReportDTO saveReport(ReportDTO report) {
-        try {
-            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
-            Report reportEntity = mapper.reportDTOToReport(report);
-            reportEntity = repository.createEntity(reportEntity); // TODO do mapping in repository
-            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
-            return reportDTO;
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Error during the creation of the report");
-        }
-    }
-
     private void saveMapConfiguration(Long reportId, ReportDTO report) {
         if (report.getMapConfiguration() != null) {
             try {
@@ -67,17 +53,37 @@ public class ReportServiceBean {
         }
     }
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    private ReportDTO saveReport(ReportDTO report) {
+        try {
+            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
+            Report reportEntity = mapper.reportDTOToReport(report);
+            reportEntity = repository.createEntity(reportEntity); // TODO @Greg mapping in repository
+            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
+            return reportDTO;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Error during the creation of the report");
+        }
+    }
+
     public ReportDTO findById(long id, String username, String scopeName) throws ReportingServiceException {
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
         return mapper.reportToReportDTO(repository.findReportByReportId(id, username, scopeName));
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     public boolean update(final ReportDTO report) throws ReportingServiceException {
 
-        MapConfigurationType config =  MapConfigMapper.INSTANCE.configAndReportToMapConfigurationType(
-                        report.getId(),report.getMapConfiguration());
+        if (report == null) {
+
+            throw new IllegalArgumentException("REPORT CAN NOT BE NULL");
+
+        }
+
+        MapConfigurationType config =
+                MapConfigMapper.INSTANCE.configAndReportToMapConfigurationType(report.getMapConfiguration());
 
         spatialModule.updateMapConfig(config);
 
@@ -86,18 +92,27 @@ public class ReportServiceBean {
     }
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.DELETE)
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void delete(Long reportId, String username, String scopeName) throws ReportingServiceException {
+
         repository.remove(reportId, username, scopeName);
+
     }
 
     public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName) throws ReportingServiceException {
+
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).build();
+
         List<Report> reports = repository.listByUsernameAndScope(username, scopeName);
+
         List<ReportDTO> toReportDTOs = new ArrayList<>();
+
         for (Report report : reports) {
+
             toReportDTOs.add(mapper.reportToReportDTO(report));
+
         }
+
         return toReportDTOs;
     }
 

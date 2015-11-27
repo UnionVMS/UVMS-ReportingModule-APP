@@ -10,7 +10,9 @@ import lombok.Builder;
         "mapProjectionId",
         "displayProjectionId",
         "coordinatesFormat",
-        "scaleBarUnits"
+        "scaleBarUnits",
+        "spatialConnectId",
+        "reportId"
 })
 public class MapConfigurationDTO {
 
@@ -22,6 +24,9 @@ public class MapConfigurationDTO {
     private String coordinatesFormat;
     @JsonProperty("scaleBarUnits")
     private String scaleBarUnits;
+    private String spatialConnectId;
+    private String reportId;
+
 
     /**
      * No args constructor for use in serialization
@@ -77,4 +82,19 @@ public class MapConfigurationDTO {
         this.scaleBarUnits = scaleBarUnits;
     }
 
+    public String getSpatialConnectId() {
+        return spatialConnectId;
+    }
+
+    public void setSpatialConnectId(String spatialConnectId) {
+        this.spatialConnectId = spatialConnectId;
+    }
+
+    public String getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(String reportId) {
+        this.reportId = reportId;
+    }
 }
