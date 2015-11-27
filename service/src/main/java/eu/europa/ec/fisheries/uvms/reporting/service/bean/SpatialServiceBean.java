@@ -48,7 +48,7 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public SpatialSaveMapConfigurationRS saveMapConfiguration(Long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+    public SpatialSaveOrUpdateMapConfigurationRS saveMapConfiguration(Long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         try {
             validate(mapConfiguration);
 
@@ -78,10 +78,10 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     private String getSaveMapConfigurationRequest(Long reportId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
+        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(null, reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
     }
 
-    private SpatialSaveMapConfigurationRS getSaveMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
+    private SpatialSaveOrUpdateMapConfigurationRS getSaveMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
         return SpatialModuleResponseMapper.mapToSpatialSaveMapConfigurationRS(getText(message), correlationId);
     }
 
