@@ -54,17 +54,29 @@ public class ReportRepositoryBean implements ReportRepository {
         boolean merged;
 
         try {
-           merged = reportMerger.merge(Arrays.asList(reportDTO));
+
+            merged = reportMerger.merge(Arrays.asList(reportDTO));
+
             List<FilterDTO> filters = reportDTO.getFilters();
-            if (CollectionUtils.isNotEmpty(filters)){
+
+            if (CollectionUtils.isNotEmpty(filters)) {
+
                 merged = filterMerger.merge(filters);
+
           }
+
         } catch (ServiceException e) {
-            log.error("update failed", e);
-            throw new ReportingServiceException("update failed", e);
+
+            String message = "UPDATE FAILED";
+
+            log.error(message, e);
+
+            throw new ReportingServiceException(message, e);
+
         }
 
         return merged;
+
     }
 
     @Override

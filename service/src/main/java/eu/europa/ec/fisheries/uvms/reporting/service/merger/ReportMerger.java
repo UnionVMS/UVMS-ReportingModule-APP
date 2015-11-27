@@ -31,26 +31,37 @@ public class ReportMerger extends Merger<ReportDTO, Report> {
 
     @Override
     protected Collection<Report> convert(ReportDTO input) throws ServiceException {
+
         ReportMapper build = ReportMapper.ReportMapperBuilder().filters(true).build();
+
         return Arrays.asList(build.reportDTOToReport(input));
+
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<Report> loadCurrents(Collection<ReportDTO> input) throws ServiceException {
+    protected Collection<Report> loadCurrents(final Collection<ReportDTO> input) throws ServiceException {
 
         Iterator<ReportDTO> iterator = input.iterator();
+
         Long reportId = null;
 
         while (iterator.hasNext()){
+
             ReportDTO next = iterator.next();
+
             reportId = next.getId();
-            if(reportId != null){
+
+            if (reportId != null) {
+
                 break;
+
             }
+
         }
 
         return Arrays.asList((Report) dao.findEntityById(Report.class, reportId));
+
     }
 
     @Override

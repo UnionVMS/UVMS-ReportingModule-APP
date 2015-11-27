@@ -5,13 +5,19 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingJMSConsume
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.SpatialModuleMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.CoordinatesFormat;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.MapConfigurationType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ScaleBarUnits;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRQ;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRS;
 import org.apache.commons.lang3.NotImplementedException;
-
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -68,6 +74,28 @@ public class SpatialServiceBean implements SpatialService {
             return getSaveMapConfigurationResponse(message, correlationId);
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException(e);
+        }
+    }
+
+    @Override
+    public SpatialSaveOrUpdateMapConfigurationRS updateMapConfig(final MapConfigurationType config) throws ReportingServiceException {
+
+        try {
+
+            final SpatialSaveOrUpdateMapConfigurationRQ request = SpatialModuleMapper.INSTANCE.mapToUpdateMapRequest(config);
+
+            final String marshaled = SpatialModuleMapper.INSTANCE.marshal(request).getValue();
+
+            final String correlationId = spatialProducerBean.sendModuleMessage(marshaled, reportingJMSConsumerBean.getDestination());
+
+            final TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+
+            return SpatialModuleResponseMapper.mapToSpatialSaveMapConfigurationRS(message, correlationId);
+
+        } catch (MessageException | SpatialModelMapperException e) {
+
+            throw new ReportingServiceException("ERROR WHILE UPDATING MAP CONFIG", e);
+
         }
     }
 

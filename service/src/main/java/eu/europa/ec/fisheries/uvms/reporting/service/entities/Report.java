@@ -56,13 +56,14 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @FilterDef(name=Report.EXECUTED_BY_USER, parameters=@ParamDef( name="username", type="string" ) )
 public class Report implements Serializable {
 
-    private static final long serialVersionUID = 7784224707011748170L;
-
     public static final String IS_DELETED = "is_deleted";
+
     public static final String VISIBILITY = "visibility";
 
     public static final String EXECUTED_BY_USER = "executedByUser";
+
     public static final String LIST_BY_USERNAME_AND_SCOPE = "Report.listByUsernameAndScope";
+
     public static final String FIND_BY_ID = "Report.findReportByReportId";
 
     @Id
@@ -115,23 +116,32 @@ public class Report implements Serializable {
     }
 
     public void updateExecutionLog(final String username) throws ReportingServiceException {
+
         ExecutionLog executionLog;
+
         if (isEmpty(executionLogs)) {
+
             executionLog = ExecutionLog.builder().report(this).executedBy(username).build();
+
             executionLogs.add(executionLog);
+
         } else {
+
             executionLog = executionLogs.iterator().next();
+
             executionLog.setExecutedOn(new Date());
+
         }
+
     }
 
     public void merge(Report incoming) {
-        setId(incoming.getId());
-        mergeDetails(incoming.getDetails());
-        setIsDeleted(incoming.getIsDeleted());
-        setDeletedOn(incoming.getDeletedOn());
-        setDeletedBy(incoming.getDeletedBy());
-        setVisibility(incoming.getVisibility());
+        this.id = incoming.id;
+        mergeDetails(incoming.details);
+        this.isDeleted = incoming.isDeleted;
+        this.deletedOn = incoming.deletedOn;
+        this.deletedBy = incoming.deletedBy;
+        this.visibility = incoming.visibility;
     }
 
     @PrePersist

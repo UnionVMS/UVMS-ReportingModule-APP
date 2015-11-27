@@ -4,9 +4,10 @@ import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MapConfigMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
-
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.MapConfigurationType;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -32,7 +33,7 @@ public class ReportServiceBean {
     private ReportRepository repository;
 
     @EJB
-    private SpatialService spatialService;
+    private SpatialService spatialModule;
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
     @Transactional
@@ -47,7 +48,7 @@ public class ReportServiceBean {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
             Report reportEntity = mapper.reportDTOToReport(report);
-            reportEntity = repository.createEntity(reportEntity);
+            reportEntity = repository.createEntity(reportEntity); // TODO do mapping in repository
             ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
             return reportDTO;
         }
@@ -59,7 +60,7 @@ public class ReportServiceBean {
     private void saveMapConfiguration(Long reportId, ReportDTO report) {
         if (report.getMapConfiguration() != null) {
             try {
-                spatialService.saveMapConfiguration(reportId, report.getMapConfiguration());
+                spatialModule.saveMapConfiguration(reportId, report.getMapConfiguration());
             } catch (ReportingServiceException e) {
                 throw new RuntimeException("Error during saving map configuration in spatial module");
             }
@@ -71,10 +72,17 @@ public class ReportServiceBean {
         return mapper.reportToReportDTO(repository.findReportByReportId(id, username, scopeName));
     }
 
-    @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     @Transactional
-    public boolean update(ReportDTO report) throws ReportingServiceException {
+    @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
+    public boolean update(final ReportDTO report) throws ReportingServiceException {
+
+        MapConfigurationType config =  MapConfigMapper.INSTANCE.configAndReportToMapConfigurationType(
+                        report.getId(),report.getMapConfiguration());
+
+        spatialModule.updateMapConfig(config);
+
         return repository.update(report);
+
     }
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.DELETE)

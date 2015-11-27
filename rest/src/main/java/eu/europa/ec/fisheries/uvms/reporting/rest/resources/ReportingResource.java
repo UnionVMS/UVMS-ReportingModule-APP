@@ -167,24 +167,35 @@ public class ReportingResource extends UnionVMSResource {
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport, username);
 
         if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+
             createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+
         }
 
         boolean isUpdate = false;
 
         try {
+
             isUpdate = reportService.update(report);
+
         } catch (ReportingServiceException exc) {
+
             LOG.error("Update failed.", exc);
+
         }
 
         Response restResponse;
 
         if (isUpdate) {
+
             restResponse = createSuccessResponse();
+
         } else {
+
             restResponse = createErrorResponse(ErrorCodes.UPDATE_FAILED);
+
         }
+
         return restResponse;
     }
 
