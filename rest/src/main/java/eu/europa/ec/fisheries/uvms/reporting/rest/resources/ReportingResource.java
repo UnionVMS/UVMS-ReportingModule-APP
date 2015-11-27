@@ -208,7 +208,7 @@ public class ReportingResource extends UnionVMSResource {
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
             try {
                 reportService.create(report);
-            } catch (ReportingServiceException e) {
+            } catch (Exception e) {
                 LOG.error("createReport failed.", e);
                 return createErrorResponse();
             }

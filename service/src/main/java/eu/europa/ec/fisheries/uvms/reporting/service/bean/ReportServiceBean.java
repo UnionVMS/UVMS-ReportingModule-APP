@@ -37,11 +37,23 @@ public class ReportServiceBean {
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
     @Transactional
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
-        ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
-        Report reportEntity = mapper.reportDTOToReport(report);
-        reportEntity = repository.createEntity(reportEntity);
-        saveMapConfiguration(reportEntity.getId(), report);
-        return mapper.reportToReportDTO(reportEntity);
+        ReportDTO reportDTO = saveReport(report);
+        saveMapConfiguration(reportDTO.getId(), report);
+        return reportDTO;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    private ReportDTO saveReport(ReportDTO report) {
+        try {
+            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
+            Report reportEntity = mapper.reportDTOToReport(report);
+            reportEntity = repository.createEntity(reportEntity);
+            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
+            return reportDTO;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Error during the creation of the report");
+        }
     }
 
     private void saveMapConfiguration(Long reportId, ReportDTO report) {
