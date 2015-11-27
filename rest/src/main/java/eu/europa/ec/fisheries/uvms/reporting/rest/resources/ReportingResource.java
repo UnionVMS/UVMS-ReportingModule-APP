@@ -59,7 +59,7 @@ public class ReportingResource extends UnionVMSResource {
             Collection<ReportDTO> reportsList;
             try {
                 reportsList = reportService.listByUsernameAndScope(features, username, scopeName);
-            } catch (ReportingServiceException e) {
+            } catch (Exception e) {
                 LOG.error("Failed to list reports.", e);
                 return createErrorResponse();
             }
@@ -90,7 +90,7 @@ public class ReportingResource extends UnionVMSResource {
         ReportDTO report;
         try {
             report = reportService.findById(id, username, scopeName);
-        } catch (ReportingServiceException e) {
+        } catch (Exception e) {
             LOG.error("Failed to get report.", e);
             return createErrorResponse();
         }
@@ -121,7 +121,7 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             originalReport = reportService.findById(id, username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
-        } catch (ReportingServiceException e) {
+        } catch (Exception e) {
             LOG.error("Failed to get report.", e);
             return createErrorResponse();
         }
@@ -134,7 +134,7 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             reportService.delete(id, username, scopeName);
-        } catch (ReportingServiceException exc) {
+        } catch (Exception exc) {
             LOG.error("Report deletion failed.", exc);
             return createErrorResponse(ErrorCodes.DELETE_FAILED);
         }
@@ -159,7 +159,7 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             originalReport = reportService.findById(report.getId(), username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
-        } catch (ReportingServiceException e) {
+        } catch (Exception e) {
             LOG.error("Failed to get report.", e);
             return createErrorResponse();
         }
@@ -236,7 +236,7 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             reportToUpdate = reportService.findById(id, username, scopeName);
-        } catch (ReportingServiceException e) {
+        } catch (Exception e) {
             LOG.error("Sharing report failed.", e);
             return createErrorResponse();
         }
@@ -250,7 +250,7 @@ public class ReportingResource extends UnionVMSResource {
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
             try {
                 reportService.update(reportToUpdate);
-            } catch (ReportingServiceException e) {
+            } catch (Exception e) {
                 LOG.error("Sharing report failed.", e);
                 return createErrorResponse();
             }
@@ -283,7 +283,7 @@ public class ReportingResource extends UnionVMSResource {
             jsonNodes = vmsDto.toJson();
             return createSuccessResponse(jsonNodes);
 
-        } catch (ReportingServiceException e) {
+        } catch (Exception e) {
             LOG.error("Report execution failed.", e);
             return createErrorResponse();
         }
