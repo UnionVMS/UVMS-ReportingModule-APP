@@ -48,7 +48,7 @@ public class CommonFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-       CommonFilterMapper.INSTANCE.merge(this, (CommonFilter) filter);
+       CommonFilterMapper.INSTANCE.merge((CommonFilter) filter, this);
     }
 
     @Override
