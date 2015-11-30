@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface ReportRepository {
 
-    public boolean update(ReportDTO reportDTO) throws ReportingServiceException;
+    boolean update(ReportDTO reportDTO) throws ReportingServiceException;
 
-    public Report findReportByReportId(Long reportId, String username, String scopeName) throws ReportingServiceException;
+    Report findReportByReportId(Long reportId, String username, String scopeName) throws ReportingServiceException;
 
-    public List<Report> listByUsernameAndScope(String username, String scopeName) throws ReportingServiceException;
+    List<Report> listByUsernameAndScope(String username, String scopeName) throws ReportingServiceException;
 
-    public void remove(Long reportId, String username, String scopeName) throws ReportingServiceException;
+    void remove(Long reportId, String username, String scopeName) throws ReportingServiceException;
 
     Report createEntity(Report reportEntity) throws ReportingServiceException;
 }

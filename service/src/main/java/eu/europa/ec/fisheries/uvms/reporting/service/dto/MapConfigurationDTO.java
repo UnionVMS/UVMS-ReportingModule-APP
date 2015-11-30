@@ -7,15 +7,16 @@ import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+        "spatialConnectId",
         "mapProjectionId",
         "displayProjectionId",
         "coordinatesFormat",
-        "scaleBarUnits",
-        "spatialConnectId",
-        "reportId"
+        "scaleBarUnits"
 })
 public class MapConfigurationDTO {
 
+    @JsonProperty("spatialConnectId")
+    private Long spatialConnectId;
     @JsonProperty("mapProjectionId")
     private Long mapProjectionId;
     @JsonProperty("displayProjectionId")
@@ -24,8 +25,6 @@ public class MapConfigurationDTO {
     private String coordinatesFormat;
     @JsonProperty("scaleBarUnits")
     private String scaleBarUnits;
-    private String spatialConnectId;
-    private String reportId;
 
 
     /**
@@ -35,7 +34,8 @@ public class MapConfigurationDTO {
     }
 
     @Builder(builderMethodName = "MapConfigurationDTOBuilder")
-    public MapConfigurationDTO(Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits) {
+    public MapConfigurationDTO(Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits) {
+        this.spatialConnectId = spatialConnectId;
         this.mapProjectionId = mapProjectionId;
         this.displayProjectionId = displayProjectionId;
         this.coordinatesFormat = coordinatesFormat;
@@ -82,19 +82,14 @@ public class MapConfigurationDTO {
         this.scaleBarUnits = scaleBarUnits;
     }
 
-    public String getSpatialConnectId() {
+    @JsonProperty("spatialConnectId")
+    public Long getSpatialConnectId() {
         return spatialConnectId;
     }
 
-    public void setSpatialConnectId(String spatialConnectId) {
+    @JsonProperty("spatialConnectId")
+    public void setSpatialConnectId(Long spatialConnectId) {
         this.spatialConnectId = spatialConnectId;
     }
 
-    public String getReportId() {
-        return reportId;
-    }
-
-    public void setReportId(String reportId) {
-        this.reportId = reportId;
-    }
 }

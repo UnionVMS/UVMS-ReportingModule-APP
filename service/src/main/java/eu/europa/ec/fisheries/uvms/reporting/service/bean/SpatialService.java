@@ -17,6 +17,6 @@ public interface SpatialService {
 
     SpatialGetMapConfigurationRS getMapConfiguration(Long reportId) throws ReportingServiceException;
 
-    boolean saveOrUpdateMapConfiguration(Long reportId, Long spatialConnectId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException;
+    boolean saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException;
 
 }

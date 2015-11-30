@@ -40,7 +40,7 @@ public class ReportServiceBean {
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
         ReportDTO reportDTO = saveReport(report);
 
-        saveMapConfiguration(reportDTO.getId(), null, report);
+        saveOrUpdateMapConfiguration(reportDTO.getId(), report);
 
         return reportDTO;
     }
@@ -58,12 +58,12 @@ public class ReportServiceBean {
         }
     }
 
-    private boolean saveMapConfiguration(Long reportId, Long spatialConnectId, ReportDTO report) {
+    private boolean saveOrUpdateMapConfiguration(long reportId, ReportDTO report) {
         boolean isSuccess = false;
         if (report.getWithMap()) {
             try {
                 MapConfigurationDTO mapConfiguration = report.getMapConfiguration();
-                isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, spatialConnectId, mapConfiguration);
+                isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, mapConfiguration);
                 if (!isSuccess) {
                     throw new RuntimeException("Error during saving or updating map configuration in spatial module");
                 }
@@ -77,7 +77,9 @@ public class ReportServiceBean {
     public ReportDTO findById(long id, String username, String scopeName) throws ReportingServiceException {
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
-        return mapper.reportToReportDTO(reportByReportId);
+        ReportDTO reportDTO = mapper.reportToReportDTO(reportByReportId);
+
+        return reportDTO;
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
@@ -87,9 +89,7 @@ public class ReportServiceBean {
 
         boolean update = repository.update(report);
 
-        Long spatialConnectId = null; //TODO assign value
-        saveMapConfiguration(report.getId(), spatialConnectId, report);
-        spatialModule.saveOrUpdateMapConfiguration(report.getId(), spatialConnectId, report.getMapConfiguration());
+        saveOrUpdateMapConfiguration(report.getId(), report);
 
         return update;
     }

@@ -68,10 +68,11 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public boolean saveOrUpdateMapConfiguration(Long reportId, Long spatialConnectId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+    public boolean saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         try {
             validate(mapConfiguration);
 
+            Long spatialConnectId = mapConfiguration.getSpatialConnectId();
             Long mapProjectionId = mapConfiguration.getMapProjectionId();
             Long displayProjectionId = mapConfiguration.getDisplayProjectionId();
             CoordinatesFormat coordinatesFormat = null;
@@ -107,8 +108,8 @@ public class SpatialServiceBean implements SpatialService {
         return SpatialModuleRequestMapper.mapToSpatialGetMapConfigurationRQ(reportId);
     }
 
-    private String getSaveMapConfigurationRequest(Long reportId, Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialSaveOrUpdateMapConfigurationRQ(spatialConnectId, reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
+    private String getSaveMapConfigurationRequest(long reportId, Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialSaveOrUpdateMapConfigurationRQ(reportId, spatialConnectId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
     }
 
     private SpatialSaveOrUpdateMapConfigurationRS getSaveOrUpdateMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
