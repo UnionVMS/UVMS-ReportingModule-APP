@@ -10,6 +10,7 @@ public interface MapConfigMapper {
 
     MapConfigMapper INSTANCE = Mappers.getMapper(MapConfigMapper.class);
 
-    MapConfigurationType configAndReportToMapConfigurationType(MapConfigurationDTO incoming);
+    MapConfigurationType mapConfigurationDTOToMapConfigurationType(MapConfigurationDTO mapConfigurationDTO);
 
+    MapConfigurationDTO mapConfigurationTypeToMapConfigurationDTO(MapConfigurationType mapConfigurationType);
 }

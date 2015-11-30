@@ -15,7 +15,7 @@ public interface SpatialService {
 
     String getFilterArea(List<AreaIdentifierType> scopeAreas, List<AreaIdentifierType> userAreas) throws ReportingServiceException;
 
-    SpatialGetMapConfigurationRS getMapConfiguration(Long reportId) throws ReportingServiceException;
+    MapConfigurationDTO getMapConfiguration(Long reportId) throws ReportingServiceException;
 
     boolean saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException;
 

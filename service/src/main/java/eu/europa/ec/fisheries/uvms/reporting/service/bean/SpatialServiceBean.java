@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingJMSConsume
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MapConfigMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
@@ -48,14 +49,17 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public SpatialGetMapConfigurationRS getMapConfiguration(Long reportId) throws ReportingServiceException {
+    public MapConfigurationDTO getMapConfiguration(Long reportId) throws ReportingServiceException {
         try {
             validateReportId(reportId);
 
             String correlationId = spatialProducerBean.sendModuleMessage(createGetConfigurationRequest(reportId), reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
 
-            return createGetMapConfigurationResponse(message, correlationId);
+            SpatialGetMapConfigurationRS getMapConfigurationResponse = createGetMapConfigurationResponse(message, correlationId);
+
+            MapConfigurationType mapConfigurationType = getMapConfigurationResponse.getMapConfiguration();
+            return MapConfigMapper.INSTANCE.mapConfigurationTypeToMapConfigurationDTO(mapConfigurationType);
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException(e);
         }

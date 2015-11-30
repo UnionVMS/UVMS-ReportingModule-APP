@@ -74,12 +74,33 @@ public class ReportServiceBean {
         return isSuccess;
     }
 
-    public ReportDTO findById(long id, String username, String scopeName) throws ReportingServiceException {
-        ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
-        Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
-        ReportDTO reportDTO = mapper.reportToReportDTO(reportByReportId);
+    @Transactional
+    public ReportDTO findById(long id, String username, String scopeName) {
+        ReportDTO reportDTO = readReport(id, username, scopeName);
+
+        populateMapConfiguration(id, reportDTO);
 
         return reportDTO;
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    private ReportDTO readReport(long id, String username, String scopeName) {
+        try {
+            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
+            Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
+            return mapper.reportToReportDTO(reportByReportId);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during reading the report");
+        }
+    }
+
+    private void populateMapConfiguration(long id, ReportDTO reportDTO) {
+        try {
+            MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id);
+            reportDTO.setMapConfiguration(mapConfiguratioDTO);
+        } catch (ReportingServiceException e) {
+            throw new RuntimeException("Error during reading map configuration in spatial module");
+        }
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
