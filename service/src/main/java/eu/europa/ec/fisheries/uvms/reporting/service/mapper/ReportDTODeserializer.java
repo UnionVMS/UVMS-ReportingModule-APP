@@ -49,26 +49,29 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             addCommon(filterNode.get("common"), filterDTOList, reportId);
         }
 
+        boolean withMap = node.get(ReportDTO.WITH_MAP).booleanValue();
         return ReportDTO.ReportDTOBuilder()
                 .description(node.get(ReportDTO.DESC) != null ? node.get(ReportDTO.DESC).textValue() : null)
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
-                .withMap(node.get(ReportDTO.WITH_MAP).booleanValue())
+                .withMap(withMap)
                 .createdBy(node.get(ReportDTO.CREATED_BY) != null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
                 .filters(filterDTOList)
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
-                .mapConfiguration(createMapConfigurationDTO(node.get(ReportDTO.MAP_CONFIGURATION)))
+                .mapConfiguration(createMapConfigurationDTO(withMap, node.get(ReportDTO.MAP_CONFIGURATION)))
                 .build();
     }
 
-    private MapConfigurationDTO createMapConfigurationDTO(JsonNode mapConfigJsonNode) {
-        if (mapConfigJsonNode != null) {
+    private MapConfigurationDTO createMapConfigurationDTO(boolean withMap, JsonNode mapConfigJsonNode) {
+        if (withMap) {
+            Long spatialConnectId = (mapConfigJsonNode.get("spatialConnectId") != null) ? mapConfigJsonNode.get("spatialConnectId").longValue() : null;
             Long mapProjectionId = (mapConfigJsonNode.get("mapProjectionId") != null) ? mapConfigJsonNode.get("mapProjectionId").longValue() : null;
             Long displayProjectionId = (mapConfigJsonNode.get("displayProjectionId") != null) ? mapConfigJsonNode.get("displayProjectionId").longValue() : null;
             String coordinatesFormat = (mapConfigJsonNode.get("coordinatesFormat") != null) ? mapConfigJsonNode.get("coordinatesFormat").textValue() : null;
             String scaleBarUnits = (mapConfigJsonNode.get("scaleBarUnits") != null) ? mapConfigJsonNode.get("scaleBarUnits").textValue() : null;
 
             return MapConfigurationDTO.MapConfigurationDTOBuilder()
+                    .spatialConnectId(spatialConnectId)
                     .mapProjectionId(mapProjectionId)
                     .displayProjectionId(displayProjectionId)
                     .coordinatesFormat(coordinatesFormat)
@@ -76,7 +79,6 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     .build();
         } else {
             return null;
-
         }
     }
 

@@ -62,6 +62,8 @@ public class ReportDTOSerializerDeserializerTest {
     protected Object[] payloadValues(){
 
         ReportDTO report1 = createReport();
+        report1.setWithMap(true);
+        report1.setMapConfiguration(new MapConfigurationDTO());
 
         ReportDTO report2 = createReport();
         report2.setDescription(null);
@@ -159,7 +161,7 @@ public class ReportDTOSerializerDeserializerTest {
     }
 
     private ReportDTO createReport() {
-        return ReportDTOBuilder().createdBy("georgi").scopeName("356456731").withMap(true)
+        return ReportDTOBuilder().createdBy("georgi").scopeName("356456731").withMap(false)
                 .filters(new ArrayList<FilterDTO>()).createdOn(DateUtils.stringToDate("2015-10-11 13:02:23 +0200"))
                 .visibility(VisibilityEnum.PRIVATE)
                 .description("This is a report descri created on 2015/09/28 13:31")

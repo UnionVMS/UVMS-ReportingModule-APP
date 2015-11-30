@@ -8,5 +8,6 @@
   "withMap" : true,
   "editable" : false,
   "shareable" : false,
-  "deletable" : false
+  "deletable" : false,
+  "mapConfiguration" : {}
 }

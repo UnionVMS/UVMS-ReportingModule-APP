@@ -142,6 +142,32 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         }
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
         jgen.writeBooleanField(WITH_MAP, reportDTO.getWithMap());
+
+        writeMapConfigFileds(reportDTO, jgen);
+    }
+
+    private void writeMapConfigFileds(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
+        if (reportDTO.getWithMap()) {
+            jgen.writeFieldName(MAP_CONFIGURATION);
+            jgen.writeStartObject();
+            MapConfigurationDTO mapConfiguration = reportDTO.getMapConfiguration();
+            if (mapConfiguration.getSpatialConnectId() != null) {
+                jgen.writeNumberField("spatialConnectId", mapConfiguration.getSpatialConnectId());
+            }
+            if (mapConfiguration.getMapProjectionId() != null) {
+                jgen.writeNumberField("mapProjectionId", mapConfiguration.getMapProjectionId());
+            }
+            if (mapConfiguration.getDisplayProjectionId() != null) {
+                jgen.writeNumberField("displayProjectionId", mapConfiguration.getDisplayProjectionId());
+            }
+            if (mapConfiguration.getScaleBarUnits() != null) {
+                jgen.writeStringField("scaleBarUnits", mapConfiguration.getScaleBarUnits());
+            }
+            if (mapConfiguration.getCoordinatesFormat() != null) {
+                jgen.writeStringField("coordinatesFormat", mapConfiguration.getCoordinatesFormat());
+            }
+            jgen.writeEndObject();
+        }
     }
 
     private void writeCommonFields(JsonGenerator jgen, CommonFilterDTO commonFilter) throws IOException {
