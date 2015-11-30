@@ -5,13 +5,13 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingJMSConsume
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.SpatialModuleMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
 import org.apache.commons.lang3.NotImplementedException;
+
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -20,8 +20,6 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 import java.util.Collections;
 import java.util.List;
-
-import static eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialModuleMethod.*;
 
 @Stateless
 @Local(SpatialService.class)
@@ -50,7 +48,27 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public SpatialSaveOrUpdateMapConfigurationRS saveMapConfiguration(Long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+    public SpatialGetMapConfigurationRS getMapConfiguration(Long reportId) throws ReportingServiceException {
+        try {
+            validateReportId(reportId);
+
+            String correlationId = spatialProducerBean.sendModuleMessage(createGetConfigurationRequest(reportId), reportingJMSConsumerBean.getDestination());
+            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+
+            return createGetMapConfigurationResponse(message, correlationId);
+        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+            throw new ReportingServiceException(e);
+        }
+    }
+
+    private void validateReportId(Long reportId) {
+        if (reportId == null) {
+            throw new IllegalArgumentException("Report Id must be specified.");
+        }
+    }
+
+    @Override
+    public boolean saveOrUpdateMapConfiguration(Long reportId, Long spatialConnectId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         try {
             validate(mapConfiguration);
 
@@ -64,35 +82,15 @@ public class SpatialServiceBean implements SpatialService {
             if (mapConfiguration.getScaleBarUnits() != null) {
                 scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits().toUpperCase());
             }
-            String request = getSaveMapConfigurationRequest(reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
+
+            String request = getSaveMapConfigurationRequest(reportId, spatialConnectId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
-            return getSaveMapConfigurationResponse(message, correlationId);
+            SpatialSaveOrUpdateMapConfigurationRS saveOrUpdateMapConfigurationResponse = getSaveOrUpdateMapConfigurationResponse(message, correlationId);
+
+            return saveOrUpdateMapConfigurationResponse != null;
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
-            throw new ReportingServiceException(e);
-        }
-    }
-
-    @Override
-    public SpatialSaveOrUpdateMapConfigurationRS updateMapConfig(final MapConfigurationType config) throws ReportingServiceException {
-
-        try {
-
-            final SpatialSaveOrUpdateMapConfigurationRQ request =
-                    SpatialModuleMapper.INSTANCE.configToSaveOrUpdateRequest(config, UPDATE_MAP_CONFIG);
-
-            final String marshaled = SpatialModuleMapper.INSTANCE.marshal(request).getValue();
-
-            final String correlationId = spatialProducerBean.sendModuleMessage(marshaled, reportingJMSConsumerBean.getDestination());
-
-            final TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
-
-            return SpatialModuleResponseMapper.mapToSpatialSaveMapConfigurationRS(message, correlationId);
-
-        } catch (MessageException | SpatialModelMapperException e) {
-
-            throw new ReportingServiceException("ERROR WHILE UPDATING MAP CONFIG", e);
-
+            throw new ReportingServiceException("ERROR DURING SAVE OR UPDATE MAP CONFIG", e);
         }
     }
 
@@ -102,12 +100,16 @@ public class SpatialServiceBean implements SpatialService {
         }
     }
 
-    private String getSaveMapConfigurationRequest(Long reportId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialSaveMapConfigurationRQ(null, reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
+    private String createGetConfigurationRequest(Long reportId) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialGetMapConfigurationRQ(reportId);
     }
 
-    private SpatialSaveOrUpdateMapConfigurationRS getSaveMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
-        return SpatialModuleResponseMapper.mapToSpatialSaveMapConfigurationRS(getText(message), correlationId);
+    private String getSaveMapConfigurationRequest(Long reportId, Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialSaveOrUpdateMapConfigurationRQ(spatialConnectId, reportId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
+    }
+
+    private SpatialSaveOrUpdateMapConfigurationRS getSaveOrUpdateMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
+        return SpatialModuleResponseMapper.mapToSpatialSaveOrUpdateMapConfigurationRS(getText(message), correlationId);
     }
 
     private String getFilterAreaRequest(List<AreaIdentifierType> userAreas) throws SpatialModelMarshallException {
@@ -117,6 +119,10 @@ public class SpatialServiceBean implements SpatialService {
     private String getFilterAreaResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
         FilterAreasSpatialRS filterAreaSpatialResponse = SpatialModuleResponseMapper.mapToFilterAreasSpatialRSFromResponse(getText(message), correlationId);
         return filterAreaSpatialResponse.getGeometry();
+    }
+
+    private SpatialGetMapConfigurationRS createGetMapConfigurationResponse(Message message, String correlationId) throws JMSException, SpatialModelMapperException {
+        return SpatialModuleResponseMapper.mapToSpatialGetMapConfigurationRS(getText(message), correlationId);
     }
 
     private TextMessage getText(Message message) throws JMSException {

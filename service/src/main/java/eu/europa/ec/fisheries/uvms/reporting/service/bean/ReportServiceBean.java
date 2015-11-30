@@ -4,10 +4,9 @@ import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MapConfigMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.MapConfigurationType;
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -39,18 +38,10 @@ public class ReportServiceBean {
     @Transactional
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
         ReportDTO reportDTO = saveReport(report);
-        saveMapConfiguration(reportDTO.getId(), report);
-        return reportDTO;
-    }
 
-    private void saveMapConfiguration(Long reportId, ReportDTO report) {
-        if (report.getMapConfiguration() != null) {
-            try {
-                spatialModule.saveMapConfiguration(reportId, report.getMapConfiguration());
-            } catch (ReportingServiceException e) {
-                throw new RuntimeException("Error during saving map configuration in spatial module");
-            }
-        }
+        saveMapConfiguration(reportDTO.getId(), report);
+
+        return reportDTO;
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
@@ -61,34 +52,47 @@ public class ReportServiceBean {
             reportEntity = repository.createEntity(reportEntity); // TODO @Greg mapping in repository
             ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
             return reportDTO;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException("Error during the creation of the report");
+        }
+    }
+
+    private void saveMapConfiguration(Long reportId, ReportDTO report) {
+        if (report.getMapConfiguration() != null) {
+            try {
+                boolean isSuccess = spatialModule.saveOrUpdateMapConfiguration(null, reportId, report.getMapConfiguration());
+                if (!isSuccess) {
+                    throw new RuntimeException("Error during saving map configuration in spatial module");
+                }
+            } catch (ReportingServiceException e) {
+                throw new RuntimeException("Error during saving map configuration in spatial module");
+            }
         }
     }
 
     public ReportDTO findById(long id, String username, String scopeName) throws ReportingServiceException {
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
-        return mapper.reportToReportDTO(repository.findReportByReportId(id, username, scopeName));
+        Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
+        return mapper.reportToReportDTO(reportByReportId);
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     public boolean update(final ReportDTO report) throws ReportingServiceException {
+        validateReport(report);
 
+        boolean update = repository.update(report);
+
+        Long spatialConnectId = null; //TODO assign value
+        spatialModule.saveOrUpdateMapConfiguration(report.getId(), spatialConnectId, report.getMapConfiguration());
+
+        return update;
+    }
+
+    private void validateReport(ReportDTO report) {
         if (report == null) {
-
             throw new IllegalArgumentException("REPORT CAN NOT BE NULL");
-
         }
-
-        MapConfigurationType config =
-                MapConfigMapper.INSTANCE.configAndReportToMapConfigurationType(report.getMapConfiguration());
-
-        spatialModule.updateMapConfig(config);
-
-        return repository.update(report);
-
     }
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.DELETE)
