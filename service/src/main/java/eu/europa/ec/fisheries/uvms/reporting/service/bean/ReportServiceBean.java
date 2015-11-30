@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
@@ -39,7 +40,7 @@ public class ReportServiceBean {
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
         ReportDTO reportDTO = saveReport(report);
 
-        saveMapConfiguration(reportDTO.getId(), report);
+        saveMapConfiguration(reportDTO.getId(), null, report);
 
         return reportDTO;
     }
@@ -57,17 +58,20 @@ public class ReportServiceBean {
         }
     }
 
-    private void saveMapConfiguration(Long reportId, ReportDTO report) {
-        if (report.getMapConfiguration() != null) {
+    private boolean saveMapConfiguration(Long reportId, Long spatialConnectId, ReportDTO report) {
+        boolean isSuccess = false;
+        if (report.getWithMap()) {
             try {
-                boolean isSuccess = spatialModule.saveOrUpdateMapConfiguration(null, reportId, report.getMapConfiguration());
+                MapConfigurationDTO mapConfiguration = report.getMapConfiguration();
+                isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, spatialConnectId, mapConfiguration);
                 if (!isSuccess) {
-                    throw new RuntimeException("Error during saving map configuration in spatial module");
+                    throw new RuntimeException("Error during saving or updating map configuration in spatial module");
                 }
             } catch (ReportingServiceException e) {
-                throw new RuntimeException("Error during saving map configuration in spatial module");
+                throw new RuntimeException("Error during saving or updatine map configuration in spatial module");
             }
         }
+        return isSuccess;
     }
 
     public ReportDTO findById(long id, String username, String scopeName) throws ReportingServiceException {
@@ -84,6 +88,7 @@ public class ReportServiceBean {
         boolean update = repository.update(report);
 
         Long spatialConnectId = null; //TODO assign value
+        saveMapConfiguration(report.getId(), spatialConnectId, report);
         spatialModule.saveOrUpdateMapConfiguration(report.getId(), spatialConnectId, report.getMapConfiguration());
 
         return update;
