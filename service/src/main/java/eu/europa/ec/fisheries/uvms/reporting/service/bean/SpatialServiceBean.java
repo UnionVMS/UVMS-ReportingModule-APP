@@ -103,9 +103,6 @@ public class SpatialServiceBean implements SpatialService {
         if (mapConfiguration == null) {
             throw new IllegalArgumentException("MAP CONFIGURATION CAN NOT BE NULL");
         }
-        if (mapConfiguration.getCoordinatesFormat() == null && mapConfiguration.getDisplayProjectionId() == null && mapConfiguration.getMapProjectionId() == null && mapConfiguration.getScaleBarUnits() == null) {
-            throw new IllegalArgumentException("At least one map configuration attribute should be specified");
-        }
     }
 
     private String createGetConfigurationRequest(Long reportId) throws SpatialModelMarshallException {
