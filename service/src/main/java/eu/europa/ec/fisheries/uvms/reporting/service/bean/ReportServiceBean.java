@@ -40,7 +40,7 @@ public class ReportServiceBean {
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
         ReportDTO reportDTO = saveReport(report);
 
-        saveOrUpdateMapConfiguration(reportDTO.getId(), report);
+        saveOrUpdateMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
 
         return reportDTO;
     }
@@ -58,20 +58,20 @@ public class ReportServiceBean {
         }
     }
 
-    private boolean saveOrUpdateMapConfiguration(long reportId, ReportDTO report) {
-        boolean isSuccess = false;
-        if (report.getWithMap()) {
+    private boolean saveOrUpdateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) {
+        if (withMap) {
             try {
-                MapConfigurationDTO mapConfiguration = report.getMapConfiguration();
-                isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, mapConfiguration);
+                boolean isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, mapConfiguration);
                 if (!isSuccess) {
                     throw new RuntimeException("Error during saving or updating map configuration in spatial module");
                 }
             } catch (ReportingServiceException e) {
                 throw new RuntimeException("Error during saving or updatine map configuration in spatial module");
             }
+        } else {
+            // TODO Remove Map Configuration from Spatial when old value of withMap was set to true
         }
-        return isSuccess;
+        return true;
     }
 
     @Transactional
@@ -110,7 +110,7 @@ public class ReportServiceBean {
 
         boolean update = repository.update(report);
 
-        saveOrUpdateMapConfiguration(report.getId(), report);
+        saveOrUpdateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration());
 
         return update;
     }
