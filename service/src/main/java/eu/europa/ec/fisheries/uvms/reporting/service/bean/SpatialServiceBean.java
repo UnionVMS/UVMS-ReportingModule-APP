@@ -49,11 +49,10 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public MapConfigurationDTO getMapConfiguration(Long reportId) throws ReportingServiceException {
+    public MapConfigurationDTO getMapConfiguration(long reportId) throws ReportingServiceException {
         try {
-            validateReportId(reportId);
-
-            String correlationId = spatialProducerBean.sendModuleMessage(createGetConfigurationRequest(reportId), reportingJMSConsumerBean.getDestination());
+            String getMapConfigurationRequest = createGetMapConfigurationRequest(reportId);
+            String correlationId = spatialProducerBean.sendModuleMessage(getMapConfigurationRequest, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
 
             SpatialGetMapConfigurationRS getMapConfigurationResponse = createGetMapConfigurationResponse(message, correlationId);
@@ -62,12 +61,6 @@ public class SpatialServiceBean implements SpatialService {
             return MapConfigMapper.INSTANCE.mapConfigurationTypeToMapConfigurationDTO(mapConfigurationType);
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException(e);
-        }
-    }
-
-    private void validateReportId(Long reportId) {
-        if (reportId == null) {
-            throw new IllegalArgumentException("Report Id must be specified.");
         }
     }
 
@@ -105,7 +98,7 @@ public class SpatialServiceBean implements SpatialService {
         }
     }
 
-    private String createGetConfigurationRequest(Long reportId) throws SpatialModelMarshallException {
+    private String createGetMapConfigurationRequest(long reportId) throws SpatialModelMarshallException {
         return SpatialModuleRequestMapper.mapToSpatialGetMapConfigurationRQ(reportId);
     }
 
