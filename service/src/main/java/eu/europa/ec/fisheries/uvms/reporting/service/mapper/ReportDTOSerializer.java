@@ -147,7 +147,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
     }
 
     private void writeMapConfigFileds(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
-        if (reportDTO.getWithMap()) {
+        if (reportDTO.getWithMap() && (reportDTO.getMapConfiguration() != null)) {
             jgen.writeFieldName(MAP_CONFIGURATION);
             jgen.writeStartObject();
             MapConfigurationDTO mapConfiguration = reportDTO.getMapConfiguration();
