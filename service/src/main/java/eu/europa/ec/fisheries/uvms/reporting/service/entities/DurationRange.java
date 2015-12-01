@@ -16,6 +16,9 @@ public class DurationRange implements Serializable {
     @Column(name = "MAX_DURATION")
     private Float maxDuration;
 
+    public DurationRange() {
+    }
+
     public DurationRange(Float minDuration, Float maxDuration) {
         this.minDuration = minDuration;
         this.maxDuration = maxDuration;

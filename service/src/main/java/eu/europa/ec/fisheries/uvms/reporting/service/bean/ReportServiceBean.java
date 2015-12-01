@@ -96,8 +96,10 @@ public class ReportServiceBean {
 
     private void populateMapConfiguration(long id, ReportDTO reportDTO) {
         try {
-            MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id);
-            reportDTO.setMapConfiguration(mapConfiguratioDTO);
+            if (reportDTO != null) {
+                MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id);
+                reportDTO.setMapConfiguration(mapConfiguratioDTO);
+            }
         } catch (ReportingServiceException e) {
             throw new RuntimeException("Error during reading map configuration in spatial module");
         }

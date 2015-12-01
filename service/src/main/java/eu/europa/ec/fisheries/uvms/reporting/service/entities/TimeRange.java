@@ -16,6 +16,9 @@ public class TimeRange implements Serializable {
     @Column(name = "MAX_TIME")
     private Float maxTime;
 
+    public TimeRange() {
+    }
+
     public TimeRange(Float minTime, Float maxTime) {
         this.minTime = minTime;
         this.maxTime = maxTime;

@@ -16,6 +16,9 @@ public class DistanceRange implements Serializable {
     @Column(name = "MAX_DISTANCE")
     private Float maxDistance;
 
+    public DistanceRange() {
+    }
+
     public DistanceRange(Float minDistance, Float maxDistance) {
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
