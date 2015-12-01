@@ -221,7 +221,7 @@ public class ReportingResource extends UnionVMSResource {
                 reportService.create(report);
             } catch (Exception e) {
                 LOG.error("createReport failed.", e);
-                return createErrorResponse();
+                return createErrorResponse(e.getMessage());
             }
             return createSuccessResponse();
         } else {
