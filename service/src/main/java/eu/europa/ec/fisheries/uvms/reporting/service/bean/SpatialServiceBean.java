@@ -74,11 +74,11 @@ public class SpatialServiceBean implements SpatialService {
             Long displayProjectionId = mapConfiguration.getDisplayProjectionId();
             CoordinatesFormat coordinatesFormat = null;
             if (mapConfiguration.getCoordinatesFormat() != null) {
-                coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat().toUpperCase());
+                coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat());
             }
             ScaleBarUnits scaleBarUnits = null;
             if (mapConfiguration.getScaleBarUnits() != null) {
-                scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits().toUpperCase());
+                scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits());
             }
 
             String request = getSaveMapConfigurationRequest(reportId, spatialConnectId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
