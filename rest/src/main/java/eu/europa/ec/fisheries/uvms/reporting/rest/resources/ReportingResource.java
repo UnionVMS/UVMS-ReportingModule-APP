@@ -249,7 +249,7 @@ public class ReportingResource extends UnionVMSResource {
             reportToUpdate = reportService.findById(id, username, scopeName);
         } catch (Exception e) {
             LOG.error("Sharing report failed.", e);
-            return createErrorResponse();
+            return createErrorResponse(e.getMessage());
         }
 
         reportToUpdate.setVisibility(VisibilityEnum.valueOf(visibility));
@@ -263,7 +263,7 @@ public class ReportingResource extends UnionVMSResource {
                 reportService.update(reportToUpdate);
             } catch (Exception e) {
                 LOG.error("Sharing report failed.", e);
-                return createErrorResponse();
+                return createErrorResponse(e.getMessage());
             }
             restResponse = createSuccessResponse();
         } else {
@@ -296,7 +296,7 @@ public class ReportingResource extends UnionVMSResource {
 
         } catch (Exception e) {
             LOG.error("Report execution failed.", e);
-            return createErrorResponse();
+            return createErrorResponse(e.getMessage());
         }
     }
 
