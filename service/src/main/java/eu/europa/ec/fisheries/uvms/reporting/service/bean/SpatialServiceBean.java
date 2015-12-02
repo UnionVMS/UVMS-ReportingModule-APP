@@ -56,9 +56,7 @@ public class SpatialServiceBean implements SpatialService {
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
 
             SpatialGetMapConfigurationRS getMapConfigurationResponse = createGetMapConfigurationResponse(message, correlationId);
-
-            MapConfigurationType mapConfigurationType = getMapConfigurationResponse.getMapConfiguration();
-            return MapConfigMapper.INSTANCE.mapConfigurationTypeToMapConfigurationDTO(mapConfigurationType);
+            return MapConfigMapper.INSTANCE.mapConfigurationTypeToMapConfigurationDTO(getMapConfigurationResponse.getMapConfiguration());
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException(e);
         }
@@ -69,19 +67,10 @@ public class SpatialServiceBean implements SpatialService {
         try {
             validate(mapConfiguration);
 
-            Long spatialConnectId = mapConfiguration.getSpatialConnectId();
-            Long mapProjectionId = mapConfiguration.getMapProjectionId();
-            Long displayProjectionId = mapConfiguration.getDisplayProjectionId();
-            CoordinatesFormat coordinatesFormat = null;
-            if (mapConfiguration.getCoordinatesFormat() != null) {
-                coordinatesFormat = CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat());
-            }
-            ScaleBarUnits scaleBarUnits = null;
-            if (mapConfiguration.getScaleBarUnits() != null) {
-                scaleBarUnits = ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits());
-            }
+            CoordinatesFormat coordinatesFormat = (mapConfiguration.getCoordinatesFormat() != null) ? CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat()) : null;
+            ScaleBarUnits scaleBarUnits = (mapConfiguration.getScaleBarUnits() != null) ? ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits()) : null;
 
-            String request = getSaveMapConfigurationRequest(reportId, spatialConnectId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
+            String request = getSaveMapConfigurationRequest(reportId, mapConfiguration.getSpatialConnectId(), mapConfiguration.getMapProjectionId(), mapConfiguration.getDisplayProjectionId(), coordinatesFormat, scaleBarUnits);
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialSaveOrUpdateMapConfigurationRS saveOrUpdateMapConfigurationResponse = getSaveOrUpdateMapConfigurationResponse(message, correlationId);

@@ -8,8 +8,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -35,18 +37,23 @@ public class ReportServiceBean {
     @EJB
     private SpatialService spatialModule;
 
+    @Resource
+    private SessionContext context;
+
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
     @Transactional
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
-        ReportDTO reportDTO = saveReport(report);
+        // Getting actual proxy instance
+        ReportDTO reportDTO = context.getBusinessObject(ReportServiceBean.class).saveReport(report);
+        //ReportDTO reportDTO = saveReport(report);
 
         saveOrUpdateMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
 
         return reportDTO;
     }
 
-   // @Transactional(Transactional.TxType.REQUIRES_NEW)
-    private ReportDTO saveReport(ReportDTO report) {
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public ReportDTO saveReport(ReportDTO report) {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
             Report reportEntity = mapper.reportDTOToReport(report);
