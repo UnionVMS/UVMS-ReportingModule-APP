@@ -45,7 +45,7 @@ public class ReportServiceBean {
         return reportDTO;
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+   // @Transactional(Transactional.TxType.REQUIRES_NEW)
     private ReportDTO saveReport(ReportDTO report) {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
@@ -83,7 +83,7 @@ public class ReportServiceBean {
         return reportDTO;
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    //@Transactional(Transactional.TxType.REQUIRES_NEW)
     private ReportDTO readReport(long id, String username, String scopeName) {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();

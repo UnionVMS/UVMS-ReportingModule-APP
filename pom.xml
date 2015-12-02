@@ -350,12 +350,6 @@
 
     <dependencies>
 
-        <!--<dependency>
-            <groupId>eu.europa.ec.mare.usm</groupId>
-            <artifactId>Information-Service</artifactId>
-            <version>LATEST</version>
-        </dependency>-->
-
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
