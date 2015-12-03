@@ -1,19 +1,17 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
-import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,7 +174,7 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
 
-            isUpdate = reportService.update(report);
+            isUpdate = reportService.update(report, originalReport.getWithMap(), originalReport.getMapConfiguration());
 
         } catch (Exception exc) {
 
@@ -260,7 +258,7 @@ public class ReportingResource extends UnionVMSResource {
 
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
             try {
-                reportService.update(reportToUpdate);
+                reportService.update(reportToUpdate, reportToUpdate.getWithMap(), reportToUpdate.getMapConfiguration());
             } catch (Exception e) {
                 LOG.error("Sharing report failed.", e);
                 return createErrorResponse(e.getMessage());

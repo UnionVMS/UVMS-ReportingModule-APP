@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * Session Bean implementation class ReportBean
  * <p/>
@@ -96,29 +98,36 @@ public class ReportServiceBean {
     }
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
-    public boolean update(final ReportDTO report) throws ReportingServiceException {
+    public boolean update(final ReportDTO report, boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
         validateReport(report);
 
         boolean update = reportServiceHandler.updateReport(report);
 
-        updateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration());
+        updateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration(), oldWithMapValue, oldMapConfigurationDTO);
 
         return update;
     }
 
-    private void updateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
-        if (withMap) {
+    private void updateMapConfiguration(long reportId, Boolean newWithMapValue, MapConfigurationDTO newMapConfiguration, boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
+        if (newWithMapValue) {
             try {
-                saveOrUpdateMapConfiguration(reportId, mapConfiguration);
+                saveOrUpdateMapConfiguration(reportId, newMapConfiguration);
             } catch (Exception e) {
                 //TODO Update report to the previous (original) state in reporting DB (map configuration hasn't been updated)
                 throw e;
             }
-        } else {
-            // TODO Remove Map Configuration from Spatial when old value of withMap was set to true
+        } else if (oldWithMapValue) {
+            try {
+                boolean isSuccess = spatialModule.deleteMapConfiguration(newArrayList(oldMapConfigurationDTO.getSpatialConnectId()));
+                if (!isSuccess) {
+                    throw new ReportingServiceException("Error during deleting map configuration in spatial module");
+                }
+            } catch (Exception e) {
+                //TODO Update report to the previous (original) state in reporting DB (map configuration hasn't been updated)
+                throw e;
+            }
         }
     }
-
 
 
     private void validateReport(ReportDTO report) {

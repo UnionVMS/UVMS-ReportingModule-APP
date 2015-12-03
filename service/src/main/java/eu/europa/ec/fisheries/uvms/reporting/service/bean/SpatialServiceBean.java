@@ -8,9 +8,11 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MapConfigMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
+import eu.europa.ec.fisheries.uvms.spatial.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 
 import javax.ejb.EJB;
@@ -81,6 +83,28 @@ public class SpatialServiceBean implements SpatialService {
         }
     }
 
+    @Override
+    public boolean deleteMapConfiguration(List<Long> spatialConnectIds) throws ReportingServiceException {
+        try {
+            validateSpatialConnectIdsList(spatialConnectIds);
+
+            String request = getDeleteMapConfigurationRequest(spatialConnectIds);
+            String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
+            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            SpatialDeleteMapConfigurationRS deleteMapConfigurationResponse = getDeleteMapConfigurationResponse(message, correlationId);
+
+            return deleteMapConfigurationResponse != null;
+        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+            throw new ReportingServiceException("ERROR DURING DELETE MAP CONFIG", e);
+        }
+    }
+
+    private void validateSpatialConnectIdsList(List<Long> spatialConnectIds) {
+        if (CollectionUtils.isEmpty(spatialConnectIds)) {
+            throw new IllegalArgumentException("At least one spatial connect id should be specified");
+        }
+    }
+
     private void validate(MapConfigurationDTO mapConfiguration) {
         if (mapConfiguration == null) {
             throw new IllegalArgumentException("MAP CONFIGURATION CAN NOT BE NULL");
@@ -91,12 +115,20 @@ public class SpatialServiceBean implements SpatialService {
         return SpatialModuleRequestMapper.mapToSpatialGetMapConfigurationRQ(reportId);
     }
 
+    private String getDeleteMapConfigurationRequest(List<Long> spatialConnectIds) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialDeleteMapConfigurationRQ(spatialConnectIds);
+    }
+
     private String getSaveMapConfigurationRequest(long reportId, Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits) throws SpatialModelMarshallException {
         return SpatialModuleRequestMapper.mapToSpatialSaveOrUpdateMapConfigurationRQ(reportId, spatialConnectId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits);
     }
 
     private SpatialSaveOrUpdateMapConfigurationRS getSaveOrUpdateMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
         return SpatialModuleResponseMapper.mapToSpatialSaveOrUpdateMapConfigurationRS(getText(message), correlationId);
+    }
+
+    private SpatialDeleteMapConfigurationRS getDeleteMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
+        return SpatialModuleResponseMapper.mapToSpatialDeleteMapConfigurationRS(getText(message), correlationId);
     }
 
     private String getFilterAreaRequest(List<AreaIdentifierType> userAreas) throws SpatialModelMarshallException {
