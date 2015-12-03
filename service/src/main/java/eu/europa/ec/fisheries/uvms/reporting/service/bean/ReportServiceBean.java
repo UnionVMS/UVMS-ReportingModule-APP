@@ -36,41 +36,39 @@ public class ReportServiceBean {
     private SpatialService spatialModule;
 
     @EJB
-    private ReportServiceHandlerBean reportServiceHandlerBean;
+    private ReportServiceHandlerBean reportServiceHandler;
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
-        ReportDTO reportDTO = reportServiceHandlerBean.saveReport(report);
+        ReportDTO reportDTO = reportServiceHandler.saveReport(report);
 
         saveMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
 
         return reportDTO;
     }
 
-    private boolean saveMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+    private void saveMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         if (withMap) {
             try {
                 saveOrUpdateMapConfiguration(reportId, mapConfiguration);
-            } catch (ReportingServiceException e) {
+            } catch (Exception e) {
                 //TODO Delete report from reporting DB (map configuration hasn't been created) - it should be hard delete
                 throw e;
             }
         }
-        return true;
     }
 
-    private boolean updateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+    private void updateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         if (withMap) {
             try {
                 saveOrUpdateMapConfiguration(reportId, mapConfiguration);
-            } catch (ReportingServiceException e) {
-                //TODO Update report to the previous (orginal) state in reporting DB (map configuration hasn't been updated)
+            } catch (Exception e) {
+                //TODO Update report to the previous (original) state in reporting DB (map configuration hasn't been updated)
                 throw e;
             }
         } else {
             // TODO Remove Map Configuration from Spatial when old value of withMap was set to true
         }
-        return true;
     }
 
     private void saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
@@ -114,7 +112,7 @@ public class ReportServiceBean {
     public boolean update(final ReportDTO report) throws ReportingServiceException {
         validateReport(report);
 
-        boolean update = reportServiceHandlerBean.updateReport(report);
+        boolean update = reportServiceHandler.updateReport(report);
 
         updateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration());
 
