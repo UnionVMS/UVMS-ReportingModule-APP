@@ -178,7 +178,7 @@ public class ReportingResource extends UnionVMSResource {
 
             isUpdate = reportService.update(report);
 
-        } catch (ReportingServiceException exc) {
+        } catch (Exception exc) {
 
             LOG.error("Update failed.", exc);
 

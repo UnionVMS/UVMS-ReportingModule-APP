@@ -8,10 +8,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -37,48 +35,49 @@ public class ReportServiceBean {
     @EJB
     private SpatialService spatialModule;
 
-    @Resource
-    private SessionContext context;
+    @EJB
+    private ReportServiceHandlerBean reportServiceHandlerBean;
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
-    @Transactional
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
-        // Getting actual proxy instance
-        ReportDTO reportDTO = context.getBusinessObject(ReportServiceBean.class).saveReport(report);
-        //ReportDTO reportDTO = saveReport(report);
+        ReportDTO reportDTO = reportServiceHandlerBean.saveReport(report);
 
-        saveOrUpdateMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
+        saveMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
 
         return reportDTO;
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public ReportDTO saveReport(ReportDTO report) {
-        try {
-            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
-            Report reportEntity = mapper.reportDTOToReport(report);
-            reportEntity = repository.createEntity(reportEntity); // TODO @Greg mapping in repository
-            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
-            return reportDTO;
-        } catch (Exception e) {
-            throw new RuntimeException("Error during the creation of the report");
-        }
-    }
-
-    private boolean saveOrUpdateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) {
+    private boolean saveMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         if (withMap) {
             try {
-                boolean isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, mapConfiguration);
-                if (!isSuccess) {
-                    throw new RuntimeException("Error during saving or updating map configuration in spatial module");
-                }
+                saveOrUpdateMapConfiguration(reportId, mapConfiguration);
             } catch (ReportingServiceException e) {
-                throw new RuntimeException("Error during saving or updatine map configuration in spatial module");
+                //TODO Delete report from reporting DB (map configuration hasn't been created) - it should be hard delete
+                throw e;
+            }
+        }
+        return true;
+    }
+
+    private boolean updateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+        if (withMap) {
+            try {
+                saveOrUpdateMapConfiguration(reportId, mapConfiguration);
+            } catch (ReportingServiceException e) {
+                //TODO Update report to the previous (orginal) state in reporting DB (map configuration hasn't been updated)
+                throw e;
             }
         } else {
             // TODO Remove Map Configuration from Spatial when old value of withMap was set to true
         }
         return true;
+    }
+
+    private void saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+        boolean isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, mapConfiguration);
+        if (!isSuccess) {
+            throw new ReportingServiceException("Error during saving or updating map configuration in spatial module");
+        }
     }
 
     @Transactional
@@ -90,7 +89,6 @@ public class ReportServiceBean {
         return reportDTO;
     }
 
-    //@Transactional(Transactional.TxType.REQUIRES_NEW)
     private ReportDTO readReport(long id, String username, String scopeName) {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
@@ -112,17 +110,18 @@ public class ReportServiceBean {
         }
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     public boolean update(final ReportDTO report) throws ReportingServiceException {
         validateReport(report);
 
-        boolean update = repository.update(report);
+        boolean update = reportServiceHandlerBean.updateReport(report);
 
-        saveOrUpdateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration());
+        updateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration());
 
         return update;
     }
+
+
 
     private void validateReport(ReportDTO report) {
         if (report == null) {
@@ -131,11 +130,9 @@ public class ReportServiceBean {
     }
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.DELETE)
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional
     public void delete(Long reportId, String username, String scopeName) throws ReportingServiceException {
-
         repository.remove(reportId, username, scopeName);
-
     }
 
     public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName) throws ReportingServiceException {
