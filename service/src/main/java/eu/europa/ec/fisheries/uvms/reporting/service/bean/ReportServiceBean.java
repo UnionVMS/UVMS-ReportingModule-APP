@@ -58,19 +58,6 @@ public class ReportServiceBean {
         }
     }
 
-    private void updateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
-        if (withMap) {
-            try {
-                saveOrUpdateMapConfiguration(reportId, mapConfiguration);
-            } catch (Exception e) {
-                //TODO Update report to the previous (original) state in reporting DB (map configuration hasn't been updated)
-                throw e;
-            }
-        } else {
-            // TODO Remove Map Configuration from Spatial when old value of withMap was set to true
-        }
-    }
-
     private void saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         boolean isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, mapConfiguration);
         if (!isSuccess) {
@@ -119,6 +106,19 @@ public class ReportServiceBean {
         return update;
     }
 
+    private void updateMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+        if (withMap) {
+            try {
+                saveOrUpdateMapConfiguration(reportId, mapConfiguration);
+            } catch (Exception e) {
+                //TODO Update report to the previous (original) state in reporting DB (map configuration hasn't been updated)
+                throw e;
+            }
+        } else {
+            // TODO Remove Map Configuration from Spatial when old value of withMap was set to true
+        }
+    }
+
 
 
     private void validateReport(ReportDTO report) {
@@ -133,6 +133,7 @@ public class ReportServiceBean {
         repository.remove(reportId, username, scopeName);
     }
 
+    @Transactional
     public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName) throws ReportingServiceException {
 
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).build();
