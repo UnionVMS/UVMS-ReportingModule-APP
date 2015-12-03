@@ -15,7 +15,6 @@ import org.apache.commons.collections4.ListUtils;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import lombok.Builder;
@@ -25,11 +24,6 @@ import lombok.EqualsAndHashCode;
 @DiscriminatorValue("VMSSEG")
 @EqualsAndHashCode(callSuper = true)
 public class VmsSegmentFilter extends Filter {
-
-    private static final float MIN_SPEED = 0F;
-    private static final float MAX_SPEED = 1000F;
-    private static final float MIN_DUR = 0F;
-    private static final float MAX_DUR = 1000F;
 
     @Column(name = "MIN_SPEED")
     private Float minimumSpeed;
@@ -90,29 +84,31 @@ public class VmsSegmentFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria() {
+
         return ListUtils.union(getSegmentSpeedCriteria(), getSegmentDurationCriteria());
+
     }
     
     private List<RangeCriteria> getSegmentSpeedCriteria() {
-        if (getMinimumSpeed() == null && getMaximumSpeed() == null) {
+
+        if (this.minimumSpeed == null && this.maximumSpeed == null) {
+
             return Collections.emptyList();
         }
-        RangeCriteria segmentSpeed = new RangeCriteria();
-        segmentSpeed.setKey(RangeKeyType.SEGMENT_SPEED);
-        segmentSpeed.setFrom(Float.toString(getMinimumSpeed() != null ? getMinimumSpeed() : MIN_SPEED));
-        segmentSpeed.setTo(Float.toString(getMaximumSpeed()!= null ? getMaximumSpeed() : MAX_SPEED));
-        return Arrays.asList(segmentSpeed);
+
+        return Arrays.asList(VmsSegmentFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
     
     private List<RangeCriteria> getSegmentDurationCriteria() {
-        if (getMinDuration() == null && getMaxDuration() == null) {
+
+        if (this.minDuration == null && this.maxDuration == null) {
+
             return Collections.emptyList();
+
         }
-        RangeCriteria segmentDuration = new RangeCriteria();
-        segmentDuration.setKey(RangeKeyType.SEGMENT_DURATION);
-        segmentDuration.setFrom(Float.toString(getMinDuration() != null ? getMinDuration() : 0F));
-        segmentDuration.setTo(Float.toString(getMaxDuration() != null ? getMaxDuration() : 10000F));
-        return Arrays.asList(segmentDuration);
+
+        return Arrays.asList(VmsSegmentFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
+
     }
 
     public SegmentCategoryType getCategory() {

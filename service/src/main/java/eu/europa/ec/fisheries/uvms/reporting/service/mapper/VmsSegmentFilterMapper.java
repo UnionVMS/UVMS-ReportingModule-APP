@@ -1,6 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +18,20 @@ public interface VmsSegmentFilterMapper {
     VmsSegmentFilterDTO vmsSegmentFilterToVmsSegmentFilterDTO(VmsSegmentFilter vmsSegmentFilter);
 
     VmsSegmentFilter vmsSegmentFilterDTOToVmsSegmentFilter(VmsSegmentFilterDTO vmsSegmentFilterDTO);
+
+    @Mappings({
+            @Mapping(constant = "SEGMENT_SPEED", target = "key"),
+            @Mapping(source = "minimumSpeed", target = "from", defaultValue = "O"),
+            @Mapping(source = "maximumSpeed", target = "to", defaultValue = "1000")
+    })
+    RangeCriteria speedRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
+
+    @Mappings({
+            @Mapping(constant = "SEGMENT_DURATION", target = "key"),
+            @Mapping(source = "minDuration", target = "from", defaultValue = "O"),
+            @Mapping(source = "maxDuration", target = "to", defaultValue = "1000")
+    })
+    RangeCriteria durationRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
