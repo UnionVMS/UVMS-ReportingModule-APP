@@ -170,31 +170,14 @@ public class ReportingResource extends UnionVMSResource {
 
         }
 
-        boolean isUpdate = false;
-
         try {
-
-            isUpdate = reportService.update(report, originalReport.getWithMap(), originalReport.getMapConfiguration());
-
+            reportService.update(report, originalReport.getWithMap(), originalReport.getMapConfiguration());
         } catch (Exception exc) {
-
             LOG.error("Update failed.", exc);
-
+            return createErrorResponse(ErrorCodes.UPDATE_FAILED);
         }
 
-        Response restResponse;
-
-        if (isUpdate) {
-
-            restResponse = createSuccessResponse();
-
-        } else {
-
-            restResponse = createErrorResponse(ErrorCodes.UPDATE_FAILED);
-
-        }
-
-        return restResponse;
+        return createSuccessResponse();
     }
 
     @POST

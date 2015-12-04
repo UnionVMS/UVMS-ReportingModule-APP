@@ -75,7 +75,7 @@ public class ReportRepositoryBean implements ReportRepository {
 
         }
 
-        return merged;
+        return true;
 
     }
 
