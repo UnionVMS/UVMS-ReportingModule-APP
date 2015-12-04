@@ -37,16 +37,26 @@ public class ReportServiceBean {
     @EJB
     private SpatialService spatialModule;
 
-    @EJB
-    private ReportServiceHandlerBean reportServiceHandler;
-
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
+    @Transactional
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
-        ReportDTO reportDTO = reportServiceHandler.saveReport(report);
+        ReportDTO reportDTO = saveReport(report);
 
         saveMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
 
         return reportDTO;
+    }
+
+    public ReportDTO saveReport(ReportDTO report) {
+        try {
+            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
+            Report reportEntity = mapper.reportDTOToReport(report);
+            reportEntity = repository.createEntity(reportEntity); // TODO @Greg mapping in repository
+            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
+            return reportDTO;
+        } catch (Exception e) {
+            throw new RuntimeException("Error during the creation of the report");
+        }
     }
 
     private void saveMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
@@ -54,8 +64,7 @@ public class ReportServiceBean {
             try {
                 saveOrUpdateMapConfiguration(reportId, mapConfiguration);
             } catch (Exception e) {
-                //TODO Delete report from reporting DB (map configuration hasn't been created) - it should be hard delete
-                throw e;
+                throw new RuntimeException("Error during the creation of the map configuration");
             }
         }
     }
@@ -98,10 +107,11 @@ public class ReportServiceBean {
     }
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
+    @Transactional
     public boolean update(final ReportDTO report, boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
         validateReport(report);
 
-        boolean update = reportServiceHandler.updateReport(report);
+        boolean update = repository.update(report);
 
         updateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration(), oldWithMapValue, oldMapConfigurationDTO);
 
@@ -109,23 +119,17 @@ public class ReportServiceBean {
     }
 
     private void updateMapConfiguration(long reportId, Boolean newWithMapValue, MapConfigurationDTO newMapConfiguration, boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
-        if (newWithMapValue) {
-            try {
+        try {
+            if (newWithMapValue) {
                 saveOrUpdateMapConfiguration(reportId, newMapConfiguration);
-            } catch (Exception e) {
-                //TODO Update report to the previous (original) state in reporting DB (map configuration hasn't been updated)
-                throw e;
-            }
-        } else if (oldWithMapValue) {
-            try {
+            } else if (oldWithMapValue) {
                 boolean isSuccess = spatialModule.deleteMapConfiguration(newArrayList(oldMapConfigurationDTO.getSpatialConnectId()));
                 if (!isSuccess) {
                     throw new ReportingServiceException("Error during deleting map configuration in spatial module");
                 }
-            } catch (Exception e) {
-                //TODO Update report to the previous (original) state in reporting DB (map configuration hasn't been updated)
-                throw e;
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Error during the update of the map configuration");
         }
     }
 
