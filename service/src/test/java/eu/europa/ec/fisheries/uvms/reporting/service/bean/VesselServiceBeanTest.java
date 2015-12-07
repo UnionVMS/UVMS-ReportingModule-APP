@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
@@ -12,7 +12,6 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
-
 import javax.jms.Destination;
 import javax.jms.TextMessage;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class VesselServiceBeanTest extends UnitilsJUnit4 {
     private Mock<VesselModuleSenderBean> vesselSender;
 
     @InjectIntoByType
-    private Mock<VesselModuleReceiverBean> vesselReceiver;
+    private Mock<ReportingModuleReceiverBean> vesselReceiver;
 
     private Mock<FilterProcessor> processor;
 

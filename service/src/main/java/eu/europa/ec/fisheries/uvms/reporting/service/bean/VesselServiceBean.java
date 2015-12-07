@@ -1,16 +1,18 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtVesselMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleReceiverBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.VesselModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.vessel.model.exception.VesselModelMapperException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
-
-import javax.ejb.*;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.TextMessage;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +27,7 @@ public class VesselServiceBean {
     private VesselModuleSenderBean vesselSender;
 
     @EJB
-    private VesselModuleReceiverBean vesselReceiver;
+    private ReportingModuleReceiverBean receiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Map<String, Vessel> getVesselMap(final FilterProcessor processor) throws ReportingServiceException {
@@ -34,16 +36,16 @@ public class VesselServiceBean {
         try {
             if (processor.hasVessels()) {
                 String request = ExtVesselMessageMapper.createVesselListModuleRequest(processor.toVesselListQuery());
-                String moduleMessage = vesselSender.sendModuleMessage(request, vesselReceiver.getDestination());
-                TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
+                String moduleMessage = vesselSender.sendModuleMessage(request, receiver.getDestination());
+                TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
                 List<Vessel> vessels = getVessels(moduleMessage, response);
                 vesselList.addAll(vessels);
             }
 
             if (processor.hasVesselGroups()) {
                 String request = ExtVesselMessageMapper.createVesselListModuleRequest(processor.getVesselGroupList());
-                String moduleMessage = vesselSender.sendModuleMessage(request, vesselReceiver.getDestination());
-                TextMessage response = vesselReceiver.getMessage(moduleMessage, TextMessage.class);
+                String moduleMessage = vesselSender.sendModuleMessage(request, receiver.getDestination());
+                TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
                 List<Vessel> groupList = getVessels(moduleMessage, response);
                 vesselList.addAll(groupList);
             }
