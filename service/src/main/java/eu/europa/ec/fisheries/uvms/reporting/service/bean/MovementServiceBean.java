@@ -4,8 +4,8 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import javax.ejb.EJB;
@@ -24,7 +24,7 @@ public class MovementServiceBean {
     private MovementModuleSenderBean movementSender;
 
     @EJB
-    private MovementModuleReceiverBean movementReceiver;
+    private ReportingModuleReceiverBean receiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) throws ReportingServiceException {
@@ -44,8 +44,8 @@ public class MovementServiceBean {
         try {
 
             String request = ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
-            String moduleMessage = movementSender.sendModuleMessage(request, movementReceiver.getDestination());
-            TextMessage response = movementReceiver.getMessage(moduleMessage, TextMessage.class);
+            String moduleMessage = movementSender.sendModuleMessage(request, receiver.getDestination());
+            TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
             return ExtMovementMessageMapper.mapToMovementMapResponse(response);
 
         } catch (ModelMapperException | JMSException | MessageException e) {
