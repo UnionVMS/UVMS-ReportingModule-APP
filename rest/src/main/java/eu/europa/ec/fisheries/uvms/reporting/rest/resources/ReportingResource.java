@@ -265,7 +265,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting shareReport(...), with a ID={}", username, id);
+        LOG.info("{} is requesting runReport(...), with a ID={}", username, id);
 
         VmsDTO vmsDto;
         ObjectNode jsonNodes;
