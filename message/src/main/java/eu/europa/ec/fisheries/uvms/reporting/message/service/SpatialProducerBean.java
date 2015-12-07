@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import javax.annotation.Resource;
 import javax.ejb.Local;
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 
