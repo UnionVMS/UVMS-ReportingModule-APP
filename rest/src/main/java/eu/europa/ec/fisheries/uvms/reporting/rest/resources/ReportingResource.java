@@ -227,10 +227,15 @@ public class ReportingResource extends UnionVMSResource {
         ReportDTO reportToUpdate;
 
         try {
+
             reportToUpdate = reportService.findById(id, username, scopeName);
+
         } catch (Exception e) {
+
             LOG.error("Sharing report failed.", e);
+
             return createErrorResponse(e.getMessage());
+
         }
 
         reportToUpdate.setVisibility(VisibilityEnum.valueOf(visibility));
@@ -240,15 +245,28 @@ public class ReportingResource extends UnionVMSResource {
         Response restResponse;
 
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
+
             try {
-                reportService.update(reportToUpdate, reportToUpdate.getWithMap(), reportToUpdate.getMapConfiguration());
-            } catch (Exception e) {
+
+                reportService.share(reportToUpdate, reportToUpdate.getWithMap(), reportToUpdate.getMapConfiguration());
+
+            }
+
+            catch (Exception e) {
+
                 LOG.error("Sharing report failed.", e);
+
                 return createErrorResponse(e.getMessage());
             }
+
             restResponse = createSuccessResponse();
-        } else {
+
+        }
+
+        else {
+
             restResponse = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+
         }
 
         return restResponse;

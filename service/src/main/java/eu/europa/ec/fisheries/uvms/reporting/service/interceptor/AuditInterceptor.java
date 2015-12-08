@@ -20,8 +20,6 @@ import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 @Interceptor
 public class AuditInterceptor implements Serializable {
 
-	private static final long serialVersionUID = 7335928782218713261L;
-	
 	private final static Logger LOG = LoggerFactory.getLogger(AuditInterceptor.class.getName());
 	
 	@EJB
@@ -38,28 +36,77 @@ public class AuditInterceptor implements Serializable {
 		AuditActionEnum auditAction = auditActionInterface.auditActionType();
 		
 		if (auditAction.equals(AuditActionEnum.CREATE)) {
+
             ReportDTO report = (ReportDTO)result;
+
 			if (report != null) {
+
 				Long id = report.getId();
+
 				sendAuditReport(auditAction, id);
+
 			}			
 			
-		} else if (auditAction.equals(AuditActionEnum.MODIFY)) {
-            ReportDTO report = (ReportDTO)parameters[0];
-			if (report != null) {
-				Long id = report.getId();
-				sendAuditReport(auditAction, id);
-			}			
-			
-		} else if (auditAction.equals(AuditActionEnum.DELETE)) {
-			Long id = (Long)parameters[0];
-			if (id != null) {
-				sendAuditReport(auditAction, id);
-			}			
-			
-		} else {
-			LOG.warn("Audit action cannot be intercepted");
 		}
+
+        else if (auditAction.equals(AuditActionEnum.MODIFY)) {
+
+            ReportDTO report = (ReportDTO)parameters[0];
+
+			if (report != null) {
+
+				Long id = report.getId();
+
+				sendAuditReport(auditAction, id);
+
+			}			
+			
+		}
+
+        else if (auditAction.equals(AuditActionEnum.DELETE)) {
+
+			Long id = (Long)parameters[0];
+
+			if (id != null) {
+
+				sendAuditReport(auditAction, id);
+
+			}
+
+		}
+
+        else if (auditAction.equals(AuditActionEnum.EXECUTE)) {
+
+            Long id = (Long)parameters[2];
+
+            if (id != null) {
+
+                sendAuditReport(auditAction, id);
+
+            }
+
+        }
+
+        else if (auditAction.equals(AuditActionEnum.SHARE)) {
+
+            ReportDTO report = (ReportDTO)parameters[0];
+
+            if (report != null) {
+
+                Long id = report.getId();
+
+                sendAuditReport(auditAction, id);
+
+            }
+
+        }
+
+        else {
+
+			LOG.warn("Audit action cannot be intercepted");
+
+		}
+
 		return result;
 	}
 	
@@ -68,7 +115,7 @@ public class AuditInterceptor implements Serializable {
 			LOG.info("Audit type received is : " + auditAction.getAuditType() + " ID : " + id);
 			auditService.sendAuditReport(auditAction, id.toString());
 		} catch (ReportingServiceException e) {
-			LOG.error("Exception Occured while executing interceptor", e);
+			LOG.error("Exception occurred while executing interceptor", e);
 		}				
 	}
 }

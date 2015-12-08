@@ -12,8 +12,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.math.BigDecimal;
-
 public class SegmentDTO extends GeoJsonDTO {
 
     public static final SimpleFeatureType SEGMENT = build();

@@ -108,7 +108,7 @@ public class ReportServiceBean {
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     @Transactional
-    public boolean update(final ReportDTO report, boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
+    public boolean update(final ReportDTO report, Boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
         validateReport(report);
 
         boolean update = repository.update(report);
@@ -162,6 +162,11 @@ public class ReportServiceBean {
         }
 
         return toReportDTOs;
+    }
+
+    @IAuditInterceptor(auditActionType = AuditActionEnum.SHARE)
+    public void share(ReportDTO reportToUpdate, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
+        update(reportToUpdate, withMap, mapConfiguration);
     }
 
 }
