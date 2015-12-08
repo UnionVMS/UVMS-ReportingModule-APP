@@ -12,6 +12,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import lombok.extern.slf4j.Slf4j;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -26,6 +27,7 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(value = VmsService.class)
+@Slf4j
 public class VmsServiceBean implements VmsService {
 
     @EJB
@@ -49,7 +51,11 @@ public class VmsServiceBean implements VmsService {
 
         if (reportByReportId == null) {
 
-            throw new ReportingServiceException("No report found with id " + id);
+            String error = "No report found with id " + id;
+
+            log.error(error);
+
+            throw new ReportingServiceException(error);
 
         }
 
@@ -92,9 +98,14 @@ public class VmsServiceBean implements VmsService {
 
             reportByReportId.updateExecutionLog(username);
 
+
         } catch (ProcessorException e) {
 
-            throw new ReportingServiceException("Error while processing reporting filters.", e);
+            String error = "Error while processing reporting filters";
+
+            log.error(error, e);
+
+            throw new ReportingServiceException(error, e);
 
         }
 
@@ -128,9 +139,13 @@ public class VmsServiceBean implements VmsService {
 
 		} catch (ReportingServiceException e) {
 
-			throw new ReportingServiceException("Exception during retrieving filter area", e);
+            String error = "Exception during retrieving filter area";
 
-		}
+            log.error(error, e);
+
+			throw new ReportingServiceException(error, e);
+
+        }
 
 	}
 

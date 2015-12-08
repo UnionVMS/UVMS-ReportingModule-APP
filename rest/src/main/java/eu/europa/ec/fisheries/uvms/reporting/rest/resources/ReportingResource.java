@@ -6,19 +6,24 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,9 +32,8 @@ import java.util.Collection;
 import java.util.Set;
 
 @Path("/report")
+@Slf4j
 public class ReportingResource extends UnionVMSResource {
-
-    final static Logger LOG = LoggerFactory.getLogger(ReportingResource.class);
 
     @Context
     private UriInfo context;
@@ -48,7 +52,7 @@ public class ReportingResource extends UnionVMSResource {
                                 @HeaderParam("scopeName") String scopeName) {
         final String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
+        log.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
         Set<String> features = getCachedUserFeatures(request);
 
@@ -58,7 +62,7 @@ public class ReportingResource extends UnionVMSResource {
             try {
                 reportsList = reportService.listByUsernameAndScope(features, username, scopeName);
             } catch (Exception e) {
-                LOG.error("Failed to list reports.", e);
+                log.error("Failed to list reports.", e);
                 return createErrorResponse();
             }
 
@@ -83,13 +87,13 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting getReport(...), with an ID={}", username, id);
+        log.info("{} is requesting getReport(...), with an ID={}", username, id);
 
         ReportDTO report;
         try {
             report = reportService.findById(id, username, scopeName);
         } catch (Exception e) {
-            LOG.error("Failed to get report.", e);
+            log.error("Failed to get report.", e);
             return createErrorResponse();
         }
 
@@ -114,13 +118,13 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
+        log.info("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
         ReportDTO originalReport;
 
         try {
             originalReport = reportService.findById(id, username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
         } catch (Exception e) {
-            LOG.error("Failed to get report.", e);
+            log.error("Failed to get report.", e);
             return createErrorResponse();
         }
 
@@ -133,7 +137,7 @@ public class ReportingResource extends UnionVMSResource {
         try {
             reportService.delete(id, username, scopeName);
         } catch (Exception exc) {
-            LOG.error("Report deletion failed.", exc);
+            log.error("Report deletion failed.", exc);
             return createErrorResponse(ErrorCodes.DELETE_FAILED);
         }
 
@@ -152,13 +156,13 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
+        log.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
         ReportDTO originalReport;
 
         try {
             originalReport = reportService.findById(report.getId(), username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
         } catch (Exception e) {
-            LOG.error("Failed to get report.", e);
+            log.error("Failed to get report.", e);
             return createErrorResponse();
         }
 
@@ -173,7 +177,7 @@ public class ReportingResource extends UnionVMSResource {
         try {
             reportService.update(report, originalReport.getWithMap(), originalReport.getMapConfiguration());
         } catch (Exception exc) {
-            LOG.error("Update failed.", exc);
+            log.error("Update failed.", exc);
             return createErrorResponse(ErrorCodes.UPDATE_FAILED);
         }
 
@@ -190,7 +194,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting createReport(...), with a ID={}", username, report.getId());
+        log.info("{} is requesting createReport(...), with a ID={}", username, report.getId());
 
         report.setCreatedBy(username);
         report.setScopeName(scopeName);
@@ -201,7 +205,7 @@ public class ReportingResource extends UnionVMSResource {
             try {
                 reportService.create(report);
             } catch (Exception e) {
-                LOG.error("createReport failed.", e);
+                log.error("createReport failed.", e);
                 return createErrorResponse(e.getMessage());
             }
             return createSuccessResponse();
@@ -222,7 +226,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
+        log.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
 
         ReportDTO reportToUpdate;
 
@@ -232,7 +236,7 @@ public class ReportingResource extends UnionVMSResource {
 
         } catch (Exception e) {
 
-            LOG.error("Sharing report failed.", e);
+            log.error("Sharing report failed.", e);
 
             return createErrorResponse(e.getMessage());
 
@@ -254,7 +258,7 @@ public class ReportingResource extends UnionVMSResource {
 
             catch (Exception e) {
 
-                LOG.error("Sharing report failed.", e);
+                log.error("Sharing report failed.", e);
 
                 return createErrorResponse(e.getMessage());
             }
@@ -283,7 +287,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        LOG.info("{} is requesting runReport(...), with a ID={}", username, id);
+        log.info("{} is requesting runReport(...), with a ID={}", username, id);
 
         VmsDTO vmsDto;
         ObjectNode jsonNodes;
@@ -294,7 +298,7 @@ public class ReportingResource extends UnionVMSResource {
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
-            LOG.error("Report execution failed.", e);
+            log.error("Report execution failed.", e);
             return createErrorResponse(e.getMessage());
         }
     }
