@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
@@ -34,7 +35,7 @@ public class ReportDAO extends AbstractDAO<Report> {
         log.debug("{} is removing ReportEntity instance", username);
         try {
             report.setDeletedBy(username);
-            report.setDeletedOn(new Date());
+            report.setDeletedOn(DateUtils.nowUTC().toDate());
             report.setIsDeleted(true);
             Session session = em.unwrap(Session.class);
             session.update(report);

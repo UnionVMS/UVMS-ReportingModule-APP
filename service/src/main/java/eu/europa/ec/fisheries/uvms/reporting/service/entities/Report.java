@@ -129,7 +129,7 @@ public class Report implements Serializable {
 
             executionLog = executionLogs.iterator().next();
 
-            executionLog.setExecutedOn(new Date());
+            executionLog.setExecutedOn(DateUtils.nowUTC().toDate());
 
         }
 
