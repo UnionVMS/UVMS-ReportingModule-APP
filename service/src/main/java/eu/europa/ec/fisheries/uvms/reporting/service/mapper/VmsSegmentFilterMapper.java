@@ -21,15 +21,15 @@ public interface VmsSegmentFilterMapper {
 
     @Mappings({
             @Mapping(constant = "SEGMENT_SPEED", target = "key"),
-            @Mapping(source = "minimumSpeed", target = "from", defaultValue = "O"),
+            @Mapping(source = "minimumSpeed", target = "from", defaultValue = "0"),
             @Mapping(source = "maximumSpeed", target = "to", defaultValue = "1000")
     })
     RangeCriteria speedRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
 
     @Mappings({
             @Mapping(constant = "SEGMENT_DURATION", target = "key"),
-            @Mapping(source = "minDuration", target = "from", defaultValue = "O"),
-            @Mapping(source = "maxDuration", target = "to", defaultValue = "1000")
+            @Mapping(source = "durationRange.minDuration", target = "from", defaultValue = "0"),
+            @Mapping(source = "durationRange.maxDuration", target = "to", defaultValue = "1000")
     })
     RangeCriteria durationRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
 

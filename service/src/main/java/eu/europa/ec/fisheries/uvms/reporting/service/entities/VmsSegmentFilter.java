@@ -31,11 +31,7 @@ public class VmsSegmentFilter extends Filter {
     @Column(name = "MAX_SPEED")
     private Float maximumSpeed;
 
-    @Column(name = "MIN_DURATION")
-    private Float minDuration;
-
-    @Column(name = "MAX_DURATION")
-    private Float maxDuration;
+    private DurationRange durationRange;
 
     @Column(name = "SEG_CATEGORY")
     private SegmentCategoryType category;
@@ -46,17 +42,15 @@ public class VmsSegmentFilter extends Filter {
 
     @Builder
     public VmsSegmentFilter(Long id,
-                            Float maxDuration, //FIXME replace with DurationRange
-                            Float minDuration,
+                            DurationRange durationRange,
                             Float maximumSpeed,
                             Float minimumSpeed,
                             SegmentCategoryType category) {
         super(FilterType.vmsseg);
         setId(id);
-        this.maxDuration = maxDuration;
+        this.durationRange = durationRange;
         this.maximumSpeed = maximumSpeed;
         this.minimumSpeed = minimumSpeed;
-        this.minDuration = minDuration;
         this.category = category;
     }
 
@@ -101,13 +95,14 @@ public class VmsSegmentFilter extends Filter {
     
     private List<RangeCriteria> getSegmentDurationCriteria() {
 
-        if (this.minDuration == null && this.maxDuration == null) {
+        if (this.durationRange == null) {
 
             return Collections.emptyList();
 
         }
 
         return Arrays.asList(VmsSegmentFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
+
 
     }
 
@@ -140,19 +135,13 @@ public class VmsSegmentFilter extends Filter {
         this.maximumSpeed = maximumSpeed;
     }
 
-    public Float getMinDuration() {
-        return minDuration;
+    public DurationRange getDurationRange() {
+
+        return durationRange;
     }
 
-    public void setMinDuration(Float minDuration) {
-        this.minDuration = minDuration;
-    }
+    public void setDurationRange(DurationRange durationRange) {
 
-    public Float getMaxDuration() {
-        return maxDuration;
-    }
-
-    public void setMaxDuration(Float maxDuration) {
-        this.maxDuration = maxDuration;
+        this.durationRange = durationRange;
     }
 }

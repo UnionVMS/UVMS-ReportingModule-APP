@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
 import junitparams.JUnitParamsRunner;
@@ -54,7 +55,7 @@ public class VmsSegmentFilterTest {
 
         Filter segmentFilter = VmsSegmentFilter.builder()
                 .category(SegmentCategoryType.ANCHORED)
-                .maxDuration(100F).minDuration(10F)
+                .durationRange(new DurationRange(10F, 100F))
                 .maximumSpeed(50F).minimumSpeed(5F)
                 .build();
         Filter merged = VmsSegmentFilter.builder().build();
@@ -82,7 +83,7 @@ public class VmsSegmentFilterTest {
 
     protected Object[] rangeCriteriaValues(){
 
-        Filter filter1 = VmsSegmentFilter.builder().minDuration(12F).maxDuration(13F).build();
+        Filter filter1 = VmsSegmentFilter.builder().durationRange(new DurationRange(12F, 13F)).build();
         RangeCriteria rangeCriteria = new RangeCriteria();
         rangeCriteria.setKey(RangeKeyType.SEGMENT_DURATION);
         rangeCriteria.setFrom("12.0");
@@ -99,9 +100,10 @@ public class VmsSegmentFilterTest {
         rangeCriteria2.setKey(RangeKeyType.SEGMENT_SPEED);
         rangeCriteria2.setTo("15.5");
 
-        Filter filter4 =  VmsSegmentFilter.builder().maxDuration(13F).build();
+        Filter filter4 =  VmsSegmentFilter.builder().durationRange(new DurationRange(0F, 13F)).build();
         RangeCriteria rangeCriteria4 = new RangeCriteria();
         rangeCriteria4.setKey(RangeKeyType.SEGMENT_DURATION);
+        rangeCriteria4.setFrom("0.0");
         rangeCriteria4.setTo("13.0");
 
         return $(

@@ -133,9 +133,8 @@ public class FilterDAOIT {
         filterDAO.createEntity(filter7);
 
         VmsSegmentFilter segmentFilter = VmsSegmentFilter.builder()
-                .maxDuration(12F)
+                .durationRange(new DurationRange(156F, 12F))
                 .maximumSpeed(164F)
-                .minDuration(156F)
                 .minimumSpeed(4565F)
                 .build();
         segmentFilter.setReport(savedReport);
