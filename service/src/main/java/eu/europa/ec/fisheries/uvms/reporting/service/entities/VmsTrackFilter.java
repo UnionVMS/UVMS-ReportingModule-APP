@@ -91,9 +91,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     private void addDistanceCriteria(List<RangeCriteria> rangeCriteria) {
-        Float maxDistance = distanceRange.getMaxDistance();
-        Float minDistance = distanceRange.getMinDistance();
-        if (minDistance != null || maxDistance != null) {
+        if (distanceRange!=null) {
+            Float maxDistance = distanceRange.getMaxDistance();
+            Float minDistance = distanceRange.getMinDistance();
             RangeCriteria lengthCriteria = new RangeCriteria();
             lengthCriteria.setKey(RangeKeyType.TRACK_LENGTH);
             lengthCriteria.setFrom(valueOf(minDistance != null ? minDistance : MIN_DEFAULT));
@@ -103,9 +103,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     private void addTotalDurationCriteria(List<RangeCriteria> rangeCriteria) {
-        Float maxDuration = durationRange.getMaxDuration();
-        Float minDuration = durationRange.getMinDuration();
-        if (minDuration != null || maxDuration != null) {
+        if (durationRange!=null) {
+            Float maxDuration = durationRange.getMaxDuration();
+            Float minDuration = durationRange.getMinDuration();
             RangeCriteria durationCriteria = new RangeCriteria();
             durationCriteria.setKey(RangeKeyType.TRACK_DURATION);
             durationCriteria.setFrom(valueOf(minDuration != null ? minDuration : MIN_DEFAULT));
@@ -115,9 +115,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     private void addDurationAtSeaCriteria(List<RangeCriteria> rangeCriteria) {
-        Float minTime = timeRange.getMinTime();
-        Float maxTime = timeRange.getMaxTime();
-        if (minTime != null || maxTime != null) {
+        if (timeRange!=null) {
+            Float minTime = timeRange.getMinTime();
+            Float maxTime = timeRange.getMaxTime();
             RangeCriteria timeCriteria = new RangeCriteria();
             timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
             timeCriteria.setFrom(valueOf(minTime != null ? minTime : MIN_DEFAULT));
