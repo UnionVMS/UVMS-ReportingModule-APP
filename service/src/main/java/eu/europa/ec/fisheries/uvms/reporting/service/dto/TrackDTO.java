@@ -15,7 +15,6 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.Setter;
-import org.opengis.feature.simple.SimpleFeature;
 import javax.measure.converter.UnitConverter;
 import java.util.ArrayList;
 import java.util.List;
