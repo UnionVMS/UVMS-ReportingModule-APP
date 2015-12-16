@@ -37,9 +37,8 @@ public class SegmentDTO {
     private static final String SEGMENTS = "segments";
     private static final String SEGMENT_CATEGORY_TYPE = "segmentCategory";
     private static final String EXTERNAL_MARKING = "externalMarking";
-
-    @JsonIgnore protected Geometry geometry;
     private AssetDTO asset;
+
     @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
     @Setter private UnitConverter lengthConverter = NAUTICAL_MILE.getConverterTo(NAUTICAL_MILE);
 
