@@ -1,4 +1,3 @@
-
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,14 +17,12 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.unitils.UnitilsJUnit4;
+
+import static junit.framework.TestCase.assertEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
-
-import static junit.framework.TestCase.assertEquals;
 
 public class VmsDTOTest extends UnitilsJUnit4 {
 
@@ -44,7 +41,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
 
         //assertEquals(expectedJSONString, prettify(dto.toJson()));
 
-        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson()), JSONCompareMode.STRICT);
+        JSONAssert.assertEquals(expectedJSONString, prettify(dto.toJson(null)), JSONCompareMode.STRICT);
 
     }
 
@@ -115,9 +112,9 @@ public class VmsDTOTest extends UnitilsJUnit4 {
 
         VmsDTO dto = new VmsDTO(new ImmutableMap.Builder<String, Vessel>().put("guid", vessel).build(), Arrays.asList(movementMapResponseType));
 
-        //assertEquals(expectedJSONString, prettify(dto.toJson()));
+        //assertEquals(expectedJSONString, prettify(dto.toJson(null)));
 
-        assertJsonEquals(expectedJSONString, prettify(dto.toJson()));
+        assertJsonEquals(expectedJSONString, prettify(dto.toJson(null)));
 
     }
 

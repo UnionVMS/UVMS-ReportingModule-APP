@@ -54,7 +54,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
         requestMock.returns(USER).getRemoteUser();
         vmsServiceMock.returns(vmsDTO).getVmsDataByReportId(USER, null, null);
 
-        Response response = resource.getMock().runReport(requestMock.getMock(), null, null, null);
+        Response response = resource.getMock().runReport(requestMock.getMock(), null, null, null, null);
 
         assertEquals(200, response.getStatus());
 
@@ -67,7 +67,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
         requestMock.returns(USER).getRemoteUser();
         vmsServiceMock.onceRaises(ReportingServiceException.class).getVmsDataByReportId(USER, null, null);
 
-        Response response = resource.getMock().runReport(requestMock.getMock(), null, null, null);
+        Response response = resource.getMock().runReport(requestMock.getMock(), null, null, null, null);
 
         assertEquals(500, response.getStatus());
 

@@ -13,6 +13,7 @@ import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
 
+import javax.measure.converter.UnitConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 public class VmsDTO {
 
-    private DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.MOVEMENTYPE);
+    private DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
     private DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
     private List<TrackDTO> tracks = new ArrayList<>();
     private Map<String, Vessel> vesselMap;
@@ -32,7 +33,7 @@ public class VmsDTO {
         this.movementMap = movementMap;
     }
 
-    public ObjectNode toJson() throws ReportingServiceException {
+    public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
 
         ObjectNode rootNode;
 
@@ -43,13 +44,13 @@ public class VmsDTO {
                     Vessel vessel = vesselMap.get(map.getKey());
                     if (vessel != null){
                         for (MovementType movement : map.getMovements()){
-                            movements.add(new MovementDTO(movement, vessel).toFeature());
+                            movements.add(new MovementDTO(movement, vessel, format).toFeature());
                         }
                         for (MovementSegment segment : map.getSegments()){
-                            segments.add(new SegmentDTO(segment, vessel).toFeature());
+                            segments.add(new SegmentDTO(segment, vessel, format).toFeature());
                         }
                         for (MovementTrack track : map.getTracks()){
-                            tracks.add(new TrackDTO(track, vessel));
+                            tracks.add(new TrackDTO(track, vessel, format));
                         }
                     }
                 }
@@ -69,4 +70,5 @@ public class VmsDTO {
 
         return rootNode;
     }
+
 }

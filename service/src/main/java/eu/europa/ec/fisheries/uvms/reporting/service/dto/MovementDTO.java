@@ -1,12 +1,16 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import lombok.Setter;
 import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -14,31 +18,24 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
+import javax.measure.converter.UnitConverter;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class MovementDTO extends GeoJsonDTO {
+import static javax.measure.unit.NonSI.*;
 
-    public static final SimpleFeatureType MOVEMENTYPE = buildFeatureType();
+public class MovementDTO {
 
-    private static final String POSITION_TIME = "positionTime";
-    private static final String CONNECTION_ID = "connectionId";
-    private static final String STATUS = "status";
-    private static final String REPORTED_COURSE = "reportedCourse";
-    private static final String MOVEMENT_TYPE = "movementType";
-    private static final String ACTIVITY_TYPE = "activityType";
-    private static final String REPORTED_SPEED = "reportedSpeed";
-    private static final String CALCULATED_SPEED = "calculatedSpeed";
-    private static final String COUNTRY_CODE = "countryCode";
-    private static final String IRCS = "ircs";
-    private static final String CFR = "cfr";
-    private static final String NAME = "name";
-    private static final String MOVEMENT_GUID = "movementGuid";
-    private static final String MOVEMENT = "movement";
-    private static final String EXTERNAL_MARKING = "externalMarking";
-    private static final String SOURCE = "source";
+    public static final SimpleFeatureType SIMPLE_FEATURE_TYPE = buildFeatureType();
+    private static final String GEOMETRY = "geometry", POSITION_TIME = "positionTime", SOURCE = "source";
+    private static final String CONNECTION_ID = "connectionId", STATUS = "status", REPORTED_COURSE = "reportedCourse";
+    private static final String MOVEMENT_TYPE = "movementType", ACTIVITY_TYPE = "activityType";
+    private static final String REPORTED_SPEED = "reportedSpeed", CALCULATED_SPEED = "calculatedSpeed";
+    private static final String COUNTRY_CODE = "countryCode", IRCS = "ircs", EXTERNAL_MARKING = "externalMarking";
+    private static final String MOVEMENT_GUID = "movementGuid", MOVEMENT = "movement", NAME = "name", CFR = "cfr";
 
-    @Delegate(types = Include.class)
-    private MovementType movementType;
+    @Delegate(types = Include.class) private MovementType movementType;
+    @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
+    @Setter private UnitConverter lengthConverter = NAUTICAL_MILE.getConverterTo(NAUTICAL_MILE);
 
     private AssetDTO asset;
 
@@ -47,7 +44,17 @@ public class MovementDTO extends GeoJsonDTO {
         asset = new AssetDTO(vessel);
     }
 
+    public MovementDTO(MovementType movement, Vessel vessel, DisplayFormat format) {
+        this(movement, vessel);
+
+        if (format != null) {
+            lengthConverter = format.getLengthType().getConverter();
+            velocityConverter = format.getVelocityType().getConverter();
+        }
+    }
+
     private static SimpleFeatureType buildFeatureType() {
+
         SimpleFeatureTypeBuilder sb = new SimpleFeatureTypeBuilder();
         sb.setName(MOVEMENT);
         sb.setCRS(DefaultGeographicCRS.WGS84);
@@ -73,7 +80,7 @@ public class MovementDTO extends GeoJsonDTO {
 
     public SimpleFeature toFeature() throws ReportingServiceException {
 
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(MOVEMENTYPE);
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(SIMPLE_FEATURE_TYPE);
         featureBuilder.set(GEOMETRY, toGeometry(getWkt()));
         featureBuilder.set(POSITION_TIME, getPositionTime());
         featureBuilder.set(CONNECTION_ID, getConnectId());
@@ -88,8 +95,8 @@ public class MovementDTO extends GeoJsonDTO {
             featureBuilder.set(ACTIVITY_TYPE, movementType.getActivity().getMessageType().value());
         }
 
-        featureBuilder.set(REPORTED_SPEED, getReportedSpeed());
-        featureBuilder.set(CALCULATED_SPEED, getCalculatedSpeed());
+        featureBuilder.set(REPORTED_SPEED, velocityConverter.convert(getReportedSpeed() != null ? getReportedSpeed() : 0));
+        featureBuilder.set(CALCULATED_SPEED, velocityConverter.convert(getCalculatedSpeed() != null ? getCalculatedSpeed() : 0));
         featureBuilder.set(CFR, asset.getCfr());
         featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
         featureBuilder.set(IRCS, asset.getIrcs());
@@ -98,6 +105,19 @@ public class MovementDTO extends GeoJsonDTO {
         featureBuilder.set(SOURCE, getSource());
 
         return featureBuilder.buildFeature(getGuid());
+    }
+
+    private Geometry toGeometry(final String wkt) throws ReportingServiceException {
+
+        if (wkt != null){
+            WKTReader wktReader = new WKTReader();
+            try {
+                return wktReader.read(wkt);
+            } catch (ParseException e) {
+                throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
+            }
+        }
+        return null;
     }
 
     private interface Include {

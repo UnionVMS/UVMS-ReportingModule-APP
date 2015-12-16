@@ -1,16 +1,21 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import static javax.measure.unit.NonSI.KNOT;
+import static javax.measure.unit.NonSI.NAUTICAL_MILE;
+
 import com.vividsolutions.jts.geom.LineString;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import lombok.Setter;
 import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import javax.measure.converter.UnitConverter;
 
 public class SegmentDTO extends GeoJsonDTO {
 
@@ -31,12 +36,28 @@ public class SegmentDTO extends GeoJsonDTO {
 
     private AssetDTO asset;
 
+    @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
+    @Setter private UnitConverter lengthConverter = NAUTICAL_MILE.getConverterTo(NAUTICAL_MILE);
+
     @Delegate(types = Include.class)
     private MovementSegment segment;
 
     public SegmentDTO(MovementSegment segment, Vessel vessel) {
         asset = new AssetDTO(vessel);
         this.segment = segment;
+    }
+
+    public SegmentDTO(MovementSegment segment, Vessel vessel, DisplayFormat format) {
+
+        this(segment, vessel);
+
+        if (format != null) {
+
+            lengthConverter = format.getLengthType().getConverter();
+            velocityConverter = format.getVelocityType().getConverter();
+
+        }
+
     }
 
     private static SimpleFeatureType build(){
@@ -61,10 +82,10 @@ public class SegmentDTO extends GeoJsonDTO {
     @Override
     public SimpleFeature toFeature() throws ReportingServiceException {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(SEGMENT);
-        featureBuilder.set(SPEED_OVER_GROUND, getSpeedOverGround());
+        featureBuilder.set(SPEED_OVER_GROUND, velocityConverter.convert(getSpeedOverGround() != null ? getSpeedOverGround() : 0));
         featureBuilder.set(COURSE_OVER_GROUND, getCourseOverGround());
         featureBuilder.set(GEOMETRY, toGeometry(getWkt()));
-        featureBuilder.set(DISTANCE, getDistance());
+        featureBuilder.set(DISTANCE, lengthConverter.convert(getDistance() != null ? getDistance() : 0));
         featureBuilder.set(DURATION, getDuration());
         featureBuilder.set(TRACK_ID, getTrackId());
         featureBuilder.set(CFR, asset.getCfr());

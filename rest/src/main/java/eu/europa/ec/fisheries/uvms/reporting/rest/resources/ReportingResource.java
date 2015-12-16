@@ -3,11 +3,10 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
@@ -30,6 +29,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.Collection;
 import java.util.Set;
+
+import javax.measure.Measure;
+import javax.measure.converter.UnitConverter;
+import javax.measure.quantity.Length;
+import static javax.measure.unit.NonSI.*;
+import static javax.measure.unit.SI.*;
 
 @Path("/report")
 @Slf4j
@@ -277,13 +282,15 @@ public class ReportingResource extends UnionVMSResource {
     }
 
 
-    @GET
+    @POST
     @Path("/execute/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response runReport(@Context HttpServletRequest request,
                               @Context HttpServletResponse response,
                               @PathParam("id") Long id,
-                              @HeaderParam("scopeName") String scopeName) {
+                              @HeaderParam("scopeName") String scopeName,
+                              DisplayFormat format) {
 
         String username = request.getRemoteUser();
 
@@ -293,8 +300,10 @@ public class ReportingResource extends UnionVMSResource {
         ObjectNode jsonNodes;
 
         try {
+
             vmsDto = vmsService.getVmsDataByReportId(username, scopeName, id);
-            jsonNodes = vmsDto.toJson();
+
+            jsonNodes = vmsDto.toJson(format);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
