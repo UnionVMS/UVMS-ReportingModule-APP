@@ -13,8 +13,6 @@ import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
-
-import javax.measure.converter.UnitConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
