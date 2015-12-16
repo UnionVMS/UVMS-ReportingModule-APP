@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -17,11 +20,10 @@ import javax.measure.converter.UnitConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackDTO extends GeoJsonDTO {
+public class TrackDTO {
 
-    @JsonIgnore
-    private MovementTrack track;
-
+    @JsonIgnore private MovementTrack track;
+    @JsonIgnore private Geometry geometry;
     @JsonUnwrapped private AssetDTO asset;
     private List<Double> nearestPoint;
     private List<Double> extent;
@@ -54,11 +56,6 @@ public class TrackDTO extends GeoJsonDTO {
             nearestPoint.add(nearestPoints[0].x);
             nearestPoint.add(nearestPoints[0].y);
         }
-    }
-
-    @Override
-    public SimpleFeature toFeature() throws ReportingServiceException {
-        return null;
     }
 
     private void computeEnvelope() {
@@ -103,5 +100,18 @@ public class TrackDTO extends GeoJsonDTO {
 
         return  track.getId();
 
+    }
+
+    public Geometry toGeometry(final String wkt) throws ReportingServiceException {
+        if (wkt != null){
+            WKTReader wktReader = new WKTReader();
+            try {
+                geometry = wktReader.read(wkt);
+                return geometry;
+            } catch (ParseException e) {
+                throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
+            }
+        }
+        return null;
     }
 }

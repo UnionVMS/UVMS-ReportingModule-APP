@@ -3,7 +3,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import static javax.measure.unit.NonSI.KNOT;
 import static javax.measure.unit.NonSI.NAUTICAL_MILE;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -17,10 +21,10 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import javax.measure.converter.UnitConverter;
 
-public class SegmentDTO extends GeoJsonDTO {
+public class SegmentDTO {
 
     public static final SimpleFeatureType SEGMENT = build();
-
+    private static final String GEOMETRY = "geometry";
     private static final String COURSE_OVER_GROUND = "courseOverGround";
     private static final String SPEED_OVER_GROUND = "speedOverGround";
     private static final String DURATION = "duration";
@@ -34,8 +38,8 @@ public class SegmentDTO extends GeoJsonDTO {
     private static final String SEGMENT_CATEGORY_TYPE = "segmentCategory";
     private static final String EXTERNAL_MARKING = "externalMarking";
 
+    @JsonIgnore protected Geometry geometry;
     private AssetDTO asset;
-
     @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
     @Setter private UnitConverter lengthConverter = NAUTICAL_MILE.getConverterTo(NAUTICAL_MILE);
 
@@ -79,7 +83,6 @@ public class SegmentDTO extends GeoJsonDTO {
         return sb.buildFeatureType();
     }
 
-    @Override
     public SimpleFeature toFeature() throws ReportingServiceException {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(SEGMENT);
         featureBuilder.set(SPEED_OVER_GROUND, velocityConverter.convert(getSpeedOverGround() != null ? getSpeedOverGround() : 0));
@@ -106,6 +109,19 @@ public class SegmentDTO extends GeoJsonDTO {
         String getWkt();
         String getTrackId();
         SegmentCategoryType getCategory();
+    }
+
+    public Geometry toGeometry(final String wkt) throws ReportingServiceException {
+        if (wkt != null){
+            WKTReader wktReader = new WKTReader();
+            try {
+                geometry = wktReader.read(wkt);
+                return geometry;
+            } catch (ParseException e) {
+                throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
+            }
+        }
+        return null;
     }
 
 }
