@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -64,7 +65,7 @@ public class VmsDTO {
             rootNode.set("segments", new FeatureToGeoJsonJacksonMapper().convert(segments));
             rootNode.putPOJO("tracks", tracks);
 
-        } catch (IOException e) {
+        } catch (ParseException | IOException e) {
             throw new ReportingServiceException("ERROR WHILE CREATING GEOJSON", e);
         }
 

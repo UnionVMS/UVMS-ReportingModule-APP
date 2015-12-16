@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.Setter;
 import lombok.experimental.Delegate;
@@ -78,10 +79,10 @@ public class MovementDTO {
         return sb.buildFeatureType();
     }
 
-    public SimpleFeature toFeature() throws ReportingServiceException {
+    public SimpleFeature toFeature() throws ReportingServiceException, ParseException {
 
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(SIMPLE_FEATURE_TYPE);
-        featureBuilder.set(GEOMETRY, toGeometry(getWkt()));
+        featureBuilder.set(GEOMETRY, GeometryUtil.toGeometry(getWkt()));
         featureBuilder.set(POSITION_TIME, getPositionTime());
         featureBuilder.set(CONNECTION_ID, getConnectId());
         featureBuilder.set(STATUS, getStatus());
@@ -105,19 +106,6 @@ public class MovementDTO {
         featureBuilder.set(SOURCE, getSource());
 
         return featureBuilder.buildFeature(getGuid());
-    }
-
-    private Geometry toGeometry(final String wkt) throws ReportingServiceException {
-
-        if (wkt != null){
-            WKTReader wktReader = new WKTReader();
-            try {
-                return wktReader.read(wkt);
-            } catch (ParseException e) {
-                throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
-            }
-        }
-        return null;
     }
 
     private interface Include {

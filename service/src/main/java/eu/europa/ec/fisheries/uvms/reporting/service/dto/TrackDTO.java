@@ -9,10 +9,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.Setter;
 import javax.measure.converter.UnitConverter;
@@ -29,15 +29,15 @@ public class TrackDTO {
     @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
     @Setter private UnitConverter lengthConverter = NAUTICAL_MILE.getConverterTo(NAUTICAL_MILE);
 
-    public TrackDTO(MovementTrack track, Vessel vessel) throws ReportingServiceException {
+    public TrackDTO(MovementTrack track, Vessel vessel) throws ReportingServiceException, ParseException {
         this.track = track;
         asset = new AssetDTO(vessel);
-        toGeometry(track.getWkt());
+        geometry = GeometryUtil.toGeometry(track.getWkt());
         computeEnvelope();
         computerNearestPoint();
     }
 
-    public TrackDTO(MovementTrack track, Vessel vessel, DisplayFormat format) throws ReportingServiceException {
+    public TrackDTO(MovementTrack track, Vessel vessel, DisplayFormat format) throws ReportingServiceException, ParseException {
         this(track, vessel);
 
         if (format != null){
@@ -99,18 +99,5 @@ public class TrackDTO {
 
         return  track.getId();
 
-    }
-
-    public Geometry toGeometry(final String wkt) throws ReportingServiceException {
-        if (wkt != null){
-            WKTReader wktReader = new WKTReader();
-            try {
-                geometry = wktReader.read(wkt);
-                return geometry;
-            } catch (ParseException e) {
-                throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
-            }
-        }
-        return null;
     }
 }

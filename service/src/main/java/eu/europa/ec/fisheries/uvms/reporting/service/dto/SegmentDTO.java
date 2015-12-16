@@ -11,6 +11,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.Setter;
 import lombok.experimental.Delegate;
@@ -83,11 +84,11 @@ public class SegmentDTO {
         return sb.buildFeatureType();
     }
 
-    public SimpleFeature toFeature() throws ReportingServiceException {
+    public SimpleFeature toFeature() throws ReportingServiceException, ParseException {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(SEGMENT);
         featureBuilder.set(SPEED_OVER_GROUND, velocityConverter.convert(getSpeedOverGround() != null ? getSpeedOverGround() : 0));
         featureBuilder.set(COURSE_OVER_GROUND, getCourseOverGround());
-        featureBuilder.set(GEOMETRY, toGeometry(getWkt()));
+        featureBuilder.set(GEOMETRY, GeometryUtil.toGeometry(getWkt()));
         featureBuilder.set(DISTANCE, lengthConverter.convert(getDistance() != null ? getDistance() : 0));
         featureBuilder.set(DURATION, getDuration());
         featureBuilder.set(TRACK_ID, getTrackId());
@@ -109,19 +110,6 @@ public class SegmentDTO {
         String getWkt();
         String getTrackId();
         SegmentCategoryType getCategory();
-    }
-
-    public Geometry toGeometry(final String wkt) throws ReportingServiceException {
-        if (wkt != null){
-            WKTReader wktReader = new WKTReader();
-            try {
-                geometry = wktReader.read(wkt);
-                return geometry;
-            } catch (ParseException e) {
-                throw new ReportingServiceException("ERROR WHILE PARSING GEOMETRY", e);
-            }
-        }
-        return null;
     }
 
 }
