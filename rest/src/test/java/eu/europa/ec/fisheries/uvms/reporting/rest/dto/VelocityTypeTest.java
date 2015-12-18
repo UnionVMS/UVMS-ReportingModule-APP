@@ -15,18 +15,18 @@ public class VelocityTypeTest {
 
         String enumAsString = new ObjectMapper().writeValueAsString(VelocityType.KPH);
 
-        assertThat(enumAsString, is("\"kmh\""));
+        assertThat(enumAsString, is("\"kph\""));
     }
 
     @Test
     public void whenDeserializerUsingJsonValue_thenCorrect() throws IOException {
 
-        String json = "\"kmh\"";
+        String json = "\"kph\"";
 
         VelocityType velocityType = new ObjectMapper().reader().withType(VelocityType.class)
                 .readValue(json);
 
-        assertEquals("kmh", velocityType.getDisplayName());
+        assertEquals("kph", velocityType.getDisplayName());
     }
 
 }
