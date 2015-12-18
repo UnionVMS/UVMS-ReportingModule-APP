@@ -13,7 +13,7 @@ public class VelocityTypeTest {
     @Test
     public void whenSerializingUsingJsonValue_thenCorrect() throws IOException {
 
-        String enumAsString = new ObjectMapper().writeValueAsString(VelocityType.KMH);
+        String enumAsString = new ObjectMapper().writeValueAsString(VelocityType.KPH);
 
         assertThat(enumAsString, is("\"kmh\""));
     }

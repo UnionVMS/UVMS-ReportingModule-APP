@@ -7,7 +7,7 @@ import javax.measure.converter.UnitConverter;
 
 public enum VelocityType {
 
-    KMH(1, "kmh"), MPH(2, "mph"), KTS(3, "kts");
+    KPH(1, "kph"), MPH(2, "mph"), KTS(3, "kts");
 
     private Integer id;
     private String displayName;
@@ -31,7 +31,7 @@ public enum VelocityType {
 
         switch (this){
 
-            case KMH:
+            case KPH:
                 unitConverter = KNOT.getConverterTo(KILOMETERS_PER_HOUR);
                 break;
 
