@@ -12,8 +12,6 @@ public enum VelocityType {
     private Integer id;
     private String displayName;
 
-    private VelocityType converter;
-
     VelocityType(int id, String displayName) {
         this.id = id;
         this.displayName = displayName;
