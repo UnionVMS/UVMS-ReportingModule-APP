@@ -62,6 +62,9 @@ public class ReportServiceBean {
     private void saveMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         if (withMap) {
             try {
+                if (mapConfiguration == null) {
+                    throw new ReportingServiceException("When withMap is set to true you must specify mapConfiguration attributes.");
+                }
                 saveOrUpdateMapConfiguration(reportId, mapConfiguration);
             } catch (Exception e) {
                 throw new RuntimeException("Error during the creation of the map configuration");

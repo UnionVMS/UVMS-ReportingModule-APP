@@ -63,20 +63,24 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private MapConfigurationDTO createMapConfigurationDTO(boolean withMap, JsonNode mapConfigJsonNode) {
-        if (withMap && mapConfigJsonNode != null) {
-            Long spatialConnectId = (mapConfigJsonNode.get("spatialConnectId") != null) ? mapConfigJsonNode.get("spatialConnectId").longValue() : null;
-            Long mapProjectionId = (mapConfigJsonNode.get("mapProjectionId") != null) ? mapConfigJsonNode.get("mapProjectionId").longValue() : null;
-            Long displayProjectionId = (mapConfigJsonNode.get("displayProjectionId") != null) ? mapConfigJsonNode.get("displayProjectionId").longValue() : null;
-            String coordinatesFormat = (mapConfigJsonNode.get("coordinatesFormat") != null) ? mapConfigJsonNode.get("coordinatesFormat").textValue() : null;
-            String scaleBarUnits = (mapConfigJsonNode.get("scaleBarUnits") != null) ? mapConfigJsonNode.get("scaleBarUnits").textValue() : null;
+        if (withMap) {
+            if (mapConfigJsonNode == null) {
+                throw new RuntimeException("When withMap is set to true you must specify mapConfiguration attributes.");
+            } else {
+                Long spatialConnectId = (mapConfigJsonNode.get("spatialConnectId") != null) ? mapConfigJsonNode.get("spatialConnectId").longValue() : null;
+                Long mapProjectionId = (mapConfigJsonNode.get("mapProjectionId") != null) ? mapConfigJsonNode.get("mapProjectionId").longValue() : null;
+                Long displayProjectionId = (mapConfigJsonNode.get("displayProjectionId") != null) ? mapConfigJsonNode.get("displayProjectionId").longValue() : null;
+                String coordinatesFormat = (mapConfigJsonNode.get("coordinatesFormat") != null) ? mapConfigJsonNode.get("coordinatesFormat").textValue() : null;
+                String scaleBarUnits = (mapConfigJsonNode.get("scaleBarUnits") != null) ? mapConfigJsonNode.get("scaleBarUnits").textValue() : null;
 
-            return MapConfigurationDTO.MapConfigurationDTOBuilder()
-                    .spatialConnectId(spatialConnectId)
-                    .mapProjectionId(mapProjectionId)
-                    .displayProjectionId(displayProjectionId)
-                    .coordinatesFormat(coordinatesFormat)
-                    .scaleBarUnits(scaleBarUnits)
-                    .build();
+                return MapConfigurationDTO.MapConfigurationDTOBuilder()
+                        .spatialConnectId(spatialConnectId)
+                        .mapProjectionId(mapProjectionId)
+                        .displayProjectionId(displayProjectionId)
+                        .coordinatesFormat(coordinatesFormat)
+                        .scaleBarUnits(scaleBarUnits)
+                        .build();
+            }
         } else {
             return null;
         }
