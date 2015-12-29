@@ -7,7 +7,6 @@ import javax.ejb.Startup;
 import java.io.InputStream;
 
 @Singleton
-@Startup
 public class ReportingInitializerBean extends AbstractModuleInitializerBean {
 
     @Override
