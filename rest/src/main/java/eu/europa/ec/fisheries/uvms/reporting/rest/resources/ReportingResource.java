@@ -304,6 +304,7 @@ public class ReportingResource extends UnionVMSResource {
             vmsDto = vmsService.getVmsDataByReportId(username, scopeName, id);
 
             jsonNodes = vmsDto.toJson(format);
+            log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {

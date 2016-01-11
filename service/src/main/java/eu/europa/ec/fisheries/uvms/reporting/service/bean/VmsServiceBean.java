@@ -13,6 +13,8 @@ import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.helpers.MessageFormatter;
+
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -46,12 +48,13 @@ public class VmsServiceBean implements VmsService {
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
     public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
+        log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
 
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
 
         if (reportByReportId == null) {
 
-            String error = "No report found with id " + id;
+            String error = MessageFormatter.arrayFormat("No report found with id {}", new Object[]{id}).getMessage();
 
             log.error(error);
 
@@ -72,6 +75,8 @@ public class VmsServiceBean implements VmsService {
             Collection<MovementMapResponseType> movementMap;
 
             Map<String, MovementMapResponseType> responseTypeMap;
+
+            log.debug("Running report {} vessels or vessel groups.", processor.hasVesselsOrVesselGroups()?"has":"doesn't have");
 
             if (processor.hasVesselsOrVesselGroups()) {
 
@@ -109,6 +114,7 @@ public class VmsServiceBean implements VmsService {
 
         }
 
+        log.debug("[END] getVmsDataByReportId(...)");
         return vmsDto;
 
     }
