@@ -15,6 +15,9 @@ public interface AreaFilterMapper {
 
     AreaFilter areaFilterDTOToAreaFilter(AreaFilterDTO areaFilterDTO);
 
+    @Mappings({
+            @Mapping(source="areaId", target = "id")
+    })
     AreaIdentifierType areaIdentifierTypeToAreaFilter(AreaFilter areaFilter);
 
     @Mappings({
