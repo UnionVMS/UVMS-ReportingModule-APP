@@ -3,8 +3,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselFilterMapper;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import javax.persistence.DiscriminatorValue;
@@ -13,9 +13,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("VESSEL")
+@DiscriminatorValue("ASSET")
 @EqualsAndHashCode(callSuper = true, of = {"guid", "name"})
-public class VesselFilter extends Filter {
+public class AssetFilter extends Filter {
 
     @NotNull
     private String guid;
@@ -23,13 +23,13 @@ public class VesselFilter extends Filter {
     @NotNull
     private String name;
 
-    VesselFilter() {
-        super(FilterType.vessel);
+    AssetFilter() {
+        super(FilterType.asset);
     }
 
     @Builder
-    public VesselFilter(Long id, String guid, String name) {
-        super(FilterType.vessel);
+    public AssetFilter(Long id, String guid, String name) {
+        super(FilterType.asset);
         this.guid = guid;
         this.name = name;
         setId(id);
@@ -37,12 +37,12 @@ public class VesselFilter extends Filter {
 
     @Override
     public <T> T accept(FilterVisitor<T> visitor) {
-        return visitor.visitVesselFilter(this);
+        return visitor.visitAssetFilter(this);
     }
 
     @Override
     public void merge(Filter filter) {
-        VesselFilterMapper.INSTANCE.merge((VesselFilter) filter, this);
+        AssetFilterMapper.INSTANCE.merge((AssetFilter) filter, this);
     }
 
     @Override
@@ -51,13 +51,13 @@ public class VesselFilter extends Filter {
     }
 
     @Override
-    public List<VesselListCriteriaPair> vesselCriteria() {
-        return Lists.newArrayList(VesselFilterMapper.INSTANCE.vesselFilterToVesselListCriteriaPair(this));
+    public List<AssetListCriteriaPair> assetCriteria() {
+        return Lists.newArrayList(AssetFilterMapper.INSTANCE.assetFilterToAssetListCriteriaPair(this));
     }
 
     @Override
     public List<ListCriteria> movementListCriteria() {
-        return Lists.newArrayList(VesselFilterMapper.INSTANCE.vesselFilterToListCriteria(this));
+        return Lists.newArrayList(AssetFilterMapper.INSTANCE.assetFilterToListCriteria(this));
     }
 
     public String getGuid() {

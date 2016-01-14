@@ -1,10 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.model;
 
-public class Vessel {
+public class Asset {
 
     private String guid;
     private String name;
-    private VesselType type;
+    private AssetType type;
 
     public String getName() {
         return name;
@@ -14,11 +14,11 @@ public class Vessel {
         this.name = name;
     }
 
-    public VesselType getType() {
+    public AssetType getType() {
         return type;
     }
 
-    public void setVesselType(VesselType type) {
+    public void setAssetType(AssetType type) {
         this.type = type;
     }
 

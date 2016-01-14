@@ -11,7 +11,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.Setter;
 import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -45,14 +45,14 @@ public class SegmentDTO {
     @Delegate(types = Include.class)
     private MovementSegment segment;
 
-    public SegmentDTO(MovementSegment segment, Vessel vessel) {
-        asset = new AssetDTO(vessel);
+    public SegmentDTO(MovementSegment segment, Asset asset) {
+        this.asset = new AssetDTO(asset);
         this.segment = segment;
     }
 
-    public SegmentDTO(MovementSegment segment, Vessel vessel, DisplayFormat format) {
+    public SegmentDTO(MovementSegment segment, Asset asset, DisplayFormat format) {
 
-        this(segment, vessel);
+        this(segment, asset);
 
         if (format != null) {
 

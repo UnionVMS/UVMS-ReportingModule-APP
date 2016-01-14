@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:VesselListModuleRequest xmlns:ns2="module.vessel.wsdl.fisheries.ec.europa.eu">
-    <method>VESSEL_LIST</method>
-    <query/>
-</ns2:VesselListModuleRequest>

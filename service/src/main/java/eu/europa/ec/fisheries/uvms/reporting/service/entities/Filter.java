@@ -6,8 +6,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.EqualsAndHashCode;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -122,7 +122,7 @@ public abstract class Filter implements Serializable {
 
     public abstract Object getUniqKey();
 
-    public List<VesselListCriteriaPair> vesselCriteria() {
+    public List<AssetListCriteriaPair> assetCriteria() {
         return Collections.emptyList();
     }
 
@@ -130,7 +130,7 @@ public abstract class Filter implements Serializable {
         return Collections.emptyList();
     }
 
-    public List<VesselGroup> vesselGroupCriteria(){
+    public List<AssetGroup> assetGroupCriteria(){
         return Collections.emptyList();
     }
 
@@ -160,13 +160,13 @@ public abstract class Filter implements Serializable {
         }
 
         @Override
-        public FilterDTO visitVesselFilter(VesselFilter vesselFilter) {
-            return VesselFilterMapper.INSTANCE.vesselFilterToVesselFilterDTO(vesselFilter);
+        public FilterDTO visitAssetFilter(AssetFilter assetFilter) {
+            return AssetFilterMapper.INSTANCE.assetFilterToAssetFilterDTO(assetFilter);
         }
 
         @Override
-        public FilterDTO visitVesselGroupFilter(VesselGroupFilter vesselGroupFilter) {
-            return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroupFilterDTO(vesselGroupFilter);
+        public FilterDTO visitAssetGroupFilter(AssetGroupFilter assetGroupFilter) {
+            return AssetGroupFilterMapper.INSTANCE.assetGroupFilterToAssetGroupFilterDTO(assetGroupFilter);
         }
 
         @Override

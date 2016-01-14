@@ -8,7 +8,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.Setter;
 import lombok.experimental.Delegate;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -38,13 +38,13 @@ public class MovementDTO {
 
     private AssetDTO asset;
 
-    public MovementDTO(MovementType movementType, Vessel vessel){
+    public MovementDTO(MovementType movementType, Asset asset){
         this.movementType = movementType;
-        asset = new AssetDTO(vessel);
+        this.asset = new AssetDTO(asset);
     }
 
-    public MovementDTO(MovementType movement, Vessel vessel, DisplayFormat format) {
-        this(movement, vessel);
+    public MovementDTO(MovementType movement, Asset asset, DisplayFormat format) {
+        this(movement, asset);
 
         if (format != null) {
             lengthConverter = format.getLengthType().getConverter();

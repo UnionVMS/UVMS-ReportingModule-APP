@@ -46,7 +46,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeFieldName(FILTER_EXPRESSION);
         jgen.writeStartObject();
 
-        List<FilterDTO> vesselFilterDTOList = new ArrayList<>();
+        List<FilterDTO> assetFilterDTOList = new ArrayList<>();
         List<FilterDTO> areaFilterDTOList = new ArrayList<>();
         VmsPositionFilterDTO position = null;
         VmsSegmentFilterDTO segment = null;
@@ -71,11 +71,11 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case vmsseg:
                     segment = (VmsSegmentFilterDTO) filterDTO;
                     break;
-                case vessel:
-                    vesselFilterDTOList.add(filterDTO);
+                case asset:
+                    assetFilterDTOList.add(filterDTO);
                     break;
                 case vgroup:
-                    vesselFilterDTOList.add(filterDTO);
+                    assetFilterDTOList.add(filterDTO);
                     break;
                 default:
                     break;
@@ -91,7 +91,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeEndObject();
 
         writeAreaFilters(jgen, areaFilterDTOList);
-        writeVessels(jgen, vesselFilterDTOList);
+        writeAssets(jgen, assetFilterDTOList);
         jgen.writeEndObject();
     }
 
@@ -114,8 +114,8 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         }
     }
 
-    private void writeVessels(JsonGenerator jgen, List<FilterDTO> vesselFilterDTOList) throws IOException {
-        jgen.writeObjectField(VesselFilterDTO.VESSELS, vesselFilterDTOList);
+    private void writeAssets(JsonGenerator jgen, List<FilterDTO> assetFilterDTOList) throws IOException {
+        jgen.writeObjectField(AssetFilterDTO.ASSETS, assetFilterDTOList);
     }
 
     private void writeVmsPosition(JsonGenerator jgen, VmsPositionFilterDTO position) throws IOException {

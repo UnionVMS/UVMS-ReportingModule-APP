@@ -9,15 +9,15 @@
   "filterExpression" : {
     "vms" : { },
     "areas" : [ ],
-    "vessels" : [ {
-      "type" : "vessel",
+    "assets" : [ {
+      "type" : "asset",
       "guid" : "guid1",
-      "name" : "vessel1"
+      "name" : "asset1"
     }, {
       "id" : 48,
-      "type" : "vessel",
+      "type" : "asset",
       "guid" : "guid2",
-      "name" : "vessel2"
+      "name" : "asset2"
     } ]
   }
 }

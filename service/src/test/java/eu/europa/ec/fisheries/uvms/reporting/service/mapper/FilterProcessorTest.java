@@ -4,11 +4,11 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
-import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
-import eu.europa.ec.fisheries.wsdl.vessel.types.ConfigSearchField;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -28,29 +28,29 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testInitWithVesselFilter() {
+    public void testInitWithAssetFilter() {
 
         Set<Filter> filterList = new HashSet<>();
 
-        VesselFilter vesselFilter = VesselFilter.builder().guid("guid").build();
-        filterList.add(vesselFilter);
+        AssetFilter assetFilter = AssetFilter.builder().guid("guid").build();
+        filterList.add(assetFilter);
 
         processor = new FilterProcessor(filterList);
 
-        assertEquals(1, processor.getVesselListCriteriaPairs().size());
+        assertEquals(1, processor.getAssetListCriteriaPairs().size());
         assertEquals(0, processor.getRangeCriteria().size());
-        assertEquals(0, processor.getVesselGroupList().size());
+        assertEquals(0, processor.getAssetGroupList().size());
         assertEquals(1, processor.getMovementListCriteria().size());
 
-        List<VesselListCriteriaPair> vesselListCriteriaPairList = new ArrayList<>();
-        vesselListCriteriaPairList.addAll(processor.getVesselListCriteriaPairs());
+        List<AssetListCriteriaPair> assetListCriteriaPairList = new ArrayList<>();
+        assetListCriteriaPairList.addAll(processor.getAssetListCriteriaPairs());
 
         List<ListCriteria> listCriteria = new ArrayList<>();
         listCriteria.addAll(processor.getMovementListCriteria());
 
-        processor.getVesselListCriteriaPairs();
-        assertEquals(vesselListCriteriaPairList.get(0).getKey(), ConfigSearchField.GUID);
-        assertEquals(vesselListCriteriaPairList.get(0).getValue(), "guid");
+        processor.getAssetListCriteriaPairs();
+        assertEquals(assetListCriteriaPairList.get(0).getKey(), ConfigSearchField.GUID);
+        assertEquals(assetListCriteriaPairList.get(0).getValue(), "guid");
 
         assertEquals(listCriteria.get(0).getKey(), SearchKey.CONNECT_ID);
         assertEquals(listCriteria.get(0).getValue(), "guid");
@@ -59,29 +59,29 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testInitWithVesselGroupFilter() {
+    public void testInitWithAssetGroupFilter() {
 
         Set<Filter> filterList = new HashSet<>();
 
-        VesselGroupFilter vesselGroupFilter = new VesselGroupFilter();
-        vesselGroupFilter.setGuid("1");
-        vesselGroupFilter.setUserName("test");
+        AssetGroupFilter assetGroupFilter = new AssetGroupFilter();
+        assetGroupFilter.setGuid("1");
+        assetGroupFilter.setUserName("test");
 
-        filterList.add(vesselGroupFilter);
+        filterList.add(assetGroupFilter);
 
         processor = new FilterProcessor(filterList);
 
-        List<VesselGroup> vesselGroupList = new ArrayList<>();
-        vesselGroupList.addAll(processor.getVesselGroupList());
+        List<AssetGroup> assetGroupList = new ArrayList<>();
+        assetGroupList.addAll(processor.getAssetGroupList());
 
-        assertEquals(0, processor.getVesselListCriteriaPairs().size());
+        assertEquals(0, processor.getAssetListCriteriaPairs().size());
         assertEquals(0, processor.getRangeCriteria().size());
-        assertEquals(1, processor.getVesselGroupList().size());
+        assertEquals(1, processor.getAssetGroupList().size());
         assertEquals(0, processor.getMovementListCriteria().size());
 
-        assertEquals(vesselGroupList.get(0).getGuid(), "1");
-        assertEquals(vesselGroupList.get(0).getName(), null);
-        assertEquals(vesselGroupList.get(0).getUser(), "test");
+        assertEquals(assetGroupList.get(0).getGuid(), "1");
+        assertEquals(assetGroupList.get(0).getName(), null);
+        assertEquals(assetGroupList.get(0).getUser(), "test");
 
     }
 

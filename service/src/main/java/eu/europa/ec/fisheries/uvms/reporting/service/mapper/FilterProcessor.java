@@ -5,11 +5,11 @@ import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteria;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListPagination;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -20,14 +20,14 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 /**
  * This class is responsible reading the report filters and transform them
- * to search queries for vessel and movement queues
+ * to search queries for asset and movement queues
  */
 public class FilterProcessor {
 
     private final Set<ListCriteria> movementListCriteria = new HashSet<>();
     private final Set<RangeCriteria> rangeCriteria = new HashSet<>();
-    private final Set<VesselListCriteriaPair> vesselListCriteriaPairs = new HashSet<>();
-    private final Set<VesselGroup> vesselGroupList = new HashSet<>();
+    private final Set<AssetListCriteriaPair> assetListCriteriaPairs = new HashSet<>();
+    private final Set<AssetGroup> assetGroupList = new HashSet<>();
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<AreaIdentifierType>();
 
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
@@ -49,8 +49,8 @@ public class FilterProcessor {
     }
 
     private void addCriteria(Filter filter) {
-        vesselListCriteriaPairs.addAll(filter.vesselCriteria());
-        vesselGroupList.addAll(filter.vesselGroupCriteria());
+        assetListCriteriaPairs.addAll(filter.assetCriteria());
+        assetGroupList.addAll(filter.assetGroupCriteria());
         rangeCriteria.addAll(filter.movementRangeCriteria());
         movementListCriteria.addAll(filter.movementListCriteria());
     }
@@ -75,53 +75,53 @@ public class FilterProcessor {
         return movementQuery;
     }
 
-    public VesselListQuery toVesselListQuery() {
-        VesselListQuery query = new VesselListQuery();
+    public AssetListQuery toAssetListQuery() {
+        AssetListQuery query = new AssetListQuery();
 
-        if (isNotEmpty(vesselListCriteriaPairs)) {
-            query.setVesselSearchCriteria(createListCriteria());
+        if (isNotEmpty(assetListCriteriaPairs)) {
+            query.setAssetSearchCriteria(createListCriteria());
             query.setPagination(createPagination());
         }
 
         return query;
     }
 
-    private VesselListPagination createPagination() {
-        VesselListPagination pagination = new VesselListPagination();
+    private AssetListPagination createPagination() {
+        AssetListPagination pagination = new AssetListPagination();
         pagination.setPage(1);
         pagination.setListSize(1000);
         return pagination;
     }
 
-    private VesselListCriteria createListCriteria() {
-        VesselListCriteria vesselListCriteria = new VesselListCriteria();
-        vesselListCriteria.setIsDynamic(false);
-        vesselListCriteria.getCriterias().addAll(vesselListCriteriaPairs);
-        return vesselListCriteria;
+    private AssetListCriteria createListCriteria() {
+        AssetListCriteria assetListCriteria = new AssetListCriteria();
+        assetListCriteria.setIsDynamic(false);
+        assetListCriteria.getCriterias().addAll(assetListCriteriaPairs);
+        return assetListCriteria;
     }
 
-    public Set<VesselGroup> getVesselGroupList() {
-        return vesselGroupList;
+    public Set<AssetGroup> getAssetGroupList() {
+        return assetGroupList;
     }
 
-    public boolean hasVesselsOrVesselGroups() {
-        return hasVessels() | hasVesselGroups();
+    public boolean hasAssetsOrAssetGroups() {
+        return hasAssets() | hasAssetGroups();
     }
 
-    public boolean hasVessels() {
-        return !vesselListCriteriaPairs.isEmpty();
+    public boolean hasAssets() {
+        return !assetListCriteriaPairs.isEmpty();
     }
 
-    public boolean hasVesselGroups() {
-        return !vesselGroupList.isEmpty();
+    public boolean hasAssetGroups() {
+        return !assetGroupList.isEmpty();
     }
 
     public Set<ListCriteria> getMovementListCriteria() {
         return movementListCriteria;
     }
 
-    public Set<VesselListCriteriaPair> getVesselListCriteriaPairs() {
-        return vesselListCriteriaPairs;
+    public Set<AssetListCriteriaPair> getAssetListCriteriaPairs() {
+        return assetListCriteriaPairs;
     }
 
     public Set<RangeCriteria> getRangeCriteria() {

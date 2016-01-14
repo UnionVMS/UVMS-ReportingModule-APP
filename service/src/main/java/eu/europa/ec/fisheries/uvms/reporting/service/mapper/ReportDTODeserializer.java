@@ -44,7 +44,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
 
         if (filterNode != null) {
             addVmsFilters(filterNode.get("vms"), filterDTOList, reportId);
-            addVessels(filterNode.get(VesselFilterDTO.VESSELS), filterDTOList, reportId);
+            addAssets(filterNode.get(AssetFilterDTO.ASSETS), filterDTOList, reportId);
             addArea(filterNode.get("areas"), filterDTOList, reportId);
             addCommon(filterNode.get("common"), filterDTOList, reportId);
         }
@@ -182,18 +182,18 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addVessels(JsonNode vessel, List<FilterDTO> filterDTOList, Long reportId) {
-        if (vessel != null) {
-            Iterator<JsonNode> elements = vessel.elements();
+    private void addAssets(JsonNode asset, List<FilterDTO> filterDTOList, Long reportId) {
+        if (asset != null) {
+            Iterator<JsonNode> elements = asset.elements();
             while (elements.hasNext()) {
                 JsonNode next = elements.next();
                 FilterType type = FilterType.valueOf(next.get("type").textValue());
                 switch (type) {
-                    case vessel:
-                        addVesselFilterDTO(filterDTOList, reportId, next);
+                    case asset:
+                        addAssetFilterDTO(filterDTOList, reportId, next);
                         break;
                     case vgroup:
-                        addVesselGroupFilterDTO(filterDTOList, reportId, next);
+                        addAssetGroupFilterDTO(filterDTOList, reportId, next);
                         break;
                     default:
                         throw new InvalidParameterException("Unsupported parameter value");
@@ -203,25 +203,25 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addVesselGroupFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
+    private void addAssetGroupFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
         filterDTOList.add(
-                VesselGroupFilterDTO.VesselGroupFilterDTOBuilder()
+                AssetGroupFilterDTO.AssetGroupFilterDTOBuilder()
                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
                         .reportId(reportId)
-                        .guid(next.get(VesselGroupFilterDTO.GUID).textValue())
-                        .userName(next.get(VesselGroupFilterDTO.USER).textValue())
-                        .name(next.get(VesselGroupFilterDTO.NAME).textValue())
+                        .guid(next.get(AssetGroupFilterDTO.GUID).textValue())
+                        .userName(next.get(AssetGroupFilterDTO.USER).textValue())
+                        .name(next.get(AssetGroupFilterDTO.NAME).textValue())
                         .build()
         );
     }
 
-    private void addVesselFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
+    private void addAssetFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
         filterDTOList.add(
-                VesselFilterDTO.VesselFilterDTOBuilder()
+                AssetFilterDTO.AssetFilterDTOBuilder()
                         .reportId(reportId)
                         .id(next.get(FilterDTO.ID) != null ? next.get(FilterDTO.ID).longValue() : null)
-                        .guid(next.get(VesselFilterDTO.GUID).textValue())
-                        .name(next.get(VesselFilterDTO.NAME).textValue())
+                        .guid(next.get(AssetFilterDTO.GUID).textValue())
+                        .name(next.get(AssetFilterDTO.NAME).textValue())
                         .build()
         );
     }

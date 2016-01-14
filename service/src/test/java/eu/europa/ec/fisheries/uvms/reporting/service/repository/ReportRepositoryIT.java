@@ -11,8 +11,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -282,16 +282,16 @@ public class ReportRepositoryIT {
         report.getDetails().setScopeName("356456731");
         report.setVisibility(VisibilityEnum.PRIVATE);
 
-        VesselFilter filter1 = VesselFilter.builder().build();
+        AssetFilter filter1 = AssetFilter.builder().build();
         filter1.setReport(report);
         filter1.setGuid("guid1");
-        filter1.setName("vessel1");
+        filter1.setName("asset1");
         expectedCollection.add(filter1);
 
-        VesselFilter filter2 = VesselFilter.builder().build();
+        AssetFilter filter2 = AssetFilter.builder().build();
         filter2.setReport(report);
         filter2.setGuid("guid2");
-        filter2.setName("vessel2");
+        filter2.setName("asset2");
         expectedCollection.add(filter2);
 
         VmsPositionFilter filter3 = VmsPositionFilter.builder().build();
@@ -300,13 +300,13 @@ public class ReportRepositoryIT {
         filter3.setReport(report);
         expectedCollection.add(filter3);
 
-        VesselGroupFilter filter4 = new VesselGroupFilter();
+        AssetGroupFilter filter4 = new AssetGroupFilter();
         filter4.setReport(report);
         filter4.setGuid("1");
         filter4.setUserName("ffsdfsdfds");
         expectedCollection.add(filter4);
 
-        VesselGroupFilter filter5 = new VesselGroupFilter();
+        AssetGroupFilter filter5 = new AssetGroupFilter();
         filter5.setReport(report);
         filter5.setGuid("2");
         filter5.setUserName("ffsdfsdfds");

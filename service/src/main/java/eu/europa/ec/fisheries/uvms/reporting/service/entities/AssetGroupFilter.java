@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
-import eu.europa.ec.fisheries.wsdl.vessel.group.VesselGroup;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import javax.persistence.DiscriminatorValue;
@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("VGROUP")
 @EqualsAndHashCode(callSuper = true, of = {"guid", "name", "userName"})
-public class VesselGroupFilter extends Filter {
+public class AssetGroupFilter extends Filter {
 
     @NotNull
     private String guid;
@@ -25,12 +25,12 @@ public class VesselGroupFilter extends Filter {
     @NotNull
     private String userName;
 
-    public VesselGroupFilter() {
+    public AssetGroupFilter() {
         super(FilterType.vgroup);
     }
 
     @Builder
-    public VesselGroupFilter(Long id, String groupId, String userName, String name){
+    public AssetGroupFilter(Long id, String groupId, String userName, String name){
         super(FilterType.vgroup);
         this.guid = groupId;
         this.userName = userName;
@@ -40,17 +40,17 @@ public class VesselGroupFilter extends Filter {
 
     @Override
     public <T> T accept(FilterVisitor<T> visitor) {
-        return visitor.visitVesselGroupFilter(this);
+        return visitor.visitAssetGroupFilter(this);
     }
 
     @Override
     public void merge(Filter filter) {
-        VesselGroupFilterMapper.INSTANCE.merge((VesselGroupFilter) filter, this);
+        AssetGroupFilterMapper.INSTANCE.merge((AssetGroupFilter) filter, this);
     }
 
     @Override
-    public List<VesselGroup> vesselGroupCriteria(){
-        return Arrays.asList(VesselGroupFilterMapper.INSTANCE.vesselGroupFilterToVesselGroup(this));
+    public List<AssetGroup> assetGroupCriteria(){
+        return Arrays.asList(AssetGroupFilterMapper.INSTANCE.assetGroupFilterToAssetGroup(this));
     }
 
     @Override

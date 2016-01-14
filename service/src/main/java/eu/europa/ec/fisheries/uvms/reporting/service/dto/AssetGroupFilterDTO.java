@@ -3,14 +3,14 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VesselGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true, of = {"guid", "name", "userName"})
-public class VesselGroupFilterDTO extends FilterDTO {
+public class AssetGroupFilterDTO extends FilterDTO {
 
     public static final String GUID = "guid";
     public static final String USER = "user";
@@ -26,16 +26,16 @@ public class VesselGroupFilterDTO extends FilterDTO {
     @NotNull
     private String name;
 
-    public VesselGroupFilterDTO() {
+    public AssetGroupFilterDTO() {
         super(FilterType.vgroup);
     }
 
-    public VesselGroupFilterDTO(Long id, Long reportId) {
+    public AssetGroupFilterDTO(Long id, Long reportId) {
         super(FilterType.vgroup, id, reportId);
     }
 
-    @Builder(builderMethodName = "VesselGroupFilterDTOBuilder")
-    public VesselGroupFilterDTO(Long reportId, Long id,
+    @Builder(builderMethodName = "AssetGroupFilterDTOBuilder")
+    public AssetGroupFilterDTO(Long reportId, Long id,
                                 String guid,
                                 String userName,
                                 String name) {
@@ -64,7 +64,7 @@ public class VesselGroupFilterDTO extends FilterDTO {
 
     @Override
     public Filter convertToFilter() {
-        return VesselGroupFilterMapper.INSTANCE.vesselGroupFilterDTOToVesselGroupFilter(this);
+        return AssetGroupFilterMapper.INSTANCE.assetGroupFilterDTOToAssetGroupFilter(this);
     }
 
     public String getName() {

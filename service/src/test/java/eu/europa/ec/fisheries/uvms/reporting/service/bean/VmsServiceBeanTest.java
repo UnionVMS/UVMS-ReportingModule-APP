@@ -7,8 +7,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
@@ -31,30 +31,30 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     private Mock<ReportRepository> repository;
 
     @InjectIntoByType
-    private Mock<VesselServiceBean> vessel;
+    private Mock<AssetServiceBean> asset;
 
     @InjectIntoByType
     private Mock<MovementServiceBean> movement;
 
     private Mock<Report> report;
 
-    private PartialMock<TextMessage> vesselResponse;
+    private PartialMock<TextMessage> assetResponse;
 
     @Test
     @SneakyThrows
     public void testGetVmsDataByReportId() {
 
         Set<Filter> filterSet = new HashSet<>();
-        filterSet.add(VesselFilter.builder().guid("1234").build());
+        filterSet.add(AssetFilter.builder().guid("1234").build());
 
         report.returns(filterSet).getFilters();
 
-        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
+        asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null);
 
         service.getVmsDataByReportId("userName", "scope",  null);
 
-        vessel.assertInvokedInSequence().getVesselMap(null);
+        asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
         report.assertInvokedInSequence().updateExecutionLog("userName");
         MockUnitils.assertNoMoreInvocations();
@@ -62,17 +62,17 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testGetVmsDataByReportIdWithVesselGroupFilters() {
+    public void testGetVmsDataByReportIdWithAssetGroupFilters() {
 
         Set<Filter> filterSet = new HashSet<>();
-        filterSet.add(VesselGroupFilter.builder().groupId("123").build());
+        filterSet.add(AssetGroupFilter.builder().groupId("123").build());
 
         report.returns(filterSet).getFilters();
-        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
+        asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null);
         service.getVmsDataByReportId("test", null, null);
 
-        vessel.assertInvokedInSequence().getVesselMap(null);
+        asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
         report.assertInvokedInSequence().updateExecutionLog("test");
 
@@ -82,7 +82,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    public void testGetVmsDataByReportIdWithoutVessel() {
+    public void testGetVmsDataByReportIdWithoutAsset() {
 
         Set<Filter> filterSet = new HashSet<>();
         filterSet.add(CommonFilter.builder()
@@ -90,12 +90,12 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
                 .build());
 
         report.returns(filterSet).getFilters();
-        vessel.returns(ImmutableMap.<String, String>builder().build()).getVesselMap(null);
+        asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null);
         service.getVmsDataByReportId("test", null, null);
 
         movement.assertInvokedInSequence().getMovementMap(null);
-        vessel.assertInvokedInSequence().getVesselMap(null);
+        asset.assertInvokedInSequence().getAssetMap(null);
         report.assertInvokedInSequence().updateExecutionLog("test");
 
         MockUnitils.assertNoMoreInvocations();

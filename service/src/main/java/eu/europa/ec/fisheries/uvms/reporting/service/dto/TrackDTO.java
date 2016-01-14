@@ -13,7 +13,7 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.Setter;
 import javax.measure.converter.UnitConverter;
 import java.util.ArrayList;
@@ -29,16 +29,16 @@ public class TrackDTO {
     @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
     @Setter private UnitConverter lengthConverter = NAUTICAL_MILE.getConverterTo(NAUTICAL_MILE);
 
-    public TrackDTO(MovementTrack track, Vessel vessel) throws ReportingServiceException, ParseException {
+    public TrackDTO(MovementTrack track, Asset asset) throws ReportingServiceException, ParseException {
         this.track = track;
-        asset = new AssetDTO(vessel);
+        this.asset = new AssetDTO(asset);
         geometry = GeometryUtil.toGeometry(track.getWkt());
         computeEnvelope();
         computerNearestPoint();
     }
 
-    public TrackDTO(MovementTrack track, Vessel vessel, DisplayFormat format) throws ReportingServiceException, ParseException {
-        this(track, vessel);
+    public TrackDTO(MovementTrack track, Asset asset, DisplayFormat format) throws ReportingServiceException, ParseException {
+        this(track, asset);
 
         if (format != null){
             lengthConverter = format.getLengthType().getConverter();

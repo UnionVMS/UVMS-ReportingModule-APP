@@ -4,14 +4,14 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtVesselMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -36,7 +36,7 @@ public class VmsServiceBean implements VmsService {
     private ReportRepository repository;
 
     @EJB
-    private VesselServiceBean vesselModule;
+    private AssetServiceBean assetModule;
 
     @EJB
     private MovementServiceBean movementModule;
@@ -66,7 +66,7 @@ public class VmsServiceBean implements VmsService {
 
         try {
 
-            Map<String, Vessel> vesselMap;
+            Map<String, Asset> assetMap;
 
             FilterProcessor processor = new FilterProcessor(reportByReportId.getFilters());
 
@@ -76,13 +76,13 @@ public class VmsServiceBean implements VmsService {
 
             Map<String, MovementMapResponseType> responseTypeMap;
 
-            log.debug("Running report {} vessels or vessel groups.", processor.hasVesselsOrVesselGroups()?"has":"doesn't have");
+            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups()?"has":"doesn't have");
 
-            if (processor.hasVesselsOrVesselGroups()) {
+            if (processor.hasAssetsOrAssetGroups()) {
 
-                vesselMap = vesselModule.getVesselMap(processor);
+                assetMap = assetModule.getAssetMap(processor);
 
-                processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(vesselMap.keySet()));
+                processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
 
                 movementMap = movementModule.getMovement(processor);
 
@@ -90,16 +90,16 @@ public class VmsServiceBean implements VmsService {
 
                 responseTypeMap = movementModule.getMovementMap(processor);
 
-                Set<String> vesselGuids = responseTypeMap.keySet();
+                Set<String> assetGuids = responseTypeMap.keySet();
 
                 movementMap = responseTypeMap.values();
 
-                processor.getVesselListCriteriaPairs().addAll(ExtVesselMessageMapper.vesselCriteria(vesselGuids));
+                processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
 
-                vesselMap = vesselModule.getVesselMap(processor);
+                assetMap = assetModule.getAssetMap(processor);
             }
 
-            vmsDto = new VmsDTO(vesselMap, movementMap);
+            vmsDto = new VmsDTO(assetMap, movementMap);
 
             reportByReportId.updateExecutionLog(username);
 

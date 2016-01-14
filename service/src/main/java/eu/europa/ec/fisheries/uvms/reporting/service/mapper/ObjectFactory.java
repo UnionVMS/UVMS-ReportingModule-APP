@@ -4,14 +4,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VesselFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
@@ -34,16 +34,16 @@ public class ObjectFactory {
         return PositionSelector.builder().build();
     }
 
-    public VesselFilterDTO createVesselFilterDTO() {
-        return new VesselFilterDTO();
+    public AssetFilterDTO createAssetFilterDTO() {
+        return new AssetFilterDTO();
     }
 
     public VmsPositionFilterDTO createVmsPositionFilterDTO() {
         return new VmsPositionFilterDTO();
     }
 
-    public VesselGroupFilterDTO createVesselGroupFilterDTO() {
-        return new VesselGroupFilterDTO();
+    public AssetGroupFilterDTO createAssetGroupFilterDTO() {
+        return new AssetGroupFilterDTO();
     }
 
     public CommonFilterDTO createCommonFilterDTO(){
@@ -54,8 +54,8 @@ public class ObjectFactory {
         return new PositionSelectorDTO();
     }
 
-    public VesselFilter createVesselFilter(){
-        return VesselFilter.builder().build();
+    public AssetFilter createAssetFilter(){
+        return AssetFilter.builder().build();
     }
 
     public VmsTrackFilter createTrackFilter(){

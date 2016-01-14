@@ -10,7 +10,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
 import java.io.IOException;
@@ -24,11 +24,11 @@ public class VmsDTO {
     private DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
     private DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
     private List<TrackDTO> tracks = new ArrayList<>();
-    private Map<String, Vessel> vesselMap;
+    private Map<String, Asset> assetMap;
     private Collection<MovementMapResponseType> movementMap;
 
-    public VmsDTO(Map<String, Vessel> vesselMap, Collection<MovementMapResponseType> movementMap) {
-        this.vesselMap = vesselMap;
+    public VmsDTO(Map<String, Asset> assetMap, Collection<MovementMapResponseType> movementMap) {
+        this.assetMap = assetMap;
         this.movementMap = movementMap;
     }
 
@@ -40,16 +40,16 @@ public class VmsDTO {
 
             if (CollectionUtils.isNotEmpty(movementMap)){
                 for (MovementMapResponseType map : movementMap){
-                    Vessel vessel = vesselMap.get(map.getKey());
-                    if (vessel != null){
+                    Asset asset = assetMap.get(map.getKey());
+                    if (asset != null){
                         for (MovementType movement : map.getMovements()){
-                            movements.add(new MovementDTO(movement, vessel, format).toFeature());
+                            movements.add(new MovementDTO(movement, asset, format).toFeature());
                         }
                         for (MovementSegment segment : map.getSegments()){
-                            segments.add(new SegmentDTO(segment, vessel, format).toFeature());
+                            segments.add(new SegmentDTO(segment, asset, format).toFeature());
                         }
                         for (MovementTrack track : map.getTracks()){
-                            tracks.add(new TrackDTO(track, vessel, format));
+                            tracks.add(new TrackDTO(track, asset, format));
                         }
                     }
                 }

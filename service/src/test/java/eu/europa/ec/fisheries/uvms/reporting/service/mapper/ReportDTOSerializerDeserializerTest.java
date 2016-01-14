@@ -28,8 +28,8 @@ import java.util.List;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO.VesselFilterDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselGroupFilterDTO.VesselGroupFilterDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO.AssetFilterDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO.AssetGroupFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO.VmsPositionFilterDTOBuilder;
 import static junit.framework.TestCase.assertTrue;
 import static junitparams.JUnitParamsRunner.$;
@@ -70,16 +70,16 @@ public class ReportDTOSerializerDeserializerTest {
 
         ReportDTO report3 = createReport();
         List<FilterDTO> filterDTOList = new ArrayList<>();
-        filterDTOList.add(VesselFilterDTOBuilder().guid("guid1").name("vessel1").build());
-        filterDTOList.add(VesselFilterDTOBuilder().id(48L).guid("guid2").name("vessel2").build());
+        filterDTOList.add(AssetFilterDTOBuilder().guid("guid1").name("asset1").build());
+        filterDTOList.add(AssetFilterDTOBuilder().id(48L).guid("guid2").name("asset2").build());
         report3.setFilters(filterDTOList);
 
         ReportDTO report4 = createReport();
         filterDTOList = new ArrayList<>();
-        filterDTOList.add(VesselFilterDTOBuilder().guid("guid1").name("vessel1").build());
-        filterDTOList.add(VesselFilterDTOBuilder().id(48L).guid("guid2").name("vessel2").build());
-        filterDTOList.add(VesselGroupFilterDTOBuilder().name("name2").guid("guid6").id(66L).userName("houston").build());
-        filterDTOList.add(VesselGroupFilterDTOBuilder().name("name2").guid("guid7").id(67L).userName("houstonGreg").build());
+        filterDTOList.add(AssetFilterDTOBuilder().guid("guid1").name("asset1").build());
+        filterDTOList.add(AssetFilterDTOBuilder().id(48L).guid("guid2").name("asset2").build());
+        filterDTOList.add(AssetGroupFilterDTOBuilder().name("name2").guid("guid6").id(66L).userName("houston").build());
+        filterDTOList.add(AssetGroupFilterDTOBuilder().name("name2").guid("guid7").id(67L).userName("houstonGreg").build());
         report4.setFilters(filterDTOList);
 
         ReportDTO report5 = createReport();
@@ -146,8 +146,8 @@ public class ReportDTOSerializerDeserializerTest {
         return $(
                 $(report1, "payloads/ReportDTOSerializerDeserializerTest.testWithoutFilters.json"),
                 $(report2, "payloads/ReportDTOSerializerDeserializerTest.testWithoutFiltersWithoutDescription.json"),
-                $(report3, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVessel.json"),
-                $(report4, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVesselAndVesselGroup.json"),
+                $(report3, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithAsset.json"),
+                $(report4, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithAssetAndAssetGroup.json"),
                 $(report5, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorAll.json"),
                 $(report6, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastHours.json"),
                 $(report7, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositions.json"),

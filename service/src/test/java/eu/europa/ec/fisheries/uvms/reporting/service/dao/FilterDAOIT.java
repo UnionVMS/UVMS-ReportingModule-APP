@@ -78,17 +78,17 @@ public class FilterDAOIT {
         report.setVisibility(VisibilityEnum.PRIVATE);
         Report savedReport = reportDAO.createEntity(report);
 
-        VesselFilter filter1 = VesselFilter.builder().build();
+        AssetFilter filter1 = AssetFilter.builder().build();
         filter1.setReport(savedReport);
         filter1.setGuid("guid1");
-        filter1.setName("vessel1");
+        filter1.setName("asset1");
         expectedCollection.add(filter1);
         filterDAO.createEntity(filter1);
 
-        VesselFilter filter2 = VesselFilter.builder().build();
+        AssetFilter filter2 = AssetFilter.builder().build();
         filter2.setReport(savedReport);
         filter2.setGuid("guid2");
-        filter2.setName("vessel2");
+        filter2.setName("asset2");
         expectedCollection.add(filter2);
         filterDAO.createEntity(filter2);
 
@@ -99,7 +99,7 @@ public class FilterDAOIT {
         expectedCollection.add(filter3);
         filterDAO.createEntity(filter3);
 
-        VesselGroupFilter filter4 = new VesselGroupFilter();
+        AssetGroupFilter filter4 = new AssetGroupFilter();
         filter4.setReport(savedReport);
         filter4.setGuid("1");
         filter4.setUserName("ffsdfsdfds");
@@ -107,7 +107,7 @@ public class FilterDAOIT {
         expectedCollection.add(filter4);
         filterDAO.createEntity(filter4);
 
-        VesselGroupFilter filter5 = new VesselGroupFilter();
+        AssetGroupFilter filter5 = new AssetGroupFilter();
         filter5.setReport(savedReport);
         filter5.setGuid("2");
         filter5.setUserName("ffsdfsdfds");

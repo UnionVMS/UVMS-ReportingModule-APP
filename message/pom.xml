@@ -68,8 +68,8 @@
         </dependency>
 
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.vessel</groupId>
-            <artifactId>vessel-model</artifactId>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-model</artifactId>
         </dependency>
 
         <dependency>

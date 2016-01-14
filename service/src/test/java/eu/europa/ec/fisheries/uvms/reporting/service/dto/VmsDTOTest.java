@@ -9,8 +9,8 @@ import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.*;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.wsdl.vessel.types.Vessel;
-import eu.europa.ec.fisheries.wsdl.vessel.types.VesselId;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
 
     private MovementMapResponseType movementMapResponseType;
 
-    private Vessel vessel;
+    private Asset asset;
 
     @Test
     @SneakyThrows
@@ -48,14 +48,14 @@ public class VmsDTOTest extends UnitilsJUnit4 {
     @Before
     public void before(){
 
-        vessel = new Vessel();
-        vessel.setName("name");
-        vessel.setVesselId(new VesselId());
-        vessel.setCountryCode("BE");
-        vessel.setIrcs("Ircs");
-        vessel.setCfr("cfr");
-        vessel.setExternalMarking("em");
-        vessel.setActive(true);
+        asset = new Asset();
+        asset.setName("name");
+        asset.setAssetId(new AssetId());
+        asset.setCountryCode("BE");
+        asset.setIrcs("Ircs");
+        asset.setCfr("cfr");
+        asset.setExternalMarking("em");
+        asset.setActive(true);
 
         MovementType movement = new MovementType();
         movement.setReportedCourse(23.0);
@@ -110,7 +110,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/VmsDTOTest.testToJsonHappy.json");
         String expectedJSONString = Resources.toString(url, Charsets.UTF_8);
 
-        VmsDTO dto = new VmsDTO(new ImmutableMap.Builder<String, Vessel>().put("guid", vessel).build(), Arrays.asList(movementMapResponseType));
+        VmsDTO dto = new VmsDTO(new ImmutableMap.Builder<String, Asset>().put("guid", asset).build(), Arrays.asList(movementMapResponseType));
 
         //assertEquals(expectedJSONString, prettify(dto.toJson(null)));
 

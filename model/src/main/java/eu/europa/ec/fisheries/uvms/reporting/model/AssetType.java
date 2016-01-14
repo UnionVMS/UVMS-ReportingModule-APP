@@ -2,13 +2,13 @@ package eu.europa.ec.fisheries.uvms.reporting.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum VesselType {
+public enum AssetType {
 
-    VESSEL("vessel"), GROUP("group");
+    ASSET("asset"), GROUP("group");
 
     private String name;
 
-    private VesselType(final String name) {
+    private AssetType(final String name) {
         this.name = name;
     }
 

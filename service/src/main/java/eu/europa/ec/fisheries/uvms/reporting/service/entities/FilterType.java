@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 public enum FilterType {
 
     areas,
-    vessel,
+    asset,
     vgroup,
     common,
     vmspos,

@@ -8,7 +8,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VesselFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
 import lombok.SneakyThrows;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -90,10 +90,10 @@ public class ReportServiceBeanIT {
         ReportDTO newReport = DTOUtil.createRandomReport();
 
         AreaFilterDTO areaFilter = AreaFilterDTO.AreaFilterDTOBuilder().areaId(13L).areaType("eez").build();
-        VesselFilterDTO vesselFilterDTO = VesselFilterDTO.VesselFilterDTOBuilder().guid("213423423").name("vessel2").build();
+        AssetFilterDTO assetFilterDTO = AssetFilterDTO.AssetFilterDTOBuilder().guid("213423423").name("asset2").build();
         List<FilterDTO> filters = new ArrayList<>();
         filters.add(areaFilter);
-        filters.add(vesselFilterDTO);
+        filters.add(assetFilterDTO);
 
         newReport.setFilters(filters);
 
@@ -104,15 +104,15 @@ public class ReportServiceBeanIT {
 
         if (report.getFilters().get(0) instanceof AreaFilterDTO) {
             areaFilter = (AreaFilterDTO) report.getFilters().get(0);
-            vesselFilterDTO = (VesselFilterDTO) report.getFilters().get(1);
+            assetFilterDTO = (AssetFilterDTO) report.getFilters().get(1);
         } else {
             areaFilter = (AreaFilterDTO) report.getFilters().get(1);
-            vesselFilterDTO = (VesselFilterDTO) report.getFilters().get(0);
+            assetFilterDTO = (AssetFilterDTO) report.getFilters().get(0);
         }
 
 
         assertNotNull(areaFilter.getId());
-        assertNotNull(vesselFilterDTO.getId());
+        assertNotNull(assetFilterDTO.getId());
 
         reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName());
         report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName());
