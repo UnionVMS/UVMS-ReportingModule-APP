@@ -122,17 +122,20 @@ public class ReportServiceBean {
     }
 
     private void updateMapConfiguration(long reportId, Boolean newWithMapValue, MapConfigurationDTO newMapConfiguration, boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
+        boolean isSuccess = true;
+
         try {
             if (newWithMapValue) {
                 saveOrUpdateMapConfiguration(reportId, newMapConfiguration);
             } else if (oldWithMapValue) {
-                boolean isSuccess = spatialModule.deleteMapConfiguration(newArrayList(oldMapConfigurationDTO.getSpatialConnectId()));
-                if (!isSuccess) {
-                    throw new ReportingServiceException("Error during deleting map configuration in spatial module");
-                }
+                isSuccess = spatialModule.deleteMapConfiguration(newArrayList(oldMapConfigurationDTO.getSpatialConnectId()));
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error during the update of the map configuration");
+            throw new RuntimeException("Error during the update of the map configuration", e);
+        }
+
+        if (!isSuccess) {
+            throw new ReportingServiceException("Error during deleting map configuration in spatial module");
         }
     }
 
