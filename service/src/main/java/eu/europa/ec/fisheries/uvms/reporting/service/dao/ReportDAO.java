@@ -79,14 +79,14 @@ public class ReportDAO extends AbstractDAO<Report> {
         return result;
     }
 
-    public List<Report> listByUsernameAndScope(String username, String scopeName) throws ReportingServiceException {
+    public List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent) throws ReportingServiceException {
         log.debug("Searching for ReportEntity instances with username: {} and scopeName:{}", username, scopeName);
 
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
             List<Report> listReports =
                     findEntityByNamedQuery(Report.class, Report.LIST_BY_USERNAME_AND_SCOPE,
-                            with("scopeName", scopeName).and("username", username).parameters());
+                            with("scopeName", scopeName).and("username", username).and("existent", existent).parameters());
             log.debug("list successful");
 
 

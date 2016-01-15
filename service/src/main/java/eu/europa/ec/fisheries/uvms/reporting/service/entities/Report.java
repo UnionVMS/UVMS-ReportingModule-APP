@@ -42,7 +42,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
         @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
                 "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
                     "WHERE ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
-                    "AND r.isDeleted <> 'Y' " +
+                    "AND r.isDeleted <> :existent " +
                     "ORDER BY r.id"),
         @NamedQuery(name = Report.FIND_BY_ID, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +

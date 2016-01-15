@@ -79,7 +79,7 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        List<Report> reports = dao.listByUsernameAndScope("testUser", "testScope");
+        List<Report> reports = dao.listByUsernameAndScope("testUser", "testScope",  true);
 
         assertEquals(2, reports.size());
 

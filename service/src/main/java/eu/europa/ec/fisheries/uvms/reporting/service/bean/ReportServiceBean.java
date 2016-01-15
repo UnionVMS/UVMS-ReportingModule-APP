@@ -153,11 +153,11 @@ public class ReportServiceBean {
     }
 
     @Transactional
-    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName) throws ReportingServiceException {
+    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName, final Boolean existent) throws ReportingServiceException {
 
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).build();
 
-        List<Report> reports = repository.listByUsernameAndScope(username, scopeName);
+        List<Report> reports = repository.listByUsernameAndScope(username, scopeName, existent);
 
         List<ReportDTO> toReportDTOs = new ArrayList<>();
 

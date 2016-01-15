@@ -142,18 +142,18 @@ public class ReportRepositoryIT {
         report.getDetails().setScopeName("945563456");
         repository.createEntity(report);
 
-        Collection<Report> reports = repository.listByUsernameAndScope("georgiTestttt12", "945563456");
+        Collection<Report> reports = repository.listByUsernameAndScope("georgiTestttt12", "945563456", true);
 
         assertNotNull(reports);
         assertTrue(!reports.isEmpty());
         assertEquals(1, reports.size());
 
-        reports = repository.listByUsernameAndScope("georgiTestttt12", "11000");
+        reports = repository.listByUsernameAndScope("georgiTestttt12", "11000", true);
 
         assertNotNull(reports);
         assertTrue(reports.isEmpty());
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", "123456");
+        reports = repository.listByUsernameAndScope("nonexistinguser", "123456", true);
 
         assertNotNull(reports);
         assertTrue(reports.isEmpty());
@@ -167,13 +167,13 @@ public class ReportRepositoryIT {
         reportEntity3.setVisibility(VisibilityEnum.PUBLIC);
         repository.createEntity(reportEntity3);
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", "58437239");
+        reports = repository.listByUsernameAndScope("nonexistinguser", "58437239", true);
 
         assertNotNull(reports);
         assertTrue(!reports.isEmpty());
         assertEquals(2, reports.size());
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", "123456");
+        reports = repository.listByUsernameAndScope("nonexistinguser", "123456", true);
 
         assertNotNull(reports);
         assertEquals(1, reports.size());
@@ -229,7 +229,7 @@ public class ReportRepositoryIT {
         report.getExecutionLogs().add(repExecLog2);
         Report savedReport = repository.createEntity(report);
 
-        List<Report> results = repository.listByUsernameAndScope(user, "356456731");
+        List<Report> results = repository.listByUsernameAndScope(user, "356456731", true);
 
         Iterator<Report> iterator1 = results.iterator();
         Report foundReport = null;

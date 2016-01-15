@@ -77,13 +77,13 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     public void testListReports200() throws IOException, ReportingServiceException {
 
         requestMock.returns(new TreeSet<String>()).getServletContext().getAttribute(AuthConstants.HTTP_SERVLET_CONTEXT_ATTR_FEATURES);
-        reportServiceBeanMock.returns(new ArrayList<ReportDTO>()).listByUsernameAndScope(null, null, null);
+        reportServiceBeanMock.returns(new ArrayList<ReportDTO>()).listByUsernameAndScope(null, null, null, null);
 
         requestMock.returns("HELLO").getRemoteUser();
 
         resource.returns(new HashSet<String>()).getCachedUserFeatures(null);
 
-        Response response = resource.getMock().listReports(requestMock.getMock(), null, null);
+        Response response = resource.getMock().listReports(requestMock.getMock(), null, null, null);
 
         assertEquals(200, response.getStatus());
 
@@ -94,7 +94,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
 
         requestMock.returns(null).getServletContext().getAttribute(AuthConstants.HTTP_SERVLET_CONTEXT_ATTR_FEATURES);
 
-        Response response = resource.getMock().listReports(requestMock.getMock(), null, null);
+        Response response = resource.getMock().listReports(requestMock.getMock(), null, null, null);
 
         assertEquals(500, response.getStatus());
 

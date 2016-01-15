@@ -12,7 +12,7 @@ public interface ReportRepository {
 
     Report findReportByReportId(Long reportId, String username, String scopeName) throws ReportingServiceException;
 
-    List<Report> listByUsernameAndScope(String username, String scopeName) throws ReportingServiceException;
+    List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent) throws ReportingServiceException;
 
     void remove(Long reportId, String username, String scopeName) throws ReportingServiceException;
 

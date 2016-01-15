@@ -100,9 +100,9 @@ public class ReportRepositoryTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void testListByUsernameAndScope(){
 
-        repository.listByUsernameAndScope(null, null);
+        repository.listByUsernameAndScope(null, null, null);
 
-        reportDAO.assertInvoked().listByUsernameAndScope(null, null);
+        reportDAO.assertInvoked().listByUsernameAndScope(null, null, null);
     }
 
     @Test

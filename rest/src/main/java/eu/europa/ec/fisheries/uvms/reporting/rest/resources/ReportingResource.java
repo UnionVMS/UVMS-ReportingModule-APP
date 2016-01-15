@@ -14,15 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -54,7 +46,8 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listReports(@Context HttpServletRequest request,
                                 @Context HttpServletResponse response,
-                                @HeaderParam("scopeName") String scopeName) {
+                                @HeaderParam("scopeName") String scopeName,
+                                @DefaultValue("Y") @QueryParam("existent") String existent) {
         final String username = request.getRemoteUser();
 
         log.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
@@ -65,7 +58,7 @@ public class ReportingResource extends UnionVMSResource {
 
             Collection<ReportDTO> reportsList;
             try {
-                reportsList = reportService.listByUsernameAndScope(features, username, scopeName);
+                reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent));
             } catch (Exception e) {
                 log.error("Failed to list reports.", e);
                 return createErrorResponse();

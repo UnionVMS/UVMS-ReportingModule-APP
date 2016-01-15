@@ -85,8 +85,8 @@ public class ReportRepositoryBean implements ReportRepository {
     }
 
     @Override
-    public List<Report> listByUsernameAndScope(final String username, final String scopeName) throws ReportingServiceException {
-        return reportDAO.listByUsernameAndScope(username, scopeName);
+    public List<Report> listByUsernameAndScope(final String username, final String scopeName, final Boolean existent) throws ReportingServiceException {
+        return reportDAO.listByUsernameAndScope(username, scopeName, existent);
     }
 
     @Override
