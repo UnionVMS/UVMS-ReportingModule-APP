@@ -206,7 +206,7 @@ public class ReportingResource extends UnionVMSResource {
                 log.error("createReport failed.", e);
                 return createErrorResponse(e.getMessage());
             }
-            return createSuccessResponse(String.valueOf(reportDTO.getId().toString()));
+            return createSuccessResponse(reportDTO.getId());
         } else {
             return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
