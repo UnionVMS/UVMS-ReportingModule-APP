@@ -111,7 +111,7 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReport(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
-                                 @PathParam("id") Long id,
+                                 @PathParam("id") String id,
                                  @HeaderParam("scopeName") String scopeName) {
 
         String username = request.getRemoteUser();
@@ -120,7 +120,7 @@ public class ReportingResource extends UnionVMSResource {
         ReportDTO originalReport;
 
         try {
-            originalReport = reportService.findById(id, username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
+            originalReport = reportService.findById(Long.parseLong(id), username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
         } catch (Exception e) {
             log.error("Failed to get report.", e);
             return createErrorResponse();
@@ -133,7 +133,7 @@ public class ReportingResource extends UnionVMSResource {
         }
 
         try {
-            reportService.delete(id, username, scopeName);
+            reportService.delete(Long.valueOf(id), username, scopeName);
         } catch (Exception exc) {
             log.error("Report deletion failed.", exc);
             return createErrorResponse(ErrorCodes.DELETE_FAILED);
@@ -198,15 +198,15 @@ public class ReportingResource extends UnionVMSResource {
         report.setScopeName(scopeName);
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
-
+        ReportDTO reportDTO;
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
             try {
-                reportService.create(report);
+                reportDTO = reportService.create(report);
             } catch (Exception e) {
                 log.error("createReport failed.", e);
                 return createErrorResponse(e.getMessage());
             }
-            return createSuccessResponse();
+            return createSuccessResponse(String.valueOf(reportDTO.getId().toString()));
         } else {
             return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
