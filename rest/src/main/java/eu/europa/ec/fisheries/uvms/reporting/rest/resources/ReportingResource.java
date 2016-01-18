@@ -102,7 +102,7 @@ public class ReportingResource extends UnionVMSResource {
         if (report != null) {
             restResponse = createSuccessResponse(report);
         } else {
-            restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+            restResponse = createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
         }
 
         return restResponse;
