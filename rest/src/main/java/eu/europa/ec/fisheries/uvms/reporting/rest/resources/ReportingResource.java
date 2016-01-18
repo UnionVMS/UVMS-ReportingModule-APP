@@ -16,19 +16,23 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.Collection;
 import java.util.Set;
-
-import javax.measure.Measure;
-import javax.measure.converter.UnitConverter;
-import javax.measure.quantity.Length;
-import static javax.measure.unit.NonSI.*;
-import static javax.measure.unit.SI.*;
 
 @Path("/report")
 @Slf4j
@@ -152,7 +156,8 @@ public class ReportingResource extends UnionVMSResource {
     public Response updateReport(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
                                  ReportDTO report,
-                                 @HeaderParam("scopeName") String scopeName) {
+                                 @HeaderParam("scopeName") String scopeName,
+                                 @PathParam("id") Long id) {
 
         String username = request.getRemoteUser();
 
@@ -194,7 +199,7 @@ public class ReportingResource extends UnionVMSResource {
         Response result;
         String username = request.getRemoteUser();
 
-        log.info("{} is requesting createReport(...), with a ID={}, scopeName: {}, visibility: {}", username, report.getId(),scopeName, report.getVisibility());
+        log.info("{} is requesting createReport(...), with a ID={}, scopeName: {}, visibility: {}", username, report.getId(), scopeName, report.getVisibility());
 
         if (StringUtils.isBlank(scopeName)) {
             result = createErrorResponse(ErrorCodes.USER_SCOPE_MISSING);
