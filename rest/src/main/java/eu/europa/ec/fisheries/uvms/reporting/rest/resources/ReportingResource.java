@@ -11,6 +11,8 @@ import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -111,7 +113,7 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReport(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
-                                 @PathParam("id") String id,
+                                 @PathParam("id") Long id,
                                  @HeaderParam("scopeName") String scopeName) {
 
         String username = request.getRemoteUser();
@@ -120,7 +122,7 @@ public class ReportingResource extends UnionVMSResource {
         ReportDTO originalReport;
 
         try {
-            originalReport = reportService.findById(Long.parseLong(id), username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
+            originalReport = reportService.findById(id, username, scopeName); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
         } catch (Exception e) {
             log.error("Failed to get report.", e);
             return createErrorResponse();
@@ -133,7 +135,7 @@ public class ReportingResource extends UnionVMSResource {
         }
 
         try {
-            reportService.delete(Long.valueOf(id), username, scopeName);
+            reportService.delete(id, username, scopeName);
         } catch (Exception exc) {
             log.error("Report deletion failed.", exc);
             return createErrorResponse(ErrorCodes.DELETE_FAILED);
@@ -189,28 +191,35 @@ public class ReportingResource extends UnionVMSResource {
                                  @Context HttpServletResponse response,
                                  ReportDTO report,
                                  @HeaderParam("scopeName") String scopeName) {
-
+        Response result;
         String username = request.getRemoteUser();
 
-        log.info("{} is requesting createReport(...), with a ID={}", username, report.getId());
+        log.info("{} is requesting createReport(...), with a ID={}, scopeName: {}, visibility: {}", username, report.getId(),scopeName, report.getVisibility());
 
-        report.setCreatedBy(username);
-        report.setScopeName(scopeName);
-
-        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
-        ReportDTO reportDTO;
-        if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-            try {
-                reportDTO = reportService.create(report);
-            } catch (Exception e) {
-                log.error("createReport failed.", e);
-                return createErrorResponse(e.getMessage());
-            }
-            return createSuccessResponse(reportDTO.getId());
+        if (StringUtils.isBlank(scopeName)) {
+            result = createErrorResponse(ErrorCodes.USER_SCOPE_MISSING);
         } else {
-            return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-        }
 
+            report.setCreatedBy(username);
+            report.setScopeName(scopeName);
+
+            ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
+            ReportDTO reportDTO;
+            if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
+                try {
+                    reportDTO = reportService.create(report);
+                    result = createSuccessResponse(reportDTO.getId());
+                } catch (Exception e) {
+                    log.error("createReport failed.", e);
+                    result = createErrorResponse(e.getMessage());
+                }
+
+            } else {
+                result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+            }
+        }
+        
+        return result;
     }
 
     @PUT
