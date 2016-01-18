@@ -15,6 +15,10 @@ public interface VmsSegmentFilterMapper {
 
     VmsSegmentFilterMapper INSTANCE = Mappers.getMapper(VmsSegmentFilterMapper.class);
 
+    @Mappings({
+            @Mapping(target = "minDuration", source = "vmsSegmentFilter.durationRange.minDuration"),
+            @Mapping(target = "maxDuration", source = "vmsSegmentFilter.durationRange.maxDuration")
+    })
     VmsSegmentFilterDTO vmsSegmentFilterToVmsSegmentFilterDTO(VmsSegmentFilter vmsSegmentFilter);
 
     @Mapping(target = "durationRange", expression = "java(new DurationRange(dto.getMinDuration(), dto.getMaxDuration()))")
