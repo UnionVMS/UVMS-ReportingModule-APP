@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallE
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 @Stateless
 @Local(SpatialService.class)
+@Slf4j
 public class SpatialServiceBean implements SpatialService {
 
     @EJB
@@ -83,7 +85,7 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public boolean deleteMapConfiguration(List<Long> spatialConnectIds) throws ReportingServiceException {
+    public void deleteMapConfiguration(List<Long> spatialConnectIds) throws ReportingServiceException {
         try {
             validateSpatialConnectIdsList(spatialConnectIds);
 
@@ -91,8 +93,8 @@ public class SpatialServiceBean implements SpatialService {
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialDeleteMapConfigurationRS deleteMapConfigurationResponse = getDeleteMapConfigurationResponse(message, correlationId);
+            log.debug("deleteMapConfiguration response received {}", deleteMapConfigurationResponse.getResponse());
 
-            return deleteMapConfigurationResponse != null;
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException("ERROR DURING DELETE MAP CONFIG", e);
         }

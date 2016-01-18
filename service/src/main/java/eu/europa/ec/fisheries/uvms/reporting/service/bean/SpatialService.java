@@ -19,5 +19,5 @@ public interface SpatialService {
 
     boolean saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException;
 
-    boolean deleteMapConfiguration(List<Long> spatialConnectIds) throws ReportingServiceException;
+    void deleteMapConfiguration(List<Long> spatialConnectIds) throws ReportingServiceException;
 }
