@@ -7,10 +7,11 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.Merger;
-
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class FilterMerger extends Merger<FilterDTO, Filter> {
 

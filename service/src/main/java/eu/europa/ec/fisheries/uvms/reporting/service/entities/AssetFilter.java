@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("ASSET")
-@EqualsAndHashCode(callSuper = true, of = {"guid", "name"})
+@EqualsAndHashCode(callSuper = false, of = {"guid"})
 public class AssetFilter extends Filter {
 
     @NotNull
@@ -47,7 +47,7 @@ public class AssetFilter extends Filter {
 
     @Override
     public Object getUniqKey() {
-        return hashCode();
+        return getGuid();
     }
 
     @Override
