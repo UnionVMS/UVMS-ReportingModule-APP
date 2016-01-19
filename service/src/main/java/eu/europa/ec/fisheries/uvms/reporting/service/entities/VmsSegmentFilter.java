@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
@@ -31,6 +32,7 @@ public class VmsSegmentFilter extends Filter {
     @Column(name = "MAX_SPEED")
     private Float maximumSpeed;
 
+    @Embedded
     private DurationRange durationRange;
 
     @Column(name = "SEG_CATEGORY")
