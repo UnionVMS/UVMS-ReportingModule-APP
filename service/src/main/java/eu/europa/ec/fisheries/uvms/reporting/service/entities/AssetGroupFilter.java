@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("VGROUP")
-@EqualsAndHashCode(callSuper = true, of = {"guid", "name", "userName"})
+@EqualsAndHashCode(callSuper = false, of = {"guid"})
 public class AssetGroupFilter extends Filter {
 
     @NotNull
@@ -55,7 +55,7 @@ public class AssetGroupFilter extends Filter {
 
     @Override
     public Object getUniqKey() {
-        return hashCode();
+        return getGuid();
     }
 
     public String getName() {
