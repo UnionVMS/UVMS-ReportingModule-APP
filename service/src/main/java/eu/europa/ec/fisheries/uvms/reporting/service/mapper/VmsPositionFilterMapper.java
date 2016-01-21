@@ -20,8 +20,8 @@ public interface VmsPositionFilterMapper {
 
     @Mappings({
             @Mapping(constant = "MOVEMENT_SPEED", target = "key"),
-            @Mapping(source = "minimumSpeed", target = "from", defaultValue = "0"),
-            @Mapping(source = "maximumSpeed", target = "to", defaultValue = "1000")
+            @Mapping(source = "minimumSpeed", target = "from", defaultValue = "0"),//TODO remove the bloody default values
+            @Mapping(source = "maximumSpeed", target = "to", defaultValue = "1000000") //TODO remove the bloody default values
     })
     RangeCriteria speedRangeToRangeCriteria(VmsPositionFilter vmsPositionFilter);
 
