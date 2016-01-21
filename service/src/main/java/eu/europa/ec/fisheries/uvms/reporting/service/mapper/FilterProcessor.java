@@ -8,7 +8,10 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,14 +38,14 @@ public class FilterProcessor {
             addAreaIdentifier(filter);
         }
     }
-    
+
     public void addAreaCriteria(String areaWkt) {
-    	if (areaWkt != null) {
-    		ListCriteria areaCriteria = new ListCriteria();
-        	areaCriteria.setKey(SearchKey.AREA);
-        	areaCriteria.setValue(areaWkt);
-        	movementListCriteria.add(areaCriteria);
-    	}    	
+        if (areaWkt != null) {
+            ListCriteria areaCriteria = new ListCriteria();
+            areaCriteria.setKey(SearchKey.AREA);
+            areaCriteria.setValue(areaWkt);
+            movementListCriteria.add(areaCriteria);
+        }
     }
 
     private void addCriteria(Filter filter) {
@@ -51,16 +54,16 @@ public class FilterProcessor {
         rangeCriteria.addAll(filter.movementRangeCriteria());
         movementListCriteria.addAll(filter.movementListCriteria());
     }
-    
+
     private void addAreaIdentifier(Filter filter) {
-    	if (filter instanceof AreaFilter) {
-    		areaIdentifierList.add(filter.getAreaIdentifierType());
-    	}
+        if (filter instanceof AreaFilter) {
+            areaIdentifierList.add(filter.getAreaIdentifierType());
+        }
     }
 
     private void validate(Set<Filter> filters) throws ProcessorException {
         if (isEmpty(filters)) {
-            throw new ProcessorException("FILTERS CANNOT BE EMPTY");
+            throw new ProcessorException("");
         }
     }
 
@@ -77,11 +80,18 @@ public class FilterProcessor {
 
         if (isNotEmpty(assetListCriteriaPairs)) {
             query.setAssetSearchCriteria(createListCriteria());
+            query.setPagination(createPagination());
         }
 
         return query;
     }
 
+    private AssetListPagination createPagination() {
+        AssetListPagination pagination = new AssetListPagination();
+        pagination.setPage(1);
+        pagination.setListSize(1000);
+        return pagination;
+    }
 
     private AssetListCriteria createListCriteria() {
         AssetListCriteria assetListCriteria = new AssetListCriteria();
@@ -117,8 +127,8 @@ public class FilterProcessor {
     public Set<RangeCriteria> getRangeCriteria() {
         return rangeCriteria;
     }
-    
+
     public Set<AreaIdentifierType> getAreaIdentifierList() {
-    	return areaIdentifierList;
+        return areaIdentifierList;
     }
 }
