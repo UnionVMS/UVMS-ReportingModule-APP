@@ -47,6 +47,14 @@ public class ReportingResource extends UnionVMSResource {
     @EJB
     private VmsService vmsService;
 
+    /**
+     *
+     * @responseMessage 200 Success
+     * @responseMessage 500 Error
+     *
+     * @summary Gets a list of reports
+     *
+     */
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
