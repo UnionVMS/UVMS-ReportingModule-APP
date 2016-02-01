@@ -1,0 +1,19 @@
+{
+  "id" : 5,
+  "name" : "ReportName788",
+  "desc" : "This is a report descri created on 2015/09/28 13:31",
+  "visibility" : "private",
+  "createdOn" : "2015-10-11T13:02:23",
+  "createdBy" : "georgi",
+  "withMap" : false,
+  "filterExpression" : {
+    "common" : {
+      "positionSelector" : "all",
+      "startDate" : "2013-02-28T13:24:56",
+      "endDate" : "2013-02-28T13:24:56"
+    },
+    "vms" : { },
+    "areas" : [ ],
+    "assets" : [ ]
+  }
+}

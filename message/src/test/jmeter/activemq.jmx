@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.5" jmeter="2.10 r1533061">
+	<hashTree>
+		<TestPlan guiclass="TestPlanGui" testclass="TestPlan"
+			testname="Test Plan" enabled="true">
+			<stringProp name="TestPlan.comments"></stringProp>
+			<boolProp name="TestPlan.functional_mode">false</boolProp>
+			<boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+			<elementProp name="TestPlan.user_defined_variables"
+				elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments"
+				testname="User Defined Variables" enabled="true">
+				<collectionProp name="Arguments.arguments" />
+			</elementProp>
+			<stringProp name="TestPlan.user_define_classpath"></stringProp>
+		</TestPlan>
+
+		<hashTree>
+			<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup"
+				testname="Thread Group" enabled="true">
+				<stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+				<elementProp name="ThreadGroup.main_controller"
+					elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController"
+					testname="Loop Controller" enabled="true">
+					<boolProp name="LoopController.continue_forever">false</boolProp>
+					<stringProp name="LoopController.loops">1</stringProp>
+				</elementProp>
+				<stringProp name="ThreadGroup.num_threads">1</stringProp>
+				<stringProp name="ThreadGroup.ramp_time">1</stringProp>
+				<longProp name="ThreadGroup.start_time">1409144157000</longProp>
+				<longProp name="ThreadGroup.end_time">1409144157000</longProp>
+				<boolProp name="ThreadGroup.scheduler">false</boolProp>
+				<stringProp name="ThreadGroup.duration"></stringProp>
+				<stringProp name="ThreadGroup.delay"></stringProp>
+			</ThreadGroup>
+
+			<hashTree>
+
+				<JMSSampler guiclass="JMSConfigGui" testclass="JMSSampler"
+					testname="Test" enabled="true">
+					<stringProp name="JMSSampler.queueconnectionfactory">ConnectionFactory</stringProp>
+					<stringProp name="JMSSampler.SendQueue">dynamicQueues/UVMSSpatialEvent</stringProp>
+					<stringProp name="JMSSampler.ReceiveQueue">dynamicQueues/UVMSReporting</stringProp>
+					<boolProp name="JMSSampler.isFireAndForget">false</boolProp>
+					<boolProp name="JMSSampler.isNonPersistent">false</boolProp>
+					<boolProp name="JMSSampler.useReqMsgIdAsCorrelId">true</boolProp>
+					<stringProp name="JMSSampler.timeout">2000</stringProp>
+					<stringProp name="HTTPSamper.xml_data"><![CDATA[<ns2:SpatialEnrichmentRQ xmlns:ns2="http://europa.eu/ec/fisheries/uvms/spatial/model/schemas"><ns2:method>GET_ENRICHMENT</ns2:method><Point><ns2:Longitude>1.0</ns2:Longitude><ns2:Latitude>1.0</ns2:Latitude><ns2:Crs>4326</ns2:Crs></Point><AreaTypes><AreaType>COUNTRY</AreaType></AreaTypes><LocationTypes><LocationType>PORT</LocationType></LocationTypes><Unit>NAUTICAL_MILES</Unit></ns2:SpatialEnrichmentRQ>]]></stringProp>
+					<stringProp name="JMSSampler.initialContextFactory">org.apache.activemq.jndi.ActiveMQInitialContextFactory</stringProp>
+					<stringProp name="JMSSampler.contextProviderUrl">tcp://localhost:61616</stringProp>
+					<elementProp name="JMSSampler.jndiProperties" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+						<collectionProp name="Arguments.arguments">
+							<elementProp name="java.naming.security.principal" elementType="Argument">
+								<stringProp name="Argument.name">java.naming.security.principal</stringProp>
+								<stringProp name="Argument.value">admin</stringProp>
+								<stringProp name="Argument.metadata">=</stringProp>
+							</elementProp>
+							<elementProp name="java.naming.security.credentials" elementType="Argument">
+								<stringProp name="Argument.name">java.naming.security.credentials</stringProp>
+								<stringProp name="Argument.value">admin</stringProp>
+								<stringProp name="Argument.metadata">=</stringProp>
+							</elementProp>
+						</collectionProp>
+					</elementProp>
+					<elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables"	enabled="true">
+						<collectionProp name="Arguments.arguments" />
+					</elementProp>
+				</JMSSampler>
+
+
+
+				<!--Sample JMS publisher and Consumer -->
+				<!-- 
+				
+				<PublisherSampler guiclass="JMSPublisherGui" testclass="PublisherSampler" testname="JMS Publisher" enabled="true">
+					<stringProp name="jms.jndi_properties">false</stringProp>
+					<stringProp name="jms.initial_context_factory">org.apache.activemq.jndi.ActiveMQInitialContextFactory
+					</stringProp>
+					<stringProp name="jms.provider_url">tcp://127.0.0.1:61616</stringProp>
+					<stringProp name="jms.connection_factory">ConnectionFactory</stringProp>
+					<stringProp name="jms.topic">dynamicQueues/UVMSSpatialEvent</stringProp>
+					<stringProp name="jms.security_principle">admin</stringProp>
+					<stringProp name="jms.security_credentials">admin</stringProp>
+					<stringProp name="jms.text_message"><![CDATA[<ns2:SpatialEnrichmentRQ xmlns:ns2="http://europa.eu/ec/fisheries/uvms/spatial/model/schemas"><ns2:method>GET_ENRICHMENT</ns2:method><Point><ns2:Longitude>1.0</ns2:Longitude><ns2:Latitude>1.0</ns2:Latitude><ns2:Crs>4326</ns2:Crs></Point><AreaTypes><AreaType>COUNTRY</AreaType></AreaTypes><LocationTypes><LocationType>PORT</LocationType></LocationTypes><Unit>NAUTICAL_MILES</Unit></ns2:SpatialEnrichmentRQ>]]></stringProp>
+					<stringProp name="jms.input_file"></stringProp>
+					<stringProp name="jms.random_path"></stringProp>
+					<stringProp name="jms.config_choice">jms_use_text</stringProp>
+					<stringProp name="jms.config_msg_type">jms_text_message</stringProp>
+					<stringProp name="jms.iterations">1</stringProp>
+					<boolProp name="jms.authenticate">true</boolProp>
+					<elementProp name="jms.jmsProperties" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables"	enabled="true">
+					<collectionProp name="Arguments.arguments">
+						<elementProp name="replyTo" elementType="Argument">
+							<stringProp name="Argument.name">replyTo</stringProp>
+							<stringProp name="Argument.value">dynamicQueues/UVMSReporting</stringProp>
+							<stringProp name="Argument.metadata">=</stringProp>
+						</elementProp>
+					</collectionProp>
+					</elementProp>
+				</PublisherSampler>
+				
+				<hashTree />
+				
+				<SubscriberSampler guiclass="JMSSubscriberGui"	testclass="SubscriberSampler" testname="ActiveMQ-JMS Subscriber" enabled="true">
+					<stringProp name="jms.jndi_properties">false</stringProp>
+					<stringProp name="jms.initial_context_factory">org.apache.activemq.jndi.ActiveMQInitialContextFactory
+					</stringProp>
+					<stringProp name="jms.provider_url">tcp://127.0.0.1:61616</stringProp>
+					<stringProp name="jms.connection_factory">ConnectionFactory</stringProp>
+					<stringProp name="jms.topic">dynamicQueues/UVMSSpatialEvent
+					</stringProp>
+					<stringProp name="jms.security_principle">admin</stringProp>
+					<stringProp name="jms.security_credentials">admin</stringProp>
+					<boolProp name="jms.authenticate">false</boolProp>
+					<stringProp name="jms.iterations">1</stringProp>
+					<stringProp name="jms.read_response">true</stringProp>
+					<stringProp name="jms.client_choice">jms_subscriber_receive</stringProp>
+					<stringProp name="jms.timeout">10000</stringProp>
+				</SubscriberSampler> 
+				
+				-->
+
+				<hashTree />
+
+				<ResultCollector guiclass="GraphVisualizer"
+					testclass="ResultCollector" testname="Graph Results" enabled="true">
+					<boolProp name="ResultCollector.error_logging">false</boolProp>
+					<objProp>
+						<name>saveConfig</name>
+						<value class="SampleSaveConfiguration">
+							<time>true</time>
+							<latency>true</latency>
+							<timestamp>true</timestamp>
+							<success>true</success>
+							<label>true</label>
+							<code>true</code>
+							<message>true</message>
+							<threadName>true</threadName>
+							<dataType>true</dataType>
+							<encoding>false</encoding>
+							<assertions>true</assertions>
+							<subresults>true</subresults>
+							<responseData>false</responseData>
+							<samplerData>false</samplerData>
+							<xml>false</xml>
+							<fieldNames>false</fieldNames>
+							<responseHeaders>true</responseHeaders>
+							<requestHeaders>true</requestHeaders>
+							<responseDataOnError>true</responseDataOnError>
+							<saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+							<assertionsResultsToSave>0</assertionsResultsToSave>
+							<bytes>true</bytes>
+						</value>
+					</objProp>
+					<stringProp name="filename"></stringProp>
+				</ResultCollector>
+				<hashTree />
+			</hashTree>
+		</hashTree>
+	</hashTree>
+</jmeterTestPlan>
