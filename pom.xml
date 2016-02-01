@@ -5,11 +5,12 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
     <artifactId>reporting</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven projekt-archetype for UnionVms modules</description>
 
     <properties>
+		<release.branch.name>uvms-1.0.0</release.branch.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mockito.version>1.9.5</mockito.version>
@@ -19,20 +20,20 @@
         <mapstruct.version>1.0.0.CR2</mapstruct.version>
         <jackson.version>2.4.1</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
-        <asset.model.version>1.0.10-SNAPSHOT</asset.model.version>
-        <audit.model.version>1.0.4-SNAPSHOT</audit.model.version>
-        <movement.model.version>1.0.6-SNAPSHOT</movement.model.version>
-        <spatial.model.version>1.0-SNAPSHOT</spatial.model.version>
+        <asset.model.version>1.0.0</asset.model.version>
+        <audit.model.version>1.0.0</audit.model.version>
+        <movement.model.version>1.0.0</movement.model.version>
+        <spatial.model.version>1.0.2</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>1.5-SNAPSHOT</uvms.commons.version>
+        <uvms.commons.version>1.5</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
-        <usm4uvms.version>0.0.12-SNAPSHOT</usm4uvms.version>
+        <usm4uvms.version>1.0.0</usm4uvms.version>
     </properties>
 
     <dependencyManagement>
@@ -407,7 +408,7 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/branches/dev/Modules/Reporting/APP</connection>
+        <developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Reporting/APP</developerConnection>
     </scm>
 
     <build>
