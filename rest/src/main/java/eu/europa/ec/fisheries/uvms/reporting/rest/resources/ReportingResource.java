@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
@@ -9,7 +10,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,6 +39,7 @@ import java.util.Set;
 @Slf4j
 public class ReportingResource extends UnionVMSResource {
 
+    public static final String USM_APPLICATION = "usmApplication";
     @Context
     private UriInfo context;
 
@@ -46,6 +48,9 @@ public class ReportingResource extends UnionVMSResource {
 
     @EJB
     private VmsService vmsService;
+
+    @EJB
+    private USMService usmService;
 
     /**
      *
@@ -61,33 +66,37 @@ public class ReportingResource extends UnionVMSResource {
     public Response listReports(@Context HttpServletRequest request,
                                 @Context HttpServletResponse response,
                                 @HeaderParam("scopeName") String scopeName,
+                                @HeaderParam("roleName") String roleName,
                                 @DefaultValue("Y") @QueryParam("existent") String existent) {
         final String username = request.getRemoteUser();
 
         log.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
-        Set<String> features = getCachedUserFeatures(request);
+        String applicationName = request.getServletContext().getInitParameter(USM_APPLICATION);
 
-        if (username != null && features != null) {
+        try {
+            Set<String> features = usmService.getUserFeatures(username, applicationName, roleName, scopeName);
 
-            Collection<ReportDTO> reportsList;
-            try {
-                reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent));
-            } catch (Exception e) {
-                log.error("Failed to list reports.", e);
-                return createErrorResponse();
+
+            if (username != null && features != null) {
+
+                Collection<ReportDTO> reportsList;
+                try {
+                    reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent));
+                } catch (Exception e) {
+                    log.error("Failed to list reports.", e);
+                    return createErrorResponse();
+                }
+
+                return createSuccessResponse(reportsList);
+            } else {
+                return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
             }
-
-            return createSuccessResponse(reportsList);
-        } else {
-            return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+        } catch (ServiceException e) {
+            return createErrorResponse("Unable to get user features from USM. Reason: " + e.getMessage());
         }
     }
 
-    // UT
-    protected Set<String> getCachedUserFeatures(HttpServletRequest request) {
-        return SecuritySessionUtils.getCachedUserFeatures(request.getSession());
-    }
 
     @GET
     @Path("/{id}")
