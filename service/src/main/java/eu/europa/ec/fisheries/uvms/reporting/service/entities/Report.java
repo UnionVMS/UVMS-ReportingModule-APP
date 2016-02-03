@@ -149,6 +149,37 @@ public class Report implements Serializable {
         audit = new Audit(DateUtils.nowUTC().toDate());
     }
 
+    public Audit getAudit(){
+        return audit;
+    }
+
+    public Set<Filter> getFilters(){
+        return filters;
+    }
+
+    public void setFilters(Set<Filter> filters){
+        this.filters = filters;
+    }
+
+    public void setAudit(Audit audit){
+        this.audit = audit;
+    }
+
+    public void setDetails(ReportDetails details){
+        this.details = details;
+    }
+
+    public ReportDetails getDetails(){
+        return details;
+    }
+
+    public void setVisibility(VisibilityEnum visibility){
+        this.visibility = visibility;
+    }
+
+    public VisibilityEnum getVisibility(){
+        return visibility;
+    }
 
     public void mergeDetails(ReportDetails reportDetails){
         this.details.merge(reportDetails);

@@ -11,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import io.jsonwebtoken.lang.Collections;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lombok.SneakyThrows;
@@ -64,9 +65,11 @@ public class ReportDTOSerializerDeserializerTest {
         ReportDTO report1 = createReport();
         report1.setWithMap(true);
         report1.setMapConfiguration(new MapConfigurationDTO());
+        report1.setShareable(Collections.arrayToList(new VisibilityEnum[]{VisibilityEnum.PRIVATE}));
 
         ReportDTO report2 = createReport();
         report2.setDescription(null);
+        report2.setShareable(Collections.arrayToList(new VisibilityEnum[]{VisibilityEnum.PRIVATE, VisibilityEnum.SCOPE}));
 
         ReportDTO report3 = createReport();
         List<FilterDTO> filterDTOList = new ArrayList<>();

@@ -34,8 +34,10 @@ public class FilterProcessor {
         validate(filters);
 
         for (Filter filter : filters) {
-            addCriteria(filter);
-            addAreaIdentifier(filter);
+            if(filter != null){
+                addCriteria(filter);
+                addAreaIdentifier(filter);
+            }
         }
     }
 

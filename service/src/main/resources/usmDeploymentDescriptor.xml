@@ -40,6 +40,11 @@
             <group>reporting</group>
         </feature>
         <feature>
+            <name>UNSHARE_FOREIGN_REPORT</name>
+            <description>allows user to unshare someone's else reports. This should be used for admin users roles.</description>
+            <group>reporting</group>
+        </feature>
+        <feature>
             <name>SHARE_REPORT_SCOPE</name>
             <description>allows user to share reports within current user context/scope</description>
             <group>reporting</group>

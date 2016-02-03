@@ -1,16 +1,19 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.Report;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.Vms;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -78,25 +81,24 @@ public class ReportingResource extends UnionVMSResource {
             Set<String> features = usmService.getUserFeatures(username, applicationName, roleName, scopeName);
 
 
-            if (username != null && features != null) {
+        if (username != null && features != null) {
 
-                Collection<ReportDTO> reportsList;
-                try {
-                    reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent));
-                } catch (Exception e) {
-                    log.error("Failed to list reports.", e);
-                    return createErrorResponse();
-                }
-
-                return createSuccessResponse(reportsList);
-            } else {
-                return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+            Collection<ReportDTO> reportsList;
+            try {
+                reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent));
+            } catch (Exception e) {
+                log.error("Failed to list reports.", e);
+                return createErrorResponse();
             }
+
+            return createSuccessResponse(reportsList);
+        } else {
+            return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+        }
         } catch (ServiceException e) {
             return createErrorResponse("Unable to get user features from USM. Reason: " + e.getMessage());
-        }
     }
-
+    }
 
     @GET
     @Path("/{id}")
@@ -320,14 +322,35 @@ public class ReportingResource extends UnionVMSResource {
 
         log.info("{} is requesting runReport(...), with a ID={}", username, id);
 
+ 
         VmsDTO vmsDto;
         ObjectNode jsonNodes;
 
         try {
 
-            vmsDto = vmsService.getVmsDataByReportId(username, scopeName, id);
+            jsonNodes = vmsService.getVmsDataByReportId(username, scopeName, id).toJson(format);
+            log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
+            return createSuccessResponse(jsonNodes);
 
-            jsonNodes = vmsDto.toJson(format);
+        } catch (Exception e) {
+            log.error("Report execution failed.", e);
+            return createErrorResponse(e.getMessage());
+        }
+    }
+
+    @POST
+    @Path("/execute/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response runReport(@Context HttpServletRequest request, Report report, @HeaderParam("scopeName") String scopeName, DisplayFormat format) {
+
+        String username = request.getRemoteUser();
+
+        log.info("{} is requesting runReport(...), with a report={}", username, report);
+
+        try {
+
+            ObjectNode jsonNodes = vmsService.getVmsDataBy(report).toJson(format);
             log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 

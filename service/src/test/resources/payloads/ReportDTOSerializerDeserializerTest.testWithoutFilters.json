@@ -7,7 +7,7 @@
   "createdBy" : "georgi",
   "withMap" : true,
   "editable" : false,
-  "shareable" : false,
+  "shareable" : ["PRIVATE"],
   "deletable" : false,
   "mapConfiguration" : {}
 }

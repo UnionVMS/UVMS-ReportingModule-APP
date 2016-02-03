@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -9,6 +10,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+import java.util.List;
+import java.util.Set;
 
 @Mapper(uses = ObjectFactory.class)
 public interface AssetFilterMapper {
@@ -18,6 +21,10 @@ public interface AssetFilterMapper {
     AssetFilterDTO assetFilterToAssetFilterDTO(AssetFilter assetFilter);
 
     AssetFilter assetFilterDTOToAssetFilter(AssetFilterDTO assetFilterDTO);
+
+    AssetFilter assetToAssetFilter(Asset dto);
+
+    Set<AssetFilter> assetListToAssetFilterSet(List<Asset> list);
 
     @Mappings({
             @Mapping(source = "guid", target = "value"),

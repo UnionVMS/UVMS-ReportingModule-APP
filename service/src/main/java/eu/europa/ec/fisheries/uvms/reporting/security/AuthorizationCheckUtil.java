@@ -31,7 +31,7 @@ public class AuthorizationCheckUtil {
             case PUBLIC :
                 requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
                 break;
-            default:
+            case PRIVATE: requiredFeature = report.getCreatedBy().equals(username)?null:ReportFeatureEnum.UNSHARE_FOREIGN_REPORT;
                 break;
         }
         return requiredFeature;

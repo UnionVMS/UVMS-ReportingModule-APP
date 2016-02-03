@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -36,6 +37,10 @@ public class VmsServiceBean implements VmsService {
     private ReportRepository repository;
 
     @EJB
+    private AuditService auditService;
+
+
+    @EJB
     private AssetServiceBean assetModule;
 
     @EJB
@@ -48,6 +53,7 @@ public class VmsServiceBean implements VmsService {
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
     public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
+
         log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
 
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
@@ -62,13 +68,23 @@ public class VmsServiceBean implements VmsService {
 
         }
 
-        VmsDTO vmsDto;
+        VmsDTO vmsDto = getVmsData(reportByReportId);
+
+        reportByReportId.updateExecutionLog(username);
+
+        log.debug("[END] getVmsDataByReportId(...)");
+
+        return vmsDto;
+
+    }
+
+    private VmsDTO getVmsData(Report report) throws ReportingServiceException {
 
         try {
 
             Map<String, Asset> assetMap;
 
-            FilterProcessor processor = new FilterProcessor(reportByReportId.getFilters());
+            FilterProcessor processor = new FilterProcessor(report.getFilters());
 
             addAreaCriteriaToProcessor(processor);
 
@@ -99,10 +115,7 @@ public class VmsServiceBean implements VmsService {
                 assetMap = assetModule.getAssetMap(processor);
             }
 
-            vmsDto = new VmsDTO(assetMap, movementMap);
-
-            reportByReportId.updateExecutionLog(username);
-
+            return new VmsDTO(assetMap, movementMap);
 
         } catch (ProcessorException e) {
 
@@ -114,8 +127,16 @@ public class VmsServiceBean implements VmsService {
 
         }
 
-        log.debug("[END] getVmsDataByReportId(...)");
-        return vmsDto;
+    }
+
+    @Override
+    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report) throws ReportingServiceException {
+
+        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report));
+
+        auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
+
+        return vmsData;
 
     }
 

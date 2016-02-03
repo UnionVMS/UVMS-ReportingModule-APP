@@ -2,9 +2,10 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.Common;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DateRange;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,7 +13,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import java.util.Date;
 
-@Mapper(uses = {ObjectFactory.class, PositionSelectorMapper.class}, imports = DateRange.class)
+@Mapper(uses = {ObjectFactory.class, PositionSelectorMapper.class}, imports = {DateUtils.class, Selector.class, Position.class, DateRange.class, PositionSelector.class})
 public interface CommonFilterMapper {
 
     CommonFilterMapper INSTANCE = Mappers.getMapper(CommonFilterMapper.class);
@@ -21,12 +22,18 @@ public interface CommonFilterMapper {
             @Mapping(source = "dateRange.startDate", target = "startDate"),
             @Mapping(source = "dateRange.endDate", target = "endDate")
     })
-    CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter commonFilter);
+    CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter commonFilter); //TODO use Common from model
 
     @Mappings({
             @Mapping(target = "dateRange", expression = "java(new DateRange(dto.getStartDate(), dto.getEndDate()))")
     })
-    CommonFilter dateTimeFilterDTOToDateTimeFilter(CommonFilterDTO dto); //TODO unit test
+    CommonFilter dateTimeFilterDTOToDateTimeFilter(CommonFilterDTO dto); //TODO use Common from model
+
+    @Mappings({
+            @Mapping(target = "dateRange", expression = "java(new DateRange(DateUtils.UI_FORMATTER.parseDateTime(dto.getStartDate()).toDate(), DateUtils.UI_FORMATTER.parseDateTime(dto.getEndDate()).toDate()))"),
+            @Mapping(target = "positionSelector", expression = "java(new PositionSelector(Float.valueOf(dto.getXValue()), Enum.valueOf( Selector.class, dto.getPositionSelector()) , Position.getByName(dto.getPositionTypeSelector())))")
+    })
+    CommonFilter commonToCommonFilter(Common dto);
 
     @Mappings({
             @Mapping(constant = "DATE", target = "key"),

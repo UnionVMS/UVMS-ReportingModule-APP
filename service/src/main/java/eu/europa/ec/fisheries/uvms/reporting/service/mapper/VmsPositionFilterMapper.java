@@ -1,6 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.Vmsposition;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import org.mapstruct.Mapper;
@@ -9,7 +12,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = ObjectFactory.class)
+@Mapper(uses = ObjectFactory.class, imports = {MovementActivityTypeType.class, MovementTypeType.class})
 public interface VmsPositionFilterMapper {
 
     VmsPositionFilterMapper INSTANCE = Mappers.getMapper(VmsPositionFilterMapper.class);
@@ -17,6 +20,14 @@ public interface VmsPositionFilterMapper {
     VmsPositionFilterDTO vmsPositionFilterToVmsPositionFilterDTO(VmsPositionFilter vmsPositionFilter);
 
     VmsPositionFilter vmsPositionFilterDTOToVmsPositionFilter(VmsPositionFilterDTO vmsPositionFilterDTO);
+
+    @Mappings({
+            @Mapping(target = "minimumSpeed", source = "movMinSpeed"),
+            @Mapping(target = "maximumSpeed", source = "movMaxSpeed"),
+            @Mapping(target = "movementActivity", expression = "java(Enum.valueOf( MovementActivityTypeType.class, dto.getMovActivity()))"),
+            @Mapping(target = "movementType", expression = "java(Enum.valueOf( MovementTypeType.class, dto.getMovType()))")
+    })
+    VmsPositionFilter vmsPositionToVmsPositionFilter(Vmsposition dto);
 
     @Mappings({
             @Mapping(constant = "MOVEMENT_SPEED", target = "key"),

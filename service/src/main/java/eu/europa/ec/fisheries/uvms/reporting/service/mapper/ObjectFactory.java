@@ -8,15 +8,13 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 
 public class ObjectFactory {
+
+    public Audit createAudit() {
+        return Audit.builder().build();
+    }
 
     public Report createReport() {
         return Report.builder().build();

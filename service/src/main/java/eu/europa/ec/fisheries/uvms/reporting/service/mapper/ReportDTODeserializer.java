@@ -65,7 +65,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
     private MapConfigurationDTO createMapConfigurationDTO(boolean withMap, JsonNode mapConfigJsonNode) {
         if (withMap) {
             if (mapConfigJsonNode == null) {
-                throw new RuntimeException("When withMap is set to true you must specify mapConfiguration attributes.");
+                return MapConfigurationDTO.MapConfigurationDTOBuilder().build();
             } else {
                 Long spatialConnectId = (mapConfigJsonNode.get("spatialConnectId") != null) ? mapConfigJsonNode.get("spatialConnectId").longValue() : null;
                 Long mapProjectionId = (mapConfigJsonNode.get("mapProjectionId") != null) ? mapConfigJsonNode.get("mapProjectionId").longValue() : null;

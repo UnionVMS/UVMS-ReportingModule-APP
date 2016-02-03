@@ -6,6 +6,6 @@
   "createdBy" : "georgi",
   "withMap" : false,
   "editable" : false,
-  "shareable" : false,
+  "shareable" : ["PRIVATE", "SCOPE"],
   "deletable" : false
 }

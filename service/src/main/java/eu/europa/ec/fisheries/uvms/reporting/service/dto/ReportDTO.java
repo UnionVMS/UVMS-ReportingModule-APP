@@ -16,8 +16,7 @@ import java.util.List;
 
 @JsonDeserialize(using = ReportDTODeserializer.class)
 @JsonSerialize(using = ReportDTOSerializer.class)
-@EqualsAndHashCode(of = {"description", "withMap", "visibility", "name",
-        "shareable", "deletable", "editable", "filters", "isDeleted"})
+@EqualsAndHashCode(of = {"description", "withMap", "visibility", "name", "deletable", "editable", "filters", "isDeleted"})
 public class ReportDTO implements Serializable {
 
     public static final String DESC = "desc";
@@ -40,7 +39,7 @@ public class ReportDTO implements Serializable {
     private Boolean withMap;
     private String scopeName;
     private String createdBy;
-    private boolean shareable;
+    private List<VisibilityEnum> shareable;
     private boolean editable;
     private boolean deletable;
     private AuditDTO audit;
@@ -141,11 +140,11 @@ public class ReportDTO implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public boolean isShareable() {
+    public List<VisibilityEnum> isShareable() {
         return shareable;
     }
 
-    public void setShareable(boolean shareable) {
+    public void setShareable(List<VisibilityEnum> shareable) {
         this.shareable = shareable;
     }
 

@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
@@ -12,11 +13,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.Builder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
@@ -59,9 +56,24 @@ public class ReportMapper {
             reportDTO.setFilters(filterSetToFilterDTOSet(report.getFilters()));
         }
         if (features != null) {
-            reportDTO.setShareable(isAllowed(
-                            AuthorizationCheckUtil.getRequiredFeatureToShareReport(reportDTO, currentUser), features)
-            );
+            List<VisibilityEnum> visibilityEnumList = new LinkedList<>();
+
+            if (report.getDetails().getCreatedBy().equals(currentUser) || isAllowed(ReportFeatureEnum.UNSHARE_FOREIGN_REPORT, features)) {
+                visibilityEnumList.add(VisibilityEnum.PRIVATE);
+            }
+
+            if (isAllowed(ReportFeatureEnum.SHARE_REPORT_SCOPE, features)) {
+                visibilityEnumList.add(VisibilityEnum.SCOPE);
+            }
+
+            if (isAllowed(ReportFeatureEnum.SHARE_REPORT_PUBLIC, features)) {
+                visibilityEnumList.add(VisibilityEnum.PUBLIC);
+            }
+
+            if (!visibilityEnumList.isEmpty()) {
+                reportDTO.setShareable(visibilityEnumList);
+            }
+
             reportDTO.setDeletable(isAllowed(
                             AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(reportDTO, currentUser), features)
             );

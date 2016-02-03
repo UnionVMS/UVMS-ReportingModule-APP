@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import org.joda.time.DateTime;
@@ -38,7 +39,13 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
     private void serializeAccessFields(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
         jgen.writeBooleanField(EDITABLE, reportDTO.isEditable());
-        jgen.writeBooleanField(SHAREABLE, reportDTO.isShareable());
+        if (reportDTO.isShareable() != null) {
+            jgen.writeArrayFieldStart(SHAREABLE);
+            for (VisibilityEnum visibilityEnum : reportDTO.isShareable()) {
+                jgen.writeString(visibilityEnum.toString());
+            }
+            jgen.writeEndArray();
+        }
         jgen.writeBooleanField(DELETABLE, reportDTO.isDeletable());
     }
 
