@@ -1,22 +1,19 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.Report;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Vms;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.utils.SecuritySessionUtils;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -322,13 +319,9 @@ public class ReportingResource extends UnionVMSResource {
 
         log.info("{} is requesting runReport(...), with a ID={}", username, id);
 
- 
-        VmsDTO vmsDto;
-        ObjectNode jsonNodes;
-
         try {
 
-            jsonNodes = vmsService.getVmsDataByReportId(username, scopeName, id).toJson(format);
+            ObjectNode jsonNodes = vmsService.getVmsDataByReportId(username, scopeName, id).toJson(format);
             log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 
