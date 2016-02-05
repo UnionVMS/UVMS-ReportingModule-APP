@@ -8,11 +8,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Mapper(imports = {Date.class, ReportDetails.class, Report.class, DateUtils.class, Audit.class, VisibilityEnum.class}, uses = {ObjectFactory.class})
+@Mapper(imports = {ReportDetails.class, Report.class, DateUtils.class, Audit.class, VisibilityEnum.class}, uses = {ObjectFactory.class})
 public abstract class ReportMapperV2 {
 
     public static ReportMapperV2 INSTANCE = Mappers.getMapper(ReportMapperV2.class);
