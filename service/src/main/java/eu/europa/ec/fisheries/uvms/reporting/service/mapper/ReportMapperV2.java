@@ -19,7 +19,7 @@ public abstract class ReportMapperV2 {
 
     @Mappings({
         @Mapping(target = "visibility", expression = "java(VisibilityEnum.getByName(dto.getVisibility()))"),
-        @Mapping(target = "audit", expression = "java(new Audit(DateUtils.UI_FORMATTER.parseDateTime(dto.getCreatedOn()).toDate()))"),
+        @Mapping(target = "audit", expression = "java(new Audit(dto.getCreatedOn() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getCreatedOn()).toDate() : null))"),
         @Mapping(target = "details", expression = "java(new ReportDetails(dto.getDesc(), dto.getName(), dto.isWithMap(), null, dto.getCreatedBy()))"),
         @Mapping(target = "filters", expression = "java(mapFilters(dto))"),
     })
@@ -30,7 +30,7 @@ public abstract class ReportMapperV2 {
         Set<Filter> filterSet = new HashSet<>();
 
         filterSet.addAll(AreaFilterMapper.INSTANCE.arealistToAreaFilterSet(dto.getFilterExpression().getAreas()));
-         filterSet.add(CommonFilterMapper.INSTANCE.commonToCommonFilter(dto.getFilterExpression().getCommon()));
+        filterSet.add(CommonFilterMapper.INSTANCE.commonToCommonFilter(dto.getFilterExpression().getCommon()));
         filterSet.addAll(AssetFilterMapper.INSTANCE.assetListToAssetFilterSet(dto.getFilterExpression().getAssets()));
 
         if (dto.getFilterExpression().getVms() != null){
