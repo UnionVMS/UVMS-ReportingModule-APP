@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
@@ -167,8 +168,9 @@ public class ReportServiceBean {
     }
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.SHARE)
-    public void share(ReportDTO reportToUpdate, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
-        update(reportToUpdate, withMap, mapConfiguration);
+    @Transactional
+    public void share(Long reportId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException {
+        repository.changeVisibility(reportId, newVisibility, username, scopeName);
     }
 
 }

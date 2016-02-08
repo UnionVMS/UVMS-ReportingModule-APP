@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -17,4 +18,6 @@ public interface ReportRepository {
     void remove(Long reportId, String username, String scopeName) throws ReportingServiceException;
 
     Report createEntity(Report reportEntity) throws ReportingServiceException;
+
+    void changeVisibility(Long reportId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException;
 }

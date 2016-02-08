@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.interceptor;
 
 
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
@@ -20,7 +21,7 @@ public class AuditInterceptorTest {
         reportServiceBean.getClass().getMethod("delete", Long.class, String.class, String.class);
         reportServiceBean.getClass().getMethod("create", ReportDTO.class);
         reportServiceBean.getClass().getMethod("update", ReportDTO.class, Boolean.class, MapConfigurationDTO.class);
-        reportServiceBean.getClass().getMethod("share", ReportDTO.class, Boolean.class, MapConfigurationDTO.class);
+        reportServiceBean.getClass().getMethod("share", Long.class, VisibilityEnum.class, String.class, String.class);
         vmsServiceBean.getClass().getMethod("getVmsDataByReportId", String.class, String.class, Long.class);
     }
 }

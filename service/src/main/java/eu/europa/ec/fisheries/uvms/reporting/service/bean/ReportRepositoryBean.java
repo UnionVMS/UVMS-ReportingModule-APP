@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
@@ -104,5 +105,11 @@ public class ReportRepositoryBean implements ReportRepository {
             log.error("createEntity failed", e);
             throw new ReportingServiceException("createEntity failed", e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void changeVisibility(Long reportId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException {
+        reportDAO.changeVisibility(reportId, newVisibility, username, scopeName);
     }
 }

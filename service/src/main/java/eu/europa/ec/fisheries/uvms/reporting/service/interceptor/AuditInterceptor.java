@@ -89,14 +89,10 @@ public class AuditInterceptor implements Serializable {
 
         else if (auditAction.equals(AuditActionEnum.SHARE)) {
 
-            ReportDTO report = (ReportDTO)parameters[0];
+            Long reportId = (Long)parameters[0];
 
-            if (report != null) {
-
-                Long id = report.getId();
-
-                sendAuditReport(auditAction, id);
-
+            if (reportId != null) {
+                sendAuditReport(auditAction, reportId);
             }
 
         }

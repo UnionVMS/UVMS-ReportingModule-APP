@@ -52,34 +52,20 @@ public class ReportMapper {
         reportDTO.setDeletedOn(report.getDeletedOn());
         reportDTO.setDeletedBy(report.getDeletedBy());
         reportDTO.setVisibility(report.getVisibility());
+
         if (filters) {
             reportDTO.setFilters(filterSetToFilterDTOSet(report.getFilters()));
         }
+
         if (features != null) {
-            List<VisibilityEnum> visibilityEnumList = new LinkedList<>();
-
-            if (report.getDetails().getCreatedBy().equals(currentUser) || isAllowed(ReportFeatureEnum.UNSHARE_FOREIGN_REPORT, features)) {
-                visibilityEnumList.add(VisibilityEnum.PRIVATE);
-            }
-
-            if (isAllowed(ReportFeatureEnum.SHARE_REPORT_SCOPE, features)) {
-                visibilityEnumList.add(VisibilityEnum.SCOPE);
-            }
-
-            if (isAllowed(ReportFeatureEnum.SHARE_REPORT_PUBLIC, features)) {
-                visibilityEnumList.add(VisibilityEnum.PUBLIC);
-            }
+            List<VisibilityEnum> visibilityEnumList = AuthorizationCheckUtil.listAllowedVisibilitOptions(report.getDetails().getCreatedBy(), currentUser, features);
 
             if (!visibilityEnumList.isEmpty()) {
                 reportDTO.setShareable(visibilityEnumList);
             }
 
-            reportDTO.setDeletable(isAllowed(
-                            AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(reportDTO, currentUser), features)
-            );
-            reportDTO.setEditable(isAllowed(
-                            AuthorizationCheckUtil.getRequiredFeatureToEditReport(reportDTO, currentUser), features)
-            );
+            reportDTO.setDeletable(AuthorizationCheckUtil.isDeleteAllowed(reportDTO, currentUser, features));
+            reportDTO.setEditable(AuthorizationCheckUtil.isEditAllowed(reportDTO, currentUser, features));
         }
         return reportDTO;
     }
@@ -143,13 +129,5 @@ public class ReportMapper {
         return filterSet;
     }
 
-    private boolean isAllowed(final ReportFeatureEnum requiredFeature, final Set<String> grantedFeatures) {
-        boolean isAllowed = false;
-
-        if (requiredFeature == null || grantedFeatures.contains(requiredFeature.toString())) {
-            isAllowed = true;
-        }
-        return isAllowed;
-    }
 }
 

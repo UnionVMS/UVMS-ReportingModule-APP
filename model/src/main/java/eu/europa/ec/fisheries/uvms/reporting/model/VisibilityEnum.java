@@ -18,7 +18,7 @@ public enum VisibilityEnum {
 
     public static VisibilityEnum getByName(String name) {
         for(VisibilityEnum e: VisibilityEnum.values()) {
-            if(e.name == name) {
+            if(e.name.equalsIgnoreCase(name)) {
                 return e;
             }
         }

@@ -39,6 +39,8 @@ import java.util.Set;
 @Slf4j
 public class ReportingResource extends UnionVMSResource {
 
+    private static String APPLICATION_NAME ;
+
     public static final String USM_APPLICATION = "usmApplication";
     @Context
     private UriInfo context;
@@ -72,10 +74,10 @@ public class ReportingResource extends UnionVMSResource {
 
         log.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
-        String applicationName = request.getServletContext().getInitParameter(USM_APPLICATION);
+
 
         try {
-            Set<String> features = usmService.getUserFeatures(username, applicationName, roleName, scopeName);
+            Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
 
 
         if (username != null && features != null) {
@@ -97,6 +99,18 @@ public class ReportingResource extends UnionVMSResource {
         } catch (ServiceException e) {
             return createErrorResponse("Unable to get user features from USM. Reason: " + e.getMessage());
     }
+    }
+
+    /**
+     * lazy loading of the app name from the web.xml
+     * @param request
+     * @return
+     */
+    private String getApplicationName(HttpServletRequest request) {
+        if (APPLICATION_NAME == null) {
+            APPLICATION_NAME = request.getServletContext().getInitParameter(USM_APPLICATION);
+        }
+        return APPLICATION_NAME;
     }
 
     @GET
@@ -248,13 +262,17 @@ public class ReportingResource extends UnionVMSResource {
     @PUT
     @Path("/share/{id}/{visibility}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response shareReport(@Context HttpServletRequest request,
                                 @Context HttpServletResponse response,
                                 @PathParam("id") Long id,
                                 @PathParam("visibility") String visibility,
-                                @HeaderParam("scopeName") String scopeName) {
+                                @HeaderParam("scopeName") String scopeName,
+                                @HeaderParam("roleName") String roleName) {
 
         String username = request.getRemoteUser();
+        VisibilityEnum newVisibility = VisibilityEnum.getByName(visibility);
+        Set<String> features;
 
         log.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
 
@@ -272,35 +290,22 @@ public class ReportingResource extends UnionVMSResource {
 
         }
 
-        reportToUpdate.setVisibility(VisibilityEnum.valueOf(visibility));
-
+        reportToUpdate.setVisibility(newVisibility);
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToShareReport(reportToUpdate, username);
-
         Response restResponse;
 
         if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-
             try {
-
-                reportService.share(reportToUpdate, reportToUpdate.getWithMap(), reportToUpdate.getMapConfiguration());
-
-            }
-
-            catch (Exception e) {
-
+                features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
+                reportService.share(id, newVisibility, reportToUpdate.getCreatedBy(), reportToUpdate.getScopeName());
+            }catch (Exception e) {
                 log.error("Sharing report failed.", e);
-
                 return createErrorResponse(e.getMessage());
             }
 
-            restResponse = createSuccessResponse();
-
-        }
-
-        else {
-
+            restResponse = createSuccessResponse(AuthorizationCheckUtil.listAllowedVisibilitOptions(reportToUpdate.getCreatedBy(), username, features));
+        } else {
             restResponse = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-
         }
 
         return restResponse;

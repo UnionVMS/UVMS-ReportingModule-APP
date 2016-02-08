@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
@@ -62,6 +63,38 @@ public class ReportDAO extends AbstractDAO<Report> {
 
         softDelete(persistentInstance, username);
     }
+
+    /**
+     * changes report visibility
+     *
+     * @param entityId
+     * @param newVisibility
+     * @param username
+     * @param scopeName
+     * @throws ReportingServiceException
+     */
+    public void changeVisibility(Long entityId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException {
+        log.debug("[START] changeVisibility({},{},{},{})", entityId, newVisibility, username, scopeName);
+        Report persistentInstance = this.findReportByReportId(entityId, username, scopeName);
+        if (persistentInstance == null) {
+            throw new ReportingServiceException("Non existing report entity cannot be deleted.");
+        }
+
+        try {
+            persistentInstance.setVisibility(newVisibility);
+            Session session = em.unwrap(Session.class);
+            session.update(persistentInstance);
+            session.flush();
+            log.debug("visibility successfully changed.");
+        } catch (RuntimeException re) {
+            String errorMessage = "visibility change failed";
+
+            log.error(errorMessage, re);
+            throw new ReportingServiceException(errorMessage, re);
+        }
+        log.debug("[END] changeVisibility(...)");
+    }
+
 
     public Report findReportByReportId(final Long id, String username, String scopeName) throws ReportingServiceException {
         Report result = null;
