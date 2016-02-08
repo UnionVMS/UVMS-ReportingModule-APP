@@ -83,6 +83,8 @@ public class ReportingResource extends UnionVMSResource {
             Collection<ReportDTO> reportsList;
             try {
                 reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent));
+
+
             } catch (Exception e) {
                 log.error("Failed to list reports.", e);
                 return createErrorResponse();
