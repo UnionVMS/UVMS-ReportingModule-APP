@@ -18,6 +18,7 @@ import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
 
+import javax.ejb.EJB;
 import javax.jms.TextMessage;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,9 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
     @TestedObject
     private VmsServiceBean service;
+
+    @InjectIntoByType
+    private Mock<SpatialService> spatialModule;
 
     @InjectIntoByType
     private Mock<ReportRepository> repository;
@@ -52,7 +56,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null);
 
-        service.getVmsDataByReportId("userName", "scope",  null);
+        service.getVmsDataByReportId("userName", "scope",  null, null);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
@@ -70,7 +74,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null);
-        service.getVmsDataByReportId("test", null, null);
+        service.getVmsDataByReportId("test", null, null, null);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
@@ -92,7 +96,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null);
-        service.getVmsDataByReportId("test", null, null);
+        service.getVmsDataByReportId("test", null, null, null);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -105,6 +109,6 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     @Test(expected = ReportingServiceException.class)
     @SneakyThrows
     public void testReportNull() {
-        service.getVmsDataByReportId("test", null, null);
+        service.getVmsDataByReportId("test", null, null, null);
     }
 }

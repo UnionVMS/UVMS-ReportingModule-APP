@@ -21,8 +21,10 @@ import javax.ejb.Stateless;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 @Local(SpatialService.class)
@@ -36,19 +38,25 @@ public class SpatialServiceBean implements SpatialService {
     private ReportingModuleReceiverBean reportingJMSConsumerBean;
 
     @Override
-    public String getFilterArea(List<AreaIdentifierType> userAreas) throws ReportingServiceException {
+    public String getFilterArea(Set<AreaIdentifierType> scopeAreas, Set<AreaIdentifierType> userAreas) throws ReportingServiceException {
         try {
-            String correlationId = spatialProducerBean.sendModuleMessage(getFilterAreaRequest(userAreas), reportingJMSConsumerBean.getDestination());
+            List<AreaIdentifierType> scopeAreasList = new ArrayList<>();
+            List<AreaIdentifierType> userAreasList = new ArrayList<>();
+
+            if (CollectionUtils.isNotEmpty(scopeAreas)) {
+                scopeAreasList.addAll(scopeAreas);
+            }
+
+            if (CollectionUtils.isNotEmpty(userAreas)) {
+                userAreasList.addAll(userAreas);
+            }
+
+            String correlationId = spatialProducerBean.sendModuleMessage(SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(scopeAreasList, userAreasList), reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             return getFilterAreaResponse(message, correlationId);
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException(e);
         }
-    }
-
-    @Override
-    public String getFilterArea(List<AreaIdentifierType> scopeAreas, List<AreaIdentifierType> userAreas) throws ReportingServiceException {
-        throw new NotImplementedException("Not implemented");
     }
 
     @Override
@@ -130,10 +138,6 @@ public class SpatialServiceBean implements SpatialService {
 
     private SpatialDeleteMapConfigurationRS getDeleteMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
         return SpatialModuleResponseMapper.mapToSpatialDeleteMapConfigurationRS(getText(message), correlationId);
-    }
-
-    private String getFilterAreaRequest(List<AreaIdentifierType> userAreas) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(Collections.<AreaIdentifierType>emptyList(), userAreas);
     }
 
     private String getFilterAreaResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {

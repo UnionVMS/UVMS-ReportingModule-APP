@@ -9,6 +9,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import lombok.SneakyThrows;
 import org.junit.Test;
 
+import java.util.List;
+
 public class AuditInterceptorTest {
 
     private ReportServiceBean reportServiceBean = new ReportServiceBean();
@@ -22,6 +24,6 @@ public class AuditInterceptorTest {
         reportServiceBean.getClass().getMethod("create", ReportDTO.class);
         reportServiceBean.getClass().getMethod("update", ReportDTO.class, Boolean.class, MapConfigurationDTO.class);
         reportServiceBean.getClass().getMethod("share", Long.class, VisibilityEnum.class, String.class, String.class);
-        vmsServiceBean.getClass().getMethod("getVmsDataByReportId", String.class, String.class, Long.class);
+        vmsServiceBean.getClass().getMethod("getVmsDataByReportId", String.class, String.class, Long.class, List.class);
     }
 }

@@ -3,6 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -18,8 +19,7 @@ import org.junit.runner.RunWith;
 
 import javax.ejb.EJB;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -59,7 +59,7 @@ public class SpatialServiceBeanIT {
 
     @Test
     public void getFilterAreaTest() throws ReportingServiceException {
-        String filterArea = spatialService.getFilterArea(getUserAreas());
+        String filterArea = spatialService.getFilterArea(Collections.EMPTY_SET, getUserAreas());
         assertNotNull(filterArea);
     }
 
@@ -77,12 +77,13 @@ public class SpatialServiceBeanIT {
     }
 
 
-    private List<AreaIdentifierType> getUserAreas() {
+    private Set<AreaIdentifierType> getUserAreas() {
         AreaIdentifierType userArea = new AreaIdentifierType();
-        userArea.setAreaType("EEZ");
+        userArea.setAreaType(AreaType.EEZ);
         userArea.setId("1");
-
-        return Arrays.asList(userArea);
+        Set<AreaIdentifierType> setToReturn = new HashSet<>(1);
+        setToReturn.add(userArea);
+        return setToReturn;
     }
 
 }

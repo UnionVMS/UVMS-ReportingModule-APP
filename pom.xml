@@ -23,17 +23,17 @@
         <asset.model.version>1.0.0</asset.model.version>
         <audit.model.version>1.0.0</audit.model.version>
         <movement.model.version>1.0.0</movement.model.version>
-        <spatial.model.version>1.0.2</spatial.model.version>
+        <spatial.model.version>1.0.3-SNAPSHOT</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>1.5</uvms.commons.version>
+        <uvms.commons.version>1.6-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
-        <usm4uvms.version>1.0.0</usm4uvms.version>
+        <usm4uvms.version>1.0.1-SNAPSHOT</usm4uvms.version>
     </properties>
 
     <dependencyManagement>

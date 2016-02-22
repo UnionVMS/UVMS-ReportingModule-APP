@@ -44,7 +44,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
         boolean updated = merger.merge(Arrays.asList(incomingReport));
 
         daoMock.assertInvoked().updateEntity(existingReport);
-        daoMock.assertNotInvoked().deleteEntity(existingReport, 1L);
+        daoMock.assertNotInvoked().deleteEntity(Report.class, 1L);
         daoMock.assertNotInvoked().createEntity(existingReport);
 
         assertTrue(updated);
@@ -72,7 +72,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
         boolean updated = merger.merge(Arrays.asList(incomingReport));
 
         daoMock.assertNotInvoked().updateEntity(existingReport);
-        daoMock.assertNotInvoked().deleteEntity(existingReport, 1L);
+        daoMock.assertNotInvoked().deleteEntity(Report.class, 1L);
         daoMock.assertNotInvoked().createEntity(existingReport);
 
         assertTrue(!updated);

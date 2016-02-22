@@ -12,6 +12,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import javax.ejb.EJB;
@@ -32,8 +36,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 @Path("/report")
 @Slf4j
@@ -320,6 +323,7 @@ public class ReportingResource extends UnionVMSResource {
                               @Context HttpServletResponse response,
                               @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName,
+                              @HeaderParam("roleName") String roleName,
                               DisplayFormat format) {
 
         String username = request.getRemoteUser();
@@ -327,8 +331,10 @@ public class ReportingResource extends UnionVMSResource {
         log.info("{} is requesting runReport(...), with a ID={}", username, id);
 
         try {
+            List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
-            ObjectNode jsonNodes = vmsService.getVmsDataByReportId(username, scopeName, id).toJson(format);
+
+            ObjectNode jsonNodes = vmsService.getVmsDataByReportId(username, scopeName, id, areaRestrictions).toJson(format);
             log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 
@@ -338,19 +344,51 @@ public class ReportingResource extends UnionVMSResource {
         }
     }
 
+    private List<AreaIdentifierType> getRestrictionAreas(String username, String scopeName, String roleName) throws ServiceException {
+        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
+        if (datasets != null && !datasets.isEmpty()) {
+            List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
+
+            for (Dataset dataset : datasets) {
+                int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
+
+                if (lastIndexDelimiter > -1 )  {
+                    AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
+                    //add AREATYPE/AREA_ID into a map
+                    AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0,lastIndexDelimiter));
+                    String areaId = dataset.getDiscriminator().substring(lastIndexDelimiter + 1);
+
+                    if (areaType!= null && StringUtils.isNotBlank(areaId)) {
+                        areaIdentifierType.setAreaType(areaType);
+                        areaIdentifierType.setId(areaId);
+                        areaRestrictions.add(areaIdentifierType);
+                    }
+                }
+            }
+
+            return areaRestrictions;
+        }
+        return null;
+    }
+
     @POST
     @Path("/execute/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response runReport(@Context HttpServletRequest request, Report report, @HeaderParam("scopeName") String scopeName, DisplayFormat format) {
+    public Response runReport(@Context HttpServletRequest request,
+                              Report report,
+                              @HeaderParam("scopeName") String scopeName,
+                              @HeaderParam("roleName") String roleName,
+                              DisplayFormat format) {
 
         String username = request.getRemoteUser();
 
         log.info("{} is requesting runReport(...), with a report={}", username, report);
 
         try {
+            List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
-            ObjectNode jsonNodes = vmsService.getVmsDataBy(report).toJson(format);
+            ObjectNode jsonNodes = vmsService.getVmsDataBy(report, areaRestrictions).toJson(format);
             log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 

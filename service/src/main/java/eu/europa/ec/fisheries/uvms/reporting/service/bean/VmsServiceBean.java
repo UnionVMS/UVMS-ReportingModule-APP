@@ -10,7 +10,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
@@ -49,10 +51,13 @@ public class VmsServiceBean implements VmsService {
     @EJB
     private SpatialService spatialModule;
 
+    @EJB
+    private USMService usmService;
+
     @Override
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
-    public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id) throws ReportingServiceException {
+    public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
 
         log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
 
@@ -68,7 +73,7 @@ public class VmsServiceBean implements VmsService {
 
         }
 
-        VmsDTO vmsDto = getVmsData(reportByReportId);
+        VmsDTO vmsDto = getVmsData(reportByReportId, areaRestrictions);
 
         reportByReportId.updateExecutionLog(username);
 
@@ -78,13 +83,17 @@ public class VmsServiceBean implements VmsService {
 
     }
 
-    private VmsDTO getVmsData(Report report) throws ReportingServiceException {
+    private VmsDTO getVmsData(Report report, List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
 
         try {
 
             Map<String, Asset> assetMap;
 
             FilterProcessor processor = new FilterProcessor(report.getFilters());
+
+            if (areaRestrictions != null) {
+                processor.getScopeRestrictionAreaIdentifierList().addAll(areaRestrictions);
+            }
 
             addAreaCriteriaToProcessor(processor);
 
@@ -130,9 +139,9 @@ public class VmsServiceBean implements VmsService {
     }
 
     @Override
-    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report) throws ReportingServiceException {
+    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
 
-        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report));
+        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report), areaRestrictions);
 
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
 
@@ -143,37 +152,24 @@ public class VmsServiceBean implements VmsService {
     private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
 
         final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
+        final Set<AreaIdentifierType> scopeAreaIdentifierList = processor.getScopeRestrictionAreaIdentifierList();
 
-        if (isNotEmpty(areaIdentifierList)) {
+        try {
 
-    		String areaWkt = getFilterArea(areaIdentifierList);
+            String areaWkt = spatialModule.getFilterArea(scopeAreaIdentifierList, areaIdentifierList);
 
-        	processor.addAreaCriteria(areaWkt);
+            processor.addAreaCriteria(areaWkt);
 
-    	}
-
-    }
-    
-	private String getFilterArea(Set<AreaIdentifierType> areaIdentifierList) throws ReportingServiceException {
-
-		try {
-
-            List<AreaIdentifierType> areaIdentifierTypeList = new ArrayList<>();
-
-            areaIdentifierTypeList.addAll(areaIdentifierList);
-
-			return spatialModule.getFilterArea(areaIdentifierTypeList);
-
-		} catch (ReportingServiceException e) {
+        } catch (ReportingServiceException e) {
 
             String error = "Exception during retrieving filter area";
 
             log.error(error, e);
 
-			throw new ReportingServiceException(error, e);
+            throw new ReportingServiceException(error, e);
 
         }
-
-	}
+    }
+    
 
 }

@@ -29,6 +29,7 @@ public class FilterProcessor {
     private final Set<AssetListCriteriaPair> assetListCriteriaPairs = new HashSet<>();
     private final Set<AssetGroup> assetGroupList = new HashSet<>();
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<AreaIdentifierType>();
+    private final Set<AreaIdentifierType> scopeRestrictionAreaIdentifierList = new HashSet<>();
 
     public FilterProcessor(Set<Filter> filters) throws ProcessorException {
         validate(filters);
@@ -132,5 +133,9 @@ public class FilterProcessor {
 
     public Set<AreaIdentifierType> getAreaIdentifierList() {
         return areaIdentifierList;
+    }
+
+    public Set<AreaIdentifierType> getScopeRestrictionAreaIdentifierList() {
+        return scopeRestrictionAreaIdentifierList;
     }
 }

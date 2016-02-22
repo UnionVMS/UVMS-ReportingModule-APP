@@ -8,12 +8,11 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialGetMapConfigurat
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRS;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SpatialService {
 
-    String getFilterArea(List<AreaIdentifierType> userAreas) throws ReportingServiceException;
-
-    String getFilterArea(List<AreaIdentifierType> scopeAreas, List<AreaIdentifierType> userAreas) throws ReportingServiceException;
+    String getFilterArea(Set<AreaIdentifierType> scopeAreas, Set<AreaIdentifierType> userAreas) throws ReportingServiceException;
 
     MapConfigurationDTO getMapConfiguration(long reportId) throws ReportingServiceException;
 
