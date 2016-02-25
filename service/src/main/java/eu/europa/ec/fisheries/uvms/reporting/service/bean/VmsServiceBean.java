@@ -166,7 +166,7 @@ public class VmsServiceBean implements VmsService {
         }
     }
 
-    //TODO We are blocking call to spatial to not make unnecessary JMS traffic and calculations
+    //We are blocking call to spatial to not make unnecessary JMS traffic and calculations
     private boolean presentAreasToFilter(Set<AreaIdentifierType> areaIdentifierList, Set<AreaIdentifierType> scopeAreaIdentifierList) {
         return isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList);
     }
