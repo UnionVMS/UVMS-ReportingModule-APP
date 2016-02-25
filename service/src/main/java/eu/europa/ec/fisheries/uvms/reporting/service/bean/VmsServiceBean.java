@@ -3,8 +3,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -12,7 +12,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,7 @@ public class VmsServiceBean implements VmsService {
 
     @EJB
     private MovementServiceBean movementModule;
-    
+
     @EJB
     private SpatialService spatialModule;
 
@@ -101,7 +99,7 @@ public class VmsServiceBean implements VmsService {
 
             Map<String, MovementMapResponseType> responseTypeMap;
 
-            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups()?"has":"doesn't have");
+            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
 
             if (processor.hasAssetsOrAssetGroups()) {
 
@@ -155,21 +153,23 @@ public class VmsServiceBean implements VmsService {
         final Set<AreaIdentifierType> scopeAreaIdentifierList = processor.getScopeRestrictionAreaIdentifierList();
 
         try {
-
-            String areaWkt = spatialModule.getFilterArea(scopeAreaIdentifierList, areaIdentifierList);
-
-            processor.addAreaCriteria(areaWkt);
-
+            if (presentAreasToFilter(areaIdentifierList, scopeAreaIdentifierList)) {
+                String areaWkt = spatialModule.getFilterArea(scopeAreaIdentifierList, areaIdentifierList);
+                processor.addAreaCriteria(areaWkt);
+            }
         } catch (ReportingServiceException e) {
-
             String error = "Exception during retrieving filter area";
 
             log.error(error, e);
 
             throw new ReportingServiceException(error, e);
-
         }
     }
-    
+
+    //TODO We are blocking call to spatial to not make unnecessary JMS traffic and calculations
+    private boolean presentAreasToFilter(Set<AreaIdentifierType> areaIdentifierList, Set<AreaIdentifierType> scopeAreaIdentifierList) {
+        return isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList);
+    }
+
 
 }
