@@ -173,6 +173,14 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             if (mapConfiguration.getCoordinatesFormat() != null) {
                 jgen.writeStringField("coordinatesFormat", mapConfiguration.getCoordinatesFormat());
             }
+            if (mapConfiguration.getVisibilitySettings() != null) {
+                jgen.writeFieldName("visibilitySettings");
+                jgen.writeObject(mapConfiguration.getVisibilitySettings());
+            }
+            if (mapConfiguration.getStyleSettings() != null) {
+                jgen.writeFieldName("stylesSettings");
+                jgen.writeObject(mapConfiguration.getStyleSettings());
+            }
             jgen.writeEndObject();
         }
     }

@@ -26,6 +26,12 @@ public class MapConfigurationDTO {
     @JsonProperty("scaleBarUnits")
     private String scaleBarUnits;
 
+    @JsonProperty("visibilitySettings")
+    private VisibilitySettingsDto visibilitySettings;
+
+    @JsonProperty("styleSettings")
+    private StyleSettingsDto styleSettings;
+
 
     /**
      * No args constructor for use in serialization
@@ -34,12 +40,14 @@ public class MapConfigurationDTO {
     }
 
     @Builder(builderMethodName = "MapConfigurationDTOBuilder")
-    public MapConfigurationDTO(Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits) {
+    public MapConfigurationDTO(Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits, VisibilitySettingsDto visibilitySettings, StyleSettingsDto styleSettings) {
         this.spatialConnectId = spatialConnectId;
         this.mapProjectionId = mapProjectionId;
         this.displayProjectionId = displayProjectionId;
         this.coordinatesFormat = coordinatesFormat;
         this.scaleBarUnits = scaleBarUnits;
+        this.visibilitySettings = visibilitySettings;
+        this.styleSettings = styleSettings;
     }
 
     @JsonProperty("mapProjectionId")
@@ -92,4 +100,23 @@ public class MapConfigurationDTO {
         this.spatialConnectId = spatialConnectId;
     }
 
+    @JsonProperty("visibilitySettings")
+    public VisibilitySettingsDto getVisibilitySettings() {
+        return visibilitySettings;
+    }
+
+    @JsonProperty("visibilitySettings")
+    public void setVisibilitySettings(VisibilitySettingsDto visibilitySettings) {
+        this.visibilitySettings = visibilitySettings;
+    }
+
+    @JsonProperty("styleSettings")
+    public StyleSettingsDto getStyleSettings() {
+        return styleSettings;
+    }
+
+    @JsonProperty("styleSettings")
+    public void setStyleSettings(StyleSettingsDto styleSettings) {
+        this.styleSettings = styleSettings;
+    }
 }

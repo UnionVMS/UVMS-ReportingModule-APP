@@ -1,10 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
@@ -73,12 +75,37 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 String coordinatesFormat = (mapConfigJsonNode.get("coordinatesFormat") != null) ? mapConfigJsonNode.get("coordinatesFormat").textValue() : null;
                 String scaleBarUnits = (mapConfigJsonNode.get("scaleBarUnits") != null) ? mapConfigJsonNode.get("scaleBarUnits").textValue() : null;
 
+                ObjectMapper objectMapper = new ObjectMapper();
+                VisibilitySettingsDto visibilitySettingsDto;
+                StyleSettingsDto styleSettingsDto;
+                if (mapConfigJsonNode.get("visibilitySettings") != null) {
+                    try {
+                        visibilitySettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("visibilitySettings"), VisibilitySettingsDto.class);
+                    } catch (JsonProcessingException e) {
+                        visibilitySettingsDto = null;
+                    }
+                } else {
+                    visibilitySettingsDto = null;
+                }
+
+                if (mapConfigJsonNode.get("stylesSettings") != null) {
+                    try {
+                        styleSettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("stylesSettings"), StyleSettingsDto.class);
+                    } catch (JsonProcessingException e) {
+                        styleSettingsDto = null;
+                    }
+                } else {
+                    styleSettingsDto = null;
+                }
+
                 return MapConfigurationDTO.MapConfigurationDTOBuilder()
                         .spatialConnectId(spatialConnectId)
                         .mapProjectionId(mapProjectionId)
                         .displayProjectionId(displayProjectionId)
                         .coordinatesFormat(coordinatesFormat)
                         .scaleBarUnits(scaleBarUnits)
+                        .styleSettings(styleSettingsDto)
+                        .visibilitySettings(visibilitySettingsDto)
                         .build();
             }
         } else {
