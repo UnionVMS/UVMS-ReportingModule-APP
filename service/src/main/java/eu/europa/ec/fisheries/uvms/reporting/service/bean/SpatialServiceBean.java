@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.LayerSettingsDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.StyleSettingsDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VisibilitySettingsDto;
@@ -72,8 +73,10 @@ public class SpatialServiceBean implements SpatialService {
             MapConfigurationDTO mapConfigurationDTO = MapConfigMapper.INSTANCE.mapConfigurationTypeToMapConfigurationDTO(getMapConfigurationResponse.getMapConfiguration());
             VisibilitySettingsDto visibilitySettingsDto = MapConfigMapper.INSTANCE.getVisibilitySettingsDto(getMapConfigurationResponse.getMapConfiguration().getVisibilitySettings());
             StyleSettingsDto styleSettingsDto = MapConfigMapper.INSTANCE.getStyleSettingsDto(getMapConfigurationResponse.getMapConfiguration().getStyleSettings());
+            LayerSettingsDto layerSettingsDto = MapConfigMapper.INSTANCE.getLayerSettingsDto(getMapConfigurationResponse.getMapConfiguration().getLayerSettings());
             mapConfigurationDTO.setVisibilitySettings(visibilitySettingsDto);
             mapConfigurationDTO.setStyleSettings(styleSettingsDto);
+            mapConfigurationDTO.setLayerSettings(validateLayerSettings(layerSettingsDto));
             return mapConfigurationDTO;
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException(e);
@@ -89,7 +92,10 @@ public class SpatialServiceBean implements SpatialService {
             ScaleBarUnits scaleBarUnits = (mapConfiguration.getScaleBarUnits() != null) ? ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits()) : null;
             VisibilitySettingsType visibilitySettingsType = MapConfigMapper.INSTANCE.getVisibilitySettingsType(mapConfiguration.getVisibilitySettings());
             StyleSettingsType styleSettingsType = MapConfigMapper.INSTANCE.getStyleSettingsType(mapConfiguration.getStyleSettings());
-            String request = getSaveMapConfigurationRequest(reportId, mapConfiguration.getSpatialConnectId(), mapConfiguration.getMapProjectionId(), mapConfiguration.getDisplayProjectionId(), coordinatesFormat, scaleBarUnits, styleSettingsType, visibilitySettingsType);
+            LayerSettingsType layerSettingsType = MapConfigMapper.INSTANCE.getLayerSettingsType(mapConfiguration.getLayerSettings());
+            String request = getSaveMapConfigurationRequest(reportId, mapConfiguration.getSpatialConnectId(),
+                    mapConfiguration.getMapProjectionId(), mapConfiguration.getDisplayProjectionId(),
+                    coordinatesFormat, scaleBarUnits, styleSettingsType, visibilitySettingsType, layerSettingsType);
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialSaveOrUpdateMapConfigurationRS saveOrUpdateMapConfigurationResponse = getSaveOrUpdateMapConfigurationResponse(message, correlationId);
@@ -116,6 +122,16 @@ public class SpatialServiceBean implements SpatialService {
         }
     }
 
+    private LayerSettingsDto validateLayerSettings(LayerSettingsDto layerSettingsDto) {
+        if (layerSettingsDto.getBaseLayers() == null
+                && layerSettingsDto.getAdditionalLayers() == null
+                && layerSettingsDto.getAreaLayers() == null
+                && layerSettingsDto.getPortLayers() == null) {
+            return null;
+        }
+        return layerSettingsDto;
+    }
+
     private void validateSpatialConnectIdsList(List<Long> spatialConnectIds) {
         if (CollectionUtils.isEmpty(spatialConnectIds)) {
             throw new IllegalArgumentException("At least one spatial connect id should be specified");
@@ -136,8 +152,13 @@ public class SpatialServiceBean implements SpatialService {
         return SpatialModuleRequestMapper.mapToSpatialDeleteMapConfigurationRQ(spatialConnectIds);
     }
 
-    private String getSaveMapConfigurationRequest(long reportId, Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits, StyleSettingsType styleSettingsType, VisibilitySettingsType visibilitySettingsType) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialSaveOrUpdateMapConfigurationRQ(reportId, spatialConnectId, mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits, styleSettingsType, visibilitySettingsType);
+    private String getSaveMapConfigurationRequest(long reportId, Long spatialConnectId, Long mapProjectionId,
+                                                  Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits,
+                                                  StyleSettingsType styleSettingsType, VisibilitySettingsType visibilitySettingsType,
+                                                  LayerSettingsType layerSettingsType) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialSaveOrUpdateMapConfigurationRQ(reportId, spatialConnectId,
+                mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits,
+                styleSettingsType, visibilitySettingsType, layerSettingsType);
     }
 
     private SpatialSaveOrUpdateMapConfigurationRS getSaveOrUpdateMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
