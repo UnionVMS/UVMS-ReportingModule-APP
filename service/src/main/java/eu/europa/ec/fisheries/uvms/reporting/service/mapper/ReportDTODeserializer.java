@@ -78,6 +78,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 ObjectMapper objectMapper = new ObjectMapper();
                 VisibilitySettingsDto visibilitySettingsDto;
                 StyleSettingsDto styleSettingsDto;
+                LayerSettingsDto layerSettingsDto;
+
                 if (mapConfigJsonNode.get("visibilitySettings") != null) {
                     try {
                         visibilitySettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("visibilitySettings"), VisibilitySettingsDto.class);
@@ -98,6 +100,16 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     styleSettingsDto = null;
                 }
 
+                if (mapConfigJsonNode.get("layerSettings") != null) {
+                    try {
+                        layerSettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("layerSettings"), LayerSettingsDto.class);
+                    } catch (JsonProcessingException e) {
+                        layerSettingsDto = null;
+                    }
+                } else {
+                    layerSettingsDto = null;
+                }
+
                 return MapConfigurationDTO.MapConfigurationDTOBuilder()
                         .spatialConnectId(spatialConnectId)
                         .mapProjectionId(mapProjectionId)
@@ -106,6 +118,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                         .scaleBarUnits(scaleBarUnits)
                         .styleSettings(styleSettingsDto)
                         .visibilitySettings(visibilitySettingsDto)
+                        .layerSettings(layerSettingsDto)
                         .build();
             }
         } else {

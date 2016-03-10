@@ -101,7 +101,7 @@ public class ReportServiceBean {
 
     private void populateMapConfiguration(long id, ReportDTO reportDTO) {
         try {
-            if (reportDTO != null) {
+            if (reportDTO != null && reportDTO.getWithMap()) {
                 MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id);
                 reportDTO.setMapConfiguration(mapConfiguratioDTO);
             }
@@ -126,14 +126,15 @@ public class ReportServiceBean {
 
         try {
             if (newWithMapValue) {
-                saveOrUpdateMapConfiguration(reportId, newMapConfiguration);
+                if (!newMapConfiguration.isMapConfigEmpty()) {
+                    saveOrUpdateMapConfiguration(reportId, newMapConfiguration);
+                }
             } else if (oldWithMapValue) {
                 spatialModule.deleteMapConfiguration(newArrayList(oldMapConfigurationDTO.getSpatialConnectId()));
             }
         } catch (Exception e) {
             throw new RuntimeException("Error during the update of the map configuration", e);
         }
-
     }
 
 

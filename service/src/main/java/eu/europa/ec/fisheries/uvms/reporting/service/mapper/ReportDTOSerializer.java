@@ -181,6 +181,10 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 jgen.writeFieldName("stylesSettings");
                 jgen.writeObject(mapConfiguration.getStyleSettings());
             }
+            if (mapConfiguration.getLayerSettings() != null) {
+                jgen.writeFieldName("layerSettings");
+                jgen.writeObject(mapConfiguration.getLayerSettings());
+            }
             jgen.writeEndObject();
         }
     }
