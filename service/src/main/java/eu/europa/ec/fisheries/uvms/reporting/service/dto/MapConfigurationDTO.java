@@ -11,7 +11,10 @@ import lombok.Builder;
         "mapProjectionId",
         "displayProjectionId",
         "coordinatesFormat",
-        "scaleBarUnits"
+        "scaleBarUnits",
+        "visibilitySettings",
+        "styleSettings",
+        "layerSettings"
 })
 public class MapConfigurationDTO {
 
@@ -32,6 +35,9 @@ public class MapConfigurationDTO {
     @JsonProperty("styleSettings")
     private StyleSettingsDto styleSettings;
 
+    @JsonProperty("layerSettings")
+    private LayerSettingsDto layerSettings;
+
 
     /**
      * No args constructor for use in serialization
@@ -40,7 +46,7 @@ public class MapConfigurationDTO {
     }
 
     @Builder(builderMethodName = "MapConfigurationDTOBuilder")
-    public MapConfigurationDTO(Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits, VisibilitySettingsDto visibilitySettings, StyleSettingsDto styleSettings) {
+    public MapConfigurationDTO(Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits, VisibilitySettingsDto visibilitySettings, StyleSettingsDto styleSettings, LayerSettingsDto layerSettings) {
         this.spatialConnectId = spatialConnectId;
         this.mapProjectionId = mapProjectionId;
         this.displayProjectionId = displayProjectionId;
@@ -48,6 +54,7 @@ public class MapConfigurationDTO {
         this.scaleBarUnits = scaleBarUnits;
         this.visibilitySettings = visibilitySettings;
         this.styleSettings = styleSettings;
+        this.layerSettings = layerSettings;
     }
 
     @JsonProperty("mapProjectionId")
@@ -118,5 +125,45 @@ public class MapConfigurationDTO {
     @JsonProperty("styleSettings")
     public void setStyleSettings(StyleSettingsDto styleSettings) {
         this.styleSettings = styleSettings;
+    }
+
+    @JsonProperty("layerSettings")
+    public LayerSettingsDto getLayerSettings() {
+        return layerSettings;
+    }
+
+    @JsonProperty("layerSettings")
+    public void setLayerSettings(LayerSettingsDto layerSettings) {
+        this.layerSettings = layerSettings;
+    }
+
+
+    public boolean isMapConfigEmpty() {
+        boolean isMapConfigEmpty = true;
+        if (getLayerSettings() != null) {
+            isMapConfigEmpty = false;
+        }
+        if (getStyleSettings() != null) {
+            isMapConfigEmpty = false;
+        }
+        if (getVisibilitySettings() != null) {
+            isMapConfigEmpty = false;
+        }
+        if (getCoordinatesFormat() != null) {
+            isMapConfigEmpty = false;
+        }
+        if (getDisplayProjectionId() != null) {
+            isMapConfigEmpty = false;
+        }
+        if (getMapProjectionId() != null) {
+            isMapConfigEmpty = false;
+        }
+        if (getScaleBarUnits() != null) {
+            isMapConfigEmpty = false;
+        }
+        if (getSpatialConnectId() != null) {
+            isMapConfigEmpty = false;
+        }
+        return isMapConfigEmpty;
     }
 }

@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.AreaTypeEnum;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,7 +22,8 @@ public abstract class MapConfigMapper {
             @Mapping(target = "coordinatesFormat", expression = "java(convertCoordinatesFormatToString(mapConfigurationType.getCoordinatesFormat()))"),
             @Mapping(target = "scaleBarUnits", expression = "java(convertScaleBarUnitsToString(mapConfigurationType.getScaleBarUnits()))"),
             @Mapping(target = "visibilitySettings", ignore = true),
-            @Mapping(target = "styleSettings", ignore = true)
+            @Mapping(target = "styleSettings", ignore = true),
+            @Mapping(target = "layerSettings", ignore = true)
     })
     public abstract MapConfigurationDTO mapConfigurationTypeToMapConfigurationDTO(MapConfigurationType mapConfigurationType);
 
@@ -64,6 +66,71 @@ public abstract class MapConfigMapper {
 
     public abstract VisibilityTracksType getVisibilityTrackType(VisibilityTracksDto visibilityTracksType);
 
+    public abstract LayerSettingsType getLayerSettingsType(LayerSettingsDto layerSettingsDto);
+
+    @Mappings({
+            @Mapping(target = "baseLayers", expression = "java(getLayers(layerSettingsType.getBaseLayers()))"),
+            @Mapping(target = "portLayers", expression = "java(getLayers(layerSettingsType.getPortLayers()))"),
+            @Mapping(target = "additionalLayers", expression = "java(getLayers(layerSettingsType.getAdditionalLayers()))"),
+            @Mapping(target = "areaLayers", expression = "java(getAreaLayers(layerSettingsType.getAreaLayers()))")
+    })
+    public abstract LayerSettingsDto getLayerSettingsDto(LayerSettingsType layerSettingsType);
+
+    protected List<LayersDto> getLayers(List<LayersType> layersTypes) {
+        if (layersTypes == null || layersTypes.isEmpty()) {
+            return null;
+        }
+        List<LayersDto> layersDtos = new ArrayList<>();
+        for (LayersType layersType : layersTypes) {
+            layersDtos.add(getLayersDto(layersType));
+        }
+        return layersDtos;
+    }
+
+    protected List<LayerAreaDto> getAreaLayers(List<LayerAreaType> layerAreaTypes) {
+        if (layerAreaTypes == null || layerAreaTypes.isEmpty()) {
+            return null;
+        }
+        List<LayerAreaDto> layerAreaDtos = new ArrayList<>();
+        for (LayerAreaType layerAreaType : layerAreaTypes) {
+            layerAreaDtos.add(getLayerAreaDto(layerAreaType));
+        }
+        return layerAreaDtos;
+    }
+
+    public abstract LayersType getLayersType(LayersDto layersDto);
+
+    @Mappings({
+            @Mapping(target = "order", expression = "java(getOrder(layersType))")
+    })
+    public abstract LayersDto getLayersDto(LayersType layersType);
+
+    protected Long getOrder(LayersType layersType) {
+        if (layersType.getOrder() == 0) {
+            return null;
+        }
+        return layersType.getOrder();
+    }
+
+    protected Long getGid(LayerAreaType layersType) {
+        if (layersType.getGid() == 0) {
+            return null;
+        }
+        return layersType.getGid();
+    }
+
+    @Mappings({
+            @Mapping(target = "areaType", expression = "java(getAreaType(layerAreaDto.getAreaType()))")
+    })
+    public abstract LayerAreaType getLayerAreaType(LayerAreaDto layerAreaDto);
+
+    @Mappings({
+            @Mapping(target = "areaType", expression = "java(getAreaTypeEnum(layerAreaType.getAreaType()))"),
+            @Mapping(target = "order", expression = "java(getOrder(layerAreaType))"),
+            @Mapping(target = "gid", expression = "java(getGid(layerAreaType))")
+    })
+    public abstract LayerAreaDto getLayerAreaDto(LayerAreaType layerAreaType);
+
     @Mappings({
             @Mapping(source = "positions", target = "position"),
             @Mapping(source = "segments", target = "segment")
@@ -95,6 +162,14 @@ public abstract class MapConfigMapper {
             @Mapping(target = "style", expression = "java(convertToStyleMap(segmentType.getStyles()))")
     })
     public abstract SegmentsDto getSegmentDto(SegmentType segmentType);
+
+    protected String getAreaType(AreaTypeEnum areaTypeEnum) {
+        return areaTypeEnum.getType();
+    }
+
+    protected AreaTypeEnum getAreaTypeEnum(String areaType) {
+        return AreaTypeEnum.valueOf(areaType);
+    }
 
     protected Boolean getAttributeValue(Boolean isAttrVisible) {
         if (isAttrVisible == null) {
