@@ -59,6 +59,31 @@ public class VmsServiceBean implements VmsService {
         return vmsDto;
     }
 
+    @Override
+    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
+
+        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report), areaRestrictions);
+        auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
+        return vmsData;
+    }
+
+    private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
+
+        final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
+        final Set<AreaIdentifierType> scopeAreaIdentifierList = processor.getScopeRestrictionAreaIdentifierList();
+        try {
+            //We are blocking call to spatial to not make unnecessary JMS traffic and calculations
+            if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
+                String areaWkt = spatialModule.getFilterArea(scopeAreaIdentifierList, areaIdentifierList);
+                processor.addAreaCriteria(areaWkt);
+            }
+        } catch (ReportingServiceException e) {
+            String error = "Exception during retrieving filter area";
+            log.error(error, e);
+            throw new ReportingServiceException(error, e);
+        }
+    }
+
     private VmsDTO getVmsData(Report report, List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
 
         try {
@@ -91,35 +116,5 @@ public class VmsServiceBean implements VmsService {
             throw new ReportingServiceException(error, e);
         }
     }
-
-    @Override
-    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
-
-        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report), areaRestrictions);
-        auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
-        return vmsData;
-    }
-
-    private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
-
-        final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
-        final Set<AreaIdentifierType> scopeAreaIdentifierList = processor.getScopeRestrictionAreaIdentifierList();
-        try {
-            if (presentAreasToFilter(areaIdentifierList, scopeAreaIdentifierList)) {
-                String areaWkt = spatialModule.getFilterArea(scopeAreaIdentifierList, areaIdentifierList);
-                processor.addAreaCriteria(areaWkt);
-            }
-        } catch (ReportingServiceException e) {
-            String error = "Exception during retrieving filter area";
-            log.error(error, e);
-            throw new ReportingServiceException(error, e);
-        }
-    }
-
-    //We are blocking call to spatial to not make unnecessary JMS traffic and calculations
-    private boolean presentAreasToFilter(Set<AreaIdentifierType> areaIdentifierList, Set<AreaIdentifierType> scopeAreaIdentifierList) {
-        return isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList);
-    }
-
 
 }
