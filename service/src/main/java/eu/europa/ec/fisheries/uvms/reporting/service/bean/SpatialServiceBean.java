@@ -16,8 +16,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMap
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.NotImplementedException;
-
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -25,7 +23,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
