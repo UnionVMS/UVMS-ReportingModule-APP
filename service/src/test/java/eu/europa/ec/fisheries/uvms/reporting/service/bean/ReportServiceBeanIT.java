@@ -5,6 +5,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
@@ -71,6 +72,15 @@ public class ReportServiceBeanIT {
     @After
     public void tearDown() throws Exception {
     }
+
+    @Test
+    @Transactional(TransactionMode.ROLLBACK)
+    public void testGetReportDates() throws ReportingServiceException {
+        ReportGetStartAndEndDateRS response = reportBean.getReportDates("2016-03-18T11:00:00", 19L, "rep_power", "EC");
+        assertNotNull(response.getStartDate());
+        assertNotNull(response.getEndDate());
+    }
+
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns="http://europa.eu/ec/fisheries/uvms/reporting/model/schemas" id="FISH2015_SPATIAL2015" targetNamespace="http://europa.eu/ec/fisheries/uvms/reporting/model/schemas" version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:complexType name="ReportingModuleRequest" abstract="true">
+        <xs:sequence>
+            <xs:element name="method" type="ReportingModuleMethod" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="ReportingModuleMethod">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GET_REPORT_START_END_DATE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="ReportGetStartAndEndDateRQ">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="ReportingModuleRequest">
+                    <xs:sequence>
+                        <xs:element name="now" type="xs:string"/>
+                        <xs:element name="id" type="xs:long"/>
+                        <xs:element name="userName" type="xs:string"/>
+                        <xs:element name="scopeName" type="xs:string"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ReportGetStartAndEndDateRS">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="startDate" type="xs:string"/>
+                <xs:element name="endDate" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ReportingFault">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="code" type="xs:int"/>
+                <xs:element name="fault" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
