@@ -59,7 +59,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     public void testRunReportHappy() throws IOException, ReportingServiceException {
 
         requestMock.returns(USER).getRemoteUser();
-        vmsServiceMock.returns(vmsDTO).getVmsDataByReportId(USER, null, null, null);
+        vmsServiceMock.returns(vmsDTO).getVmsDataByReportId(USER, null, null, null, null);
         usmServiceMock.returns(null).getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, USER, USMSpatial.APPLICATION_NAME, null, null);
 //FIXME NPE in the test
         Response response = resource.getMock().runReport(requestMock.getMock(), null, null, null, null, null);
@@ -73,7 +73,7 @@ public class ReportingResourceTest extends UnitilsJUnit4 {
     public void testRunReport500() throws IOException, ReportingServiceException {
 
         requestMock.returns(USER).getRemoteUser();
-        vmsServiceMock.onceRaises(ReportingServiceException.class).getVmsDataByReportId(USER, null, null, null);
+        vmsServiceMock.onceRaises(ReportingServiceException.class).getVmsDataByReportId(USER, null, null, null, null);
 
         Response response = resource.getMock().runReport(requestMock.getMock(), null, null, null, null, null);
 
