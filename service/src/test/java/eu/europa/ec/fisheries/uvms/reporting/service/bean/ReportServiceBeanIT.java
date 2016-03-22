@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import javax.ejb.EJB;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +76,20 @@ public class ReportServiceBeanIT {
 
     @Test
     @Transactional(TransactionMode.ROLLBACK)
-    public void testGetReportDates() throws ReportingServiceException {
-        ReportGetStartAndEndDateRS response = reportBean.getReportDates("2016-03-18T11:00:00", 19L, "rep_power", "EC");
+    public void testGetReportDates() throws ReportingServiceException, IOException {
+
+        URL url = Resources
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorAll.json");
+        String expected = Resources.toString(url, Charsets.UTF_8);
+        ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
+        deserialized.setId(null);
+        deserialized.setScopeName("EC");
+        deserialized.setCreatedBy("rep_power");
+
+        ReportDTO savedReport = reportBean.create(deserialized);
+        assertNotNull(savedReport);
+
+        ReportGetStartAndEndDateRS response = reportBean.getReportDates("2016-03-18T11:00:00", savedReport.getId(), "rep_power", "EC");
         assertNotNull(response.getStartDate());
         assertNotNull(response.getEndDate());
     }

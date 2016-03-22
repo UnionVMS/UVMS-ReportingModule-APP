@@ -29,7 +29,7 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
 @MessageDriven(mappedName = QUEUE_MODULE_SPATIAL, activationConfig = {
         @ActivationConfigProperty(propertyName = "messagingType", propertyValue = CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = DESTINATION_TYPE_QUEUE),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "UVMSReportingEvent")
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = QUEUE_MODULE_REPORTING_NAME)
 })
 @Slf4j
 public class ReportingEventMDB implements MessageListener {

@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
@@ -26,7 +27,7 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.CONNECTION_FA
 @Slf4j
 public class ReportingMessageServiceBean extends AbstractMessageService {
 
-    @Resource(mappedName = "java:/jms/queue/UVMSReportingEvent")
+    @Resource(mappedName = MessageConstants.QUEUE_REPORTING_EVENT)
     private Destination request;
 
     @Resource(lookup = CONNECTION_FACTORY)
