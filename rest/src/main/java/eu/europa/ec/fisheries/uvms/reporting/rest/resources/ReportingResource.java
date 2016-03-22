@@ -324,8 +324,12 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
-            final VelocityType velocityType = VelocityType.valueOf(additionalProperties.get(SPEED_UNIT).toString());
-            final LengthType lengthType = LengthType.valueOf(additionalProperties.get(DISTANCE_UNIT).toString());
+
+            final VelocityType velocityType =
+                    VelocityType.valueOf(additionalProperties.get(SPEED_UNIT.toUpperCase()).toString());
+            final LengthType lengthType = 
+                    LengthType.valueOf(additionalProperties.get(DISTANCE_UNIT.toUpperCase()).toString());
+
             final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
