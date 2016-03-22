@@ -3,8 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import static javax.measure.unit.NonSI.KNOT;
 import static javax.measure.unit.NonSI.NAUTICAL_MILE;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;

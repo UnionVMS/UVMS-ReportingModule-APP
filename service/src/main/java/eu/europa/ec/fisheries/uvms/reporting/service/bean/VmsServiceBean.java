@@ -2,7 +2,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
+import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -15,21 +17,25 @@ import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.slf4j.helpers.MessageFormatter;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.util.Constants.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(value = VmsService.class)
 @Slf4j
+@Interceptors(TracingInterceptor.class)
 public class VmsServiceBean implements VmsService {
 
     private @EJB ReportRepository repository;
@@ -42,7 +48,9 @@ public class VmsServiceBean implements VmsService {
     @Override
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
-    public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
+    public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id,
+                                       final List<AreaIdentifierType> areaRestrictions, final DateTime now)
+            throws ReportingServiceException {
 
         log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
@@ -53,16 +61,19 @@ public class VmsServiceBean implements VmsService {
             throw new ReportingServiceException(error);
         }
 
-        VmsDTO vmsDto = getVmsData(reportByReportId, areaRestrictions);
+        VmsDTO vmsDto = getVmsData(reportByReportId, areaRestrictions, now);
         reportByReportId.updateExecutionLog(username);
         log.debug("[END] getVmsDataByReportId(...)");
         return vmsDto;
     }
 
     @Override
-    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
+    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report,
+                               final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
 
-        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report), areaRestrictions);
+        Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+        DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report), areaRestrictions, dateTime);
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
         return vmsData;
     }
@@ -84,11 +95,11 @@ public class VmsServiceBean implements VmsService {
         }
     }
 
-    private VmsDTO getVmsData(Report report, List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
+    private VmsDTO getVmsData(Report report, List<AreaIdentifierType> areaRestrictions, DateTime dateTime) throws ReportingServiceException {
 
         try {
             Map<String, Asset> assetMap;
-            FilterProcessor processor = new FilterProcessor(report.getFilters());
+            FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
             if (areaRestrictions != null) {
                 processor.getScopeRestrictionAreaIdentifierList().addAll(areaRestrictions);
             }

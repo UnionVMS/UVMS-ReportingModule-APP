@@ -52,17 +52,16 @@ public class CommonFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria() {
+    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
         CommonFilterMapper mapper = CommonFilterMapper.INSTANCE;
         List<RangeCriteria> rangeCriteria = Lists.newArrayList();
         RangeCriteria date = mapper.dateRangeToRangeCriteria(this);
-        setDefaultValues(date);
+        setDefaultValues(date, now);
 
         if (Position.hours.equals(positionSelector.getPosition())) {
             Float hours = positionSelector.getValue();
-            DateTime from = nowUTC();
-            Date to = DateUtils.nowUTCMinusSeconds(from, hours).toDate();
-            rangeCriteria.add(mapper.dateRangeToRangeCriteria(to, from.toDate()));
+            Date to = DateUtils.nowUTCMinusSeconds(now, hours).toDate();
+            rangeCriteria.add(mapper.dateRangeToRangeCriteria(to, now.toDate()));
         }
         else {
             rangeCriteria.add(date);
@@ -71,9 +70,9 @@ public class CommonFilter extends Filter {
         return rangeCriteria;
     }
 
-    private void setDefaultValues(final RangeCriteria date) {
+    private void setDefaultValues(final RangeCriteria date, DateTime now) {
         if (date.getTo() == null) {
-            date.setTo(DateUtils.dateToString(nowUTC().toDate())); // FIXME use offset
+            date.setTo(DateUtils.dateToString(now.toDate()));
         }
         if (date.getFrom() == null) {
             date.setFrom(DateUtils.dateToString(new Date(Long.MIN_VALUE)));

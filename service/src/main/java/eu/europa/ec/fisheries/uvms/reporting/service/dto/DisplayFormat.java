@@ -1,17 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import javax.annotation.Generated;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({
-    "speedUnit",
-    "distanceUnit"
-})
 @Data
 public class DisplayFormat {
 
@@ -19,6 +14,8 @@ public class DisplayFormat {
     private VelocityType velocityType;
     @JsonProperty("distanceUnit")
     private LengthType lengthType;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * No args constructor for use in serialization
@@ -36,4 +33,15 @@ public class DisplayFormat {
         this.velocityType = velocityType;
         this.lengthType = lengthType;
     }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
+
 }

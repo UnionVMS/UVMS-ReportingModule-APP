@@ -9,6 +9,8 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.EqualsAndHashCode;
+import org.joda.time.DateTime;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -134,7 +136,7 @@ public abstract class Filter implements Serializable {
         return Collections.emptyList();
     }
 
-    public List<RangeCriteria> movementRangeCriteria(){
+    public List<RangeCriteria> movementRangeCriteria(DateTime now){
         return Collections.emptyList();
     }
     

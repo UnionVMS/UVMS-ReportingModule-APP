@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import org.joda.time.DateTime;
 
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -30,8 +31,10 @@ public class FilterProcessor {
     private final Set<AssetGroup> assetGroupList = new HashSet<>();
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<AreaIdentifierType>();
     private final Set<AreaIdentifierType> scopeRestrictionAreaIdentifierList = new HashSet<>();
+    private DateTime now;
 
-    public FilterProcessor(Set<Filter> filters) throws ProcessorException {
+    public FilterProcessor(Set<Filter> filters, DateTime now) throws ProcessorException {
+        this.now = now;
         validate(filters);
 
         for (Filter filter : filters) {
@@ -54,7 +57,7 @@ public class FilterProcessor {
     private void addCriteria(Filter filter) {
         assetListCriteriaPairs.addAll(filter.assetCriteria());
         assetGroupList.addAll(filter.assetGroupCriteria());
-        rangeCriteria.addAll(filter.movementRangeCriteria());
+        rangeCriteria.addAll(filter.movementRangeCriteria(now));
         movementListCriteria.addAll(filter.movementListCriteria());
     }
 
@@ -137,5 +140,15 @@ public class FilterProcessor {
 
     public Set<AreaIdentifierType> getScopeRestrictionAreaIdentifierList() {
         return scopeRestrictionAreaIdentifierList;
+    }
+
+    public DateTime getNow() {
+
+        return now;
+    }
+
+    public void setNow(DateTime now) {
+
+        this.now = now;
     }
 }
