@@ -139,7 +139,11 @@ public abstract class Filter implements Serializable {
     public List<RangeCriteria> movementRangeCriteria(DateTime now){
         return Collections.emptyList();
     }
-    
+
+    public List<RangeCriteria> movementRangeCriteria(){
+        return Collections.emptyList();
+    }
+
     public AreaIdentifierType getAreaIdentifierType() {
     	return new AreaIdentifierType();
     }

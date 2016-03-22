@@ -10,6 +10,7 @@ import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.SneakyThrows;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
@@ -35,7 +36,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         AssetFilter assetFilter = AssetFilter.builder().guid("guid").build();
         filterList.add(assetFilter);
 
-        processor = new FilterProcessor(filterList);
+        processor = new FilterProcessor(filterList, new DateTime());
 
         assertEquals(1, processor.getAssetListCriteriaPairs().size());
         assertEquals(0, processor.getRangeCriteria().size());
@@ -69,7 +70,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         filterList.add(assetGroupFilter);
 
-        processor = new FilterProcessor(filterList);
+        processor = new FilterProcessor(filterList, new DateTime());
 
         List<AssetGroup> assetGroupList = new ArrayList<>();
         assetGroupList.addAll(processor.getAssetGroupList());
@@ -89,13 +90,13 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void shouldThrowExceptionWhenEmptyFilterList() {
         Set<Filter> filterList = new HashSet<>();
-        processor = new FilterProcessor(filterList);
+        processor = new FilterProcessor(filterList, new DateTime());
     }
 
     @Test(expected = ProcessorException.class)
     @SneakyThrows
     public void testSanityFilterSetNull() {
-        processor = new FilterProcessor(null);
+        processor = new FilterProcessor(null, new DateTime());
     }
 
 }

@@ -325,7 +325,7 @@ public class ReportingResource extends UnionVMSResource {
         try {
             Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
 
-            final VelocityType velocityType = 
+            final VelocityType velocityType =
                     VelocityType.valueOf(additionalProperties.get(SPEED_UNIT).toString().toUpperCase());
             final LengthType lengthType =
                     LengthType.valueOf(additionalProperties.get(DISTANCE_UNIT).toString().toUpperCase());
