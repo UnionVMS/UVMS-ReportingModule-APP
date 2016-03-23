@@ -41,7 +41,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.util.Constants.*;
 
@@ -335,7 +339,7 @@ public class ReportingResource extends UnionVMSResource {
             final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
-            ObjectNode jsonNodes = vmsService.getVmsDataBy(report, areaRestrictions).toJson(displayFormat); // TODO Test this
+            ObjectNode jsonNodes = vmsService.getVmsDataBy(report, areaRestrictions).toJson(displayFormat);
             log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 

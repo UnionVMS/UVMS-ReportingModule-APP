@@ -73,7 +73,8 @@ public class VmsServiceBean implements VmsService {
 
         Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
         DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
-        VmsDTO vmsData = getVmsData(ReportMapperV2.INSTANCE.reportDtoToReport(report), areaRestrictions, dateTime);
+        Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
+        VmsDTO vmsData = getVmsData(toReport, areaRestrictions, dateTime);
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
         return vmsData;
     }
