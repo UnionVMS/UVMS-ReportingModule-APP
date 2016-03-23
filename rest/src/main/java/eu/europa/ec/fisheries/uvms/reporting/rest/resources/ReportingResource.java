@@ -53,6 +53,8 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.util.Constants.*;
 @Slf4j
 public class ReportingResource extends UnionVMSResource {
 
+    public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
+
     private static String APPLICATION_NAME ;
     public static final String USM_APPLICATION = "usmApplication";
 
@@ -381,15 +383,24 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response defaultReport(@Context HttpServletRequest request, Report report, @PathParam("id") Long id,
-                              @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
+                              @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+                              @DefaultValue("0") @QueryParam("override") String override) {
 
         final String username = request.getRemoteUser();
+        final String appName = getApplicationName(request);
         Response response;
-
         try {
-            final String appName = getApplicationName(request);
-            usmService.putUserPreference("DEFAULT_REPORT_ID", String.valueOf(id), appName, scopeName, roleName, username);
-            response = createSuccessResponse();
+
+            String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, appName, roleName, scopeName);
+
+            if (!StringUtils.isEmpty(defaultId) && "0".equals(override)){
+                response = createErrorResponse("TRYING TO OVERRIDE ALREADY EXISTING VALUE");
+            }
+            else {
+                usmService.putUserPreference(DEFAULT_REPORT_ID, String.valueOf(id), appName, scopeName, roleName, username);
+                response = createSuccessResponse();
+            }
+
         } catch (ServiceException e) {
             log.error("Default report saving failed.", e);
             response = createErrorResponse(e.getMessage());
