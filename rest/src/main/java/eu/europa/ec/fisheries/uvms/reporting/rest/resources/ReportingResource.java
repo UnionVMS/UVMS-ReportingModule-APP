@@ -344,7 +344,7 @@ public class ReportingResource extends UnionVMSResource {
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
-            log.error("Report execution failed.", e);
+             log.error("Report execution failed.", e);
             return createErrorResponse(e.getMessage());
         }
     }
@@ -390,6 +390,27 @@ public class ReportingResource extends UnionVMSResource {
             final String appName = getApplicationName(request);
             usmService.putUserPreference("DEFAULT_REPORT_ID", String.valueOf(id), appName, scopeName, roleName, username);
             response = createSuccessResponse();
+        } catch (ServiceException e) {
+            log.error("Default report saving failed.", e);
+            response = createErrorResponse(e.getMessage());
+        }
+
+        return response;
+    }
+
+    @GET
+    @Path("/default/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response isDefault(@Context HttpServletRequest request, Report report, @PathParam("id") Long id,
+                                  @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
+
+        final String username = request.getRemoteUser();
+        Response response;
+
+        try {
+            Boolean aDefault = reportService.isDefault(id, username, scopeName);
+            response = createSuccessResponse(aDefault);
         } catch (ServiceException e) {
             log.error("Default report saving failed.", e);
             response = createErrorResponse(e.getMessage());

@@ -22,15 +22,16 @@ public interface CommonFilterMapper {
             @Mapping(source = "dateRange.startDate", target = "startDate"),
             @Mapping(source = "dateRange.endDate", target = "endDate")
     })
-    CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter commonFilter); //TODO use Common from model
+    CommonFilterDTO dateTimeFilterToDateTimeFilterDTO(CommonFilter commonFilter);
 
     @Mappings({
             @Mapping(target = "dateRange", expression = "java(new DateRange(dto.getStartDate(), dto.getEndDate()))")
     })
-    CommonFilter dateTimeFilterDTOToDateTimeFilter(CommonFilterDTO dto); //TODO use Common from model
+    CommonFilter dateTimeFilterDTOToDateTimeFilter(CommonFilterDTO dto);
 
     @Mappings({
-            @Mapping(target = "dateRange", expression = "java(new DateRange(DateUtils.UI_FORMATTER.parseDateTime(dto.getStartDate()).toDate(), DateUtils.UI_FORMATTER.parseDateTime(dto.getEndDate()).toDate()))"),
+            @Mapping(target = "dateRange", expression = "java(new DateRange(dto.getStartDate() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getStartDate()).toDate() : null, " +
+                    "dto.getEndDate() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getEndDate()).toDate() : null))"),
             @Mapping(target = "positionSelector", expression = "java(new PositionSelector(Float.valueOf(dto.getXValue()), Enum.valueOf( Selector.class, dto.getPositionSelector()) , Position.getByName(dto.getPositionTypeSelector())))")
     })
     CommonFilter commonToCommonFilter(Common dto);

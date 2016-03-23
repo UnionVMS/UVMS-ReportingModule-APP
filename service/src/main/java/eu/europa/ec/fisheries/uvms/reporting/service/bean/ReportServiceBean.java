@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.movement.model.util.DateUtil;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
@@ -11,28 +11,25 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
+import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Session Bean implementation class ReportBean
- * <p/>
- * TODO: add Authorization
- * TODO: add proper exception handling
- * TODO: add business validation
- * TODO: add data type validation
+ *
  */
 @Stateless
 @LocalBean
@@ -59,18 +56,41 @@ public class ReportServiceBean {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
             Report reportEntity = mapper.reportDTOToReport(report);
             reportEntity = repository.createEntity(reportEntity); // TODO @Greg mapping in repository
-            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
-            return reportDTO;
+            return mapper.reportToReportDTO(reportEntity);
         } catch (Exception e) {
             throw new RuntimeException("Error during the creation of the report");
         }
     }
 
-    @Transactional
-    public ReportDTO findById(long id, String username, String scopeName) {
-        ReportDTO reportDTO = readReport(id, username, scopeName);
+    public Boolean isDefault(Long id, String username, String scopeName) throws ServiceException {
 
-        populateMapConfiguration(id, reportDTO);
+        try {
+            Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
+            return reportByReportId != null;
+        } catch (ReportingServiceException e) {
+            throw new ServiceException(ErrorCodes.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Transactional
+    public ReportDTO findById(Long id, String username, String scopeName) throws ServiceException {
+
+        ReportDTO reportDTO;
+
+        try {
+            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
+            Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
+            reportDTO =  mapper.reportToReportDTO(reportByReportId);
+
+            if (reportDTO != null && reportDTO.getWithMap()) {
+                MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id);
+                reportDTO.setMapConfiguration(mapConfiguratioDTO);
+            }
+        }
+
+        catch (Exception e){
+            throw new RuntimeException("Error during reading map configuration in spatial module");//FIXME @Greg investigate runtime is there not a cleaner way?
+        }
 
         return reportDTO;
     }
@@ -150,27 +170,6 @@ public class ReportServiceBean {
         boolean isSuccess = spatialModule.saveOrUpdateMapConfiguration(reportId, mapConfiguration);
         if (!isSuccess) {
             throw new ReportingServiceException("Error during saving or updating map configuration in spatial module");
-        }
-    }
-
-    private ReportDTO readReport(long id, String username, String scopeName) {
-        try {
-            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
-            Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
-            return mapper.reportToReportDTO(reportByReportId);
-        } catch (Exception e) {
-            throw new RuntimeException("Error during reading the report");
-        }
-    }
-
-    private void populateMapConfiguration(long id, ReportDTO reportDTO) {
-        try {
-            if (reportDTO != null && reportDTO.getWithMap()) {
-                MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id);
-                reportDTO.setMapConfiguration(mapConfiguratioDTO);
-            }
-        } catch (ReportingServiceException e) {
-            throw new RuntimeException("Error during reading map configuration in spatial module");
         }
     }
 
