@@ -376,5 +376,25 @@ public class ReportingResource extends UnionVMSResource {
         return null;
     }
 
+    @POST
+    @Path("/default/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response defaultReport(@Context HttpServletRequest request, Report report, @PathParam("id") Long id,
+                              @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
 
+        final String username = request.getRemoteUser();
+        Response response;
+
+        try {
+            final String appName = getApplicationName(request);
+            usmService.putUserPreference("DEFAULT_REPORT_ID", String.valueOf(id), appName, scopeName, roleName, username);
+            response = createSuccessResponse();
+        } catch (ServiceException e) {
+            log.error("Default report saving failed.", e);
+            response = createErrorResponse(e.getMessage());
+        }
+
+        return response;
+    }
 }

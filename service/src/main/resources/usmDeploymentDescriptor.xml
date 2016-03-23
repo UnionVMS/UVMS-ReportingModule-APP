@@ -69,5 +69,13 @@
             <description>allows user to delete PUBLIC shared reports, of which he is not the owner</description>
             <group>reporting</group>
         </feature>
+
+        <option>
+            <name>DEFAULT_REPORT_ID</name>
+            <description>Default user report id</description>
+            <dataType>STRING</dataType>
+            <defaultValue></defaultValue>
+        </option>
+
     </application>
 </ns2:deployApplicationRequest>
