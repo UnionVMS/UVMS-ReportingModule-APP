@@ -17,7 +17,7 @@ public enum Position {
 
     public static Position getByName(String name) {
         for(Position e: Position.values()) {
-            if(e.name == name) {
+            if(e.getName().equals(name)) {
                 return e;
             }
         }

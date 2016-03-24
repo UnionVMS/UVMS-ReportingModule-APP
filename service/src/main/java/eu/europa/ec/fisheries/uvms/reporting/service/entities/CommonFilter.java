@@ -53,17 +53,16 @@ public class CommonFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
-        CommonFilterMapper mapper = CommonFilterMapper.INSTANCE;
         List<RangeCriteria> rangeCriteria = Lists.newArrayList();
+        RangeCriteria date = CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(this);
+        setDefaultValues(date, now);
 
         if (Position.hours.equals(positionSelector.getPosition())) {
             Float hours = positionSelector.getValue();
             Date to = DateUtils.nowUTCMinusSeconds(now, hours).toDate();
-            rangeCriteria.add(mapper.dateRangeToRangeCriteria(to, now.toDate()));
+            rangeCriteria.add(CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(to, now.toDate()));
         }
         else {
-            RangeCriteria date = mapper.dateRangeToRangeCriteria(this);
-            setDefaultValues(date, now);
             rangeCriteria.add(date);
         }
 
