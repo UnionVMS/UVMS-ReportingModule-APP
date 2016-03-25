@@ -69,6 +69,16 @@
             <description>allows user to delete PUBLIC shared reports, of which he is not the owner</description>
             <group>reporting</group>
         </feature>
+		<feature>
+            <name>PRINT_REPORT</name>
+            <description>Allows user to print reports</description>
+            <group>reporting</group>
+        </feature>
+		<feature>
+            <name>EXPORT_VMS_REPORT_DATA</name>
+            <description>Allows user to export VMS data of a report</description>
+            <group>reporting</group>
+        </feature>
 
         <option>
             <name>DEFAULT_REPORT_ID</name>
