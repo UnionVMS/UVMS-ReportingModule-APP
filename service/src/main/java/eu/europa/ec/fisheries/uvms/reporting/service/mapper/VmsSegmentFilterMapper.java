@@ -30,7 +30,7 @@ public interface VmsSegmentFilterMapper {
     @Mappings({
             @Mapping(source = "segMaxSpeed", target = "maximumSpeed"),
             @Mapping(source = "segMinSpeed", target = "minimumSpeed"),
-            @Mapping(target = "category", expression = "java(Enum.valueOf( SegmentCategoryType.class, dto.getSegCategory()))"),
+            @Mapping(target = "category", expression = "java(dto.getSegCategory() != null ? Enum.valueOf( SegmentCategoryType.class, dto.getSegCategory()) : null)"),
             @Mapping(target = "durationRange", expression = "java(new DurationRange(Float.valueOf(dto.getSegMinDuration()), Float.valueOf(dto.getSegMaxDuration())))") // TODO try change to float
     })
     VmsSegmentFilter vmsSegmentToVmsSegmentFilter(Vmssegment dto);
