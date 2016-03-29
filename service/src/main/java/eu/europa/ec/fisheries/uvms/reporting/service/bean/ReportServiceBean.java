@@ -62,16 +62,6 @@ public class ReportServiceBean {
         }
     }
 
-    public Boolean isDefault(Long id, String username, String scopeName) throws ServiceException {
-
-        try {
-            Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
-            return reportByReportId != null;
-        } catch (ReportingServiceException e) {
-            throw new ServiceException(ErrorCodes.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @Transactional
     public ReportDTO findById(Long id, String username, String scopeName) throws ServiceException {
 
@@ -114,7 +104,7 @@ public class ReportServiceBean {
     }
 
     @Transactional
-    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName, final Boolean existent) throws ReportingServiceException {
+    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName, final Boolean existent, final Long defaultReportId) throws ReportingServiceException {
 
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).build();
 
@@ -124,10 +114,12 @@ public class ReportServiceBean {
 
         for (Report report : reports) {
 
-            toReportDTOs.add(mapper.reportToReportDTO(report));
-
+            ReportDTO reportDTO = mapper.reportToReportDTO(report);
+            if(reportDTO.getId().equals(defaultReportId)){
+                reportDTO.setDefault(true);
+            }
+            toReportDTOs.add(reportDTO);
         }
-
         return toReportDTOs;
     }
 

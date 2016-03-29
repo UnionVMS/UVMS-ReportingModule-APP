@@ -57,13 +57,9 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 public class Report implements Serializable {
 
     public static final String IS_DELETED = "is_deleted";
-
     public static final String VISIBILITY = "visibility";
-
     public static final String EXECUTED_BY_USER = "executedByUser";
-
     public static final String LIST_BY_USERNAME_AND_SCOPE = "Report.listByUsernameAndScope";
-
     public static final String FIND_BY_ID = "Report.findReportByReportId";
 
     @Id

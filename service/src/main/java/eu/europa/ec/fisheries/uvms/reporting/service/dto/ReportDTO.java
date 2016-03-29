@@ -24,6 +24,7 @@ public class ReportDTO implements Serializable {
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String WITH_MAP = "withMap";
+    public static final String IS_DEFAULT = "isDefault";
     public static final String CREATED_ON = "createdOn";
     public static final String SCOPE_ID = "scopeId";
     public static final String VISIBILITY = "visibility";
@@ -45,6 +46,8 @@ public class ReportDTO implements Serializable {
     private AuditDTO audit;
     private VisibilityEnum visibility;
     private boolean isDeleted;
+    private Boolean isDefault = false;
+
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date deletedOn;
@@ -186,6 +189,14 @@ public class ReportDTO implements Serializable {
 
     public void setDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public Date getDeletedOn() {

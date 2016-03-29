@@ -83,10 +83,17 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
+            String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username,  getApplicationName(request), roleName, scopeName);
+            Long defaultReportId = null;
+
+            if (defaultId != null){
+                defaultReportId = Long.valueOf(defaultId);
+            }
+
             if (username != null && features != null) {
                 Collection<ReportDTO> reportsList;
                 try {
-                    reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent));
+                    reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent), defaultReportId);
                 } catch (Exception e) {
                     log.error("Failed to list reports.", e);
                     return createErrorResponse();
@@ -407,26 +414,6 @@ public class ReportingResource extends UnionVMSResource {
                 response = createSuccessResponse();
             }
 
-        } catch (ServiceException e) {
-            log.error("Default report saving failed.", e);
-            response = createErrorResponse(e.getMessage());
-        }
-
-        return response;
-    }
-
-    @GET
-    @Path("/default/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response isDefault(@Context HttpServletRequest request, Report report, @PathParam("id") Long id,
-                                  @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
-
-        final String username = request.getRemoteUser();
-        Response response;
-
-        try {
-            Boolean aDefault = reportService.isDefault(id, username, scopeName);
-            response = createSuccessResponse(aDefault);
         } catch (ServiceException e) {
             log.error("Default report saving failed.", e);
             response = createErrorResponse(e.getMessage());
