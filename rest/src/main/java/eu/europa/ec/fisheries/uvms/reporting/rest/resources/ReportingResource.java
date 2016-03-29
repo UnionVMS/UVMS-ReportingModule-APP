@@ -382,13 +382,17 @@ public class ReportingResource extends UnionVMSResource {
     @Path("/default/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response defaultReport(@Context HttpServletRequest request, Report report, @PathParam("id") Long id,
+    public Response defaultReport(@Context HttpServletRequest request, @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
                               Map<String,Object> payload) {
 
         final String username = request.getRemoteUser();
         final String appName = getApplicationName(request);
-        final Boolean override = Boolean.valueOf(String.valueOf(payload.get("override")));
+        Boolean override = false;
+
+        if (payload != null){
+            override = Boolean.valueOf(String.valueOf(payload.get("override")));
+        }
 
         Response response;
         try {
@@ -414,7 +418,6 @@ public class ReportingResource extends UnionVMSResource {
     @GET
     @Path("/default/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response isDefault(@Context HttpServletRequest request, Report report, @PathParam("id") Long id,
                                   @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
 
