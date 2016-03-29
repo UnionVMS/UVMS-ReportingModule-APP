@@ -384,16 +384,18 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response defaultReport(@Context HttpServletRequest request, Report report, @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
-                              @DefaultValue("0") @QueryParam("override") String override) {
+                              Map<String,Object> payload) {
 
         final String username = request.getRemoteUser();
         final String appName = getApplicationName(request);
+        final Boolean override = Boolean.valueOf(String.valueOf(payload.get("override")));
+
         Response response;
         try {
 
             String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, appName, roleName, scopeName);
 
-            if (!StringUtils.isEmpty(defaultId) && "0".equals(override)){
+            if (!StringUtils.isEmpty(defaultId) && !override){
                 response = createErrorResponse("TRYING TO OVERRIDE ALREADY EXISTING VALUE");
             }
             else {
