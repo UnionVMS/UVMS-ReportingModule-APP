@@ -57,7 +57,7 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        assertNotNull(dao.findReportByReportId(1L, "testUser", "testScope"));
+        assertNotNull(dao.findReportByReportId(1L, "testUser", "testScope", false));
 
     }
 
@@ -67,9 +67,9 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        dao.softDelete(1L, "testUser", "testScope");
+        dao.softDelete(1L, "testUser", "testScope", false);
 
-        assertNull(dao.findReportByReportId(1L, "testUser", "testScope"));
+        assertNull(dao.findReportByReportId(1L, "testUser", "testScope", false));
 
     }
 
@@ -79,7 +79,7 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        List<Report> reports = dao.listByUsernameAndScope("testUser", "testScope",  true);
+        List<Report> reports = dao.listByUsernameAndScope("testUser", "testScope",  true, false);
 
         assertEquals(2, reports.size());
 

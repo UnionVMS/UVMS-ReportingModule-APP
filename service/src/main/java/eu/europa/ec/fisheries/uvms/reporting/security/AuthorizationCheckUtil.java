@@ -36,7 +36,7 @@ public class AuthorizationCheckUtil {
             case PUBLIC :
                 requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
                 break;
-            case PRIVATE: requiredFeature = report.getCreatedBy().equals(username)?null:ReportFeatureEnum.UNSHARE_FOREIGN_REPORT;
+            case PRIVATE: requiredFeature = report.getCreatedBy().equals(username)?null:ReportFeatureEnum.MANAGE_ALL_REPORTS;
                 break;
         }
         return requiredFeature;
@@ -52,11 +52,7 @@ public class AuthorizationCheckUtil {
         ReportFeatureEnum requiredFeature = null;
 
         if (!report.getCreatedBy().equals(username)) {
-            if (report.getVisibility() == SCOPE) {
-                requiredFeature = ReportFeatureEnum.MODIFY_SCOPE_REPORT;
-            } else if (report.getVisibility() == PUBLIC) {
-                requiredFeature = ReportFeatureEnum.MODIFY_PUBLIC_REPORT;
-            }
+           requiredFeature = ReportFeatureEnum.MANAGE_ALL_REPORTS;
         }
 
         return requiredFeature;
@@ -72,11 +68,7 @@ public class AuthorizationCheckUtil {
         ReportFeatureEnum requiredFeature = null;
 
         if (!report.getCreatedBy().equals(username)) {
-            if (report.getVisibility() == SCOPE) {
-                requiredFeature = ReportFeatureEnum.DELETE_SCOPE_REPORT;
-            } else if (report.getVisibility() == PUBLIC) {
-                requiredFeature = ReportFeatureEnum.DELETE_PUBLIC_REPORT;
-            }
+            requiredFeature = ReportFeatureEnum.MANAGE_ALL_REPORTS;
         }
 
         return requiredFeature;
@@ -93,26 +85,29 @@ public class AuthorizationCheckUtil {
         return ReportFeatureEnum.CREATE_REPORT;
     }
 
+    public static ReportFeatureEnum getRequiredFeatureToListReports() {
+        return ReportFeatureEnum.LIST_REPORTS;
+    }
 
-    public static List<VisibilityEnum> listAllowedVisibilitOptions(String createdBy, String currentUser,Set<String>  features) {
+    public static List<VisibilityEnum> listAllowedVisibilityOptions(String createdBy, String currentUser, Set<String> features) {
         List<VisibilityEnum> visibilityEnumList = new LinkedList<>();
 
-        if (createdBy.equals(currentUser) || isAllowed(ReportFeatureEnum.UNSHARE_FOREIGN_REPORT, features)) {
+        if (createdBy.equals(currentUser) || isAllowed(ReportFeatureEnum.MANAGE_ALL_REPORTS, features)) {
             visibilityEnumList.add(VisibilityEnum.PRIVATE);
         }
 
-        if (isAllowed(ReportFeatureEnum.SHARE_REPORT_SCOPE, features)) {
+        if ((createdBy.equals(currentUser) && isAllowed(ReportFeatureEnum.SHARE_REPORT_SCOPE, features)) || isAllowed(ReportFeatureEnum.MANAGE_ALL_REPORTS, features)) {
             visibilityEnumList.add(VisibilityEnum.SCOPE);
         }
 
-        if (isAllowed(ReportFeatureEnum.SHARE_REPORT_PUBLIC, features)) {
+        if ((createdBy.equals(currentUser) && isAllowed(ReportFeatureEnum.SHARE_REPORT_PUBLIC, features)) || isAllowed(ReportFeatureEnum.MANAGE_ALL_REPORTS, features)) {
             visibilityEnumList.add(VisibilityEnum.PUBLIC);
         }
 
         return visibilityEnumList;
     }
 
-    private static boolean isAllowed(final ReportFeatureEnum requiredFeature, final Set<String> grantedFeatures) {
+    public static boolean isAllowed(final ReportFeatureEnum requiredFeature, final Set<String> grantedFeatures) {
         boolean isAllowed = false;
 
         if (requiredFeature == null || grantedFeatures.contains(requiredFeature.toString())) {

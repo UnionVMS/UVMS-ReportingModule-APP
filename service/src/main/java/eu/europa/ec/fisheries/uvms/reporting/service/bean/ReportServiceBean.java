@@ -3,9 +3,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
+import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
@@ -15,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -29,7 +32,11 @@ import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Session Bean implementation class ReportBean
- *
+ * <p/>
+ * TODO: add Authorization
+ * TODO: add proper exception handling
+ * TODO: add business validation
+ * TODO: add data type validation
  */
 @Stateless
 @LocalBean
@@ -51,25 +58,26 @@ public class ReportServiceBean {
         return reportDTO;
     }
 
-    private ReportDTO saveReport(ReportDTO report) {
+    public ReportDTO saveReport(ReportDTO report) {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
             Report reportEntity = mapper.reportDTOToReport(report);
             reportEntity = repository.createEntity(reportEntity); // TODO @Greg mapping in repository
-            return mapper.reportToReportDTO(reportEntity);
+            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
+            return reportDTO;
         } catch (Exception e) {
             throw new RuntimeException("Error during the creation of the report");
         }
     }
 
     @Transactional
-    public ReportDTO findById(Long id, String username, String scopeName) throws ServiceException {
+    public ReportDTO findById(Long id, String username, String scopeName, Boolean isAdmin) {
 
         ReportDTO reportDTO;
 
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
-            Report reportByReportId = repository.findReportByReportId(id, username, scopeName);
+            Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
             reportDTO =  mapper.reportToReportDTO(reportByReportId);
 
             if (reportDTO != null && reportDTO.getWithMap()) {
@@ -97,10 +105,12 @@ public class ReportServiceBean {
         return update;
     }
 
+
+
     @IAuditInterceptor(auditActionType = AuditActionEnum.DELETE)
     @Transactional
-    public void delete(Long reportId, String username, String scopeName) throws ReportingServiceException {
-        repository.remove(reportId, username, scopeName);
+    public void delete(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
+        repository.remove(reportId, username, scopeName, isAdmin);
     }
 
     @Transactional
@@ -108,7 +118,9 @@ public class ReportServiceBean {
 
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).build();
 
-        List<Report> reports = repository.listByUsernameAndScope(username, scopeName, existent);
+        boolean isAdmin = AuthorizationCheckUtil.isAllowed(ReportFeatureEnum.MANAGE_ALL_REPORTS, features);
+
+        List<Report> reports = repository.listByUsernameAndScope(username, scopeName, existent, isAdmin);
 
         List<ReportDTO> toReportDTOs = new ArrayList<>();
 
@@ -125,14 +137,15 @@ public class ReportServiceBean {
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.SHARE)
     @Transactional
-    public void share(Long reportId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException {
-        repository.changeVisibility(reportId, newVisibility, username, scopeName);
+    public void share(Long reportId, VisibilityEnum newVisibility, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
+        repository.changeVisibility(reportId, newVisibility, username, scopeName, isAdmin);
     }
+
 
     @Transactional
     public ReportGetStartAndEndDateRS getReportDates(String now, Long id, String userName, String scopeName) throws ReportingServiceException {
         Date currentDate = DateUtils.UI_FORMATTER.parseDateTime(now).toDate();
-        Report report = repository.findReportByReportId(id, userName, scopeName);
+        Report report = repository.findReportByReportId(id, userName, scopeName, false);
         if (report != null) {
             Set<Filter> filters = report.getFilters();
             for (Filter filter : filters) {

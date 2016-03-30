@@ -98,12 +98,11 @@ public class ReportRepositoryIT {
         reportEntity.setDetails(ReportDetails.builder().name("RemoveTest").build());
         repository.createEntity(reportEntity);
 
-        repository.remove(
-                reportEntity.getId(), reportEntity.getDetails().getCreatedBy(), reportEntity.getDetails().getScopeName());
+        repository.remove(reportEntity.getId(), reportEntity.getDetails().getCreatedBy(), reportEntity.getDetails().getScopeName(), false);
 
         Report result =
                 repository.findReportByReportId(
-                        reportEntity.getId(), reportEntity.getDetails().getCreatedBy(), reportEntity.getDetails().getScopeName());
+                        reportEntity.getId(), reportEntity.getDetails().getCreatedBy(), reportEntity.getDetails().getScopeName(), false);
 
         assertNull(result);
 
@@ -113,10 +112,10 @@ public class ReportRepositoryIT {
         repository.createEntity(reportEntity2);
 
         repository.remove(
-                reportEntity2.getId(), reportEntity2.getDetails().getCreatedBy(), reportEntity2.getDetails().getScopeName());
+                reportEntity2.getId(), reportEntity2.getDetails().getCreatedBy(), reportEntity2.getDetails().getScopeName(), false);
 
         result = repository.findReportByReportId(
-                reportEntity2.getId(), reportEntity2.getDetails().getCreatedBy(), reportEntity2.getDetails().getScopeName());
+                reportEntity2.getId(), reportEntity2.getDetails().getCreatedBy(), reportEntity2.getDetails().getScopeName(), false);
 
         assertNull(result);
 
@@ -128,7 +127,7 @@ public class ReportRepositoryIT {
     public void testFindReportByReportId() throws ReportingServiceException {
         repository.createEntity(report);
         Report reportByReportId = repository.findReportByReportId(
-                report.getId(), report.getDetails().getCreatedBy(), report.getDetails().getScopeName());
+                report.getId(), report.getDetails().getCreatedBy(), report.getDetails().getScopeName(), false);
         assertTrue(reportByReportId.getId() > 0);
         assertNotNull(reportByReportId);
     }
@@ -142,18 +141,18 @@ public class ReportRepositoryIT {
         report.getDetails().setScopeName("945563456");
         repository.createEntity(report);
 
-        Collection<Report> reports = repository.listByUsernameAndScope("georgiTestttt12", "945563456", true);
+        Collection<Report> reports = repository.listByUsernameAndScope("georgiTestttt12", "945563456", true, false);
 
         assertNotNull(reports);
         assertTrue(!reports.isEmpty());
         assertEquals(1, reports.size());
 
-        reports = repository.listByUsernameAndScope("georgiTestttt12", "11000", true);
+        reports = repository.listByUsernameAndScope("georgiTestttt12", "11000", true, false);
 
         assertNotNull(reports);
         assertTrue(reports.isEmpty());
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", "123456", true);
+        reports = repository.listByUsernameAndScope("nonexistinguser", "123456", true, false);
 
         assertNotNull(reports);
         assertTrue(reports.isEmpty());
@@ -167,13 +166,13 @@ public class ReportRepositoryIT {
         reportEntity3.setVisibility(VisibilityEnum.PUBLIC);
         repository.createEntity(reportEntity3);
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", "58437239", true);
+        reports = repository.listByUsernameAndScope("nonexistinguser", "58437239", true, false);
 
         assertNotNull(reports);
         assertTrue(!reports.isEmpty());
         assertEquals(2, reports.size());
 
-        reports = repository.listByUsernameAndScope("nonexistinguser", "123456", true);
+        reports = repository.listByUsernameAndScope("nonexistinguser", "123456", true, false);
 
         assertNotNull(reports);
         assertEquals(1, reports.size());
@@ -200,7 +199,7 @@ public class ReportRepositoryIT {
         repository.createEntity(report);
 
         Report result = repository.findReportByReportId(
-                report.getId(), report.getDetails().getCreatedBy(), report.getDetails().getScopeName());
+                report.getId(), report.getDetails().getCreatedBy(), report.getDetails().getScopeName(), false);
 
         assertNotNull(result);
         assertNotNull(report.getExecutionLogs());
@@ -229,7 +228,7 @@ public class ReportRepositoryIT {
         report.getExecutionLogs().add(repExecLog2);
         Report savedReport = repository.createEntity(report);
 
-        List<Report> results = repository.listByUsernameAndScope(user, "356456731", true);
+        List<Report> results = repository.listByUsernameAndScope(user, "356456731", true, false);
 
         Iterator<Report> iterator1 = results.iterator();
         Report foundReport = null;
@@ -334,7 +333,7 @@ public class ReportRepositoryIT {
         report.getFilters().add(filter6);
 
         Report savedReport = repository.createEntity(report);
-        Report byId = repository.findReportByReportId(savedReport.getId(), savedReport.getDetails().getCreatedBy(), savedReport.getDetails().getScopeName());
+        Report byId = repository.findReportByReportId(savedReport.getId(), savedReport.getDetails().getCreatedBy(), savedReport.getDetails().getScopeName(), false);
 
         Set<Filter> filters = byId.getFilters();
 

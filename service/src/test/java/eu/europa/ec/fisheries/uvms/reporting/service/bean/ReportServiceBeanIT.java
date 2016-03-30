@@ -101,8 +101,8 @@ public class ReportServiceBeanIT {
         ReportDTO report = reportBean.create(DTOUtil.createRandomReport());
         assertNotNull(report);
 
-        reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName());
-        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName());
+        reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
+        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
         assertNull(report);
 
     }
@@ -137,8 +137,8 @@ public class ReportServiceBeanIT {
         assertNotNull(areaFilter.getId());
         assertNotNull(assetFilterDTO.getId());
 
-        reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName());
-        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName());
+        reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
+        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
         assertNull(report);
 
     }

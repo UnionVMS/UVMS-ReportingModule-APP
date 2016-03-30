@@ -26,22 +26,7 @@
 
         <feature>
             <name>LIST_REPORTS</name>
-            <description>allows user to list available reports</description>
-            <group>reporting</group>
-        </feature>
-        <feature>
-            <name>MODIFY_SCOPE_REPORT</name>
-            <description>allows user to modify scope shared reports within the current user context/scope</description>
-            <group>reporting</group>
-        </feature>
-        <feature>
-            <name>MODIFY_PUBLIC_REPORT</name>
-            <description>allows user to modify global shared reports within the current user context/scope</description>
-            <group>reporting</group>
-        </feature>
-        <feature>
-            <name>UNSHARE_FOREIGN_REPORT</name>
-            <description>allows user to unshare someone's else reports. This should be used for admin users roles.</description>
+            <description>allows user to see Reporting tab and list reports</description>
             <group>reporting</group>
         </feature>
         <feature>
@@ -60,13 +45,8 @@
             <group>reporting</group>
         </feature>
         <feature>
-            <name>DELETE_SCOPE_REPORT</name>
-            <description>allows user to delete scope shared reports, of which he is not the owner</description>
-            <group>reporting</group>
-        </feature>
-        <feature>
-            <name>DELETE_PUBLIC_REPORT</name>
-            <description>allows user to delete PUBLIC shared reports, of which he is not the owner</description>
+            <name>MANAGE_ALL_REPORTS</name>
+            <description>allows user to delete, edit, share/unshare (private, scope or globally) reports, no matter if he is the owner or not</description>
             <group>reporting</group>
         </feature>
 		<feature>

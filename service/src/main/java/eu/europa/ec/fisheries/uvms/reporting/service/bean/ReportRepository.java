@@ -11,13 +11,14 @@ public interface ReportRepository {
 
     boolean update(ReportDTO reportDTO) throws ReportingServiceException;
 
-    Report findReportByReportId(Long reportId, String username, String scopeName) throws ReportingServiceException;
+    Report findReportByReportId(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException;
 
-    List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent) throws ReportingServiceException;
+    List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent, Boolean isAdmin) throws ReportingServiceException;
 
-    void remove(Long reportId, String username, String scopeName) throws ReportingServiceException;
+    void remove(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException;
+
 
     Report createEntity(Report reportEntity) throws ReportingServiceException;
 
-    void changeVisibility(Long reportId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException;
+    void changeVisibility(Long reportId, VisibilityEnum newVisibility, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException;
 }

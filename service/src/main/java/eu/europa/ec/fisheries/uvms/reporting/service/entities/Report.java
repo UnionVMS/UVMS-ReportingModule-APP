@@ -41,13 +41,13 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @NamedQueries({
         @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
                 "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                    "WHERE ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
+                    "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
                     "AND r.isDeleted <> :existent " +
                     "ORDER BY r.id"),
         @NamedQuery(name = Report.FIND_BY_ID, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                    "WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND (r.details.createdBy = :username " +
-                    "OR (r.details.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC')")
+                    "WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND ((1=:isAdmin) OR (r.details.createdBy = :username " +
+                    "OR (r.details.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC'))")
 })
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(exclude = {"executionLogs", "filters", "audit"})

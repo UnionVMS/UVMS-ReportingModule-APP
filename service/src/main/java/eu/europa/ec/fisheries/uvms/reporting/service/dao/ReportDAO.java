@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
@@ -54,9 +52,10 @@ public class ReportDAO extends AbstractDAO<Report> {
      * does logical/soft delete
      *
      * @param entityId
+     * @param isAdmin
      */
-    public void softDelete(Long entityId, String username, String scopeName) throws ReportingServiceException {
-        Report persistentInstance = this.findReportByReportId(entityId, username, scopeName);
+    public void softDelete(Long entityId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
+        Report persistentInstance = this.findReportByReportId(entityId, username, scopeName, isAdmin);
         if (persistentInstance == null) {
             throw new ReportingServiceException("Non existing report entity cannot be deleted.");
         }
@@ -73,9 +72,9 @@ public class ReportDAO extends AbstractDAO<Report> {
      * @param scopeName
      * @throws ReportingServiceException
      */
-    public void changeVisibility(Long entityId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException {
+    public void changeVisibility(Long entityId, VisibilityEnum newVisibility, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
         log.debug("[START] changeVisibility({},{},{},{})", entityId, newVisibility, username, scopeName);
-        Report persistentInstance = this.findReportByReportId(entityId, username, scopeName);
+        Report persistentInstance = this.findReportByReportId(entityId, username, scopeName, isAdmin);
         if (persistentInstance == null) {
             throw new ReportingServiceException("Non existing report entity cannot be deleted.");
         }
@@ -96,12 +95,12 @@ public class ReportDAO extends AbstractDAO<Report> {
     }
 
 
-    public Report findReportByReportId(final Long id, String username, String scopeName) throws ReportingServiceException {
+    public Report findReportByReportId(final Long id, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
         Report result = null;
         List<Report> reports;
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
-            reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).parameters(), 1);
+            reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).and("isAdmin", isAdmin?1:0).parameters(), 1);
         } catch (ServiceException exc) {
             log.error("findReport failed", exc);
             throw new ReportingServiceException("findReport failed", exc);
@@ -112,14 +111,14 @@ public class ReportDAO extends AbstractDAO<Report> {
         return result;
     }
 
-    public List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent) throws ReportingServiceException {
+    public List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent, Boolean isAdmin) throws ReportingServiceException {
         log.debug("Searching for ReportEntity instances with username: {} and scopeName:{}", username, scopeName);
 
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
             List<Report> listReports =
                     findEntityByNamedQuery(Report.class, Report.LIST_BY_USERNAME_AND_SCOPE,
-                            with("scopeName", scopeName).and("username", username).and("existent", existent).parameters());
+                            with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters());
             log.debug("list successful");
 
 

@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
@@ -58,7 +57,7 @@ public class ReportMapper {
         }
 
         if (features != null) {
-            List<VisibilityEnum> visibilityEnumList = AuthorizationCheckUtil.listAllowedVisibilitOptions(report.getDetails().getCreatedBy(), currentUser, features);
+            List<VisibilityEnum> visibilityEnumList = AuthorizationCheckUtil.listAllowedVisibilityOptions(report.getDetails().getCreatedBy(), currentUser, features);
 
             if (!visibilityEnumList.isEmpty()) {
                 reportDTO.setShareable(visibilityEnumList);

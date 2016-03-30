@@ -91,27 +91,27 @@ public class ReportRepositoryTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void testFindReportByReportId(){
 
-        repository.findReportByReportId(null, null, null);
+        repository.findReportByReportId(null, null, null, false);
 
-        reportDAO.assertInvoked().findReportByReportId(null, null, null);
+        reportDAO.assertInvoked().findReportByReportId(null, null, null, false);
     }
 
     @Test
     @SneakyThrows
     public void testListByUsernameAndScope(){
 
-        repository.listByUsernameAndScope(null, null, null);
+        repository.listByUsernameAndScope(null, null, null, false);
 
-        reportDAO.assertInvoked().listByUsernameAndScope(null, null, null);
+        reportDAO.assertInvoked().listByUsernameAndScope(null, null, null, false);
     }
 
     @Test
     @SneakyThrows
     public void testRemove(){
 
-        repository.remove(null, null, null);
+        repository.remove(null, null, null, false);
 
-        reportDAO.assertInvoked().softDelete(null, null, null);
+        reportDAO.assertInvoked().softDelete(null, null, null, false);
     }
 
     @Test

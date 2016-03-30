@@ -80,20 +80,21 @@ public class ReportRepositoryBean implements ReportRepository {
 
     }
 
+
     @Override
-    public Report findReportByReportId(final Long id, String username, String scopeName) throws ReportingServiceException {
-        return reportDAO.findReportByReportId(id, username, scopeName);
+    public Report findReportByReportId(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
+        return reportDAO.findReportByReportId(reportId, username, scopeName, isAdmin);
     }
 
     @Override
-    public List<Report> listByUsernameAndScope(final String username, final String scopeName, final Boolean existent) throws ReportingServiceException {
-        return reportDAO.listByUsernameAndScope(username, scopeName, existent);
+    public List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent, Boolean isAdmin) throws ReportingServiceException {
+        return reportDAO.listByUsernameAndScope(username, scopeName, existent, isAdmin);
     }
 
     @Override
     @Transactional
-    public void remove(final Long reportId, String username, String scopeName) throws ReportingServiceException {
-        reportDAO.softDelete(reportId, username, scopeName);
+    public void remove(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
+        reportDAO.softDelete(reportId, username, scopeName, isAdmin);
     }
 
     @Override
@@ -109,7 +110,7 @@ public class ReportRepositoryBean implements ReportRepository {
 
     @Override
     @Transactional
-    public void changeVisibility(Long reportId, VisibilityEnum newVisibility, String username, String scopeName) throws ReportingServiceException {
-        reportDAO.changeVisibility(reportId, newVisibility, username, scopeName);
+    public void changeVisibility(Long reportId, VisibilityEnum newVisibility, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
+        reportDAO.changeVisibility(reportId, newVisibility, username, scopeName, isAdmin);
     }
 }
