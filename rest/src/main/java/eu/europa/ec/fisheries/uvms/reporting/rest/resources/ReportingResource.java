@@ -86,7 +86,7 @@ public class ReportingResource extends UnionVMSResource {
             String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username,  getApplicationName(request), roleName, scopeName);
             Long defaultReportId = null;
 
-            if (defaultId != null){
+            if (StringUtils.isNotBlank(defaultId)){
                 defaultReportId = Long.valueOf(defaultId);
             }
 
