@@ -35,11 +35,18 @@
         <usm4uvms.version>1.0.1</usm4uvms.version>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
+        <rules.model.version>1.0.3</rules.model.version>
     </properties>
 
     <dependencyManagement>
 
         <dependencies>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+                <artifactId>rules-model</artifactId>
+                <version>${rules.model.version}</version>
+            </dependency>
         
             <dependency>
             	<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>

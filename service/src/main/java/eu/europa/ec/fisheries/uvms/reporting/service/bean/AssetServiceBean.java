@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
@@ -8,6 +9,8 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -56,6 +59,17 @@ public class AssetServiceBean {
         }
 
         return ExtAssetMessageMapper.getAssetMap(assetList);
+    }
+
+    public List<Asset> getAssets(AssetListQuery assetList) throws ReportingServiceException {
+        try {
+            String request = AssetModuleRequestMapper.createAssetListModuleRequest(assetList);
+            String moduleMessage = assetSender.sendModuleMessage(request, receiver.getDestination());
+            TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
+            return getAssets(moduleMessage, response);
+        } catch (AssetModelMapperException | MessageException e) {
+            throw new ReportingServiceException("FAILED TO GET DATA FROM ASSET", e);
+        }
     }
 
     // UT

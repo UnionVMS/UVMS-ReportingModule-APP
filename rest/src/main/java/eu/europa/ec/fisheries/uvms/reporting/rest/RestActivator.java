@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest;
 
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.RestConstants;
+import eu.europa.ec.fisheries.uvms.reporting.rest.resources.AlarmResource;
 import eu.europa.ec.fisheries.uvms.reporting.rest.resources.ReportingResource;
 
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ public class RestActivator extends Application {
 
     public RestActivator() {
         set.add(ReportingResource.class);
+        set.add(AlarmResource.class);
         LOG.info(RestConstants.MODULE_NAME + " module starting up");
     }
 
