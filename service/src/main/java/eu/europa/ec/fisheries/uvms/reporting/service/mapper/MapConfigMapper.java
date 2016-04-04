@@ -133,13 +133,15 @@ public abstract class MapConfigMapper {
 
     @Mappings({
             @Mapping(source = "positions", target = "position"),
-            @Mapping(source = "segments", target = "segment")
+            @Mapping(source = "segments", target = "segment"),
+            @Mapping(source = "alarms", target = "alarm")
     })
     public abstract StyleSettingsType getStyleSettingsType(StyleSettingsDto styleSettingsDto);
 
     @Mappings({
             @Mapping(source = "position", target = "positions"),
-            @Mapping(source = "segment", target = "segments")
+            @Mapping(source = "segment", target = "segments"),
+            @Mapping(source = "alarm", target = "alarms")
     })
     public abstract StyleSettingsDto getStyleSettingsDto(StyleSettingsType styleSettingsType);
 
@@ -169,6 +171,32 @@ public abstract class MapConfigMapper {
 
     protected AreaTypeEnum getAreaTypeEnum(String areaType) {
         return AreaTypeEnum.valueOf(areaType);
+    }
+
+    protected AlarmType getAlarmType(AlarmsDto alarmsDto) {
+        if (alarmsDto == null) {
+            return null;
+        }
+        AlarmType alarmType = new AlarmType();
+        alarmType.setSize(alarmsDto.getSize());
+        alarmType.setOpen(alarmsDto.getOpen());
+        alarmType.setClosed(alarmsDto.getClosed());
+        alarmType.setPending(alarmsDto.getPending());
+        alarmType.setNone(alarmsDto.getNone());
+        return alarmType;
+    }
+
+    protected AlarmsDto getAlarmDto(AlarmType alarmType) {
+        if (alarmType == null) {
+            return null;
+        }
+        AlarmsDto alarmsDto = new AlarmsDto();
+        alarmsDto.setSize(alarmType.getSize());
+        alarmsDto.setOpen(alarmType.getOpen());
+        alarmsDto.setClosed(alarmType.getClosed());
+        alarmsDto.setPending(alarmType.getPending());
+        alarmsDto.setNone(alarmType.getNone());
+        return alarmsDto;
     }
 
     protected Boolean getAttributeValue(Boolean isAttrVisible) {

@@ -19,6 +19,9 @@ public class StyleSettingsDto {
     @JsonProperty("segments")
     private SegmentsDto segments;
 
+    @JsonProperty("alarms")
+    private AlarmsDto alarms;
+
     public StyleSettingsDto() {}
 
     public StyleSettingsDto(PositionsDto positions, SegmentsDto segments) {
@@ -44,6 +47,16 @@ public class StyleSettingsDto {
     @JsonProperty("segments")
     public void setSegments(SegmentsDto segmentsDto) {
         this.segments = segmentsDto;
+    }
+
+    @JsonProperty("alarms")
+    public AlarmsDto getAlarms() {
+        return alarms;
+    }
+
+    @JsonProperty("alarms")
+    public void setAlarms(AlarmsDto alarms) {
+        this.alarms = alarms;
     }
 
     @Override
