@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
+import lombok.ToString;
 import org.apache.commons.collections4.ListUtils;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
@@ -24,6 +25,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @DiscriminatorValue("VMSSEG")
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class VmsSegmentFilter extends Filter {
 
     @Column(name = "MIN_SPEED")

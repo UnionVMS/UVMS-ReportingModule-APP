@@ -5,6 +5,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -12,6 +14,7 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("areas")
 @EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
+@ToString
 public class AreaFilter extends Filter {
 
     @Column(name = "area_type")

@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.joda.time.DateTime;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -20,6 +21,7 @@ import java.util.List;
 @DiscriminatorValue("DATETIME")
 @EqualsAndHashCode(callSuper = true)
 @CommonFilterIsValid
+@ToString
 public class CommonFilter extends Filter {
 
     @Embedded

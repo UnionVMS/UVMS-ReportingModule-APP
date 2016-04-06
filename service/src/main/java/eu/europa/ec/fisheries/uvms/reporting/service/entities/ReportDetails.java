@@ -4,6 +4,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBool
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDetailsMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 @Embeddable
 @EqualsAndHashCode
+@ToString
 public class ReportDetails {
 
     public static final String CREATED_BY = "created_by";

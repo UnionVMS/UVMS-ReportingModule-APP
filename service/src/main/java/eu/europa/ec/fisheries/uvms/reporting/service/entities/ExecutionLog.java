@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.Builder;
+import lombok.ToString;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.ParamDef;
@@ -25,6 +26,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "execution_log", schema = "reporting",
         uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
+@ToString
 public class ExecutionLog implements Serializable {
 
     @Id

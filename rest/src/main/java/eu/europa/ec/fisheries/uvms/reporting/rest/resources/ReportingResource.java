@@ -143,9 +143,6 @@ public class ReportingResource extends UnionVMSResource {
                               @HeaderParam("scopeName") String scopeName) {
 
         String username = request.getRemoteUser();
-
-        log.info("{} is requesting getReport(...), with an ID={}", username, id);
-
         ReportDTO report;
 
         try {

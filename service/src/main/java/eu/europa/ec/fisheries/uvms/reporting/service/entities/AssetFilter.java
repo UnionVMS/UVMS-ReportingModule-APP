@@ -7,6 +7,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("ASSET")
 @EqualsAndHashCode(callSuper = false, of = {"guid"})
+@ToString
 public class AssetFilter extends Filter {
 
     @NotNull

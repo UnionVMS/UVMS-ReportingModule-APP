@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Embeddable
 @EqualsAndHashCode
+@ToString
 public class DateRange implements Serializable {
 
     public static final String END_DATE = "end_date";

@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.joda.time.DateTime;
 
 import javax.persistence.Column;

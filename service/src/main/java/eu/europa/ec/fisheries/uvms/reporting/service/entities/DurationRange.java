@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 
 @Embeddable
 @EqualsAndHashCode
+@ToString
 public class DurationRange implements Serializable {
 
     @Column(name = "MIN_DURATION")

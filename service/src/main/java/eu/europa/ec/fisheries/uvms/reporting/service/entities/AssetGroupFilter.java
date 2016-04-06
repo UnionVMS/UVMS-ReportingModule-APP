@@ -5,6 +5,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapp
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -14,6 +16,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("VGROUP")
 @EqualsAndHashCode(callSuper = false, of = {"guid"})
+@ToString
 public class AssetGroupFilter extends Filter {
 
     @NotNull

@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -12,6 +13,7 @@ import java.util.Date;
 
 @Embeddable
 @EqualsAndHashCode
+@ToString
 public class Audit implements Serializable {
 
     public static final String CREATED_ON = "created_on";

@@ -6,6 +6,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -18,6 +20,7 @@ import static java.lang.String.valueOf;
 @Entity
 @DiscriminatorValue("VMSTRACK")
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class VmsTrackFilter extends Filter {
 
     private static final float MIN_DEFAULT = 0F;
