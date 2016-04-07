@@ -28,7 +28,7 @@ public class AuditServiceBean implements AuditService {
 		
 		LOG.info("Audit report request received for : " + auditActionEnum.getAuditType());
 		try {
-			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId);
+			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, ReportingServiceConstants.REPORTING_UNSPECIFIED_USER);
 			LOG.info("Sending JMS message to Audit : " + msgToSend);			
 			auditProducerBean.sendModuleMessage(msgToSend);
 			
