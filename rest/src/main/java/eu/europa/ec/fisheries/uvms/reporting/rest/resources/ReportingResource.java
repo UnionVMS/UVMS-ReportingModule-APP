@@ -271,7 +271,7 @@ public class ReportingResource extends UnionVMSResource {
                     result = createSuccessResponse(reportDTO.getId());
                 } catch (Exception e) {
                     log.error("createReport failed.", e);
-                    result = createErrorResponse(e.getMessage());
+                    result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
                 }
 
             } else {

@@ -29,7 +29,7 @@
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.1-SNAPSHOT</uvms.commons.version>
+        <uvms.commons.version>2.0.2-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
         <usm4uvms.version>1.0.1</usm4uvms.version>

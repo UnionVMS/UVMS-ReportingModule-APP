@@ -66,7 +66,7 @@ public class ReportServiceBean {
             ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
             return reportDTO;
         } catch (Exception e) {
-            throw new RuntimeException("Error during the creation of the report");
+            throw new RuntimeException("Error during the creation of the report", e);
         }
     }
 
