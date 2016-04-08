@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "execution_log", schema = "reporting",
         uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
-@ToString
+@ToString(exclude = "report")
 public class ExecutionLog implements Serializable {
 
     @Id
