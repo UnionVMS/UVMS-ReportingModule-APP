@@ -182,9 +182,7 @@ public class ReportServiceBean {
 
         try {
             if (newWithMapValue) {
-                if (!newMapConfiguration.isMapConfigEmpty()) {
-                    saveOrUpdateMapConfiguration(reportId, newMapConfiguration);
-                }
+                saveOrUpdateMapConfiguration(reportId, newMapConfiguration);
             } else if (oldWithMapValue) {
                 spatialModule.deleteMapConfiguration(newArrayList(oldMapConfigurationDTO.getSpatialConnectId()));
             }
