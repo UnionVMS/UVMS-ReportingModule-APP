@@ -24,7 +24,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
     private FilterDAO dao = new FilterDAO(em);
 
     @Before
-    public void prepare(){
+    public synchronized void prepare(){
 
         Operation operation =
                 sequenceOf(
