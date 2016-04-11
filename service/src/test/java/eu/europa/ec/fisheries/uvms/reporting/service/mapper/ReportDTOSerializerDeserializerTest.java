@@ -154,7 +154,7 @@ public class ReportDTOSerializerDeserializerTest {
                 $(report5, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorAll.json"),
                 $(report6, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastHours.json"),
                 $(report7, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositions.json"),
-                $(report8, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json"),
+                $(report8, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate.json"),
                 $(report9, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithTracks.json"),
                 $(report10, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsPositions.json"),
                 $(report11, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsPositionsWithoutSomeFields.json"),
