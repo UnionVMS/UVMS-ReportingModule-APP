@@ -58,10 +58,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore("Doesn't work on Jenkins")
     public void shouldDeleteFilter(){
-
-        dbSetupTracker.skipNextLaunch();
 
         em.getTransaction().begin();
 
