@@ -52,7 +52,7 @@ public class ReportServiceBeanIT {
                 .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorAll.json")
                 .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastHours.json")
                 .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositions.json")
-                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json")
+                .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate.json")
                 .addAsResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithTracksNoFilterIds.json")
                 .addAsResource("logback.xml")
                 .addAsWebInfResource(new File("src/main/resources/META-INF/beans.xml"));
@@ -229,7 +229,7 @@ public class ReportServiceBeanIT {
     public void testCreateWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate(){
 
         URL url = Resources
-                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWIthStartDate.json");
+                .getResource("payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithCommonFilterWithSelectorLastPositionsWithStartDate.json");
         String expected = Resources.toString(url, Charsets.UTF_8);
 
         ReportDTO deserialized = new ObjectMapper().readValue(expected, ReportDTO.class);
