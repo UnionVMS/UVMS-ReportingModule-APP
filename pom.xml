@@ -4,7 +4,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
     <artifactId>reporting</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven projekt-archetype for UnionVms modules</description>
 
@@ -417,7 +417,7 @@
     </distributionManagement>
 
     <scm>
-        <developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/Reporting/reporting-0.5.0</developerConnection>
+        <developerConnection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Reporting/</developerConnection>
     </scm>
 
     <build>
