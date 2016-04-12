@@ -141,10 +141,6 @@ public abstract class Filter implements Serializable {
         return Collections.emptyList();
     }
 
-    public List<RangeCriteria> movementRangeCriteria(){
-        return Collections.emptyList();
-    }
-
     public AreaIdentifierType getAreaIdentifierType() {
     	return new AreaIdentifierType();
     }

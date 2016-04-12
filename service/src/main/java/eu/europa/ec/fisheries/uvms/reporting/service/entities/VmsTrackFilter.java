@@ -7,6 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -74,7 +75,7 @@ public class VmsTrackFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria() {
+    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
         List<RangeCriteria> rangeCriteria = newArrayList();
         addDurationAtSeaCriteria(rangeCriteria);
         addTotalDurationCriteria(rangeCriteria);

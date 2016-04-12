@@ -18,12 +18,13 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMap
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
 @EqualsAndHashCode(callSuper = true)
 @ToString
-public class VmsPositionFilter extends Filter {
+public class  VmsPositionFilter extends Filter {
 
 	@Column(name = "MIN_SPEED")
     private Float minimumSpeed;
@@ -84,7 +85,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria() {
+    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
         return Arrays.asList(VmsPositionFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
 

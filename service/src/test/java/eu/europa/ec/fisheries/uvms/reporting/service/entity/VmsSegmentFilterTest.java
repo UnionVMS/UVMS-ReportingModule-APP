@@ -35,7 +35,7 @@ public class VmsSegmentFilterTest {
     @Parameters(method = "rangeCriteriaValues")
     public void shouldReturnListRangeCriteria(VmsSegmentFilter filter, List<RangeCriteria> expected){
 
-        assertLenientEquals(expected, filter.movementRangeCriteria());
+        assertLenientEquals(expected, filter.movementRangeCriteria(null));
 
     }
 

@@ -21,6 +21,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import org.joda.time.DateTime;
 
 @Entity
 @DiscriminatorValue("VMSSEG")
@@ -81,7 +82,7 @@ public class VmsSegmentFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria() {
+    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
 
         return ListUtils.union(getSegmentSpeedCriteria(), getSegmentDurationCriteria());
 
