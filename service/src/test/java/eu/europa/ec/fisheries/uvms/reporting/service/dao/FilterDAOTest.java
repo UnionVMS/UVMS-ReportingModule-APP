@@ -47,6 +47,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void shouldReturnOneFilter(){
 
         dbSetupTracker.skipNextLaunch();
