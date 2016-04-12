@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
@@ -69,14 +67,16 @@ public class  VmsPositionFilter extends Filter {
     @Override
     public List<ListCriteria> movementListCriteria() {
     	List<ListCriteria> criteria = new ArrayList<ListCriteria>();
-        ListCriteria listCriteria = new ListCriteria();
+        ListCriteria listCriteria;
 
         if (getMovementType() != null) {
+            listCriteria = new ListCriteria();
             listCriteria.setKey(SearchKey.MOVEMENT_TYPE);
             listCriteria.setValue(getMovementType().name());
         	criteria.add(listCriteria);
     	}    	
     	if (getMovementActivity() != null) {
+            listCriteria = new ListCriteria();
             listCriteria.setKey(SearchKey.ACTIVITY_TYPE);
             listCriteria.setValue(getMovementActivity().name());
         	criteria.add(listCriteria);
