@@ -58,6 +58,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void shouldDeleteFilter(){
 
         em.getTransaction().begin();
