@@ -9,14 +9,13 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
-public class Tracks {
+public class Vmstrack {
 
     @JsonProperty("id")
     private long id;
@@ -41,7 +40,7 @@ public class Tracks {
      * No args constructor for use in serialization
      * 
      */
-    public Tracks() {
+    public Vmstrack() {
     }
 
     /**
@@ -55,7 +54,7 @@ public class Tracks {
      * @param trkMinTime
      * @param trkMaxDistance
      */
-    public Tracks(long id, String type, long trkMaxTime, long trkMinTime, long trkMinDuration, long trkMaxDuration, long trkMinDistance, long trkMaxDistance) {
+    public Vmstrack(long id, String type, long trkMaxTime, long trkMinTime, long trkMinDuration, long trkMaxDuration, long trkMinDistance, long trkMaxDistance) {
         this.id = id;
         this.type = type;
         this.trkMaxTime = trkMaxTime;
@@ -86,7 +85,7 @@ public class Tracks {
         this.id = id;
     }
 
-    public Tracks withId(long id) {
+    public Vmstrack withId(long id) {
         this.id = id;
         return this;
     }
@@ -111,7 +110,7 @@ public class Tracks {
         this.type = type;
     }
 
-    public Tracks withType(String type) {
+    public Vmstrack withType(String type) {
         this.type = type;
         return this;
     }
@@ -136,7 +135,7 @@ public class Tracks {
         this.trkMaxTime = trkMaxTime;
     }
 
-    public Tracks withTrkMaxTime(long trkMaxTime) {
+    public Vmstrack withTrkMaxTime(long trkMaxTime) {
         this.trkMaxTime = trkMaxTime;
         return this;
     }
@@ -161,7 +160,7 @@ public class Tracks {
         this.trkMinTime = trkMinTime;
     }
 
-    public Tracks withTrkMinTime(long trkMinTime) {
+    public Vmstrack withTrkMinTime(long trkMinTime) {
         this.trkMinTime = trkMinTime;
         return this;
     }
@@ -186,7 +185,7 @@ public class Tracks {
         this.trkMinDuration = trkMinDuration;
     }
 
-    public Tracks withTrkMinDuration(long trkMinDuration) {
+    public Vmstrack withTrkMinDuration(long trkMinDuration) {
         this.trkMinDuration = trkMinDuration;
         return this;
     }
@@ -211,7 +210,7 @@ public class Tracks {
         this.trkMaxDuration = trkMaxDuration;
     }
 
-    public Tracks withTrkMaxDuration(long trkMaxDuration) {
+    public Vmstrack withTrkMaxDuration(long trkMaxDuration) {
         this.trkMaxDuration = trkMaxDuration;
         return this;
     }
@@ -236,7 +235,7 @@ public class Tracks {
         this.trkMinDistance = trkMinDistance;
     }
 
-    public Tracks withTrkMinDistance(long trkMinDistance) {
+    public Vmstrack withTrkMinDistance(long trkMinDistance) {
         this.trkMinDistance = trkMinDistance;
         return this;
     }
@@ -261,7 +260,7 @@ public class Tracks {
         this.trkMaxDistance = trkMaxDistance;
     }
 
-    public Tracks withTrkMaxDistance(long trkMaxDistance) {
+    public Vmstrack withTrkMaxDistance(long trkMaxDistance) {
         this.trkMaxDistance = trkMaxDistance;
         return this;
     }
@@ -281,7 +280,7 @@ public class Tracks {
         this.additionalProperties.put(name, value);
     }
 
-    public Tracks withAdditionalProperty(String name, Object value) {
+    public Vmstrack withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -296,10 +295,10 @@ public class Tracks {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Tracks) == false) {
+        if ((other instanceof Vmstrack) == false) {
             return false;
         }
-        Tracks rhs = ((Tracks) other);
+        Vmstrack rhs = ((Vmstrack) other);
         return new EqualsBuilder().append(id, rhs.id).append(type, rhs.type).append(trkMaxTime, rhs.trkMaxTime).append(trkMinTime, rhs.trkMinTime).append(trkMinDuration, rhs.trkMinDuration).append(trkMaxDuration, rhs.trkMaxDuration).append(trkMinDistance, rhs.trkMinDistance).append(trkMaxDistance, rhs.trkMaxDistance).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 

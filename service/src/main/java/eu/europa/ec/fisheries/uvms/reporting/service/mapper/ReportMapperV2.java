@@ -2,8 +2,10 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -33,7 +35,7 @@ public abstract class ReportMapperV2 {
         filterSet.addAll(AssetFilterMapper.INSTANCE.assetListToAssetFilterSet(dto.getFilterExpression().getAssets()));
 
         if (dto.getFilterExpression().getVms() != null){
-            filterSet.add(TrackFilterMapper.INSTANCE.tracksToVmsTrackFilter(dto.getFilterExpression().getVms().getTracks()));
+            filterSet.add(TrackFilterMapper.INSTANCE.tracksToVmsTrackFilter(dto.getFilterExpression().getVms().getVmstrack()));
             filterSet.add(VmsPositionFilterMapper.INSTANCE.vmsPositionToVmsPositionFilter(dto.getFilterExpression().getVms().getVmsposition()));
             filterSet.add(VmsSegmentFilterMapper.INSTANCE.vmsSegmentToVmsSegmentFilter(dto.getFilterExpression().getVms().getVmssegment()));
         }

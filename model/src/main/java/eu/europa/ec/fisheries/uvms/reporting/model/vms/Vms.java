@@ -21,9 +21,9 @@ public class Vms {
     @JsonProperty("vmsposition")
     @Valid
     private Vmsposition vmsposition;
-    @JsonProperty("tracks")
+    @JsonProperty("vmstrack")
     @Valid
-    private Tracks tracks;
+    private Vmstrack vmstrack;
     @JsonProperty("vmssegment")
     @Valid
     private Vmssegment vmssegment;
@@ -43,9 +43,9 @@ public class Vms {
      * @param vmssegment
      * @param tracks
      */
-    public Vms(Vmsposition vmsposition, Tracks tracks, Vmssegment vmssegment) {
+    public Vms(Vmsposition vmsposition, Vmstrack vmstrack, Vmssegment vmssegment) {
         this.vmsposition = vmsposition;
-        this.tracks = tracks;
+        this.vmstrack = vmstrack;
         this.vmssegment = vmssegment;
     }
 
@@ -79,9 +79,9 @@ public class Vms {
      * @return
      *     The tracks
      */
-    @JsonProperty("tracks")
-    public Tracks getTracks() {
-        return tracks;
+    @JsonProperty("vmstrack")
+    public Vmstrack getVmstrack() {
+        return vmstrack;
     }
 
     /**
@@ -89,13 +89,13 @@ public class Vms {
      * @param tracks
      *     The tracks
      */
-    @JsonProperty("tracks")
-    public void setTracks(Tracks tracks) {
-        this.tracks = tracks;
+    @JsonProperty("vmstrack")
+    public void setVmstrack(Vmstrack tracks) {
+        this.vmstrack = tracks;
     }
 
-    public Vms withTracks(Tracks tracks) {
-        this.tracks = tracks;
+    public Vms withTracks(Vmstrack vmstrack) {
+        this.vmstrack = vmstrack;
         return this;
     }
 
@@ -146,7 +146,7 @@ public class Vms {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(vmsposition).append(tracks).append(vmssegment).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(vmsposition).append(vmstrack).append(vmssegment).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class Vms {
             return false;
         }
         Vms rhs = ((Vms) other);
-        return new EqualsBuilder().append(vmsposition, rhs.vmsposition).append(tracks, rhs.tracks).append(vmssegment, rhs.vmssegment).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(vmsposition, rhs.vmsposition).append(vmstrack, rhs.vmstrack).append(vmssegment, rhs.vmssegment).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }
