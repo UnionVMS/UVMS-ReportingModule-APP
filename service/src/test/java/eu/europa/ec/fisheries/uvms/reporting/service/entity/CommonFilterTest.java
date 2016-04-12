@@ -25,14 +25,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 @RunWith(JUnitParamsRunner.class)
-@Ignore
 public class CommonFilterTest {
+
+    final String now = "2013-02-28 12:24:56 +0100";
 
     @Test
     @Parameters(method = "rangeCriteria")
     public void shouldReturnRangeCriteria(CommonFilter filter, RangeCriteria rangeCriteria){
 
-        Iterator<RangeCriteria> iterator = filter.movementRangeCriteria(null).iterator();
+        Iterator<RangeCriteria> iterator = filter.movementRangeCriteria(new DateTime(DateUtils.stringToDate(now))).iterator();
 
         if (iterator.hasNext()) {
             assertEquals(rangeCriteria, iterator.next());
@@ -65,9 +66,6 @@ public class CommonFilterTest {
     }
 
     protected Object[] rangeCriteria(){
-
-        final String beginningOfTime = "292269055-12-02 17:47:04 +0100";
-        final String now = "2013-02-28 12:24:56 +0100";
 
         String fromMinus24Hours = "2013-02-27 12:24:56 +0100";
 
@@ -114,7 +112,7 @@ public class CommonFilterTest {
 
         RangeCriteria expectedCriteria3 = new RangeCriteria();
         expectedCriteria3.setKey(RangeKeyType.DATE);
-        expectedCriteria3.setFrom(beginningOfTime);
+        expectedCriteria3.setFrom("0001-01-03 01:00:00 +0100");
         expectedCriteria3.setTo(now);
 
         return $(
