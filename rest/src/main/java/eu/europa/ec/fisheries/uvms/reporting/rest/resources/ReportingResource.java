@@ -6,7 +6,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.rest.constants.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
@@ -249,7 +249,7 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createReport(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
-                                 ReportDTO report,
+                                 ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
                                  @HeaderParam("scopeName") String scopeName) {
         Response result;
         String username = request.getRemoteUser();
@@ -268,7 +268,15 @@ public class ReportingResource extends UnionVMSResource {
             if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
                 try {
                     reportDTO = reportService.create(report);
-                    result = createSuccessResponse(reportDTO.getId());
+                    switch (Projection.valueOf(projection.toUpperCase())){
+
+                        case DETAILED:
+                            result = createSuccessResponse(reportDTO);
+                            break;
+
+                        default:
+                            result = createSuccessResponse(reportDTO.getId());
+                    }
                 } catch (Exception e) {
                     log.error("createReport failed.", e);
                     result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
