@@ -123,7 +123,6 @@ public class VmsServiceBean implements VmsService {
             return new VmsDTO(assetMap, movementMap);
 
         } catch (ProcessorException e) {
-
             String error = "Error while processing reporting filters";
             log.error(error, e);
             throw new ReportingServiceException(error, e);
