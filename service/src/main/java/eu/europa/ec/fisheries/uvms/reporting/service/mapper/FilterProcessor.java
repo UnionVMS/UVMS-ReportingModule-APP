@@ -58,7 +58,7 @@ public class FilterProcessor {
     }
 
     private void addAreaIdentifier(Filter filter) {
-        if (filter instanceof AreaFilter) { // FIXME instanceof not really needed to be checked
+        if (filter instanceof AreaFilter) { // TODO instanceof not really needed to be checked
             areaIdentifierList.add(filter.getAreaIdentifierType());
         }
     }
