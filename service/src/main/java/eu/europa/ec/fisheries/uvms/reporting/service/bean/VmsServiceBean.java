@@ -72,9 +72,7 @@ public class VmsServiceBean implements VmsService {
         Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
         VmsDTO vmsData = getVmsData(toReport, areaRestrictions, dateTime);
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
-
         return vmsData;
-
     }
 
     private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
