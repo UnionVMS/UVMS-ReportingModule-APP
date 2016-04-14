@@ -8,6 +8,8 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
@@ -15,12 +17,16 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,12 +48,14 @@ import static com.google.common.collect.Lists.newArrayList;
 @LocalBean
 public class ReportServiceBean {
 
-    @EJB
-    private ReportRepository repository;
+    private @EJB ReportRepository repository;
+    private @EJB SpatialService spatialModule;
+    private ReportMapper reportMapper;
 
-    @EJB
-    private SpatialService spatialModule;
-
+    @PostConstruct
+    public void init() {
+        reportMapper = new ReportMapper();
+    }
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
     @Transactional
     public ReportDTO create(ReportDTO report) throws ReportingServiceException {
@@ -95,14 +103,21 @@ public class ReportServiceBean {
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     @Transactional
-    public boolean update(final ReportDTO report, Boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
-        validateReport(report);
+    public ReportDTO update(final ReportDTO report, Boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException, ServiceException {
 
-        boolean update = repository.update(report);
+        if (report == null) {
+            throw new IllegalArgumentException("REPORT CAN NOT BE NULL");
+        }
+
+        repository.update(report);
 
         updateMapConfiguration(report.getId(), report.getWithMap(), report.getMapConfiguration(), oldWithMapValue, oldMapConfigurationDTO);
 
-        return update;
+        Report reportByReportId = repository.findReportByReportId(report.getId());
+        ReportDTO reportDTO = reportMapper.reportToReportDTO(reportByReportId);
+        List<FilterDTO> filterDTOs = reportMapper.filterSetToFilterDTOSet(reportByReportId.getFilters());
+        reportDTO.setFilters(filterDTOs);
+        return reportDTO;
     }
 
 
@@ -192,8 +207,6 @@ public class ReportServiceBean {
     }
 
     private void validateReport(ReportDTO report) {
-        if (report == null) {
-            throw new IllegalArgumentException("REPORT CAN NOT BE NULL");
-        }
+
     }
 }

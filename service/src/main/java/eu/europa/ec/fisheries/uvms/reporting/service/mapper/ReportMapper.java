@@ -21,15 +21,18 @@ public class ReportMapper {
     private final ObjectFactory factory = new ObjectFactory();
     private final AuditMapper auditMapper = new AuditMapperImpl();
     private final ExecutionLogMapper executionLogMapper = new ExecutionLogMapperImpl();
-    private final Set<String> features;
-    private final boolean filters;
-    private final String currentUser;
+    private Set<String> features = null;
+    private boolean filters = false;
+    private String currentUser = null;
 
     @Builder(builderMethodName = "ReportMapperBuilder")
-    ReportMapper(boolean filters, Set<String> features, String currentUser) {
+    public ReportMapper(boolean filters, Set<String> features, String currentUser) {
         this.currentUser = currentUser;
         this.features = features;
         this.filters = filters;
+    }
+    public ReportMapper() {
+
     }
 
     public ReportDTO reportToReportDTO(final Report report) {
@@ -102,7 +105,7 @@ public class ReportMapper {
         return Collections.emptySet();
     }
 
-    private List<FilterDTO> filterSetToFilterDTOSet(final Set<Filter> filterSet) {
+    public List<FilterDTO> filterSetToFilterDTOSet(final Set<Filter> filterSet) {
         if (filterSet == null) {
             return null;
         }

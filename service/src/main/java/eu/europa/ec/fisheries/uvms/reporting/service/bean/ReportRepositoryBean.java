@@ -52,17 +52,15 @@ public class ReportRepositoryBean implements ReportRepository {
     @Transactional
     public boolean update(final ReportDTO reportDTO) throws ReportingServiceException {
 
-        boolean merged;
-
         try {
 
-            merged = reportMerger.merge(Arrays.asList(reportDTO));
+             reportMerger.merge(Arrays.asList(reportDTO));
 
             List<FilterDTO> filters = reportDTO.getFilters();
 
             if (CollectionUtils.isNotEmpty(filters)) {
 
-                merged = filterMerger.merge(filters);
+                filterMerger.merge(filters);
 
           }
 
@@ -84,6 +82,11 @@ public class ReportRepositoryBean implements ReportRepository {
     @Override
     public Report findReportByReportId(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
         return reportDAO.findReportByReportId(reportId, username, scopeName, isAdmin);
+    }
+
+    @Override
+    public Report findReportByReportId(Long reportId) throws ReportingServiceException, ServiceException {
+        return reportDAO.findEntityById(Report.class, reportId);
     }
 
     @Override

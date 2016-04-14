@@ -209,39 +209,40 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateReport(@Context HttpServletRequest request,
                                  @Context HttpServletResponse response,
-                                 ReportDTO report,
+                                 ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
                                  @HeaderParam("scopeName") String scopeName,
                                  @PathParam("id") Long id) {
 
         String username = request.getRemoteUser();
-
         log.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
-        ReportDTO originalReport;
+        Response result;
 
         try {
             boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-            originalReport = reportService.findById(report.getId(), username, scopeName, isAdmin); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
-        } catch (Exception e) {
-            log.error("Failed to get report.", e);
-            return createErrorResponse();
-        }
+            ReportDTO originalReport = reportService.findById(report.getId(), username, scopeName, isAdmin); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSO
+            ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport, username);
 
-        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport, username);
+            if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+                result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+            }
+            else {
+                ReportDTO update = reportService.update(report, originalReport.getWithMap(), originalReport.getMapConfiguration());
+                switch (Projection.valueOf(projection.toUpperCase())){
 
-        if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+                    case DETAILED:
+                        result = createSuccessResponse(update);
+                        break;
 
-            createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+                    default:
+                        result = createSuccessResponse(update.getId());
+                }
+            }
 
-        }
-
-        try {
-            reportService.update(report, originalReport.getWithMap(), originalReport.getMapConfiguration());
         } catch (Exception exc) {
             log.error("Update failed.", exc);
-            return createErrorResponse(ErrorCodes.UPDATE_FAILED);
+            result = createErrorResponse(ErrorCodes.UPDATE_FAILED);
         }
-
-        return createSuccessResponse();
+        return result;
     }
 
     @POST
@@ -286,7 +287,7 @@ public class ReportingResource extends UnionVMSResource {
                 result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
             }
         }
-        
+
         return result;
     }
 
@@ -408,7 +409,7 @@ public class ReportingResource extends UnionVMSResource {
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
-             log.error("Report execution failed.", e);
+            log.error("Report execution failed.", e);
             return createErrorResponse(e.getMessage());
         }
     }
@@ -445,8 +446,8 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response defaultReport(@Context HttpServletRequest request, @PathParam("id") Long id,
-                              @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
-                              Map<String,Object> payload) {
+                                  @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+                                  Map<String,Object> payload) {
 
         final String username = request.getRemoteUser();
         final String appName = getApplicationName(request);
