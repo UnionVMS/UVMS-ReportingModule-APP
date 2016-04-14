@@ -18,8 +18,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.slf4j.helpers.MessageFormatter;
-
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -55,7 +53,7 @@ public class VmsServiceBean implements VmsService {
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
 
         if (reportByReportId == null) {
-            String error = MessageFormatter.arrayFormat("No report found with id {}", new Object[]{id}).getMessage();
+            final String error = "No report found with id " + id;
             log.error(error);
             throw new ReportingServiceException(error);
         }
@@ -65,7 +63,6 @@ public class VmsServiceBean implements VmsService {
         log.debug("[END] getVmsDataByReportId(...)");
         return vmsDto;
     }
-
 
     @Override
     public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
