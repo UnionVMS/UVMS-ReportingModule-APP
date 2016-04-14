@@ -11,18 +11,12 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import org.joda.time.DateTime;
-
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-/**
- * This class is responsible reading the report filters and transform them
- * to search queries for asset and movement queues
- */
 public class FilterProcessor {
 
     private final Set<ListCriteria> movementListCriteria = new HashSet<>();
@@ -35,7 +29,9 @@ public class FilterProcessor {
 
     public FilterProcessor(Set<Filter> filters, DateTime now) throws ProcessorException {
         this.now = now;
-        validate(filters);
+        if (isEmpty(filters)) {
+            throw new ProcessorException("");
+        }
 
         for (Filter filter : filters) {
             if(filter != null){
@@ -62,14 +58,8 @@ public class FilterProcessor {
     }
 
     private void addAreaIdentifier(Filter filter) {
-        if (filter instanceof AreaFilter) {
+        if (filter instanceof AreaFilter) { // FIXME instanceof not really needed to be checked
             areaIdentifierList.add(filter.getAreaIdentifierType());
-        }
-    }
-
-    private void validate(Set<Filter> filters) throws ProcessorException {
-        if (isEmpty(filters)) {
-            throw new ProcessorException("");
         }
     }
 

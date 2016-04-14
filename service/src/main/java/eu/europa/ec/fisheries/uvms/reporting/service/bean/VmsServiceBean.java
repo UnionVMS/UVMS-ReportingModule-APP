@@ -52,27 +52,18 @@ public class VmsServiceBean implements VmsService {
     public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
 
         log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
-
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
 
         if (reportByReportId == null) {
-
             String error = MessageFormatter.arrayFormat("No report found with id {}", new Object[]{id}).getMessage();
-
             log.error(error);
-
             throw new ReportingServiceException(error);
-
         }
 
         VmsDTO vmsDto = getVmsData(reportByReportId, areaRestrictions, now);
-
         reportByReportId.updateExecutionLog(username);
-
         log.debug("[END] getVmsDataByReportId(...)");
-
         return vmsDto;
-
     }
 
 
@@ -114,33 +105,21 @@ public class VmsServiceBean implements VmsService {
             if (areaRestrictions != null) {
                 processor.getScopeRestrictionAreaIdentifierList().addAll(areaRestrictions);
             }
-
             addAreaCriteriaToProcessor(processor);
-
             Collection<MovementMapResponseType> movementMap;
-
             Map<String, MovementMapResponseType> responseTypeMap;
 
             log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
 
             if (processor.hasAssetsOrAssetGroups()) {
-
                 assetMap = assetModule.getAssetMap(processor);
-
                 processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
-
                 movementMap = movementModule.getMovement(processor);
-
             } else {
-
                 responseTypeMap = movementModule.getMovementMap(processor);
-
                 Set<String> assetGuids = responseTypeMap.keySet();
-
                 movementMap = responseTypeMap.values();
-
                 processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
-
                 assetMap = assetModule.getAssetMap(processor);
             }
 
@@ -149,13 +128,8 @@ public class VmsServiceBean implements VmsService {
         } catch (ProcessorException e) {
 
             String error = "Error while processing reporting filters";
-
             log.error(error, e);
-
             throw new ReportingServiceException(error, e);
-
         }
-
     }
-
 }
