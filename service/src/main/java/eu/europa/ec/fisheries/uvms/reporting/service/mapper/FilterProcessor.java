@@ -1,6 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -23,7 +26,7 @@ public class FilterProcessor {
     private final Set<RangeCriteria> rangeCriteria = new HashSet<>();
     private final Set<AssetListCriteriaPair> assetListCriteriaPairs = new HashSet<>();
     private final Set<AssetGroup> assetGroupList = new HashSet<>();
-    private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<AreaIdentifierType>();
+    private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<>();
     private final Set<AreaIdentifierType> scopeRestrictionAreaIdentifierList = new HashSet<>();
     private DateTime now;
 
@@ -76,17 +79,13 @@ public class FilterProcessor {
 
         if (isNotEmpty(assetListCriteriaPairs)) {
             query.setAssetSearchCriteria(createListCriteria());
-            query.setPagination(createPagination());
+            AssetListPagination pagination = new AssetListPagination();
+            pagination.setPage(1);
+            pagination.setListSize(1000);
+            query.setPagination(pagination);
         }
 
         return query;
-    }
-
-    private AssetListPagination createPagination() {
-        AssetListPagination pagination = new AssetListPagination();
-        pagination.setPage(1);
-        pagination.setListSize(1000);
-        return pagination;
     }
 
     private AssetListCriteria createListCriteria() {
