@@ -47,7 +47,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore
+    @Ignore // FIXME jenkins
     public void shouldReturnOneFilter(){
 
         dbSetupTracker.skipNextLaunch();
@@ -59,7 +59,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore
+    @Ignore // FIXME jenkins
     public void shouldDeleteFilter(){
 
         em.getTransaction().begin();
