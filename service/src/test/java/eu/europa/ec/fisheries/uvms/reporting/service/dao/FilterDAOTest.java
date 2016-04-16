@@ -66,6 +66,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
         dao.deleteBy(1L);
 
+        em.flush();
         em.getTransaction().commit();
 
         List<Filter> filters = dao.listByReportId(1L);
