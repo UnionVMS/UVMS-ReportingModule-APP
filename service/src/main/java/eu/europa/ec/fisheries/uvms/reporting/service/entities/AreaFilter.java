@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

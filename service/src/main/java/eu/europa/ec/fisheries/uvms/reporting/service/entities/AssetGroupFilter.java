@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import lombok.Builder;

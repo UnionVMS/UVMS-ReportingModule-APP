@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.Builder;

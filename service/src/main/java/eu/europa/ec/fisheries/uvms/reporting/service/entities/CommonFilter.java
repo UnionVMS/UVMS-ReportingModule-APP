@@ -5,7 +5,6 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

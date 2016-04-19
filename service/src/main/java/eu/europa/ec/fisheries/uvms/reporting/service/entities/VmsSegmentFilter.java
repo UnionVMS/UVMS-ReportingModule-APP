@@ -10,7 +10,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterVisitor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import lombok.ToString;
 import org.apache.commons.collections4.ListUtils;
