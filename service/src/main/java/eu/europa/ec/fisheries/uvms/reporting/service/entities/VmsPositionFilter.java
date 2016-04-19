@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
@@ -24,28 +26,18 @@ import org.joda.time.DateTime;
 @ToString
 public class VmsPositionFilter extends Filter {
 
-	@Column(name = "MIN_SPEED")
-    private Float minimumSpeed;
-
-    @Column(name = "MAX_SPEED")
-    private Float maximumSpeed;
-
-    @Column(name = "MOV_TYPE")
-    private MovementTypeType movementType;
-
-    @Column(name = "MOV_ACTIVITY")
-    private MovementActivityTypeType movementActivity;
+    private @Column(name = "MIN_SPEED") Float minimumSpeed;
+    private @Column(name = "MAX_SPEED") Float maximumSpeed;
+    private @Column(name = "MOV_TYPE") MovementTypeType movementType;
+    private @Column(name = "MOV_ACTIVITY") MovementActivityTypeType movementActivity;
 
     VmsPositionFilter(){
         super(FilterType.vmspos);
     }
 
     @Builder
-    public VmsPositionFilter(Long id,
-                             MovementActivityTypeType movementActivity,
-                             MovementTypeType movementType,
-                             Float maximumSpeed,
-                             Float minimumSpeed) {
+    public VmsPositionFilter(Long id, MovementActivityTypeType movementActivity, MovementTypeType movementType,
+                             Float maximumSpeed, Float minimumSpeed) {
         super(FilterType.vmspos);
         setId(id);
         this.movementActivity = movementActivity;

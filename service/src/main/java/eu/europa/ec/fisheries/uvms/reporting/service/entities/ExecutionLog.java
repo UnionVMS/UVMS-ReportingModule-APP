@@ -29,23 +29,10 @@ import javax.validation.constraints.NotNull;
 @ToString(exclude = "report")
 public class ExecutionLog implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn( name = "report_id")
-    @Valid
-	private Report report;
-
-    @Column(name = "executed_by")
-    @NotNull
-    private String executedBy;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "executed_on")
-    @NotNull
-	private Date executedOn;
+	private @Id @GeneratedValue(strategy=GenerationType.IDENTITY) long id;
+	private @Valid @JoinColumn( name = "report_id") @ManyToOne(fetch = FetchType.LAZY) Report report;
+    private @NotNull @Column(name = "executed_by") String executedBy;
+	private @NotNull @Temporal(TemporalType.TIMESTAMP) @Column(name = "executed_on") Date executedOn;
 
 	public ExecutionLog() {
 	}

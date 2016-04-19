@@ -8,14 +8,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.valueOf;
 
 @Entity
@@ -30,32 +29,19 @@ public class VmsTrackFilter extends Filter {
     private static final float DEFAULT_MAX_TIME_AT_SEA = 9999999F;
     private static final float DEFAULT_MAX_FULL_DURATION = 9999999F;
 
-    @Embedded
-    private TimeRange timeRange;
-
-    @Embedded
-    private DurationRange durationRange;
-
-    @Embedded
-    private DistanceRange distanceRange;
-
-    @Column(name = "MIN_AVG_SPEED")
-    private Float minAvgSpeed;
-
-    @Column(name = "MAX_AVG_SPEED")
-    private Float maxAvgSpeed;
+    private @Embedded TimeRange timeRange;
+    private @Embedded DurationRange durationRange;
+    private @Embedded DistanceRange distanceRange;
+    private @Column(name = "MIN_AVG_SPEED") Float minAvgSpeed;
+    private @Column(name = "MAX_AVG_SPEED") Float maxAvgSpeed;
 
     public VmsTrackFilter() {
         super(FilterType.vmstrack);
     }
 
     @Builder
-    public VmsTrackFilter(Long id, Long reportId,
-                          TimeRange timeRange,
-                          DurationRange durationRange,
-                          DistanceRange distanceRange,
-                          Float minAvgSpeed,
-                          Float maxAvgSpeed) {
+    public VmsTrackFilter(Long id, Long reportId, TimeRange timeRange, DurationRange durationRange,
+                          DistanceRange distanceRange, Float minAvgSpeed, Float maxAvgSpeed) {
         super(FilterType.vmstrack, id, reportId);
         this.timeRange = timeRange;
         this.distanceRange = distanceRange;
@@ -76,7 +62,7 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
-        List<RangeCriteria> rangeCriteria = newArrayList();
+        List<RangeCriteria> rangeCriteria = new ArrayList<>();
         addDurationAtSeaCriteria(rangeCriteria);
         addTotalDurationCriteria(rangeCriteria);
         addSpeedCriteria(rangeCriteria);

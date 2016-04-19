@@ -24,24 +24,20 @@ public class ReportDetails {
     public static final int LENGTH_255 = 255;
     public static final int LENGTH_1 = 1;
 
-    @NotNull
-    @Column(name = NAME, nullable = false, length = LENGTH_255)
-    private String name;
+    @Column(nullable = false, length = LENGTH_255)
+    private @NotNull String name;
 
-    @Column(name = DESCRIPTION, nullable = true, length = LENGTH_255)
+    @Column(nullable = true, length = LENGTH_255)
     private String description;
 
     @Column(name = WITH_MAP, nullable = false, length = LENGTH_1)
     @Convert(converter = CharBooleanConverter.class)
     private Boolean withMap;
 
-    @Column(name = SCOPE_NAME)
-    @NotNull
-    private String scopeName;
+    private @NotNull @Column(name = SCOPE_NAME) String scopeName;
 
     @Column(name = CREATED_BY, nullable = false, length = LENGTH_255)
-    @NotNull
-    private String createdBy;
+    private @NotNull String createdBy;
 
     ReportDetails() {
 

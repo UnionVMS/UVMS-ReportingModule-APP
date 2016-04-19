@@ -24,11 +24,8 @@ import java.util.List;
 @ToString
 public class CommonFilter extends Filter {
 
-    @Embedded
-    private DateRange dateRange;
-
-    @Embedded
-    private PositionSelector positionSelector;
+    private @Embedded DateRange dateRange;
+    private @Embedded PositionSelector positionSelector;
 
     public CommonFilter(){
         super(FilterType.common);

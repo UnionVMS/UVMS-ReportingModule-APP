@@ -17,11 +17,8 @@ import javax.persistence.Entity;
 @ToString
 public class AreaFilter extends Filter {
 
-    @Column(name = "area_type")
-    private String areaType;
-
-    @Column(name = "area_id")
-    private Long areaId;
+    private @Column(name = "area_type") String areaType;
+    private @Column(name = "area_id") Long areaId;
 
     public AreaFilter() {
         super(FilterType.areas);

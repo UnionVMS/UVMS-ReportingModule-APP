@@ -17,10 +17,7 @@ import java.util.Date;
 public class Audit implements Serializable {
 
     public static final String CREATED_ON = "created_on";
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = CREATED_ON, nullable = false)
-    private Date createdOn;
+    private @Temporal(TemporalType.TIMESTAMP)  @Column(name = CREATED_ON, nullable = false) Date createdOn;
 
     Audit() {
     }

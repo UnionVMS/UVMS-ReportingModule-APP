@@ -10,11 +10,8 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class TimeRange implements Serializable {
 
-    @Column(name = "MIN_TIME")
-    private Float minTime;
-
-    @Column(name = "MAX_TIME")
-    private Float maxTime;
+    private @Column(name = "MIN_TIME") Float minTime;
+    private @Column(name = "MAX_TIME") Float maxTime;
 
     public TimeRange() {
     }

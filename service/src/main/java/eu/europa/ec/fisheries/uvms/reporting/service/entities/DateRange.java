@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
@@ -19,12 +18,10 @@ public class DateRange implements Serializable {
     public static final String START_DATE = "start_date";
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = START_DATE)
-    private Date startDate;
+    private @Column(name = START_DATE) Date startDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = END_DATE)
-    private Date endDate;
+    private @Column(name = END_DATE) Date endDate;
 
     public DateRange() {
     }

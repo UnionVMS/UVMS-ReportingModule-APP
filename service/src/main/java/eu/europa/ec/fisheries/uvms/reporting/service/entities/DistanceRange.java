@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -12,11 +11,8 @@ import java.io.Serializable;
 @ToString
 public class DistanceRange implements Serializable {
 
-    @Column(name = "MIN_DISTANCE")
-    private Float minDistance;
-
-    @Column(name = "MAX_DISTANCE")
-    private Float maxDistance;
+    private @Column(name = "MIN_DISTANCE") Float minDistance;
+    private @Column(name = "MAX_DISTANCE") Float maxDistance;
 
     public DistanceRange() {
     }

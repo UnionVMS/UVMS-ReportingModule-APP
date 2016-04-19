@@ -29,27 +29,17 @@ import org.joda.time.DateTime;
 @ToString
 public class VmsSegmentFilter extends Filter {
 
-    @Column(name = "MIN_SPEED")
-    private Float minimumSpeed;
-
-    @Column(name = "MAX_SPEED")
-    private Float maximumSpeed;
-
-    @Embedded
-    private DurationRange durationRange;
-
-    @Column(name = "SEG_CATEGORY")
-    private SegmentCategoryType category;
+    private @Column(name = "MIN_SPEED") Float minimumSpeed;
+    private @Column(name = "MAX_SPEED") Float maximumSpeed;
+    private @Embedded DurationRange durationRange;
+    private @Column(name = "SEG_CATEGORY") SegmentCategoryType category;
 
     VmsSegmentFilter(){
         super(FilterType.vmsseg);
     }
 
     @Builder
-    public VmsSegmentFilter(Long id,
-                            DurationRange durationRange,
-                            Float maximumSpeed,
-                            Float minimumSpeed,
+    public VmsSegmentFilter(Long id, DurationRange durationRange, Float maximumSpeed, Float minimumSpeed,
                             SegmentCategoryType category) {
         super(FilterType.vmsseg);
         setId(id);
@@ -83,32 +73,22 @@ public class VmsSegmentFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
-
         return ListUtils.union(getSegmentSpeedCriteria(), getSegmentDurationCriteria());
-
     }
     
     private List<RangeCriteria> getSegmentSpeedCriteria() {
-
         if (this.minimumSpeed == null && this.maximumSpeed == null) {
-
             return Collections.emptyList();
         }
-
         return Arrays.asList(VmsSegmentFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
     
     private List<RangeCriteria> getSegmentDurationCriteria() {
 
         if (this.durationRange == null) {
-
             return Collections.emptyList();
-
         }
-
         return Arrays.asList(VmsSegmentFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
-
-
     }
 
     public SegmentCategoryType getCategory() {
@@ -141,12 +121,10 @@ public class VmsSegmentFilter extends Filter {
     }
 
     public DurationRange getDurationRange() {
-
         return durationRange;
     }
 
     public void setDurationRange(DurationRange durationRange) {
-
         this.durationRange = durationRange;
     }
 }

@@ -20,11 +20,8 @@ import java.util.List;
 @ToString
 public class AssetFilter extends Filter {
 
-    @NotNull
-    private String guid;
-
-    @NotNull
-    private String name;
+    private @NotNull String guid;
+    private @NotNull String name;
 
     AssetFilter() {
         super(FilterType.asset);
