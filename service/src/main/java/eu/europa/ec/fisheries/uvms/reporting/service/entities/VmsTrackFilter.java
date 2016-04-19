@@ -156,7 +156,7 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public Object getUniqKey() {
-        return getId();
+        return getType();
     }
 
     public Float getMinAvgSpeed() {

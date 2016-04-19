@@ -121,7 +121,7 @@ public class VmsSegmentFilter extends Filter {
 
     @Override
     public Object getUniqKey() {
-        return getId();
+        return getType();
     }
 
     public Float getMinimumSpeed() {

@@ -20,9 +20,9 @@ import org.joda.time.DateTime;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {})
 @ToString
-public class  VmsPositionFilter extends Filter {
+public class VmsPositionFilter extends Filter {
 
 	@Column(name = "MIN_SPEED")
     private Float minimumSpeed;
@@ -91,7 +91,7 @@ public class  VmsPositionFilter extends Filter {
 
     @Override
     public Object getUniqKey() {
-        return getId();
+        return getType();
     }
 
     public Float getMinimumSpeed() {
