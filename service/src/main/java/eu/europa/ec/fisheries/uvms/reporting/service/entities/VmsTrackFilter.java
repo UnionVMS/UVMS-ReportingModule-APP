@@ -31,7 +31,6 @@ public class VmsTrackFilter extends Filter {
 
     private @Embedded TimeRange timeRange;
     private @Embedded DurationRange durationRange;
-    private @Embedded DistanceRange distanceRange;
     private @Column(name = "MIN_AVG_SPEED") Float minAvgSpeed;
     private @Column(name = "MAX_AVG_SPEED") Float maxAvgSpeed;
 
@@ -44,7 +43,6 @@ public class VmsTrackFilter extends Filter {
                           DistanceRange distanceRange, Float minAvgSpeed, Float maxAvgSpeed) {
         super(FilterType.vmstrack, id, reportId);
         this.timeRange = timeRange;
-        this.distanceRange = distanceRange;
         this.durationRange = durationRange;
         this.minAvgSpeed = minAvgSpeed;
         this.maxAvgSpeed = maxAvgSpeed;
@@ -66,7 +64,6 @@ public class VmsTrackFilter extends Filter {
         addDurationAtSeaCriteria(rangeCriteria);
         addTotalDurationCriteria(rangeCriteria);
         addSpeedCriteria(rangeCriteria);
-        addDistanceCriteria(rangeCriteria);
         return rangeCriteria;
     }
 
@@ -76,18 +73,6 @@ public class VmsTrackFilter extends Filter {
             lengthCriteria.setKey(RangeKeyType.TRACK_SPEED);
             lengthCriteria.setFrom(valueOf(minAvgSpeed != null ? minAvgSpeed : MIN_DEFAULT));
             lengthCriteria.setTo(valueOf(maxAvgSpeed != null ? maxAvgSpeed : DEFAULT_MAX_AVG_SPEED));
-            rangeCriteria.add(lengthCriteria);
-        }
-    }
-
-    private void addDistanceCriteria(List<RangeCriteria> rangeCriteria) {
-        if (distanceRange!=null) {
-            Float maxDistance = distanceRange.getMaxDistance();
-            Float minDistance = distanceRange.getMinDistance();
-            RangeCriteria lengthCriteria = new RangeCriteria();
-            lengthCriteria.setKey(RangeKeyType.TRACK_LENGTH);
-            lengthCriteria.setFrom(valueOf(minDistance != null ? minDistance : MIN_DEFAULT));
-            lengthCriteria.setTo(valueOf(maxDistance != null ? maxDistance : DEFAULT_MAX_DISTANCE));
             rangeCriteria.add(lengthCriteria);
         }
     }
@@ -130,14 +115,6 @@ public class VmsTrackFilter extends Filter {
 
     public void setDurationRange(DurationRange durationRange) {
         this.durationRange = durationRange;
-    }
-
-    public DistanceRange getDistanceRange() {
-        return distanceRange;
-    }
-
-    public void setDistanceRange(DistanceRange distanceRange) {
-        this.distanceRange = distanceRange;
     }
 
     @Override

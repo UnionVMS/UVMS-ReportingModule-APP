@@ -6,10 +6,12 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class FilterToDTOVisitorTest {
 
     private Filter.FilterToDTOVisitor visitor = new Filter.FilterToDTOVisitor();

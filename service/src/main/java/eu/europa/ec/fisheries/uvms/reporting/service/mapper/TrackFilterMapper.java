@@ -20,8 +20,6 @@ public interface TrackFilterMapper {
     @Mappings({
             @Mapping(source = "durationRange.minDuration", target = "minDuration"),
             @Mapping(source = "durationRange.maxDuration", target = "maxDuration"),
-            @Mapping(source = "distanceRange.minDistance", target = "minDistance"),
-            @Mapping(source = "distanceRange.maxDistance", target = "maxDistance"),
             @Mapping(source = "timeRange.minTime", target = "minTime"),
             @Mapping(source = "timeRange.maxTime", target = "maxTime")
     })
@@ -29,14 +27,12 @@ public interface TrackFilterMapper {
 
     @Mappings({
             @Mapping(target = "durationRange", expression = "java(new DurationRange(dto.getMinDuration(), dto.getMaxDuration()))"),
-            @Mapping(target = "distanceRange", expression = "java(new DistanceRange(dto.getMinDistance(), dto.getMaxDistance()))"),
             @Mapping(target = "timeRange", expression = "java(new TimeRange(dto.getMinTime(), dto.getMaxTime()))")
     })
     VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO dto); // TODO refactor with Tracks
 
     @Mappings({
             @Mapping(target = "durationRange", expression = "java(new DurationRange(Float.valueOf(dto.getTrkMinDuration()), Float.valueOf(dto.getTrkMaxDuration())))"),
-            @Mapping(target = "distanceRange", expression = "java(new DistanceRange(Float.valueOf(dto.getTrkMinDistance()), Float.valueOf(dto.getTrkMaxDistance())))"),
             @Mapping(target = "timeRange", expression = "java(new TimeRange(Float.valueOf(dto.getTrkMinTime()), Float.valueOf(dto.getTrkMaxTime())))")
     })
     VmsTrackFilter tracksToVmsTrackFilter(Vmstrack dto);
