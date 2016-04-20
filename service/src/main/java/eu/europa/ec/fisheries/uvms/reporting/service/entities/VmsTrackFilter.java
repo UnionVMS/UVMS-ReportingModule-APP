@@ -59,28 +59,16 @@ public class VmsTrackFilter extends Filter {
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
         List<RangeCriteria> rangeCriteria = new ArrayList<>();
-        addDurationAtSeaCriteria(rangeCriteria);
-        addTotalDurationCriteria(rangeCriteria);
-        addSpeedCriteria(rangeCriteria);
-        return rangeCriteria;
-    }
-
-    private void addSpeedCriteria(List<RangeCriteria> rangeCriteria) {
         if (minAvgSpeed != null || maxAvgSpeed != null) {
             rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
         }
-    }
-
-    private void addTotalDurationCriteria(List<RangeCriteria> rangeCriteria) {
         if (durationRange != null) {
             rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
         }
-    }
-
-    private void addDurationAtSeaCriteria(List<RangeCriteria> rangeCriteria) {
         if (timeRange != null) {
             rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.timeRangeToRangeCriteria(this) );
         }
+        return rangeCriteria;
     }
 
     public TimeRange getTimeRange() {
