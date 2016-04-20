@@ -1,9 +1,7 @@
-
 package eu.europa.ec.fisheries.uvms.reporting.model.vms;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,11 +12,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
 public class Area {
 
     @JsonProperty("id")
-    private long id;
+    private Long id;
     @JsonProperty("type")
     private String type;
     @JsonProperty("areaType")
@@ -42,7 +39,7 @@ public class Area {
      * @param gid
      * @param type
      */
-    public Area(long id, String type, String areaType, long gid) {
+    public Area(Long id, String type, String areaType, long gid) {
         this.id = id;
         this.type = type;
         this.areaType = areaType;
@@ -55,7 +52,7 @@ public class Area {
      *     The id
      */
     @JsonProperty("id")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -65,11 +62,11 @@ public class Area {
      *     The id
      */
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Area withId(long id) {
+    public Area withId(Long id) {
         this.id = id;
         return this;
     }
