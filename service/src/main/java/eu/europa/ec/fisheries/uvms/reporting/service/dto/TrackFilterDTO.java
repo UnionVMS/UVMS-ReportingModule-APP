@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
@@ -69,7 +69,7 @@ public class TrackFilterDTO extends FilterDTO {
 
     @Override
     public Filter convertToFilter() {
-        return TrackFilterMapper.INSTANCE.trackFilterDTOToTrackFilter(this);
+        return VmsTrackFilterMapper.INSTANCE.trackFilterDTOToTrackFilter(this);
     }
 
     public Float getMaxTime() {

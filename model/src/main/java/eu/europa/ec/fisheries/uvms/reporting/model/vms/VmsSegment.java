@@ -1,9 +1,7 @@
-
 package eu.europa.ec.fisheries.uvms.reporting.model.vms;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,8 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
-public class Vmssegment {
+public class VmsSegment {
 
     @JsonProperty("id")
     private Long id;
@@ -38,7 +35,7 @@ public class Vmssegment {
      * No args constructor for use in serialization
      * 
      */
-    public Vmssegment() {
+    public VmsSegment() {
     }
 
     /**
@@ -51,7 +48,7 @@ public class Vmssegment {
      * @param segMaxDuration
      * @param type
      */
-    public Vmssegment(Long id, String type, Float segMinSpeed, Float segMaxSpeed, Float segMaxDuration, Float segMinDuration, String segCategory) {
+    public VmsSegment(Long id, String type, Float segMinSpeed, Float segMaxSpeed, Float segMaxDuration, Float segMinDuration, String segCategory) {
         this.id = id;
         this.type = type;
         this.segMinSpeed = segMinSpeed;
@@ -81,7 +78,7 @@ public class Vmssegment {
         this.id = id;
     }
 
-    public Vmssegment withId(Long id) {
+    public VmsSegment withId(Long id) {
         this.id = id;
         return this;
     }
@@ -106,7 +103,7 @@ public class Vmssegment {
         this.type = type;
     }
 
-    public Vmssegment withType(String type) {
+    public VmsSegment withType(String type) {
         this.type = type;
         return this;
     }
@@ -131,7 +128,7 @@ public class Vmssegment {
         this.segMinSpeed = segMinSpeed;
     }
 
-    public Vmssegment withSegMinSpeed(Float segMinSpeed) {
+    public VmsSegment withSegMinSpeed(Float segMinSpeed) {
         this.segMinSpeed = segMinSpeed;
         return this;
     }
@@ -156,7 +153,7 @@ public class Vmssegment {
         this.segMaxSpeed = segMaxSpeed;
     }
 
-    public Vmssegment withSegMaxSpeed(Float segMaxSpeed) {
+    public VmsSegment withSegMaxSpeed(Float segMaxSpeed) {
         this.segMaxSpeed = segMaxSpeed;
         return this;
     }
@@ -181,7 +178,7 @@ public class Vmssegment {
         this.segMaxDuration = segMaxDuration;
     }
 
-    public Vmssegment withSegMaxDuration(Float segMaxDuration) {
+    public VmsSegment withSegMaxDuration(Float segMaxDuration) {
         this.segMaxDuration = segMaxDuration;
         return this;
     }
@@ -206,7 +203,7 @@ public class Vmssegment {
         this.segMinDuration = segMinDuration;
     }
 
-    public Vmssegment withSegMinDuration(Float segMinDuration) {
+    public VmsSegment withSegMinDuration(Float segMinDuration) {
         this.segMinDuration = segMinDuration;
         return this;
     }
@@ -231,7 +228,7 @@ public class Vmssegment {
         this.segCategory = segCategory;
     }
 
-    public Vmssegment withSegCategory(String segCategory) {
+    public VmsSegment withSegCategory(String segCategory) {
         this.segCategory = segCategory;
         return this;
     }
@@ -251,7 +248,7 @@ public class Vmssegment {
         this.additionalProperties.put(name, value);
     }
 
-    public Vmssegment withAdditionalProperty(String name, Object value) {
+    public VmsSegment withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -266,10 +263,10 @@ public class Vmssegment {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Vmssegment) == false) {
+        if ((other instanceof VmsSegment) == false) {
             return false;
         }
-        Vmssegment rhs = ((Vmssegment) other);
+        VmsSegment rhs = ((VmsSegment) other);
         return new EqualsBuilder().append(id, rhs.id).append(type, rhs.type).append(segMinSpeed, rhs.segMinSpeed).append(segMaxSpeed, rhs.segMaxSpeed).append(segMaxDuration, rhs.segMaxDuration).append(segMinDuration, rhs.segMinDuration).append(segCategory, rhs.segCategory).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 

@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Vmssegment;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.VmsSegment;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
@@ -11,8 +11,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-
-import static java.lang.Float.MAX_VALUE;
 
 @Mapper(uses = ObjectFactory.class, imports = {DurationRange.class, SegmentCategoryType.class})
 public interface VmsSegmentFilterMapper {
@@ -35,7 +33,7 @@ public interface VmsSegmentFilterMapper {
             @Mapping(target = "category", expression = "java(dto.getSegCategory() != null ? Enum.valueOf( SegmentCategoryType.class, dto.getSegCategory()) : null)"),
             @Mapping(target = "durationRange", expression = "java(new DurationRange(dto.getSegMinDuration(), dto.getSegMaxDuration()))")
     })
-    VmsSegmentFilter vmsSegmentToVmsSegmentFilter(Vmssegment dto);
+    VmsSegmentFilter vmsSegmentToVmsSegmentFilter(VmsSegment dto);
 
     @Mappings({
             @Mapping(constant = "SEGMENT_SPEED", target = "key"),

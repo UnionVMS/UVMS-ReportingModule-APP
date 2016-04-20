@@ -1,21 +1,20 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.VmsTrack;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DistanceRange;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(imports = {DurationRange.class, DistanceRange.class, TimeRange.class})
-public interface TrackFilterMapper {
+@Mapper(imports = {DurationRange.class, DistanceRange.class, TimeRange.class, RangeKeyType.class})
+public interface VmsTrackFilterMapper {
 
-   TrackFilterMapper INSTANCE = Mappers.getMapper(TrackFilterMapper.class);
+   VmsTrackFilterMapper INSTANCE = Mappers.getMapper(VmsTrackFilterMapper.class);
 
     @Mappings({
             @Mapping(source = "durationRange.minDuration", target = "minDuration"),
@@ -30,6 +29,27 @@ public interface TrackFilterMapper {
             @Mapping(target = "timeRange", expression = "java(new TimeRange(dto.getMinTime(), dto.getMaxTime()))")
     })
     VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO dto); // TODO refactor with Tracks
+
+    @Mappings({
+            @Mapping(constant = "TRACK_SPEED", target = "key"),
+            @Mapping(source = "minAvgSpeed", target = "from", defaultValue = "0"),
+            @Mapping(source = "maxAvgSpeed", target = "to", defaultValue = "9223372036854775807")
+    })
+    RangeCriteria speedRangeToRangeCriteria(VmsTrackFilter trackFilter);
+
+    @Mappings({
+            @Mapping(constant = "TRACK_DURATION", target = "key"),
+            @Mapping(source = "durationRange.minDuration", target = "from", defaultValue = "0"),
+            @Mapping(source = "durationRange.maxDuration", target = "to", defaultValue = "9223372036854775807")
+    })
+    RangeCriteria durationRangeToRangeCriteria(VmsTrackFilter trackFilter);
+
+    @Mappings({
+            @Mapping(constant = "TRACK_DURATION_AT_SEA", target = "key"),
+            @Mapping(source = "timeRange.minTime", target = "from", defaultValue = "0"),
+            @Mapping(source = "timeRange.maxTime", target = "to", defaultValue = "9223372036854775807")
+    })
+    RangeCriteria timeRangeToRangeCriteria(VmsTrackFilter trackFilter);
 
     @Mappings({
             @Mapping(target = "durationRange", expression = "java(new DurationRange(dto.getTrkMinDuration(), dto.getTrkMaxDuration()))"),

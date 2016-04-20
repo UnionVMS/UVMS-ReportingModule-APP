@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DistanceRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
@@ -20,7 +19,7 @@ public class VmsTrackFilterTest {
     @Parameters(method = "filterValues")
     public void shouldConvertToDto(VmsTrackFilter filter, TrackFilterDTO expectedResult){
 
-        TrackFilterDTO trackFilterDTO = TrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(filter);
+        TrackFilterDTO trackFilterDTO = VmsTrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(filter);
         assertEquals(expectedResult, trackFilterDTO);
 
     }
@@ -29,7 +28,7 @@ public class VmsTrackFilterTest {
     @Parameters(method = "filterValues")
     public void shouldConvertToEntity(VmsTrackFilter expectedResult, TrackFilterDTO dto){
 
-        VmsTrackFilter trackFilter = TrackFilterMapper.INSTANCE.trackFilterDTOToTrackFilter(dto);
+        VmsTrackFilter trackFilter = VmsTrackFilterMapper.INSTANCE.trackFilterDTOToTrackFilter(dto);
         assertEquals(expectedResult, trackFilter);
 
     }
@@ -41,7 +40,6 @@ public class VmsTrackFilterTest {
                     .timeRange(new TimeRange(null, null))
                     .minAvgSpeed(null).maxAvgSpeed(null)
                     .durationRange(new DurationRange(null, null))
-                    .distanceRange(new DistanceRange(null, null))
                 .build();
 
         TrackFilterDTO expected1 = TrackFilterDTO.builder().build();
@@ -51,7 +49,6 @@ public class VmsTrackFilterTest {
                 .timeRange(new TimeRange(10F, null))
                 .minAvgSpeed(null).maxAvgSpeed(null)
                 .durationRange(new DurationRange(null, null))
-                .distanceRange(new DistanceRange(null, null))
                 .build();
 
         TrackFilterDTO expected2 = TrackFilterDTO.builder()
@@ -63,7 +60,6 @@ public class VmsTrackFilterTest {
                 .timeRange(new TimeRange(10F, 100F))
                 .minAvgSpeed(null).maxAvgSpeed(null)
                 .durationRange(new DurationRange(null, null))
-                .distanceRange(new DistanceRange(null, null))
                 .build();
 
         TrackFilterDTO expected3 = TrackFilterDTO.builder()
@@ -74,8 +70,6 @@ public class VmsTrackFilterTest {
                 $(trackFilter1, expected1),
                 $(trackFilter2, expected2),
                 $(trackFilter3, expected3)
-
-
         );
     }
 

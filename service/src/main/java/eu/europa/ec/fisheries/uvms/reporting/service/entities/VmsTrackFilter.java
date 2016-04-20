@@ -1,8 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.TrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -14,7 +13,7 @@ import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.valueOf;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
 
 @Entity
 @DiscriminatorValue("VMSTRACK")
@@ -34,13 +33,13 @@ public class VmsTrackFilter extends Filter {
     private @Column(name = "MAX_AVG_SPEED") Float maxAvgSpeed;
 
     public VmsTrackFilter() {
-        super(FilterType.vmstrack);
+        super(vmstrack);
     }
 
     @Builder
-    public VmsTrackFilter(Long id, Long reportId, TimeRange timeRange, DurationRange durationRange,
-                          DistanceRange distanceRange, Float minAvgSpeed, Float maxAvgSpeed) {
-        super(FilterType.vmstrack, id, reportId);
+    public VmsTrackFilter(Long id, Long reportId, TimeRange timeRange, DurationRange durationRange, Float minAvgSpeed,
+                          Float maxAvgSpeed) {
+        super(vmstrack, id, reportId);
         this.timeRange = timeRange;
         this.durationRange = durationRange;
         this.minAvgSpeed = minAvgSpeed;
@@ -54,7 +53,7 @@ public class VmsTrackFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-        TrackFilterMapper.INSTANCE.merge((VmsTrackFilter) filter, this);
+        VmsTrackFilterMapper.INSTANCE.merge((VmsTrackFilter) filter, this);
     }
 
     @Override
@@ -68,35 +67,19 @@ public class VmsTrackFilter extends Filter {
 
     private void addSpeedCriteria(List<RangeCriteria> rangeCriteria) {
         if (minAvgSpeed != null || maxAvgSpeed != null) {
-            RangeCriteria lengthCriteria = new RangeCriteria();
-            lengthCriteria.setKey(RangeKeyType.TRACK_SPEED);
-            lengthCriteria.setFrom(valueOf(minAvgSpeed != null ? minAvgSpeed : MIN_DEFAULT));
-            lengthCriteria.setTo(valueOf(maxAvgSpeed != null ? maxAvgSpeed : DEFAULT_MAX_AVG_SPEED));
-            rangeCriteria.add(lengthCriteria);
+            rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
         }
     }
 
     private void addTotalDurationCriteria(List<RangeCriteria> rangeCriteria) {
-        if (durationRange!=null) {
-            Float maxDuration = durationRange.getMaxDuration();
-            Float minDuration = durationRange.getMinDuration();
-            RangeCriteria durationCriteria = new RangeCriteria();
-            durationCriteria.setKey(RangeKeyType.TRACK_DURATION);
-            durationCriteria.setFrom(valueOf(minDuration != null ? minDuration : MIN_DEFAULT));
-            durationCriteria.setTo(valueOf(maxDuration != null ? maxDuration : DEFAULT_MAX_FULL_DURATION));
-            rangeCriteria.add(durationCriteria);
+        if (durationRange != null) {
+            rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
         }
     }
 
     private void addDurationAtSeaCriteria(List<RangeCriteria> rangeCriteria) {
-        if (timeRange!=null) {
-            Float minTime = timeRange.getMinTime();
-            Float maxTime = timeRange.getMaxTime();
-            RangeCriteria timeCriteria = new RangeCriteria();
-            timeCriteria.setKey(RangeKeyType.TRACK_DURATION_AT_SEA);
-            timeCriteria.setFrom(valueOf(minTime != null ? minTime : MIN_DEFAULT));
-            timeCriteria.setTo(valueOf(maxTime != null ? maxTime : DEFAULT_MAX_TIME_AT_SEA));
-            rangeCriteria.add(timeCriteria);
+        if (timeRange != null) {
+            rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.timeRangeToRangeCriteria(this) );
         }
     }
 

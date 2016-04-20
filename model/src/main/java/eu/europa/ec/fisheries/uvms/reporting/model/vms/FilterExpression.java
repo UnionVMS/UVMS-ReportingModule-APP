@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -23,7 +22,7 @@ public class FilterExpression {
 
     @JsonProperty("common")
     @Valid
-    private Common common;
+    private DateTime common;
     @JsonProperty("vms")
     @Valid
     private Vms vms;
@@ -50,7 +49,7 @@ public class FilterExpression {
      * @param areas
      * @param vms
      */
-    public FilterExpression(Common common, Vms vms, List<Area> areas, List<Asset> assets) {
+    public FilterExpression(DateTime common, Vms vms, List<Area> areas, List<Asset> assets) {
         this.common = common;
         this.vms = vms;
         this.areas = areas;
@@ -63,7 +62,7 @@ public class FilterExpression {
      *     The common
      */
     @JsonProperty("common")
-    public Common getCommon() {
+    public DateTime getCommon() {
         return common;
     }
 
@@ -73,11 +72,11 @@ public class FilterExpression {
      *     The common
      */
     @JsonProperty("common")
-    public void setCommon(Common common) {
+    public void setCommon(DateTime common) {
         this.common = common;
     }
 
-    public FilterExpression withCommon(Common common) {
+    public FilterExpression withCommon(DateTime common) {
         this.common = common;
         return this;
     }

@@ -1,9 +1,7 @@
-
 package eu.europa.ec.fisheries.uvms.reporting.model.vms;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,8 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
-public class Common {
+public class DateTime {
 
     @JsonProperty("id")
     private Long id;
@@ -36,7 +33,7 @@ public class Common {
      * No args constructor for use in serialization
      * 
      */
-    public Common() {
+    public DateTime() {
     }
 
     /**
@@ -48,7 +45,7 @@ public class Common {
      * @param xValue
      * @param positionTypeSelector
      */
-    public Common(Long id, String positionSelector, String positionTypeSelector, Long xValue, String startDate, String endDate) {
+    public DateTime(Long id, String positionSelector, String positionTypeSelector, Long xValue, String startDate, String endDate) {
         this.id = id;
         this.positionSelector = positionSelector;
         this.positionTypeSelector = positionTypeSelector;
@@ -77,7 +74,7 @@ public class Common {
         this.id = id;
     }
 
-    public Common withId(Long id) {
+    public DateTime withId(Long id) {
         this.id = id;
         return this;
     }
@@ -102,7 +99,7 @@ public class Common {
         this.positionSelector = positionSelector;
     }
 
-    public Common withPositionSelector(String positionSelector) {
+    public DateTime withPositionSelector(String positionSelector) {
         this.positionSelector = positionSelector;
         return this;
     }
@@ -127,7 +124,7 @@ public class Common {
         this.positionTypeSelector = positionTypeSelector;
     }
 
-    public Common withPositionTypeSelector(String positionTypeSelector) {
+    public DateTime withPositionTypeSelector(String positionTypeSelector) {
         this.positionTypeSelector = positionTypeSelector;
         return this;
     }
@@ -152,7 +149,7 @@ public class Common {
         this.xValue = xValue;
     }
 
-    public Common withXValue(Long xValue) {
+    public DateTime withXValue(Long xValue) {
         this.xValue = xValue;
         return this;
     }
@@ -177,7 +174,7 @@ public class Common {
         this.startDate = startDate;
     }
 
-    public Common withStartDate(String startDate) {
+    public DateTime withStartDate(String startDate) {
         this.startDate = startDate;
         return this;
     }
@@ -202,7 +199,7 @@ public class Common {
         this.endDate = endDate;
     }
 
-    public Common withEndDate(String endDate) {
+    public DateTime withEndDate(String endDate) {
         this.endDate = endDate;
         return this;
     }
@@ -222,7 +219,7 @@ public class Common {
         this.additionalProperties.put(name, value);
     }
 
-    public Common withAdditionalProperty(String name, Object value) {
+    public DateTime withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -237,10 +234,10 @@ public class Common {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Common) == false) {
+        if ((other instanceof DateTime) == false) {
             return false;
         }
-        Common rhs = ((Common) other);
+        DateTime rhs = ((DateTime) other);
         return new EqualsBuilder().append(id, rhs.id).append(positionSelector, rhs.positionSelector).append(positionTypeSelector, rhs.positionTypeSelector).append(xValue, rhs.xValue).append(startDate, rhs.startDate).append(endDate, rhs.endDate).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 

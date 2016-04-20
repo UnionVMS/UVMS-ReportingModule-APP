@@ -148,7 +148,7 @@ public abstract class Filter implements Serializable {
 
         @Override
         public FilterDTO visitVmsTrackFilter(VmsTrackFilter trackFilter) {
-            return TrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(trackFilter);
+            return VmsTrackFilterMapper.INSTANCE.trackFilterToTrackFilterDTO(trackFilter);
         }
 
         @Override

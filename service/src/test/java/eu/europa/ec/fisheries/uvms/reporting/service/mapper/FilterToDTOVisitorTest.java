@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DistanceRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
@@ -20,7 +19,6 @@ public class FilterToDTOVisitorTest {
     public void shouldReturnTrackFilterDTO(){
 
         VmsTrackFilter filter = VmsTrackFilter.builder()
-                .distanceRange(new DistanceRange(10F, 100F))
                 .durationRange(new DurationRange(5F, 500F))
                 .minAvgSpeed(50F).maxAvgSpeed(100F)
                 .timeRange(new TimeRange(10F, 20F))

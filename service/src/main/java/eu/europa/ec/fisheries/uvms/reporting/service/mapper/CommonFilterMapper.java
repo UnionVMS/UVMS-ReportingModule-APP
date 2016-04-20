@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Common;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.DateTime;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import org.mapstruct.Mapper;
@@ -34,7 +34,7 @@ public interface CommonFilterMapper {
                     "dto.getEndDate() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getEndDate()).toDate() : null))"),
             @Mapping(target = "positionSelector", expression = "java(new PositionSelector(Float.valueOf(dto.getXValue()), Enum.valueOf( Selector.class, dto.getPositionSelector()) , Position.getByName(dto.getPositionTypeSelector())))")
     })
-    CommonFilter commonToCommonFilter(Common dto);
+    CommonFilter commonToCommonFilter(DateTime dto);
 
     @Mappings({
             @Mapping(constant = "DATE", target = "key"),

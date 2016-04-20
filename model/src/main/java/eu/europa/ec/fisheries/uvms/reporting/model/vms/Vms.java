@@ -20,13 +20,13 @@ public class Vms {
 
     @JsonProperty("vmsposition")
     @Valid
-    private Vmsposition vmsposition;
+    private VmsPosition vmsposition;
     @JsonProperty("vmstrack")
     @Valid
     private VmsTrack vmstrack;
     @JsonProperty("vmssegment")
     @Valid
-    private Vmssegment vmssegment;
+    private VmsSegment vmssegment;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -43,7 +43,7 @@ public class Vms {
      * @param vmssegment
      * @param tracks
      */
-    public Vms(Vmsposition vmsposition, VmsTrack vmstrack, Vmssegment vmssegment) {
+    public Vms(VmsPosition vmsposition, VmsTrack vmstrack, VmsSegment vmssegment) {
         this.vmsposition = vmsposition;
         this.vmstrack = vmstrack;
         this.vmssegment = vmssegment;
@@ -55,7 +55,7 @@ public class Vms {
      *     The vmsposition
      */
     @JsonProperty("vmsposition")
-    public Vmsposition getVmsposition() {
+    public VmsPosition getVmsposition() {
         return vmsposition;
     }
 
@@ -65,11 +65,11 @@ public class Vms {
      *     The vmsposition
      */
     @JsonProperty("vmsposition")
-    public void setVmsposition(Vmsposition vmsposition) {
+    public void setVmsposition(VmsPosition vmsposition) {
         this.vmsposition = vmsposition;
     }
 
-    public Vms withVmsposition(Vmsposition vmsposition) {
+    public Vms withVmsposition(VmsPosition vmsposition) {
         this.vmsposition = vmsposition;
         return this;
     }
@@ -105,7 +105,7 @@ public class Vms {
      *     The vmssegment
      */
     @JsonProperty("vmssegment")
-    public Vmssegment getVmssegment() {
+    public VmsSegment getVmssegment() {
         return vmssegment;
     }
 
@@ -115,11 +115,11 @@ public class Vms {
      *     The vmssegment
      */
     @JsonProperty("vmssegment")
-    public void setVmssegment(Vmssegment vmssegment) {
+    public void setVmssegment(VmsSegment vmssegment) {
         this.vmssegment = vmssegment;
     }
 
-    public Vms withVmssegment(Vmssegment vmssegment) {
+    public Vms withVmssegment(VmsSegment vmssegment) {
         this.vmssegment = vmssegment;
         return this;
     }

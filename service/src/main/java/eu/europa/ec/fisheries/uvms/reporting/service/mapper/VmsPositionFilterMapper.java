@@ -3,7 +3,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Vmsposition;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.VmsPosition;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import org.mapstruct.Mapper;
@@ -27,7 +27,7 @@ public interface VmsPositionFilterMapper {
             @Mapping(target = "movementActivity", expression = "java(dto.getMovActivity() != null ? Enum.valueOf( MovementActivityTypeType.class, dto.getMovActivity()) : null)"),
             @Mapping(target = "movementType", expression = "java(dto.getMovType() != null ? Enum.valueOf( MovementTypeType.class, dto.getMovType()) : null)")
     })
-    VmsPositionFilter vmsPositionToVmsPositionFilter(Vmsposition dto);
+    VmsPositionFilter vmsPositionToVmsPositionFilter(VmsPosition dto);
 
     @Mappings({
             @Mapping(constant = "MOVEMENT_SPEED", target = "key"),

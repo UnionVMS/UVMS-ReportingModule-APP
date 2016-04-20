@@ -1,9 +1,7 @@
-
 package eu.europa.ec.fisheries.uvms.reporting.model.vms;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,8 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
-public class Vmsposition {
+public class VmsPosition {
 
     @JsonProperty("id")
     private Long id;
@@ -36,7 +33,7 @@ public class Vmsposition {
      * No args constructor for use in serialization
      * 
      */
-    public Vmsposition() {
+    public VmsPosition() {
     }
 
     /**
@@ -48,7 +45,7 @@ public class Vmsposition {
      * @param type
      * @param movMinSpeed
      */
-    public Vmsposition(Long id, String type, Float movMinSpeed, Float movMaxSpeed, String movType, String movActivity) {
+    public VmsPosition(Long id, String type, Float movMinSpeed, Float movMaxSpeed, String movType, String movActivity) {
         this.id = id;
         this.type = type;
         this.movMinSpeed = movMinSpeed;
@@ -77,7 +74,7 @@ public class Vmsposition {
         this.id = id;
     }
 
-    public Vmsposition withId(Long id) {
+    public VmsPosition withId(Long id) {
         this.id = id;
         return this;
     }
@@ -102,7 +99,7 @@ public class Vmsposition {
         this.type = type;
     }
 
-    public Vmsposition withType(String type) {
+    public VmsPosition withType(String type) {
         this.type = type;
         return this;
     }
@@ -127,7 +124,7 @@ public class Vmsposition {
         this.movMinSpeed = movMinSpeed;
     }
 
-    public Vmsposition withMovMinSpeed(Float movMinSpeed) {
+    public VmsPosition withMovMinSpeed(Float movMinSpeed) {
         this.movMinSpeed = movMinSpeed;
         return this;
     }
@@ -152,7 +149,7 @@ public class Vmsposition {
         this.movMaxSpeed = movMaxSpeed;
     }
 
-    public Vmsposition withMovMaxSpeed(Float movMaxSpeed) {
+    public VmsPosition withMovMaxSpeed(Float movMaxSpeed) {
         this.movMaxSpeed = movMaxSpeed;
         return this;
     }
@@ -177,7 +174,7 @@ public class Vmsposition {
         this.movType = movType;
     }
 
-    public Vmsposition withMovType(String movType) {
+    public VmsPosition withMovType(String movType) {
         this.movType = movType;
         return this;
     }
@@ -202,7 +199,7 @@ public class Vmsposition {
         this.movActivity = movActivity;
     }
 
-    public Vmsposition withMovActivity(String movActivity) {
+    public VmsPosition withMovActivity(String movActivity) {
         this.movActivity = movActivity;
         return this;
     }
@@ -222,7 +219,7 @@ public class Vmsposition {
         this.additionalProperties.put(name, value);
     }
 
-    public Vmsposition withAdditionalProperty(String name, Object value) {
+    public VmsPosition withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -237,10 +234,10 @@ public class Vmsposition {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Vmsposition) == false) {
+        if ((other instanceof VmsPosition) == false) {
             return false;
         }
-        Vmsposition rhs = ((Vmsposition) other);
+        VmsPosition rhs = ((VmsPosition) other);
         return new EqualsBuilder().append(id, rhs.id).append(type, rhs.type).append(movMinSpeed, rhs.movMinSpeed).append(movMaxSpeed, rhs.movMaxSpeed).append(movType, rhs.movType).append(movActivity, rhs.movActivity).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
