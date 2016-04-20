@@ -23,10 +23,10 @@ import static java.lang.String.valueOf;
 public class VmsTrackFilter extends Filter {
 
     private static final float MIN_DEFAULT = 0F;
-    private static final float DEFAULT_MAX_AVG_SPEED = 9999999F;
-    private static final float DEFAULT_MAX_DISTANCE = 9999999F;
-    private static final float DEFAULT_MAX_TIME_AT_SEA = 9999999F;
-    private static final float DEFAULT_MAX_FULL_DURATION = 9999999F;
+    private static final float DEFAULT_MAX_AVG_SPEED = Float.MAX_VALUE;
+    private static final float DEFAULT_MAX_DISTANCE = Float.MAX_VALUE;
+    private static final float DEFAULT_MAX_TIME_AT_SEA = Float.MAX_VALUE;
+    private static final float DEFAULT_MAX_FULL_DURATION = Float.MAX_VALUE;
 
     private @Embedded TimeRange timeRange;
     private @Embedded DurationRange durationRange;
