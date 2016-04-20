@@ -12,6 +12,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
+import static java.lang.Float.MAX_VALUE;
+
 @Mapper(uses = ObjectFactory.class, imports = {DurationRange.class, SegmentCategoryType.class})
 public interface VmsSegmentFilterMapper {
 
@@ -38,14 +40,14 @@ public interface VmsSegmentFilterMapper {
     @Mappings({
             @Mapping(constant = "SEGMENT_SPEED", target = "key"),
             @Mapping(source = "minimumSpeed", target = "from", defaultValue = "0"),
-            @Mapping(source = "maximumSpeed", target = "to", defaultValue = "1000000")
+            @Mapping(source = "maximumSpeed", target = "to", defaultValue = "9223372036854775807")
     })
     RangeCriteria speedRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
 
     @Mappings({
             @Mapping(constant = "SEGMENT_DURATION", target = "key"),
-            @Mapping(source = "durationRange.minDuration", target = "from", defaultValue = "0"),//TODO remove the bloody default values
-            @Mapping(source = "durationRange.maxDuration", target = "to", defaultValue = "1000000")//TODO remove the bloody default values
+            @Mapping(source = "durationRange.minDuration", target = "from", defaultValue = "0"),
+            @Mapping(source = "durationRange.maxDuration", target = "to", defaultValue = "9223372036854775807")
     })
     RangeCriteria durationRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
 
