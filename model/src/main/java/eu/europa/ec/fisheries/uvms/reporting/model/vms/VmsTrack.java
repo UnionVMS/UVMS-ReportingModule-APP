@@ -31,7 +31,7 @@ public class VmsTrack {
     @JsonProperty("trkMaxDistance")
     private Long trkMaxDistance;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * No args constructor for use in serialization
