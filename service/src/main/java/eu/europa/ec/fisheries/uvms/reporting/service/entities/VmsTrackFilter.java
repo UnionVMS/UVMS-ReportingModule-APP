@@ -21,12 +21,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.
 @ToString
 public class VmsTrackFilter extends Filter {
 
-    private static final float MIN_DEFAULT = 0F;
-    private static final float DEFAULT_MAX_AVG_SPEED = Float.MAX_VALUE;
-    private static final float DEFAULT_MAX_DISTANCE = Float.MAX_VALUE;
-    private static final float DEFAULT_MAX_TIME_AT_SEA = Float.MAX_VALUE;
-    private static final float DEFAULT_MAX_FULL_DURATION = Float.MAX_VALUE;
-
     private @Embedded TimeRange timeRange;
     private @Embedded DurationRange durationRange;
     private @Column(name = "MIN_AVG_SPEED") Float minAvgSpeed;
