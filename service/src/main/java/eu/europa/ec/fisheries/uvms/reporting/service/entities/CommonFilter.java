@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
@@ -13,8 +12,11 @@ import org.joda.time.DateTime;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
 
 @Entity
 @DiscriminatorValue("DATETIME")
@@ -27,12 +29,12 @@ public class CommonFilter extends Filter {
     private @Embedded PositionSelector positionSelector;
 
     public CommonFilter(){
-        super(FilterType.common);
+        super(common);
     }
 
     @Builder
     public CommonFilter(Long id, DateRange dateRange, PositionSelector positionSelector) {
-        super(FilterType.common);
+        super(common);
         this.dateRange = dateRange;
         this.positionSelector = positionSelector;
         setId(id);
@@ -51,7 +53,7 @@ public class CommonFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
-        List<RangeCriteria> rangeCriteria = Lists.newArrayList();
+        List<RangeCriteria> rangeCriteria =new ArrayList<>();
         RangeCriteria date = CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(this);
         setDefaultValues(date, now);
 
@@ -79,7 +81,7 @@ public class CommonFilter extends Filter {
     @Override
     public List<ListCriteria> movementListCriteria() {
         ListCriteria criteria = new ListCriteria();
-        List<ListCriteria> listCriteria = Lists.newArrayList();
+        List<ListCriteria> listCriteria = new ArrayList<>();
         if (Position.positions.equals(positionSelector.getPosition())) {
             criteria = CommonFilterMapper.INSTANCE.positionToListCriteria(this);
         }

@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
+
 @Entity
 @DiscriminatorValue("areas")
 @EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
@@ -20,12 +22,12 @@ public class AreaFilter extends Filter {
     private @Column(name = "area_id") Long areaId;
 
     public AreaFilter() {
-        super(FilterType.areas);
+        super(areas);
     }
 
     @Builder
     public AreaFilter(Long id, Long areaId, String areaType) {
-        super(FilterType.areas);
+        super(areas);
         setId(id);
         this.areaId = areaId;
         this.areaType = areaType;

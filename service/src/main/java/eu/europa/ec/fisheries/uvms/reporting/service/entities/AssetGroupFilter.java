@@ -11,24 +11,26 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
+import static java.util.Arrays.*;
+
 @Entity
 @DiscriminatorValue("VGROUP")
 @EqualsAndHashCode(callSuper = false, of = {"guid"})
 @ToString
 public class AssetGroupFilter extends Filter {
 
-
     private @NotNull String guid;
     private @NotNull String name;
     private @NotNull String userName;
 
     public AssetGroupFilter() {
-        super(FilterType.vgroup);
+        super(vgroup);
     }
 
     @Builder
     public AssetGroupFilter(Long id, String groupId, String userName, String name){
-        super(FilterType.vgroup);
+        super(vgroup);
         this.guid = groupId;
         this.userName = userName;
         this.name = name;
@@ -47,7 +49,7 @@ public class AssetGroupFilter extends Filter {
 
     @Override
     public List<AssetGroup> assetGroupCriteria(){
-        return Arrays.asList(AssetGroupFilterMapper.INSTANCE.assetGroupFilterToAssetGroup(this));
+        return asList(AssetGroupFilterMapper.INSTANCE.assetGroupFilterToAssetGroup(this));
     }
 
     @Override
