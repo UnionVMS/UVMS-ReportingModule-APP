@@ -22,13 +22,13 @@ public class Vmssegment {
     @JsonProperty("type")
     private String type;
     @JsonProperty("segMinSpeed")
-    private Long segMinSpeed;
+    private Float segMinSpeed;
     @JsonProperty("segMaxSpeed")
-    private Long segMaxSpeed;
+    private Float segMaxSpeed;
     @JsonProperty("segMaxDuration")
-    private Long segMaxDuration;
+    private Float segMaxDuration;
     @JsonProperty("segMinDuration")
-    private Long segMinDuration;
+    private Float segMinDuration;
     @JsonProperty("segCategory")
     private String segCategory;
     @JsonIgnore
@@ -51,7 +51,7 @@ public class Vmssegment {
      * @param segMaxDuration
      * @param type
      */
-    public Vmssegment(Long id, String type, Long segMinSpeed, Long segMaxSpeed, Long segMaxDuration, Long segMinDuration, String segCategory) {
+    public Vmssegment(Long id, String type, Float segMinSpeed, Float segMaxSpeed, Float segMaxDuration, Float segMinDuration, String segCategory) {
         this.id = id;
         this.type = type;
         this.segMinSpeed = segMinSpeed;
@@ -117,7 +117,7 @@ public class Vmssegment {
      *     The segMinSpeed
      */
     @JsonProperty("segMinSpeed")
-    public Long getSegMinSpeed() {
+    public Float getSegMinSpeed() {
         return segMinSpeed;
     }
 
@@ -127,11 +127,11 @@ public class Vmssegment {
      *     The segMinSpeed
      */
     @JsonProperty("segMinSpeed")
-    public void setSegMinSpeed(Long segMinSpeed) {
+    public void setSegMinSpeed(Float segMinSpeed) {
         this.segMinSpeed = segMinSpeed;
     }
 
-    public Vmssegment withSegMinSpeed(Long segMinSpeed) {
+    public Vmssegment withSegMinSpeed(Float segMinSpeed) {
         this.segMinSpeed = segMinSpeed;
         return this;
     }
@@ -142,7 +142,7 @@ public class Vmssegment {
      *     The segMaxSpeed
      */
     @JsonProperty("segMaxSpeed")
-    public Long getSegMaxSpeed() {
+    public Float getSegMaxSpeed() {
         return segMaxSpeed;
     }
 
@@ -152,11 +152,11 @@ public class Vmssegment {
      *     The segMaxSpeed
      */
     @JsonProperty("segMaxSpeed")
-    public void setSegMaxSpeed(Long segMaxSpeed) {
+    public void setSegMaxSpeed(Float segMaxSpeed) {
         this.segMaxSpeed = segMaxSpeed;
     }
 
-    public Vmssegment withSegMaxSpeed(Long segMaxSpeed) {
+    public Vmssegment withSegMaxSpeed(Float segMaxSpeed) {
         this.segMaxSpeed = segMaxSpeed;
         return this;
     }
@@ -167,7 +167,7 @@ public class Vmssegment {
      *     The segMaxDuration
      */
     @JsonProperty("segMaxDuration")
-    public Long getSegMaxDuration() {
+    public Float getSegMaxDuration() {
         return segMaxDuration;
     }
 
@@ -177,11 +177,11 @@ public class Vmssegment {
      *     The segMaxDuration
      */
     @JsonProperty("segMaxDuration")
-    public void setSegMaxDuration(Long segMaxDuration) {
+    public void setSegMaxDuration(Float segMaxDuration) {
         this.segMaxDuration = segMaxDuration;
     }
 
-    public Vmssegment withSegMaxDuration(Long segMaxDuration) {
+    public Vmssegment withSegMaxDuration(Float segMaxDuration) {
         this.segMaxDuration = segMaxDuration;
         return this;
     }
@@ -192,7 +192,7 @@ public class Vmssegment {
      *     The segMinDuration
      */
     @JsonProperty("segMinDuration")
-    public Long getSegMinDuration() { // TODO chnage to float
+    public Float getSegMinDuration() { // TODO chnage to float
         return segMinDuration;
     }
 
@@ -202,11 +202,11 @@ public class Vmssegment {
      *     The segMinDuration
      */
     @JsonProperty("segMinDuration")
-    public void setSegMinDuration(Long segMinDuration) {
+    public void setSegMinDuration(Float segMinDuration) {
         this.segMinDuration = segMinDuration;
     }
 
-    public Vmssegment withSegMinDuration(Long segMinDuration) {
+    public Vmssegment withSegMinDuration(Float segMinDuration) {
         this.segMinDuration = segMinDuration;
         return this;
     }

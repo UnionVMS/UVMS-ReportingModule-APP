@@ -19,7 +19,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Report {
 
     @JsonProperty("id")
-    private long id;
+    private Long id;
     @JsonProperty("name")
     private String name;
     @JsonProperty("desc")
@@ -63,7 +63,7 @@ public class Report {
      * @param name
      * @param withMap
      */
-    public Report(long id, String name, String desc, String visibility, String createdOn, Object executedOn, String createdBy, boolean withMap, MapConfiguration mapConfiguration, FilterExpression filterExpression) {
+    public Report(Long id, String name, String desc, String visibility, String createdOn, Object executedOn, String createdBy, boolean withMap, MapConfiguration mapConfiguration, FilterExpression filterExpression) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -82,7 +82,7 @@ public class Report {
      *     The id
      */
     @JsonProperty("id")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -92,11 +92,11 @@ public class Report {
      *     The id
      */
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Report withId(long id) {
+    public Report withId(Long id) {
         this.id = id;
         return this;
     }
