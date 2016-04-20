@@ -1,13 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
@@ -19,9 +16,11 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
 
+import static java.util.Arrays.*;
+
 @Entity
 @DiscriminatorValue("VMSPOS")
-@EqualsAndHashCode(callSuper = true, of = {})
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class VmsPositionFilter extends Filter {
 
@@ -57,16 +56,16 @@ public class VmsPositionFilter extends Filter {
     
     @Override
     public List<ListCriteria> movementListCriteria() {
-    	List<ListCriteria> criteria = new ArrayList<ListCriteria>();
+    	List<ListCriteria> criteria = new ArrayList<>();
         ListCriteria listCriteria;
 
-        if (getMovementType() != null) {
+        if (movementType != null) {
             listCriteria = new ListCriteria();
             listCriteria.setKey(SearchKey.MOVEMENT_TYPE);
             listCriteria.setValue(getMovementType().name());
         	criteria.add(listCriteria);
     	}    	
-    	if (getMovementActivity() != null) {
+    	if (movementActivity != null) {
             listCriteria = new ListCriteria();
             listCriteria.setKey(SearchKey.ACTIVITY_TYPE);
             listCriteria.setValue(getMovementActivity().name());
@@ -77,7 +76,7 @@ public class VmsPositionFilter extends Filter {
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
-        return Arrays.asList(VmsPositionFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
+        return asList(VmsPositionFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
 
     @Override
