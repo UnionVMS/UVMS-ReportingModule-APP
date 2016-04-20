@@ -22,9 +22,9 @@ public class Vmsposition {
     @JsonProperty("type")
     private String type;
     @JsonProperty("movMinSpeed")
-    private Long movMinSpeed;
+    private Float movMinSpeed;
     @JsonProperty("movMaxSpeed")
-    private Long movMaxSpeed;
+    private Float movMaxSpeed;
     @JsonProperty("movType")
     private String movType;
     @JsonProperty("movActivity")
@@ -48,7 +48,7 @@ public class Vmsposition {
      * @param type
      * @param movMinSpeed
      */
-    public Vmsposition(Long id, String type, Long movMinSpeed, Long movMaxSpeed, String movType, String movActivity) {
+    public Vmsposition(Long id, String type, Float movMinSpeed, Float movMaxSpeed, String movType, String movActivity) {
         this.id = id;
         this.type = type;
         this.movMinSpeed = movMinSpeed;
@@ -113,7 +113,7 @@ public class Vmsposition {
      *     The movMinSpeed
      */
     @JsonProperty("movMinSpeed")
-    public Long getMovMinSpeed() {
+    public Float getMovMinSpeed() {
         return movMinSpeed;
     }
 
@@ -123,11 +123,11 @@ public class Vmsposition {
      *     The movMinSpeed
      */
     @JsonProperty("movMinSpeed")
-    public void setMovMinSpeed(Long movMinSpeed) {
+    public void setMovMinSpeed(Float movMinSpeed) {
         this.movMinSpeed = movMinSpeed;
     }
 
-    public Vmsposition withMovMinSpeed(Long movMinSpeed) {
+    public Vmsposition withMovMinSpeed(Float movMinSpeed) {
         this.movMinSpeed = movMinSpeed;
         return this;
     }
@@ -138,7 +138,7 @@ public class Vmsposition {
      *     The movMaxSpeed
      */
     @JsonProperty("movMaxSpeed")
-    public Long getMovMaxSpeed() {
+    public Float getMovMaxSpeed() {
         return movMaxSpeed;
     }
 
@@ -148,11 +148,11 @@ public class Vmsposition {
      *     The movMaxSpeed
      */
     @JsonProperty("movMaxSpeed")
-    public void setMovMaxSpeed(Long movMaxSpeed) {
+    public void setMovMaxSpeed(Float movMaxSpeed) {
         this.movMaxSpeed = movMaxSpeed;
     }
 
-    public Vmsposition withMovMaxSpeed(Long movMaxSpeed) {
+    public Vmsposition withMovMaxSpeed(Float movMaxSpeed) {
         this.movMaxSpeed = movMaxSpeed;
         return this;
     }

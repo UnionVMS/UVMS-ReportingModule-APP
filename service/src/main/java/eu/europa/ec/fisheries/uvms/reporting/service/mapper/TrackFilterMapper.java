@@ -32,8 +32,8 @@ public interface TrackFilterMapper {
     VmsTrackFilter trackFilterDTOToTrackFilter(TrackFilterDTO dto); // TODO refactor with Tracks
 
     @Mappings({
-            @Mapping(target = "durationRange", expression = "java(new DurationRange(Float.valueOf(dto.getTrkMinDuration()), Float.valueOf(dto.getTrkMaxDuration())))"),
-            @Mapping(target = "timeRange", expression = "java(new TimeRange(Float.valueOf(dto.getTrkMinTime()), Float.valueOf(dto.getTrkMaxTime())))")
+            @Mapping(target = "durationRange", expression = "java(new DurationRange(dto.getTrkMinDuration(), dto.getTrkMaxDuration()))"),
+            @Mapping(target = "timeRange", expression = "java(new TimeRange(dto.getTrkMinTime(), dto.getTrkMaxTime()))")
     })
     VmsTrackFilter tracksToVmsTrackFilter(VmsTrack dto);
 
