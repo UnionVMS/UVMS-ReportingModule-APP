@@ -23,7 +23,7 @@ public class Vms {
     private Vmsposition vmsposition;
     @JsonProperty("vmstrack")
     @Valid
-    private Vmstrack vmstrack;
+    private VmsTrack vmstrack;
     @JsonProperty("vmssegment")
     @Valid
     private Vmssegment vmssegment;
@@ -43,7 +43,7 @@ public class Vms {
      * @param vmssegment
      * @param tracks
      */
-    public Vms(Vmsposition vmsposition, Vmstrack vmstrack, Vmssegment vmssegment) {
+    public Vms(Vmsposition vmsposition, VmsTrack vmstrack, Vmssegment vmssegment) {
         this.vmsposition = vmsposition;
         this.vmstrack = vmstrack;
         this.vmssegment = vmssegment;
@@ -80,7 +80,7 @@ public class Vms {
      *     The tracks
      */
     @JsonProperty("vmstrack")
-    public Vmstrack getVmstrack() {
+    public VmsTrack getVmstrack() {
         return vmstrack;
     }
 
@@ -90,11 +90,11 @@ public class Vms {
      *     The tracks
      */
     @JsonProperty("vmstrack")
-    public void setVmstrack(Vmstrack tracks) {
+    public void setVmstrack(VmsTrack tracks) {
         this.vmstrack = tracks;
     }
 
-    public Vms withTracks(Vmstrack vmstrack) {
+    public Vms withTracks(VmsTrack vmstrack) {
         this.vmstrack = vmstrack;
         return this;
     }

@@ -36,7 +36,7 @@
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>2.0.0</rules.model.version>
-		<reporting.model.version>0.5.0</reporting.model.version>
+		<reporting.model.version>0.5.1-SNAPSHOT</reporting.model.version>
     </properties>
 
     <dependencyManagement>

@@ -18,17 +18,17 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Vmssegment {
 
     @JsonProperty("id")
-    private long id;
+    private Long id;
     @JsonProperty("type")
     private String type;
     @JsonProperty("segMinSpeed")
-    private long segMinSpeed;
+    private Long segMinSpeed;
     @JsonProperty("segMaxSpeed")
-    private long segMaxSpeed;
+    private Long segMaxSpeed;
     @JsonProperty("segMaxDuration")
-    private long segMaxDuration;
+    private Long segMaxDuration;
     @JsonProperty("segMinDuration")
-    private long segMinDuration;
+    private Long segMinDuration;
     @JsonProperty("segCategory")
     private String segCategory;
     @JsonIgnore
@@ -51,7 +51,7 @@ public class Vmssegment {
      * @param segMaxDuration
      * @param type
      */
-    public Vmssegment(long id, String type, long segMinSpeed, long segMaxSpeed, long segMaxDuration, long segMinDuration, String segCategory) {
+    public Vmssegment(Long id, String type, Long segMinSpeed, Long segMaxSpeed, Long segMaxDuration, Long segMinDuration, String segCategory) {
         this.id = id;
         this.type = type;
         this.segMinSpeed = segMinSpeed;
@@ -67,7 +67,7 @@ public class Vmssegment {
      *     The id
      */
     @JsonProperty("id")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -77,11 +77,11 @@ public class Vmssegment {
      *     The id
      */
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Vmssegment withId(long id) {
+    public Vmssegment withId(Long id) {
         this.id = id;
         return this;
     }
@@ -117,7 +117,7 @@ public class Vmssegment {
      *     The segMinSpeed
      */
     @JsonProperty("segMinSpeed")
-    public long getSegMinSpeed() {
+    public Long getSegMinSpeed() {
         return segMinSpeed;
     }
 
@@ -127,11 +127,11 @@ public class Vmssegment {
      *     The segMinSpeed
      */
     @JsonProperty("segMinSpeed")
-    public void setSegMinSpeed(long segMinSpeed) {
+    public void setSegMinSpeed(Long segMinSpeed) {
         this.segMinSpeed = segMinSpeed;
     }
 
-    public Vmssegment withSegMinSpeed(long segMinSpeed) {
+    public Vmssegment withSegMinSpeed(Long segMinSpeed) {
         this.segMinSpeed = segMinSpeed;
         return this;
     }
@@ -142,7 +142,7 @@ public class Vmssegment {
      *     The segMaxSpeed
      */
     @JsonProperty("segMaxSpeed")
-    public long getSegMaxSpeed() {
+    public Long getSegMaxSpeed() {
         return segMaxSpeed;
     }
 
@@ -152,11 +152,11 @@ public class Vmssegment {
      *     The segMaxSpeed
      */
     @JsonProperty("segMaxSpeed")
-    public void setSegMaxSpeed(long segMaxSpeed) {
+    public void setSegMaxSpeed(Long segMaxSpeed) {
         this.segMaxSpeed = segMaxSpeed;
     }
 
-    public Vmssegment withSegMaxSpeed(long segMaxSpeed) {
+    public Vmssegment withSegMaxSpeed(Long segMaxSpeed) {
         this.segMaxSpeed = segMaxSpeed;
         return this;
     }
@@ -167,7 +167,7 @@ public class Vmssegment {
      *     The segMaxDuration
      */
     @JsonProperty("segMaxDuration")
-    public long getSegMaxDuration() {
+    public Long getSegMaxDuration() {
         return segMaxDuration;
     }
 
@@ -177,11 +177,11 @@ public class Vmssegment {
      *     The segMaxDuration
      */
     @JsonProperty("segMaxDuration")
-    public void setSegMaxDuration(long segMaxDuration) {
+    public void setSegMaxDuration(Long segMaxDuration) {
         this.segMaxDuration = segMaxDuration;
     }
 
-    public Vmssegment withSegMaxDuration(long segMaxDuration) {
+    public Vmssegment withSegMaxDuration(Long segMaxDuration) {
         this.segMaxDuration = segMaxDuration;
         return this;
     }
@@ -192,7 +192,7 @@ public class Vmssegment {
      *     The segMinDuration
      */
     @JsonProperty("segMinDuration")
-    public long getSegMinDuration() { // TODO chnage to float
+    public Long getSegMinDuration() { // TODO chnage to float
         return segMinDuration;
     }
 
@@ -202,11 +202,11 @@ public class Vmssegment {
      *     The segMinDuration
      */
     @JsonProperty("segMinDuration")
-    public void setSegMinDuration(long segMinDuration) {
+    public void setSegMinDuration(Long segMinDuration) {
         this.segMinDuration = segMinDuration;
     }
 
-    public Vmssegment withSegMinDuration(long segMinDuration) {
+    public Vmssegment withSegMinDuration(Long segMinDuration) {
         this.segMinDuration = segMinDuration;
         return this;
     }

@@ -18,13 +18,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Common {
 
     @JsonProperty("id")
-    private long id;
+    private Long id;
     @JsonProperty("positionSelector")
     private String positionSelector;
     @JsonProperty("positionTypeSelector")
     private String positionTypeSelector;
     @JsonProperty("xValue")
-    private long xValue;
+    private Long xValue;
     @JsonProperty("startDate")
     private String startDate;
     @JsonProperty("endDate")
@@ -48,7 +48,7 @@ public class Common {
      * @param xValue
      * @param positionTypeSelector
      */
-    public Common(long id, String positionSelector, String positionTypeSelector, long xValue, String startDate, String endDate) {
+    public Common(Long id, String positionSelector, String positionTypeSelector, Long xValue, String startDate, String endDate) {
         this.id = id;
         this.positionSelector = positionSelector;
         this.positionTypeSelector = positionTypeSelector;
@@ -63,7 +63,7 @@ public class Common {
      *     The id
      */
     @JsonProperty("id")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -73,11 +73,11 @@ public class Common {
      *     The id
      */
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Common withId(long id) {
+    public Common withId(Long id) {
         this.id = id;
         return this;
     }
@@ -138,7 +138,7 @@ public class Common {
      *     The xValue
      */
     @JsonProperty("xValue")
-    public long getXValue() {
+    public Long getXValue() {
         return xValue;
     }
 
@@ -148,11 +148,11 @@ public class Common {
      *     The xValue
      */
     @JsonProperty("xValue")
-    public void setXValue(long xValue) {
+    public void setXValue(Long xValue) {
         this.xValue = xValue;
     }
 
-    public Common withXValue(long xValue) {
+    public Common withXValue(Long xValue) {
         this.xValue = xValue;
         return this;
     }

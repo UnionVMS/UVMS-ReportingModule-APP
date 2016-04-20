@@ -18,7 +18,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Asset {
 
     @JsonProperty("id")
-    private long id;
+    private Long id;
     @JsonProperty("type")
     private String type;
     @JsonProperty("guid")
@@ -45,7 +45,7 @@ public class Asset {
      * @param type
      * @param user
      */
-    public Asset(long id, String type, String guid, String name, String user) {
+    public Asset(Long id, String type, String guid, String name, String user) {
         this.id = id;
         this.type = type;
         this.guid = guid;
@@ -59,7 +59,7 @@ public class Asset {
      *     The id
      */
     @JsonProperty("id")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -69,11 +69,11 @@ public class Asset {
      *     The id
      */
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Asset withId(long id) {
+    public Asset withId(Long id) {
         this.id = id;
         return this;
     }

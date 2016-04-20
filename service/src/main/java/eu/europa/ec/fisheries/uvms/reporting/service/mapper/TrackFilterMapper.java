@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Vmstrack;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.VmsTrack;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DistanceRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
@@ -35,7 +35,7 @@ public interface TrackFilterMapper {
             @Mapping(target = "durationRange", expression = "java(new DurationRange(Float.valueOf(dto.getTrkMinDuration()), Float.valueOf(dto.getTrkMaxDuration())))"),
             @Mapping(target = "timeRange", expression = "java(new TimeRange(Float.valueOf(dto.getTrkMinTime()), Float.valueOf(dto.getTrkMaxTime())))")
     })
-    VmsTrackFilter tracksToVmsTrackFilter(Vmstrack dto);
+    VmsTrackFilter tracksToVmsTrackFilter(VmsTrack dto);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),

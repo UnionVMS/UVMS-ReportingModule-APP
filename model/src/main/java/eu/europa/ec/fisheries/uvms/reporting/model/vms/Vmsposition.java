@@ -18,13 +18,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Vmsposition {
 
     @JsonProperty("id")
-    private long id;
+    private Long id;
     @JsonProperty("type")
     private String type;
     @JsonProperty("movMinSpeed")
-    private long movMinSpeed;
+    private Long movMinSpeed;
     @JsonProperty("movMaxSpeed")
-    private long movMaxSpeed;
+    private Long movMaxSpeed;
     @JsonProperty("movType")
     private String movType;
     @JsonProperty("movActivity")
@@ -48,7 +48,7 @@ public class Vmsposition {
      * @param type
      * @param movMinSpeed
      */
-    public Vmsposition(long id, String type, long movMinSpeed, long movMaxSpeed, String movType, String movActivity) {
+    public Vmsposition(Long id, String type, Long movMinSpeed, Long movMaxSpeed, String movType, String movActivity) {
         this.id = id;
         this.type = type;
         this.movMinSpeed = movMinSpeed;
@@ -63,7 +63,7 @@ public class Vmsposition {
      *     The id
      */
     @JsonProperty("id")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -73,11 +73,11 @@ public class Vmsposition {
      *     The id
      */
     @JsonProperty("id")
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Vmsposition withId(long id) {
+    public Vmsposition withId(Long id) {
         this.id = id;
         return this;
     }
@@ -113,7 +113,7 @@ public class Vmsposition {
      *     The movMinSpeed
      */
     @JsonProperty("movMinSpeed")
-    public long getMovMinSpeed() {
+    public Long getMovMinSpeed() {
         return movMinSpeed;
     }
 
@@ -123,11 +123,11 @@ public class Vmsposition {
      *     The movMinSpeed
      */
     @JsonProperty("movMinSpeed")
-    public void setMovMinSpeed(long movMinSpeed) {
+    public void setMovMinSpeed(Long movMinSpeed) {
         this.movMinSpeed = movMinSpeed;
     }
 
-    public Vmsposition withMovMinSpeed(long movMinSpeed) {
+    public Vmsposition withMovMinSpeed(Long movMinSpeed) {
         this.movMinSpeed = movMinSpeed;
         return this;
     }
@@ -138,7 +138,7 @@ public class Vmsposition {
      *     The movMaxSpeed
      */
     @JsonProperty("movMaxSpeed")
-    public long getMovMaxSpeed() {
+    public Long getMovMaxSpeed() {
         return movMaxSpeed;
     }
 
@@ -148,11 +148,11 @@ public class Vmsposition {
      *     The movMaxSpeed
      */
     @JsonProperty("movMaxSpeed")
-    public void setMovMaxSpeed(long movMaxSpeed) {
+    public void setMovMaxSpeed(Long movMaxSpeed) {
         this.movMaxSpeed = movMaxSpeed;
     }
 
-    public Vmsposition withMovMaxSpeed(long movMaxSpeed) {
+    public Vmsposition withMovMaxSpeed(Long movMaxSpeed) {
         this.movMaxSpeed = movMaxSpeed;
         return this;
     }
