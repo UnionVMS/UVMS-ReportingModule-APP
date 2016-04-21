@@ -1,6 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.VmsSegment;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
@@ -12,7 +14,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = ObjectFactory.class, imports = {DurationRange.class, SegmentCategoryType.class})
+@Mapper(uses = ObjectFactory.class, imports = {DurationRange.class, SegmentCategoryType.class, SearchKey.class})
 public interface VmsSegmentFilterMapper {
 
     VmsSegmentFilterMapper INSTANCE = Mappers.getMapper(VmsSegmentFilterMapper.class);
@@ -41,6 +43,12 @@ public interface VmsSegmentFilterMapper {
             @Mapping(source = "maximumSpeed", target = "to", defaultValue = "9223372036854775807")
     })
     RangeCriteria speedRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
+
+    @Mappings({
+            @Mapping(constant = "CATEGORY", target = "key"),
+            @Mapping(source = "category", target = "value")
+    })
+    ListCriteria categoryToListCriteria(VmsSegmentFilter filter);
 
     @Mappings({
             @Mapping(constant = "SEGMENT_DURATION", target = "key"),

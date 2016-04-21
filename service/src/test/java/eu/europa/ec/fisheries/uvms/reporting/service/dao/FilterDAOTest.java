@@ -10,9 +10,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.SneakyThrows;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
 import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.insertInto;
@@ -47,7 +45,6 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore // FIXME jenkins
     public void shouldReturnOneFilter(){
 
         dbSetupTracker.skipNextLaunch();
@@ -59,7 +56,6 @@ public class FilterDAOTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore // FIXME jenkins
     public void shouldDeleteFilter(){
 
         em.getTransaction().begin();
