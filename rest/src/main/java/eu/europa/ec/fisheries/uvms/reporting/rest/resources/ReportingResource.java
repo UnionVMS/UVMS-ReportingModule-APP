@@ -55,10 +55,9 @@ import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 public class ReportingResource extends UnionVMSResource {
 
     public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
-
-    private static String APPLICATION_NAME ;
-
+    private static String APPLICATION_NAME;
     public static final String USM_APPLICATION = "usmApplication";
+
     @Context
     private UriInfo context;
 
