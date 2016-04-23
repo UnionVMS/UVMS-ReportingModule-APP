@@ -54,17 +54,22 @@ public abstract class Filter implements Serializable {
     public static final String FILTER_ID = "filter_id";
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
     public static final String DELETE_BY_ID = "Filter.deleteById";
+
     @Transient
     private final FilterType type;
+
     @Transient
     protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
     @Id
     @Column(name = FILTER_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = REPORT_ID, nullable = false)
     private Report report;
+
     @Transient
     private Long reportId;
 
