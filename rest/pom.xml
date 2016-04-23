@@ -164,12 +164,7 @@
 			<version>1.0.1.Final</version>
 			<scope>test</scope>
 		</dependency>
-        
-         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
+
          <dependency>
              <groupId>org.jboss.resteasy</groupId>
              <artifactId>resteasy-jaxrs</artifactId>
@@ -182,11 +177,7 @@
 		    <groupId>org.jboss.resteasy</groupId>
 		    <artifactId>jaxrs-api</artifactId>
 		</dependency>
-         <dependency>
-             <groupId>org.jboss.resteasy</groupId>
-             <artifactId>resteasy-client</artifactId>
-             <scope>test</scope>
-         </dependency>
+
          <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>message</artifactId>
