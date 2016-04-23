@@ -11,7 +11,7 @@
         <artifactId>reporting</artifactId>
         <version>0.5.1-SNAPSHOT</version>
     </parent>
-    
+
     <dependencies>
 
         <dependency>
