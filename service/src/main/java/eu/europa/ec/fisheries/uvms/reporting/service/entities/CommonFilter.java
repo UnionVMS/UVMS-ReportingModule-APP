@@ -1,16 +1,22 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
-import eu.europa.ec.fisheries.uvms.common.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.validation.*;
-import lombok.*;
-import org.joda.time.*;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.joda.time.DateTime;
 
-import javax.persistence.*;
-import java.util.*;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.common;
 
 @Entity
 @DiscriminatorValue("DATETIME")
@@ -49,6 +55,24 @@ public class CommonFilter extends Filter {
     }
 
     @Override
+    public Object getUniqKey() {
+        return getId();
+    }
+
+    @Override
+    public List<ListCriteria> movementListCriteria() {
+        ListCriteria criteria = new ListCriteria();
+        List<ListCriteria> listCriteria = new ArrayList<>();
+        if (Position.positions.equals(positionSelector.getPosition())) {
+            criteria = CommonFilterMapper.INSTANCE.positionToListCriteria(this);
+        }
+        if (criteria.getKey() != null) {
+            listCriteria.add(criteria);
+        }
+        return listCriteria;
+    }
+
+    @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
         List<RangeCriteria> rangeCriteria = new ArrayList<>();
         RangeCriteria date = CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(this);
@@ -74,27 +98,9 @@ public class CommonFilter extends Filter {
         }
     }
 
-    @Override
-    public List<ListCriteria> movementListCriteria() {
-        ListCriteria criteria = new ListCriteria();
-        List<ListCriteria> listCriteria = new ArrayList<>();
-        if (Position.positions.equals(positionSelector.getPosition())) {
-            criteria = CommonFilterMapper.INSTANCE.positionToListCriteria(this);
-        }
-        if (criteria.getKey() != null) {
-            listCriteria.add(criteria);
-        }
-        return listCriteria;
-    }
-
     // UT
     protected DateTime nowUTC() {
         return DateUtils.nowUTC();
-    }
-
-    @Override
-    public Object getUniqKey() {
-        return getId();
     }
 
     public DateRange getDateRange() {

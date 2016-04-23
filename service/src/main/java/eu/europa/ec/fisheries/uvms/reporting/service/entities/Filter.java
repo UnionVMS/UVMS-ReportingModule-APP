@@ -1,18 +1,43 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
-import eu.europa.ec.fisheries.wsdl.asset.group.*;
-import eu.europa.ec.fisheries.wsdl.asset.types.*;
-import lombok.*;
-import org.joda.time.*;
-
-import javax.persistence.*;
-import javax.validation.*;
-import java.io.*;
-import java.util.*;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import lombok.EqualsAndHashCode;
+import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "filter", schema = "reporting")
@@ -25,26 +50,23 @@ import java.util.*;
 @EqualsAndHashCode(of = {"id"})
 public abstract class Filter implements Serializable {
 
-    @Transient
-    protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
     public static final String REPORT_ID = "report_id";
     public static final String FILTER_ID = "filter_id";
-
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
     public static final String DELETE_BY_ID = "Filter.deleteById";
-
     @Transient
     private final FilterType type;
-
+    @Transient
+    protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     @Id
     @Column(name = FILTER_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    public Filter(FilterType type) {
-        this.type = type;
-    }
+    @ManyToOne
+    @JoinColumn(name = REPORT_ID, nullable = false)
+    private Report report;
+    @Transient
+    private Long reportId;
 
     public Filter(FilterType type, Long id, Long reportId) {
         this(type);
@@ -52,14 +74,11 @@ public abstract class Filter implements Serializable {
         this.reportId = reportId;
     }
 
+    public Filter(FilterType type) {
+        this.type = type;
+    }
+
     public abstract <T> T accept(FilterVisitor<T> visitor);
-
-    @ManyToOne
-    @JoinColumn(name = REPORT_ID, nullable = false)
-    private Report report;
-
-    @Transient
-    private Long reportId;
 
     protected void validate() {
         Set<ConstraintViolation<Filter>> violations =

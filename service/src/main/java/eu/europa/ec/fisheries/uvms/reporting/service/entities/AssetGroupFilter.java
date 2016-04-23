@@ -1,15 +1,17 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import eu.europa.ec.fisheries.wsdl.asset.group.*;
-import lombok.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
+import java.util.List;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.util.*;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
-import static java.util.Arrays.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.vgroup;
+import static java.util.Arrays.asList;
 
 @Entity
 @DiscriminatorValue("VGROUP")
@@ -50,21 +52,13 @@ public class AssetGroupFilter extends Filter {
     }
 
     @Override
-    public List<AssetGroup> assetGroupCriteria() {
-        return asList(AssetGroupFilterMapper.INSTANCE.assetGroupFilterToAssetGroup(this));
-    }
-
-    @Override
     public Object getUniqKey() {
         return getGuid();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public List<AssetGroup> assetGroupCriteria() {
+        return asList(AssetGroupFilterMapper.INSTANCE.assetGroupFilterToAssetGroup(this));
     }
 
     public String getGuid() {
@@ -73,6 +67,14 @@ public class AssetGroupFilter extends Filter {
 
     public void setGuid(String guid) {
         this.guid = guid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUserName() {

@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities.converter;
 
-import javax.persistence.*;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 @Converter
 public class CharBooleanConverter implements

@@ -11,10 +11,6 @@ public enum Position {
         this.name = value;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public static Position getByName(String name) {
         for (Position e : Position.values()) {
             if (e.getName().equals(name)) {
@@ -22,6 +18,10 @@ public enum Position {
             }
         }
         return null;// not found
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

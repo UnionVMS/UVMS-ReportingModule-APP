@@ -1,12 +1,15 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
-import lombok.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import javax.persistence.*;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.areas;
 
 @Entity
 @DiscriminatorValue("areas")

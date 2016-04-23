@@ -1,8 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import lombok.*;
-
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import lombok.Builder;
+import lombok.Data;
 
 @Embeddable
 @Data

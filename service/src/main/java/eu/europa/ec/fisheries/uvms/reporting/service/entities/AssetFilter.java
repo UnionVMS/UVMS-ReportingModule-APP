@@ -1,16 +1,18 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import eu.europa.ec.fisheries.wsdl.asset.types.*;
-import lombok.*;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import java.util.List;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.util.*;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
-import static java.util.Arrays.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.asset;
+import static java.util.Arrays.asList;
 
 @Entity
 @DiscriminatorValue("ASSET")

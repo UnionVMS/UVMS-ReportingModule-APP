@@ -1,23 +1,40 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.common.*;
-import eu.europa.ec.fisheries.uvms.reporting.model.*;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.*;
-import lombok.*;
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.validation.constraints.*;
-import java.io.*;
-import java.util.*;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.Where;
 
-import static javax.persistence.CascadeType.*;
-import static org.apache.commons.collections4.CollectionUtils.*;
+import static javax.persistence.CascadeType.ALL;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Entity
 @Table(name = "report", schema = "reporting")
@@ -123,6 +140,10 @@ public class Report implements Serializable {
         this.visibility = incoming.visibility;
     }
 
+    public void mergeDetails(ReportDetails reportDetails) {
+        this.details.merge(reportDetails);
+    }
+
     @PrePersist
     private void onCreate() {
         audit = new Audit(DateUtils.nowUTC().toDate());
@@ -130,6 +151,10 @@ public class Report implements Serializable {
 
     public Audit getAudit() {
         return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     public Set<Filter> getFilters() {
@@ -140,27 +165,19 @@ public class Report implements Serializable {
         this.filters = filters;
     }
 
-    public void setAudit(Audit audit) {
-        this.audit = audit;
+    public ReportDetails getDetails() {
+        return details;
     }
 
     public void setDetails(ReportDetails details) {
         this.details = details;
     }
 
-    public ReportDetails getDetails() {
-        return details;
-    }
-
-    public void setVisibility(VisibilityEnum visibility) {
-        this.visibility = visibility;
-    }
-
     public VisibilityEnum getVisibility() {
         return visibility;
     }
 
-    public void mergeDetails(ReportDetails reportDetails) {
-        this.details.merge(reportDetails);
+    public void setVisibility(VisibilityEnum visibility) {
+        this.visibility = visibility;
     }
 }

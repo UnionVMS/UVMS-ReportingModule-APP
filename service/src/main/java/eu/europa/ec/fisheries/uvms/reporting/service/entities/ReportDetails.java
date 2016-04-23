@@ -1,11 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import lombok.*;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDetailsMapper;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Embeddable
 @EqualsAndHashCode

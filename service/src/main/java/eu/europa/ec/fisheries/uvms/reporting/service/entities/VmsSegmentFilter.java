@@ -1,17 +1,23 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
-import eu.europa.ec.fisheries.schema.movement.v1.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import lombok.*;
-import org.joda.time.*;
-
-import javax.persistence.*;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import java.util.ArrayList;
-import java.util.*;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.joda.time.DateTime;
 
-import static java.util.Arrays.*;
-import static org.apache.commons.collections4.ListUtils.*;
+import static java.util.Arrays.asList;
+import static org.apache.commons.collections4.ListUtils.union;
 
 @Entity
 @DiscriminatorValue("VMSSEG")
@@ -47,8 +53,18 @@ public class VmsSegmentFilter extends Filter {
     }
 
     @Override
+    public <T> T accept(FilterVisitor<T> visitor) {
+        return visitor.visitVmsSegmentFilter(this);
+    }
+
+    @Override
     public void merge(Filter filter) {
         VmsSegmentFilterMapper.INSTANCE.merge((VmsSegmentFilter) filter, this);
+    }
+
+    @Override
+    public Object getUniqKey() {
+        return getType();
     }
 
     @Override
@@ -82,16 +98,6 @@ public class VmsSegmentFilter extends Filter {
 
     public void setCategory(SegmentCategoryType category) {
         this.category = category;
-    }
-
-    @Override
-    public <T> T accept(FilterVisitor<T> visitor) {
-        return visitor.visitVmsSegmentFilter(this);
-    }
-
-    @Override
-    public Object getUniqKey() {
-        return getType();
     }
 
     public Float getMinimumSpeed() {

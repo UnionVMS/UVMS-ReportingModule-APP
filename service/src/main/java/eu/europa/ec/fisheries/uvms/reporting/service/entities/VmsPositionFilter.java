@@ -1,16 +1,22 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.*;
-import eu.europa.ec.fisheries.schema.movement.v1.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import lombok.*;
-import org.joda.time.*;
-
-import javax.persistence.*;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import java.util.ArrayList;
-import java.util.*;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.joda.time.DateTime;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
@@ -56,6 +62,11 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Override
+    public Object getUniqKey() {
+        return getType();
+    }
+
+    @Override
     public List<ListCriteria> movementListCriteria() {
         List<ListCriteria> criteria = new ArrayList<>();
         ListCriteria listCriteria;
@@ -80,19 +91,6 @@ public class VmsPositionFilter extends Filter {
         return asList(VmsPositionFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
 
-    @Override
-    public Object getUniqKey() {
-        return getType();
-    }
-
-    public Float getMinimumSpeed() {
-        return minimumSpeed;
-    }
-
-    public void setMinimumSpeed(Float minimumSpeed) {
-        this.minimumSpeed = minimumSpeed;
-    }
-
     public MovementTypeType getMovementType() {
         return movementType;
     }
@@ -107,6 +105,14 @@ public class VmsPositionFilter extends Filter {
 
     public void setMovementActivity(MovementActivityTypeType movementActivity) {
         this.movementActivity = movementActivity;
+    }
+
+    public Float getMinimumSpeed() {
+        return minimumSpeed;
+    }
+
+    public void setMinimumSpeed(Float minimumSpeed) {
+        this.minimumSpeed = minimumSpeed;
     }
 
     public Float getMaximumSpeed() {

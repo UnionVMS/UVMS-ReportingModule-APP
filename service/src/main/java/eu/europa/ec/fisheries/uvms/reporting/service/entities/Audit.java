@@ -1,10 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import lombok.*;
-
-import javax.persistence.*;
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Embeddable
 @EqualsAndHashCode
