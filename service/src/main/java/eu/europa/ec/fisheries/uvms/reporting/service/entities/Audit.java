@@ -1,15 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.*;
+import java.io.*;
+import java.util.*;
 
 @Embeddable
 @EqualsAndHashCode
@@ -17,7 +12,10 @@ import java.util.Date;
 public class Audit implements Serializable {
 
     public static final String CREATED_ON = "created_on";
-    private @Temporal(TemporalType.TIMESTAMP)  @Column(name = CREATED_ON, nullable = false) Date createdOn;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = CREATED_ON, nullable = false)
+    private Date createdOn;
 
     Audit() {
     }

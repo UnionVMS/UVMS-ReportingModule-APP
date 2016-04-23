@@ -1,20 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.*;
+import eu.europa.ec.fisheries.schema.movement.v1.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import lombok.*;
+import org.joda.time.*;
+
+import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.joda.time.DateTime;
+import java.util.*;
 
 import static java.util.Arrays.*;
 
@@ -24,12 +18,19 @@ import static java.util.Arrays.*;
 @ToString
 public class VmsPositionFilter extends Filter {
 
-    private @Column(name = "MIN_SPEED") Float minimumSpeed;
-    private @Column(name = "MAX_SPEED") Float maximumSpeed;
-    private @Column(name = "MOV_TYPE") MovementTypeType movementType;
-    private @Column(name = "MOV_ACTIVITY") MovementActivityTypeType movementActivity;
+    @Column(name = "MIN_SPEED")
+    private Float minimumSpeed;
 
-    VmsPositionFilter(){
+    @Column(name = "MAX_SPEED")
+    private Float maximumSpeed;
+
+    @Column(name = "MOV_TYPE")
+    private MovementTypeType movementType;
+
+    @Column(name = "MOV_ACTIVITY")
+    private MovementActivityTypeType movementActivity;
+
+    VmsPositionFilter() {
         super(FilterType.vmspos);
     }
 
@@ -53,25 +54,25 @@ public class VmsPositionFilter extends Filter {
     public void merge(Filter filter) {
         VmsPositionFilterMapper.INSTANCE.merge((VmsPositionFilter) filter, this);
     }
-    
+
     @Override
     public List<ListCriteria> movementListCriteria() {
-    	List<ListCriteria> criteria = new ArrayList<>();
+        List<ListCriteria> criteria = new ArrayList<>();
         ListCriteria listCriteria;
 
         if (movementType != null) {
             listCriteria = new ListCriteria();
             listCriteria.setKey(SearchKey.MOVEMENT_TYPE);
             listCriteria.setValue(getMovementType().name());
-        	criteria.add(listCriteria);
-    	}    	
-    	if (movementActivity != null) {
+            criteria.add(listCriteria);
+        }
+        if (movementActivity != null) {
             listCriteria = new ListCriteria();
             listCriteria.setKey(SearchKey.ACTIVITY_TYPE);
             listCriteria.setValue(getMovementActivity().name());
-        	criteria.add(listCriteria);
-    	}
-    	return criteria;
+            criteria.add(listCriteria);
+        }
+        return criteria;
     }
 
     @Override
@@ -89,7 +90,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     public void setMinimumSpeed(Float minimumSpeed) {
-    	this.minimumSpeed = minimumSpeed;       
+        this.minimumSpeed = minimumSpeed;
     }
 
     public MovementTypeType getMovementType() {
@@ -113,7 +114,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     public void setMaximumSpeed(Float maximumSpeed) {
-    	this.maximumSpeed = maximumSpeed;        
+        this.maximumSpeed = maximumSpeed;
     }
 
 }

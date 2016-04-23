@@ -1,17 +1,19 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
+import javax.persistence.*;
+import java.io.*;
 
 @Embeddable
 @EqualsAndHashCode
 public class TimeRange implements Serializable {
 
-    private @Column(name = "MIN_TIME") Float minTime;
-    private @Column(name = "MAX_TIME") Float maxTime;
+    @Column(name = "MIN_TIME")
+    private Float minTime;
+
+    @Column(name = "MAX_TIME")
+    private Float maxTime;
 
     public TimeRange() {
     }

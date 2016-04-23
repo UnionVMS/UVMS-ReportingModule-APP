@@ -1,44 +1,23 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.schema.movement.search.v1.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import lombok.EqualsAndHashCode;
-import org.joda.time.DateTime;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
+import eu.europa.ec.fisheries.wsdl.asset.group.*;
+import eu.europa.ec.fisheries.wsdl.asset.types.*;
+import lombok.*;
+import org.joda.time.*;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.persistence.*;
+import javax.validation.*;
+import java.io.*;
+import java.util.*;
 
 @Entity
 @Table(name = "filter", schema = "reporting")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="FILTER_TYPE")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "FILTER_TYPE")
 @NamedQueries({
         @NamedQuery(name = Filter.LIST_BY_REPORT_ID, query = "SELECT f FROM Filter f WHERE report.id = :reportId"),
         @NamedQuery(name = Filter.DELETE_BY_ID, query = "DELETE FROM Filter WHERE id = :id")
@@ -60,7 +39,7 @@ public abstract class Filter implements Serializable {
 
     @Id
     @Column(name = FILTER_ID)
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Filter(FilterType type) {
@@ -132,16 +111,16 @@ public abstract class Filter implements Serializable {
         return Collections.emptyList();
     }
 
-    public List<AssetGroup> assetGroupCriteria(){
+    public List<AssetGroup> assetGroupCriteria() {
         return Collections.emptyList();
     }
 
-    public List<RangeCriteria> movementRangeCriteria(DateTime now){
+    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
         return Collections.emptyList();
     }
 
     public AreaIdentifierType getAreaIdentifierType() {
-    	return new AreaIdentifierType();
+        return new AreaIdentifierType();
     }
 
     public static class FilterToDTOVisitor implements FilterVisitor<FilterDTO> {

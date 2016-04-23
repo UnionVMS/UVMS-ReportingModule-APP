@@ -1,17 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.joda.time.DateTime;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.List;
+import eu.europa.ec.fisheries.schema.movement.search.v1.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import lombok.*;
+import org.joda.time.*;
+
+import javax.persistence.*;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
 
@@ -21,10 +16,17 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.
 @ToString
 public class VmsTrackFilter extends Filter {
 
-    private @Embedded TimeRange timeRange;
-    private @Embedded DurationRange durationRange;
-    private @Column(name = "MIN_AVG_SPEED") Float minAvgSpeed;
-    private @Column(name = "MAX_AVG_SPEED") Float maxAvgSpeed;
+    @Embedded
+    private TimeRange timeRange;
+
+    @Embedded
+    private DurationRange durationRange;
+
+    @Column(name = "MIN_AVG_SPEED")
+    private Float minAvgSpeed;
+
+    @Column(name = "MAX_AVG_SPEED")
+    private Float maxAvgSpeed;
 
     public VmsTrackFilter() {
         super(vmstrack);
@@ -60,7 +62,7 @@ public class VmsTrackFilter extends Filter {
             rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
         }
         if (timeRange != null) {
-            rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.timeRangeToRangeCriteria(this) );
+            rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.timeRangeToRangeCriteria(this));
         }
         return rangeCriteria;
     }

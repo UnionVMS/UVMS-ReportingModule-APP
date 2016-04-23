@@ -1,20 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.joda.time.DateTime;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import eu.europa.ec.fisheries.schema.movement.search.v1.*;
+import eu.europa.ec.fisheries.uvms.common.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.validation.*;
+import lombok.*;
+import org.joda.time.*;
+
+import javax.persistence.*;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
 
@@ -25,10 +19,13 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.
 @ToString
 public class CommonFilter extends Filter {
 
-    private @Embedded DateRange dateRange;
-    private @Embedded PositionSelector positionSelector;
+    @Embedded
+    private DateRange dateRange;
 
-    public CommonFilter(){
+    @Embedded
+    private PositionSelector positionSelector;
+
+    public CommonFilter() {
         super(common);
     }
 
@@ -48,12 +45,12 @@ public class CommonFilter extends Filter {
 
     @Override
     public void merge(Filter filter) {
-       CommonFilterMapper.INSTANCE.merge((CommonFilter) filter, this);
+        CommonFilterMapper.INSTANCE.merge((CommonFilter) filter, this);
     }
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
-        List<RangeCriteria> rangeCriteria =new ArrayList<>();
+        List<RangeCriteria> rangeCriteria = new ArrayList<>();
         RangeCriteria date = CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(this);
         setDefaultValues(date, now);
 
@@ -61,8 +58,7 @@ public class CommonFilter extends Filter {
             Float hours = positionSelector.getValue();
             Date to = DateUtils.nowUTCMinusSeconds(now, hours).toDate();
             rangeCriteria.add(CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(to, now.toDate()));
-        }
-        else {
+        } else {
             rangeCriteria.add(date);
         }
 

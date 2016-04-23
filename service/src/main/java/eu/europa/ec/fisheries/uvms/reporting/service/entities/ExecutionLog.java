@@ -1,11 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import lombok.Builder;
-import lombok.ToString;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.Filters;
-import org.hibernate.annotations.ParamDef;
-
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -22,6 +16,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.ToString;
 
 @Entity
 @Table(name = "execution_log", schema = "reporting",
@@ -29,52 +25,65 @@ import javax.validation.constraints.NotNull;
 @ToString(exclude = "report")
 public class ExecutionLog implements Serializable {
 
-	private @Id @GeneratedValue(strategy=GenerationType.IDENTITY) long id;
-	private @Valid @JoinColumn( name = "report_id") @ManyToOne(fetch = FetchType.LAZY) Report report;
-    private @NotNull @Column(name = "executed_by") String executedBy;
-	private @NotNull @Temporal(TemporalType.TIMESTAMP) @Column(name = "executed_on") Date executedOn;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	public ExecutionLog() {
-	}
+    @Valid
+    @JoinColumn(name = "report_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Report report;
+
+    @NotNull
+    @Column(name = "executed_by")
+    private String executedBy;
+
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "executed_on")
+    private Date executedOn;
+
+    public ExecutionLog() {
+    }
 
     @Builder
-	public ExecutionLog(long id, Report report, String executedBy) {
-		this.id = id;
-		this.report = report;
-		this.executedBy = executedBy;
-		this.executedOn = new Date();
-	}
+    public ExecutionLog(long id, Report report, String executedBy) {
+        this.id = id;
+        this.report = report;
+        this.executedBy = executedBy;
+        this.executedOn = new Date();
+    }
 
-	public long getId() {
-		return this.id;
-	}
+    public long getId() {
+        return this.id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public Report getReport() {
-		return this.report;
-	}
+    public Report getReport() {
+        return this.report;
+    }
 
-	public void setReport(Report report) {
-		this.report = report;
-	}
+    public void setReport(Report report) {
+        this.report = report;
+    }
 
-	public String getExecutedBy() {
-		return this.executedBy;
-	}
+    public String getExecutedBy() {
+        return this.executedBy;
+    }
 
-	public void setExecutedBy(String executedBy) {
-		this.executedBy = executedBy;
-	}
+    public void setExecutedBy(String executedBy) {
+        this.executedBy = executedBy;
+    }
 
-	public Date getExecutedOn() {
-		return this.executedOn;
-	}
+    public Date getExecutedOn() {
+        return this.executedOn;
+    }
 
-	public void setExecutedOn(Date executedOn) {
-		this.executedOn = executedOn;
-	}
+    public void setExecutedOn(Date executedOn) {
+        this.executedOn = executedOn;
+    }
 
 }

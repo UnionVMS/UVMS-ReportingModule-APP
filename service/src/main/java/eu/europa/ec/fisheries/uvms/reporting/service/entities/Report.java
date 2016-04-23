@@ -1,59 +1,42 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
-import org.hibernate.annotations.Where;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Embedded;
+import eu.europa.ec.fisheries.uvms.common.*;
+import eu.europa.ec.fisheries.uvms.reporting.model.*;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.*;
+import lombok.*;
+import org.hibernate.annotations.*;
+
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.*;
+import java.io.*;
+import java.util.*;
 
-import static javax.persistence.CascadeType.ALL;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static javax.persistence.CascadeType.*;
+import static org.apache.commons.collections4.CollectionUtils.*;
 
 @Entity
 @Table(name = "report", schema = "reporting")
 @NamedQueries({
         @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
                 "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                    "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
-                    "AND r.isDeleted <> :existent " +
-                    "ORDER BY r.id"),
+                        "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
+                        "AND r.isDeleted <> :existent " +
+                        "ORDER BY r.id"),
         @NamedQuery(name = Report.FIND_BY_ID, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                    "WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND ((1=:isAdmin) OR (r.details.createdBy = :username " +
-                    "OR (r.details.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC'))")
+                        "WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND ((1=:isAdmin) OR (r.details.createdBy = :username " +
+                        "OR (r.details.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC'))")
 })
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(exclude = {"executionLogs", "filters", "audit"})
 @ToString
 @Data
-@FilterDef(name=Report.EXECUTED_BY_USER, parameters=@ParamDef( name="username", type="string" ) )
+@FilterDef(name = Report.EXECUTED_BY_USER, parameters = @ParamDef(name = "username", type = "string"))
 public class Report implements Serializable {
 
     public static final String IS_DELETED = "is_deleted";
@@ -67,7 +50,7 @@ public class Report implements Serializable {
     private Long id;
 
     @OneToMany(mappedBy = "report", cascade = ALL)
-    @org.hibernate.annotations.Filter(name=EXECUTED_BY_USER, condition="executed_by = :username")
+    @org.hibernate.annotations.Filter(name = EXECUTED_BY_USER, condition = "executed_by = :username")
     private Set<ExecutionLog> executionLogs = new HashSet<>();
 
     @OneToMany(mappedBy = "report", cascade = ALL)
@@ -145,39 +128,39 @@ public class Report implements Serializable {
         audit = new Audit(DateUtils.nowUTC().toDate());
     }
 
-    public Audit getAudit(){
+    public Audit getAudit() {
         return audit;
     }
 
-    public Set<Filter> getFilters(){
+    public Set<Filter> getFilters() {
         return filters;
     }
 
-    public void setFilters(Set<Filter> filters){
+    public void setFilters(Set<Filter> filters) {
         this.filters = filters;
     }
 
-    public void setAudit(Audit audit){
+    public void setAudit(Audit audit) {
         this.audit = audit;
     }
 
-    public void setDetails(ReportDetails details){
+    public void setDetails(ReportDetails details) {
         this.details = details;
     }
 
-    public ReportDetails getDetails(){
+    public ReportDetails getDetails() {
         return details;
     }
 
-    public void setVisibility(VisibilityEnum visibility){
+    public void setVisibility(VisibilityEnum visibility) {
         this.visibility = visibility;
     }
 
-    public VisibilityEnum getVisibility(){
+    public VisibilityEnum getVisibility() {
         return visibility;
     }
 
-    public void mergeDetails(ReportDetails reportDetails){
+    public void mergeDetails(ReportDetails reportDetails) {
         this.details.merge(reportDetails);
     }
 }

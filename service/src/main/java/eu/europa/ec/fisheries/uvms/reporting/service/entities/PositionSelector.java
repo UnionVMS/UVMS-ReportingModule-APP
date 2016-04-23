@@ -1,11 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 @Embeddable
 @Data
@@ -19,7 +16,7 @@ public class PositionSelector {
     @Enumerated(EnumType.STRING)
     private Position position;
 
-    PositionSelector(){
+    PositionSelector() {
 
     }
 

@@ -1,20 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.*;
+import eu.europa.ec.fisheries.schema.movement.v1.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import lombok.*;
+import org.joda.time.*;
+
+import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
-import lombok.ToString;
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import org.joda.time.DateTime;
+import java.util.*;
 
 import static java.util.Arrays.*;
 import static org.apache.commons.collections4.ListUtils.*;
@@ -25,12 +19,19 @@ import static org.apache.commons.collections4.ListUtils.*;
 @ToString
 public class VmsSegmentFilter extends Filter {
 
-    private @Column(name = "MIN_SPEED") Float minimumSpeed;
-    private @Column(name = "MAX_SPEED") Float maximumSpeed;
-    private @Embedded DurationRange durationRange;
-    private @Column(name = "SEG_CATEGORY") SegmentCategoryType category;
+    @Column(name = "MIN_SPEED")
+    private Float minimumSpeed;
 
-    VmsSegmentFilter(){
+    @Column(name = "MAX_SPEED")
+    private Float maximumSpeed;
+
+    @Embedded
+    private DurationRange durationRange;
+
+    @Column(name = "SEG_CATEGORY")
+    private SegmentCategoryType category;
+
+    VmsSegmentFilter() {
         super(FilterType.vmsseg);
     }
 
@@ -49,7 +50,7 @@ public class VmsSegmentFilter extends Filter {
     public void merge(Filter filter) {
         VmsSegmentFilterMapper.INSTANCE.merge((VmsSegmentFilter) filter, this);
     }
-    
+
     @Override
     public List<ListCriteria> movementListCriteria() {
         List<ListCriteria> criteria = new ArrayList<>();

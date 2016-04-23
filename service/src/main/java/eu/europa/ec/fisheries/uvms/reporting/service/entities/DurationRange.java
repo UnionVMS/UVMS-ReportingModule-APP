@@ -1,18 +1,20 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
+import lombok.*;
+
+import javax.persistence.*;
+import java.io.*;
 
 @Embeddable
 @EqualsAndHashCode
 @ToString
 public class DurationRange implements Serializable {
 
-    private @Column(name = "MIN_DURATION") Float minDuration;
-    private @Column(name = "MAX_DURATION") Float maxDuration;
+    @Column(name = "MIN_DURATION")
+    private Float minDuration;
+
+    @Column(name = "MAX_DURATION")
+    private Float maxDuration;
 
     public DurationRange() {
     }

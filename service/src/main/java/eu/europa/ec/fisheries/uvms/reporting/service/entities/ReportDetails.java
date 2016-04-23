@@ -1,15 +1,11 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDetailsMapper;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.*;
 
 @Embeddable
 @EqualsAndHashCode
@@ -24,8 +20,9 @@ public class ReportDetails {
     public static final int LENGTH_255 = 255;
     public static final int LENGTH_1 = 1;
 
+    @NotNull
     @Column(nullable = false, length = LENGTH_255)
-    private @NotNull String name;
+    private String name;
 
     @Column(nullable = true, length = LENGTH_255)
     private String description;
@@ -34,17 +31,20 @@ public class ReportDetails {
     @Convert(converter = CharBooleanConverter.class)
     private Boolean withMap;
 
-    private @NotNull @Column(name = SCOPE_NAME) String scopeName;
+    @NotNull
+    @Column(name = SCOPE_NAME)
+    private String scopeName;
 
+    @NotNull
     @Column(name = CREATED_BY, nullable = false, length = LENGTH_255)
-    private @NotNull String createdBy;
+    private String createdBy;
 
     ReportDetails() {
 
     }
 
     @Builder
-    public ReportDetails(String description, String name, Boolean withMap, String scopeName, String createdBy){
+    public ReportDetails(String description, String name, Boolean withMap, String scopeName, String createdBy) {
         this.name = name;
         this.withMap = withMap;
         this.scopeName = scopeName;

@@ -6,7 +6,8 @@ import com.vividsolutions.jts.io.WKTReader;
 
 public class GeometryUtil {
 
-    private GeometryUtil(){}
+    private GeometryUtil() {
+    }
 
     public static Geometry toGeometry(final String wkt) throws ParseException {
 
