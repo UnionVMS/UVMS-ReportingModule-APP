@@ -90,8 +90,6 @@ public class ReportingResource extends UnionVMSResource {
 
         log.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 
-
-
         try {
             Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
             String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username,  getApplicationName(request), roleName, scopeName);
