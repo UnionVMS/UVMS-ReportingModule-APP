@@ -159,12 +159,6 @@
             </dependency>
 
             <dependency>
-                <groupId>de.grundid.opendatalab</groupId>
-                <artifactId>geojson-jackson</artifactId>
-                <version>1.5</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jvnet.jaxb2_commons</groupId>
                 <artifactId>jaxb2-basics-runtime</artifactId>
                 <version>0.9.4</version>
