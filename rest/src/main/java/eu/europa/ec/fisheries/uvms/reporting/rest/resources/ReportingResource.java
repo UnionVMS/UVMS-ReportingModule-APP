@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.util.Constants.*;
+import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 
 @Path("/report")
 @Slf4j

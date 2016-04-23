@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.util.Constants.*;
+import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
