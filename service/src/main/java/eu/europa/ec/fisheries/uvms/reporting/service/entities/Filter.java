@@ -40,7 +40,7 @@ import lombok.EqualsAndHashCode;
 import org.joda.time.DateTime;
 
 @Entity
-@Table(name = "filter", schema = "reporting")
+@Table(name = "filter")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "FILTER_TYPE")
 @NamedQueries({

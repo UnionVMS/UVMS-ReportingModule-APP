@@ -37,7 +37,7 @@ import static javax.persistence.CascadeType.ALL;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Entity
-@Table(name = "report", schema = "reporting")
+@Table(name = "report")
 @NamedQueries({
         @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
                 "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +

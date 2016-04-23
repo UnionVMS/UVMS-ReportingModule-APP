@@ -20,8 +20,7 @@ import lombok.Builder;
 import lombok.ToString;
 
 @Entity
-@Table(name = "execution_log", schema = "reporting",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
+@Table(name = "execution_log", uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
 @ToString(exclude = "report")
 public class ExecutionLog implements Serializable {
 
