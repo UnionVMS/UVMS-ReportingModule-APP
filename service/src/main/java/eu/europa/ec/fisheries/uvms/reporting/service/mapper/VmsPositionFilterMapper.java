@@ -1,6 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.VmsPosition;
@@ -28,6 +30,18 @@ public interface VmsPositionFilterMapper {
             @Mapping(target = "movementType", expression = "java(dto.getMovType() != null ? Enum.valueOf( MovementTypeType.class, dto.getMovType()) : null)")
     })
     VmsPositionFilter vmsPositionToVmsPositionFilter(VmsPosition dto);
+
+    @Mappings({
+            @Mapping(constant = "ACTIVITY_TYPE", target = "key"),
+            @Mapping(source = "movementActivity", target = "value")
+    })
+    ListCriteria movementActivityToListCriteria(VmsPositionFilter vmsPositionFilter);
+
+    @Mappings({
+            @Mapping(constant = "MOVEMENT_TYPE", target = "key"),
+            @Mapping(source = "movementType", target = "value")
+    })
+    ListCriteria movementTypeToListCriteria(VmsPositionFilter vmsPositionFilter);
 
     @Mappings({
             @Mapping(constant = "MOVEMENT_SPEED", target = "key"),

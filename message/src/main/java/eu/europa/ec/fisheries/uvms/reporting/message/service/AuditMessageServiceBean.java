@@ -8,8 +8,8 @@ import javax.jms.Destination;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
 
-import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
+import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 
 /**
  * AuditMessageServiceBean responsible to send an receive messages to and from AUDIT module from Reporting

@@ -2,11 +2,12 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -15,9 +16,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
-
-import static java.util.Arrays.asList;
-import static org.apache.commons.collections4.ListUtils.union;
 
 @Entity
 @DiscriminatorValue("VMSSEG")
@@ -37,7 +35,7 @@ public class VmsSegmentFilter extends Filter {
     @Column(name = "SEG_CATEGORY")
     private SegmentCategoryType category;
 
-    VmsSegmentFilter() {
+    public VmsSegmentFilter() {
         super(FilterType.vmsseg);
     }
 
@@ -69,27 +67,19 @@ public class VmsSegmentFilter extends Filter {
 
     @Override
     public List<ListCriteria> movementListCriteria() {
-        List<ListCriteria> criteria = new ArrayList<>();
-        if (category != null) {
-            ListCriteria segmentCategory = new ListCriteria();
-            segmentCategory.setKey(SearchKey.CATEGORY);
-            segmentCategory.setValue(getCategory().value());
-            criteria.add(segmentCategory);
-        }
-        return criteria;
+        return Arrays.asList(VmsSegmentFilterMapper.INSTANCE.categoryToListCriteria(this));
     }
 
     @Override
     public List<RangeCriteria> movementRangeCriteria(DateTime now) {
-        List<RangeCriteria> durationCriteria = new ArrayList<>();
-        List<RangeCriteria> speedCriteria = new ArrayList<>();
+        List<RangeCriteria> criteria = new ArrayList<>();
         if (minimumSpeed != null && maximumSpeed != null) {
-            speedCriteria = asList(VmsSegmentFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
+            criteria.add(VmsSegmentFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
         }
         if (durationRange != null) {
-            durationCriteria = asList(VmsSegmentFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
+            criteria.add(VmsSegmentFilterMapper.INSTANCE.durationRangeToRangeCriteria(this));
         }
-        return union(speedCriteria, durationCriteria);
+        return criteria;
     }
 
     public SegmentCategoryType getCategory() {
@@ -122,5 +112,15 @@ public class VmsSegmentFilter extends Filter {
 
     public void setDurationRange(DurationRange durationRange) {
         this.durationRange = durationRange;
+    }
+
+    public String convertedMaxDuration(){
+        Long maxDuration = durationRange.getMaxDuration() != null ? durationRange.getMaxDuration().longValue() : Long.MAX_VALUE;
+        return String.valueOf(TimeUnit.MILLISECONDS.convert(maxDuration, TimeUnit.HOURS));
+    }
+
+    public String convertedMinDuration(){
+        Long minDuration = durationRange.getMinDuration() != null ? durationRange.getMinDuration().longValue() : 0;
+        return String.valueOf(TimeUnit.MILLISECONDS.convert(minDuration, TimeUnit.HOURS));
     }
 }

@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
+import java.util.concurrent.TimeUnit;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.vmstrack;
 
@@ -107,6 +108,26 @@ public class VmsTrackFilter extends Filter {
 
     public void setMaxAvgSpeed(Float maxAvgSpeed) {
         this.maxAvgSpeed = maxAvgSpeed;
+    }
+
+    public String convertedMinTime(){
+        Long minTime = timeRange.getMinTime() != null ? timeRange.getMinTime().longValue() : 0;
+        return String.valueOf(TimeUnit.MILLISECONDS.convert(minTime, TimeUnit.HOURS));
+    }
+
+    public String convertedMaxTime(){
+        Long maxTime = timeRange.getMaxTime() != null ? timeRange.getMaxTime().longValue() : Long.MAX_VALUE;
+        return String.valueOf(TimeUnit.MILLISECONDS.convert(maxTime, TimeUnit.HOURS));
+    }
+
+    public String convertedMaxDuration(){
+        Long maxDuration = durationRange.getMaxDuration() != null ? durationRange.getMaxDuration().longValue() : Long.MAX_VALUE;
+        return String.valueOf(TimeUnit.MILLISECONDS.convert(maxDuration, TimeUnit.HOURS));
+    }
+
+    public String convertedMinDuration(){
+        Long minDuration = durationRange.getMinDuration() != null ? durationRange.getMinDuration().longValue() : 0L;
+        return String.valueOf(TimeUnit.MILLISECONDS.convert(minDuration, TimeUnit.HOURS));
     }
 
 }

@@ -28,7 +28,6 @@ public interface VmsSegmentFilterMapper {
     @Mapping(target = "durationRange", expression = "java(new DurationRange(dto.getMinDuration(), dto.getMaxDuration()))")
     VmsSegmentFilter vmsSegmentFilterDTOToVmsSegmentFilter(VmsSegmentFilterDTO dto);
 
-
     @Mappings({
             @Mapping(source = "segMaxSpeed", target = "maximumSpeed"),
             @Mapping(source = "segMinSpeed", target = "minimumSpeed"),
@@ -52,8 +51,8 @@ public interface VmsSegmentFilterMapper {
 
     @Mappings({
             @Mapping(constant = "SEGMENT_DURATION", target = "key"),
-            @Mapping(source = "durationRange.minDuration", target = "from", defaultValue = "0"),
-            @Mapping(source = "durationRange.maxDuration", target = "to", defaultValue = "9223372036854775807")
+            @Mapping(target = "from", expression = "java(segmentFilter.convertedMinDuration())"),
+            @Mapping(target = "to", expression = "java(segmentFilter.convertedMaxDuration())")
     })
     RangeCriteria durationRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
 

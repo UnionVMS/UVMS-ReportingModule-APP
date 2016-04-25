@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
@@ -36,7 +35,7 @@ public class VmsPositionFilter extends Filter {
     @Column(name = "MOV_ACTIVITY")
     private MovementActivityTypeType movementActivity;
 
-    VmsPositionFilter() {
+    public VmsPositionFilter() {
         super(FilterType.vmspos);
     }
 
@@ -69,20 +68,8 @@ public class VmsPositionFilter extends Filter {
     @Override
     public List<ListCriteria> movementListCriteria() {
         List<ListCriteria> criteria = new ArrayList<>();
-        ListCriteria listCriteria;
-
-        if (movementType != null) {
-            listCriteria = new ListCriteria();
-            listCriteria.setKey(SearchKey.MOVEMENT_TYPE);
-            listCriteria.setValue(getMovementType().name());
-            criteria.add(listCriteria);
-        }
-        if (movementActivity != null) {
-            listCriteria = new ListCriteria();
-            listCriteria.setKey(SearchKey.ACTIVITY_TYPE);
-            listCriteria.setValue(getMovementActivity().name());
-            criteria.add(listCriteria);
-        }
+        criteria.add(VmsPositionFilterMapper.INSTANCE.movementActivityToListCriteria(this));
+        criteria.add(VmsPositionFilterMapper.INSTANCE.movementTypeToListCriteria(this));
         return criteria;
     }
 

@@ -33,21 +33,21 @@ public interface VmsTrackFilterMapper {
     @Mappings({
             @Mapping(constant = "TRACK_SPEED", target = "key"),
             @Mapping(source = "minAvgSpeed", target = "from", defaultValue = "0"),
-            @Mapping(source = "maxAvgSpeed", target = "to", defaultValue = "9223372036854775807")
+            @Mapping(source = "maxAvgSpeed", target = "to", defaultValue = "9223372036854775807") // FIXME convert to ms
     })
     RangeCriteria speedRangeToRangeCriteria(VmsTrackFilter trackFilter);
 
     @Mappings({
             @Mapping(constant = "TRACK_DURATION", target = "key"),
-            @Mapping(source = "durationRange.minDuration", target = "from", defaultValue = "0"),
-            @Mapping(source = "durationRange.maxDuration", target = "to", defaultValue = "9223372036854775807")
+            @Mapping(target = "from", expression = "java(trackFilter.convertedMinDuration())"),
+            @Mapping(target = "to", expression = "java(trackFilter.convertedMaxDuration())")
     })
     RangeCriteria durationRangeToRangeCriteria(VmsTrackFilter trackFilter);
 
     @Mappings({
             @Mapping(constant = "TRACK_DURATION_AT_SEA", target = "key"),
-            @Mapping(source = "timeRange.minTime", target = "from", defaultValue = "0"),
-            @Mapping(source = "timeRange.maxTime", target = "to", defaultValue = "9223372036854775807")
+            @Mapping(target = "from", expression = "java(trackFilter.convertedMinTime())"),
+            @Mapping(target = "to", expression = "java(trackFilter.convertedMaxTime())")
     })
     RangeCriteria timeRangeToRangeCriteria(VmsTrackFilter trackFilter);
 

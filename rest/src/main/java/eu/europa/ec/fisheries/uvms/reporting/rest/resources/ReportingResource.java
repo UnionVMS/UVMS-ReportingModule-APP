@@ -369,7 +369,6 @@ public class ReportingResource extends UnionVMSResource {
             Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
             ObjectNode jsonNodes = vmsService.getVmsDataByReportId(username, scopeName, id, areaRestrictions, dateTime, isAdmin).toJson(format);
-            log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
@@ -402,7 +401,6 @@ public class ReportingResource extends UnionVMSResource {
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
             ObjectNode jsonNodes = vmsService.getVmsDataBy(report, areaRestrictions).toJson(displayFormat);
-            log.debug("Sending to Front-end the following JSON: {}", jsonNodes.toString());
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
