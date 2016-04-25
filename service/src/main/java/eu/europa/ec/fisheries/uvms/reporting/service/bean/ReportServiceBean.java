@@ -38,11 +38,6 @@ import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Session Bean implementation class ReportBean
- * <p/>
- * TODO: add Authorization
- * TODO: add proper exception handling
- * TODO: add business validation
- * TODO: add data type validation
  */
 @Stateless
 @LocalBean
