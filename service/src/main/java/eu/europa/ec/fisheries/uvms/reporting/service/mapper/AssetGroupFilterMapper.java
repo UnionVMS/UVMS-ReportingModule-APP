@@ -1,6 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import org.mapstruct.Mapper;
@@ -23,6 +25,11 @@ public interface AssetGroupFilterMapper {
             @Mapping(source = "userName", target = "user"),
     })
     AssetGroup assetGroupFilterToAssetGroup(AssetGroupFilter assetGroupFilter);
+
+    @Mappings({
+            @Mapping(source = "user", target = "userName"),
+    })
+    AssetGroupFilter assetToAssetFilterGroup(Asset dto);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),

@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import org.mapstruct.Mapper;
@@ -9,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Mapper(imports = {ReportDetails.class, Report.class, DateUtils.class, Audit.class, VisibilityEnum.class}, uses = {ObjectFactory.class})
@@ -32,7 +34,17 @@ public abstract class ReportMapperV2 {
 
         filterSet.addAll(AreaFilterMapper.INSTANCE.arealistToAreaFilterSet(dto.getFilterExpression().getAreas()));
         filterSet.add(CommonFilterMapper.INSTANCE.commonToCommonFilter(dto.getFilterExpression().getCommon()));
-        filterSet.addAll(AssetFilterMapper.INSTANCE.assetListToAssetFilterSet(dto.getFilterExpression().getAssets()));
+
+        List<Asset> assets = dto.getFilterExpression().getAssets();
+
+        for (Asset asset : assets){
+            if ("vgroup".equals(asset.getType())){
+                filterSet.add(AssetGroupFilterMapper.INSTANCE.assetToAssetFilterGroup(asset));
+            }
+            else if ("asset".equals(asset.getType())){
+                filterSet.add(AssetFilterMapper.INSTANCE.assetToAssetFilter(asset));
+            }
+        }
 
         if (dto.getFilterExpression().getVms() != null){
             filterSet.add(VmsTrackFilterMapper.INSTANCE.tracksToVmsTrackFilter(dto.getFilterExpression().getVms().getVmstrack()));
