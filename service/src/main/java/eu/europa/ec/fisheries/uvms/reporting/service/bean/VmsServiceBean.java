@@ -75,36 +75,28 @@ public class VmsServiceBean implements VmsService {
         return vmsData;
     }
 
-    private void addAreaCriteriaToProcessor(FilterProcessor processor) throws ReportingServiceException {
+    private VmsDTO getVmsData(Report report, List<AreaIdentifierType> areaRestrictions, DateTime dateTime) throws ReportingServiceException {
 
-        final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
-        final Set<AreaIdentifierType> scopeAreaIdentifierList = processor.getScopeRestrictionAreaIdentifierList();
         try {
+
+            Collection<MovementMapResponseType> movementMap;
+            Map<String, MovementMapResponseType> responseTypeMap;
+            Map<String, Asset> assetMap;
+            FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
+            final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
+            final Set<AreaIdentifierType> scopeAreaIdentifierList = processor.getScopeRestrictionAreaIdentifierList();
+
+            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
+
+            if (areaRestrictions != null) {
+                processor.getScopeRestrictionAreaIdentifierList().addAll(areaRestrictions);
+            }
+
             //We are blocking call to spatial to not make unnecessary JMS traffic and calculations
             if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
                 String areaWkt = spatialModule.getFilterArea(scopeAreaIdentifierList, areaIdentifierList);
                 processor.addAreaCriteria(areaWkt);
             }
-        } catch (ReportingServiceException e) {
-            String error = "Exception during retrieving filter area";
-            log.error(error, e);
-            throw new ReportingServiceException(error, e);
-        }
-    }
-
-    private VmsDTO getVmsData(Report report, List<AreaIdentifierType> areaRestrictions, DateTime dateTime) throws ReportingServiceException {
-
-        try {
-            Map<String, Asset> assetMap;
-            FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
-            if (areaRestrictions != null) {
-                processor.getScopeRestrictionAreaIdentifierList().addAll(areaRestrictions);
-            }
-            addAreaCriteriaToProcessor(processor);
-            Collection<MovementMapResponseType> movementMap;
-            Map<String, MovementMapResponseType> responseTypeMap;
-
-            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
 
             if (processor.hasAssetsOrAssetGroups()) {
                 assetMap = assetModule.getAssetMap(processor);
@@ -122,6 +114,10 @@ public class VmsServiceBean implements VmsService {
 
         } catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
+            log.error(error, e);
+            throw new ReportingServiceException(error, e);
+        } catch (ReportingServiceException e) {
+            String error = "Exception during retrieving filter area";
             log.error(error, e);
             throw new ReportingServiceException(error, e);
         }
