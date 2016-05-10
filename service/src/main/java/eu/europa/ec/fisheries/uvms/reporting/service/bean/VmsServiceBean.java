@@ -23,10 +23,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -75,7 +72,7 @@ public class VmsServiceBean implements VmsService {
         return vmsData;
     }
 
-    private VmsDTO getVmsData(Report report, List<AreaIdentifierType> areaRestrictions, DateTime dateTime) throws ReportingServiceException {
+    private VmsDTO getVmsData(Report report, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
 
         try {
 
@@ -84,17 +81,12 @@ public class VmsServiceBean implements VmsService {
             Map<String, Asset> assetMap;
             FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
             final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
-            final Set<AreaIdentifierType> scopeAreaIdentifierList = processor.getScopeRestrictionAreaIdentifierList();
 
             log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
 
-            if (areaRestrictions != null) {
-                processor.getScopeRestrictionAreaIdentifierList().addAll(areaRestrictions);
-            }
-
             //We are blocking call to spatial to not make unnecessary JMS traffic and calculations
             if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
-                String areaWkt = spatialModule.getFilterArea(scopeAreaIdentifierList, areaIdentifierList);
+                String areaWkt = spatialModule.getFilterArea(new HashSet<>(scopeAreaIdentifierList), areaIdentifierList);
                 processor.addAreaCriteria(areaWkt);
             }
 

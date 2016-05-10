@@ -27,7 +27,6 @@ public class FilterProcessor {
     private final Set<AssetListCriteriaPair> assetListCriteriaPairs = new HashSet<>();
     private final Set<AssetGroup> assetGroupList = new HashSet<>();
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<>();
-    private final Set<AreaIdentifierType> scopeRestrictionAreaIdentifierList = new HashSet<>();
     private DateTime now;
 
     public FilterProcessor(Set<Filter> filters, DateTime now) throws ProcessorException {
@@ -125,10 +124,6 @@ public class FilterProcessor {
 
     public Set<AreaIdentifierType> getAreaIdentifierList() {
         return areaIdentifierList;
-    }
-
-    public Set<AreaIdentifierType> getScopeRestrictionAreaIdentifierList() {
-        return scopeRestrictionAreaIdentifierList;
     }
 
     public DateTime getNow() {
