@@ -63,7 +63,7 @@ public class CommonFilter extends Filter {
     public List<ListCriteria> movementListCriteria() {
         ListCriteria criteria = new ListCriteria();
         List<ListCriteria> listCriteria = new ArrayList<>();
-        if (Position.positions.equals(positionSelector.getPosition())) {
+        if (Position.positions.equals(positionSelector.getPosition()) && positionSelector.getValue() != null) {
             criteria = CommonFilterMapper.INSTANCE.positionToListCriteria(this);
         }
         if (criteria.getKey() != null) {

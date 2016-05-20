@@ -86,7 +86,11 @@ public class VmsServiceBean implements VmsService {
 
             //We are blocking call to spatial to not make unnecessary JMS traffic and calculations
             if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
-                String areaWkt = spatialModule.getFilterArea(new HashSet<>(scopeAreaIdentifierList), areaIdentifierList);
+                HashSet<AreaIdentifierType> areaIdentifierTypes = null;
+                if (isNotEmpty(scopeAreaIdentifierList)){
+                    areaIdentifierTypes = new HashSet<>(scopeAreaIdentifierList);
+                }
+                String areaWkt = spatialModule.getFilterArea(areaIdentifierTypes, areaIdentifierList);
                 processor.addAreaCriteria(areaWkt);
             }
 

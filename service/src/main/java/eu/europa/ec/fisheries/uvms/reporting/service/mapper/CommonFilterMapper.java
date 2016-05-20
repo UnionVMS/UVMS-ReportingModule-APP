@@ -32,7 +32,7 @@ public interface CommonFilterMapper {
     @Mappings({
             @Mapping(target = "dateRange", expression = "java(new DateRange(dto.getStartDate() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getStartDate()).toDate() : null, " +
                     "dto.getEndDate() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getEndDate()).toDate() : null))"),
-            @Mapping(target = "positionSelector", expression = "java(new PositionSelector(Float.valueOf(dto.getXValue()), Enum.valueOf( Selector.class, dto.getPositionSelector()) , Position.getByName(dto.getPositionTypeSelector())))")
+            @Mapping(target = "positionSelector", expression = "java(new PositionSelector(dto.getXValue() != null ? Float.valueOf(dto.getXValue()) : null, Enum.valueOf( Selector.class, dto.getPositionSelector()) , Position.getByName(dto.getPositionTypeSelector())))")
     })
     CommonFilter commonToCommonFilter(DateTime dto);
 
