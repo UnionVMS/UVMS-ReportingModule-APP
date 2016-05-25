@@ -40,10 +40,9 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Builder
-    public VmsPositionFilter(Long id, MovementActivityTypeType movementActivity, MovementTypeType movementType,
+    public VmsPositionFilter(MovementActivityTypeType movementActivity, MovementTypeType movementType,
                              Float maximumSpeed, Float minimumSpeed) {
         super(FilterType.vmspos);
-        setId(id);
         this.movementActivity = movementActivity;
         this.movementType = movementType;
         this.maximumSpeed = maximumSpeed;

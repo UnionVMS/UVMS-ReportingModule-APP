@@ -1,14 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -23,7 +19,6 @@ import lombok.ToString;
 @Entity
 @Table(name = "execution_log", uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
 @ToString(exclude = "report")
-//@SequenceGenerator(name = "default_gen", sequenceName = "execution_log_seq", allocationSize = 1)
 public class ExecutionLog extends BaseEntity {
 
     @Valid

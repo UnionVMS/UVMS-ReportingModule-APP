@@ -28,9 +28,8 @@ public class AreaFilter extends Filter {
     }
 
     @Builder
-    public AreaFilter(Long id, Long areaId, String areaType) {
+    public AreaFilter(Long areaId, String areaType) {
         super(areas);
-        setId(id);
         this.areaId = areaId;
         this.areaType = areaType;
     }

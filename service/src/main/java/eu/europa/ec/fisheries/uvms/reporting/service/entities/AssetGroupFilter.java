@@ -33,12 +33,11 @@ public class AssetGroupFilter extends Filter {
     }
 
     @Builder
-    public AssetGroupFilter(Long id, String groupId, String userName, String name) {
+    public AssetGroupFilter(String groupId, String userName, String name) {
         super(vgroup);
         this.guid = groupId;
         this.userName = userName;
         this.name = name;
-        setId(id);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class VmsSegmentFilterTest {
     @Test
     public void shouldReturnId(){
 
-        Filter segmentFilter = VmsSegmentFilter.builder().id(1L).build();
+        Filter segmentFilter = VmsSegmentFilter.builder().build();
 
         segmentFilter.getUniqKey();
 

@@ -26,16 +26,15 @@ public class AssetFilter extends Filter {
     @NotNull
     private String name;
 
-    AssetFilter() {
+    public AssetFilter() {
         super(asset);
     }
 
     @Builder
-    public AssetFilter(Long id, String guid, String name) {
+    public AssetFilter(String guid, String name) {
         super(asset);
         this.guid = guid;
         this.name = name;
-        setId(id);
     }
 
     @Override

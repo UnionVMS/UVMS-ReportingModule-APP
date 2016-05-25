@@ -51,7 +51,6 @@ public interface VmsPositionFilterMapper {
     RangeCriteria speedRangeToRangeCriteria(VmsPositionFilter vmsPositionFilter);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
             @Mapping(target = "report", ignore = true),
             @Mapping(target = "reportId", ignore = true)
     })

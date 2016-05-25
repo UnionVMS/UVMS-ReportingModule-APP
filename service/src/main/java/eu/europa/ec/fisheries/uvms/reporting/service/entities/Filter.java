@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
@@ -13,17 +14,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -47,24 +45,19 @@ import org.joda.time.DateTime;
         @NamedQuery(name = Filter.LIST_BY_REPORT_ID, query = "SELECT f FROM Filter f WHERE report.id = :reportId"),
         @NamedQuery(name = Filter.DELETE_BY_ID, query = "DELETE FROM Filter WHERE id = :id")
 })
-@EqualsAndHashCode(of = {"id"})
-public abstract class Filter implements Serializable {
+@EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "validator", "reportId"})
+@AttributeOverride(name = "id", column = @Column(name = "filter_id"))
+public abstract class Filter extends BaseEntity {
 
     public static final String REPORT_ID = "report_id";
-    public static final String FILTER_ID = "filter_id";
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
     public static final String DELETE_BY_ID = "Filter.deleteById";
 
     @Transient
-    private final FilterType type;
+    private FilterType type;
 
     @Transient
     protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-    @Id
-    @Column(name = FILTER_ID)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = REPORT_ID, nullable = false)
@@ -73,14 +66,16 @@ public abstract class Filter implements Serializable {
     @Transient
     private Long reportId;
 
-    public Filter(FilterType type, Long id, Long reportId) {
+    public Filter(FilterType type, Long reportId) {
         this(type);
-        this.id = id;
         this.reportId = reportId;
     }
 
     public Filter(FilterType type) {
         this.type = type;
+    }
+
+    protected Filter() {
     }
 
     public abstract <T> T accept(FilterVisitor<T> visitor);
@@ -103,14 +98,6 @@ public abstract class Filter implements Serializable {
 
     public void setReport(Report report) {
         this.report = report;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public FilterType getType() {

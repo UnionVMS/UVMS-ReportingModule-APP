@@ -32,7 +32,6 @@ public interface AssetGroupFilterMapper {
     AssetGroupFilter assetToAssetFilterGroup(Asset dto);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
             @Mapping(target = "report", ignore = true),
             @Mapping(target = "reportId", ignore = true)
     })

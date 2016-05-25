@@ -57,7 +57,6 @@ public interface VmsSegmentFilterMapper {
     RangeCriteria durationRangeToRangeCriteria(VmsSegmentFilter segmentFilter);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
             @Mapping(target = "report", ignore = true),
             @Mapping(target = "reportId", ignore = true)
     })

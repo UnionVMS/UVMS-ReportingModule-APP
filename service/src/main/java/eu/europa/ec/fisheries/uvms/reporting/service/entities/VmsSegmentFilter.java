@@ -40,10 +40,9 @@ public class VmsSegmentFilter extends Filter {
     }
 
     @Builder
-    public VmsSegmentFilter(Long id, DurationRange durationRange, Float maximumSpeed, Float minimumSpeed,
+    public VmsSegmentFilter(DurationRange durationRange, Float maximumSpeed, Float minimumSpeed,
                             SegmentCategoryType category) {
         super(FilterType.vmsseg);
-        setId(id);
         this.durationRange = durationRange;
         this.maximumSpeed = maximumSpeed;
         this.minimumSpeed = minimumSpeed;

@@ -23,7 +23,6 @@ public class FilterToDTOVisitorTest {
                 .minAvgSpeed(50F).maxAvgSpeed(100F)
                 .timeRange(new TimeRange(10F, 20F))
                 .reportId(1L)
-                .id(1L)
                 .build();
 
         TrackFilterDTO expected = TrackFilterDTO.builder()
@@ -31,7 +30,6 @@ public class FilterToDTOVisitorTest {
                 .minDuration(5F).maxDuration(500F)
                 .minAvgSpeed(50F).maxAvgSpeed(100F)
                 .minTime(10F).maxTime(20F)
-                .id(1L)
                 .build();
 
         TrackFilterDTO accept = (TrackFilterDTO) filter.accept(visitor);

@@ -36,11 +36,10 @@ public class CommonFilter extends Filter {
     }
 
     @Builder
-    public CommonFilter(Long id, DateRange dateRange, PositionSelector positionSelector) {
+    public CommonFilter(DateRange dateRange, PositionSelector positionSelector) {
         super(common);
         this.dateRange = dateRange;
         this.positionSelector = positionSelector;
-        setId(id);
         validate();
     }
 

@@ -34,7 +34,7 @@ public class FilterDAOTest extends BaseReportingDAOTest {
                                 .values(2L, "testUser", "United States", java.sql.Date.valueOf("2014-12-13"), '1', VisibilityEnum.PRIVATE, 'N', "testScope")
                                 .build(),
                         insertInto("reporting.filter")
-                                .columns(Filter.FILTER_ID, "end_date", "start_date", Filter.REPORT_ID, "filter_type")
+                                .columns("filter_id", "end_date", "start_date", Filter.REPORT_ID, "filter_type")
                                 .values(1L, java.sql.Date.valueOf("2014-12-13"), java.sql.Date.valueOf("2015-12-13"), 1L, "DATETIME")
                                 .build());
 

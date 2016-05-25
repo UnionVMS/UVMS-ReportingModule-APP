@@ -39,9 +39,9 @@ public class VmsTrackFilter extends Filter {
     }
 
     @Builder
-    public VmsTrackFilter(Long id, Long reportId, TimeRange timeRange, DurationRange durationRange, Float minAvgSpeed,
+    public VmsTrackFilter(Long reportId, TimeRange timeRange, DurationRange durationRange, Float minAvgSpeed,
                           Float maxAvgSpeed) {
-        super(vmstrack, id, reportId);
+        super(vmstrack, reportId);
         this.timeRange = timeRange;
         this.durationRange = durationRange;
         this.minAvgSpeed = minAvgSpeed;

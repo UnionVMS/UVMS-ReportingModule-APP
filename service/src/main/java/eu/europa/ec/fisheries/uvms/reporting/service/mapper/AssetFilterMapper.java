@@ -39,7 +39,6 @@ public interface AssetFilterMapper {
     ListCriteria assetFilterToListCriteria(AssetFilter assetFilter);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
             @Mapping(target = "report", ignore = true),
             @Mapping(target = "reportId", ignore = true)
     })

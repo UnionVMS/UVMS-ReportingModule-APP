@@ -31,7 +31,6 @@ public interface AreaFilterMapper {
     AreaIdentifierType areaIdentifierTypeToAreaFilter(AreaFilter areaFilter);
 
     @Mappings({
-            @Mapping(target = "id", ignore = true),
             @Mapping(target = "report", ignore = true),
             @Mapping(target = "reportId", ignore = true)
     })
