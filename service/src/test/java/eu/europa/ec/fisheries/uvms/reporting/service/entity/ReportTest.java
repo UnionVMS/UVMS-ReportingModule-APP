@@ -23,7 +23,6 @@ public class ReportTest extends UnitilsJUnit4 {
 
         report.getMock().merge(dummy);
 
-        report.assertInvoked().setId(null);
         report.assertInvoked().mergeDetails(null);
         report.assertInvoked().setIsDeleted(null);
         report.assertInvoked().setDeletedBy(null);

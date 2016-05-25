@@ -27,7 +27,7 @@ public class ReportMapperTest extends UnitilsJUnit4 {
 
     @Before
     public void before(){
-        report = Report.builder().id(1L).createdBy("you").details(
+        report = Report.builder().createdBy("you").details(
                 ReportDetails.builder().description("desc").scopeName("scopeName").name("name").withMap(true).build())
                 .executionLogs(new HashSet<ExecutionLog>())
                 .build();

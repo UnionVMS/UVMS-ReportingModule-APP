@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -22,11 +23,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "execution_log", uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
 @ToString(exclude = "report")
-public class ExecutionLog implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+//@SequenceGenerator(name = "default_gen", sequenceName = "execution_log_seq", allocationSize = 1)
+public class ExecutionLog extends BaseEntity {
 
     @Valid
     @JoinColumn(name = "report_id")
@@ -46,19 +44,10 @@ public class ExecutionLog implements Serializable {
     }
 
     @Builder
-    public ExecutionLog(long id, Report report, String executedBy) {
-        this.id = id;
+    public ExecutionLog(Report report, String executedBy) {
         this.report = report;
         this.executedBy = executedBy;
         this.executedOn = new Date();
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public Report getReport() {

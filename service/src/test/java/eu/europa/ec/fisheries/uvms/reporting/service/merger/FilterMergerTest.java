@@ -194,7 +194,7 @@ public class FilterMergerTest extends UnitilsJUnit4 {
         Collection<FilterDTO> collection =  new ArrayList<>();
         collection.add(asset1);
 
-        Report report = Report.builder().id(47L).build();
+        Report report = Report.builder().build();
         filterDAOMock.returns(new ArrayList<>()).listByReportId(null); // empty array
         reportDAOMock.returns(report).findEntityById(Report.class, null);
         boolean updated = merger.merge(collection);

@@ -77,7 +77,6 @@ public class ReportMapper {
             return null;
         }
         Report report = factory.createReport();
-        report.setId(dto.getId());
         report.setDetails(new ReportDetails(
                 dto.getDescription(), dto.getName(), dto.getWithMap(), dto.getScopeName(), dto.getCreatedBy())
         );
@@ -99,7 +98,7 @@ public class ReportMapper {
 
     private Set<ExecutionLog> executionLogDTOToExecutionLogSet(ExecutionLogDTO executionLogDto, Report report) {
         if (executionLogDto != null) {
-            ExecutionLog executionLog = new ExecutionLog(executionLogDto.getId(), report, executionLogDto.getExecutedBy());
+            ExecutionLog executionLog = new ExecutionLog(report, executionLogDto.getExecutedBy());
             return Sets.newHashSet(executionLog);
         }
         return Collections.emptySet();

@@ -1,6 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
@@ -54,17 +55,14 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @ToString
 @Data
 @FilterDef(name = Report.EXECUTED_BY_USER, parameters = @ParamDef(name = "username", type = "string"))
-public class Report implements Serializable {
+//@SequenceGenerator(name = "default_gen", sequenceName = "report_seq", allocationSize = 1)
+public class Report extends BaseEntity {
 
     public static final String IS_DELETED = "is_deleted";
     public static final String VISIBILITY = "visibility";
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String LIST_BY_USERNAME_AND_SCOPE = "Report.listByUsernameAndScope";
     public static final String FIND_BY_ID = "Report.findReportByReportId";
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @OneToMany(mappedBy = "report", cascade = ALL)
     @org.hibernate.annotations.Filter(name = EXECUTED_BY_USER, condition = "executed_by = :username")
@@ -96,9 +94,8 @@ public class Report implements Serializable {
     private Audit audit;
 
     @Builder
-    public Report(Long id, ReportDetails details, String createdBy, Set<Filter> filters,
+    public Report(ReportDetails details, String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
-        this.id = id;
         this.details = details;
         this.visibility = VisibilityEnum.PRIVATE;
         this.filters = filters;
@@ -107,7 +104,7 @@ public class Report implements Serializable {
         this.audit = audit;
     }
 
-    Report() {
+    public Report() {
 
     }
 
@@ -132,7 +129,6 @@ public class Report implements Serializable {
     }
 
     public void merge(Report incoming) {
-        this.id = incoming.id;
         mergeDetails(incoming.details);
         this.isDeleted = incoming.isDeleted;
         this.deletedOn = incoming.deletedOn;
