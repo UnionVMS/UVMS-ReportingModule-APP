@@ -51,7 +51,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
                         "OR (r.details.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC'))")
 })
 @Where(clause = "is_deleted <> 'Y'")
-@EqualsAndHashCode(exclude = {"executionLogs", "filters", "audit"})
+@EqualsAndHashCode(callSuper = false, exclude = {"executionLogs", "filters", "audit"})
 @ToString
 @Data
 @FilterDef(name = Report.EXECUTED_BY_USER, parameters = @ParamDef(name = "username", type = "string"))
