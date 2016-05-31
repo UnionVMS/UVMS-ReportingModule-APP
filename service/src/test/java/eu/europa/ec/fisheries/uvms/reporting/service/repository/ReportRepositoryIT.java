@@ -53,8 +53,8 @@ public class ReportRepositoryIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "reporting-service.war")
-                .addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.service")
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "reporting-resource.war")
+                .addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.resource")
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsResource("config.properties")
                 .addAsResource("usmDeploymentDescriptor.xml")

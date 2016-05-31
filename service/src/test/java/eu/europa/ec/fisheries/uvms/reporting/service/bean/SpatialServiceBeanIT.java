@@ -33,7 +33,7 @@ public class SpatialServiceBeanIT {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "reporting-service.war").addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.service")
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "reporting-resource.war").addPackages(true, "eu.europa.ec.fisheries.uvms.reporting.resource")
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(new File("src/test/resources/META-INF/jboss-deployment-structure.xml"))
                 .addAsResource("config.properties")
@@ -50,7 +50,7 @@ public class SpatialServiceBeanIT {
 
     @Before
     public void setUp() throws Exception {
-        assertNotNull("Spatial service not injected", spatialService);
+        assertNotNull("Spatial resource not injected", spatialService);
     }
 
     @After
