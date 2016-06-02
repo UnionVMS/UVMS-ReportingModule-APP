@@ -4,25 +4,13 @@ import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.LayerSettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.StyleSettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VisibilitySettingsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MapConfigMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.CoordinatesFormat;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.FilterAreasSpatialRS;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.LayerSettingsType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ScaleBarUnits;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialDeleteMapConfigurationRS;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialGetMapConfigurationRS;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRS;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.StyleSettingsType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.VisibilitySettingsType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import javax.ejb.EJB;
@@ -33,6 +21,7 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Stateless
@@ -80,9 +69,11 @@ public class SpatialServiceBean implements SpatialService {
             VisibilitySettingsDto visibilitySettingsDto = MapConfigMapper.INSTANCE.getVisibilitySettingsDto(getMapConfigurationResponse.getMapConfiguration().getVisibilitySettings());
             StyleSettingsDto styleSettingsDto = MapConfigMapper.INSTANCE.getStyleSettingsDto(getMapConfigurationResponse.getMapConfiguration().getStyleSettings());
             LayerSettingsDto layerSettingsDto = MapConfigMapper.INSTANCE.getLayerSettingsDto(getMapConfigurationResponse.getMapConfiguration().getLayerSettings());
+            Map<String, ReferenceDataPropertiesDto> referenceData = MapConfigMapper.INSTANCE.getReferenceData(getMapConfigurationResponse.getMapConfiguration().getReferenceDatas());
             mapConfigurationDTO.setVisibilitySettings(visibilitySettingsDto);
             mapConfigurationDTO.setStyleSettings(styleSettingsDto);
             mapConfigurationDTO.setLayerSettings(validateLayerSettings(layerSettingsDto));
+            mapConfigurationDTO.setReferenceData(referenceData);
             return mapConfigurationDTO;
         } catch (SpatialModelMapperException | MessageException | JMSException e) {
             throw new ReportingServiceException(e);
@@ -99,9 +90,15 @@ public class SpatialServiceBean implements SpatialService {
             VisibilitySettingsType visibilitySettingsType = MapConfigMapper.INSTANCE.getVisibilitySettingsType(mapConfiguration.getVisibilitySettings());
             StyleSettingsType styleSettingsType = MapConfigMapper.INSTANCE.getStyleSettingsType(mapConfiguration.getStyleSettings());
             LayerSettingsType layerSettingsType = MapConfigMapper.INSTANCE.getLayerSettingsType(mapConfiguration.getLayerSettings());
-            String request = getSaveMapConfigurationRequest(reportId, mapConfiguration.getSpatialConnectId(),
-                    mapConfiguration.getMapProjectionId(), mapConfiguration.getDisplayProjectionId(),
-                    coordinatesFormat, scaleBarUnits, styleSettingsType, visibilitySettingsType, layerSettingsType);
+            List<ReferenceDataType> referenceDataType = MapConfigMapper.INSTANCE.getReferenceDataType(mapConfiguration.getReferenceData());
+
+            String request = getSaveMapConfigurationRequest(reportId,
+                    mapConfiguration.getSpatialConnectId(),
+                    mapConfiguration.getMapProjectionId(),
+                    mapConfiguration.getDisplayProjectionId(),
+                    coordinatesFormat, scaleBarUnits,
+                    styleSettingsType, visibilitySettingsType,
+                    layerSettingsType, referenceDataType);
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialSaveOrUpdateMapConfigurationRS saveOrUpdateMapConfigurationResponse = getSaveOrUpdateMapConfigurationResponse(message, correlationId);
@@ -158,13 +155,19 @@ public class SpatialServiceBean implements SpatialService {
         return SpatialModuleRequestMapper.mapToSpatialDeleteMapConfigurationRQ(spatialConnectIds);
     }
 
-    private String getSaveMapConfigurationRequest(long reportId, Long spatialConnectId, Long mapProjectionId,
-                                                  Long displayProjectionId, CoordinatesFormat coordinatesFormat, ScaleBarUnits scaleBarUnits,
-                                                  StyleSettingsType styleSettingsType, VisibilitySettingsType visibilitySettingsType,
-                                                  LayerSettingsType layerSettingsType) throws SpatialModelMarshallException {
+    private String getSaveMapConfigurationRequest(long reportId,
+                                                  Long spatialConnectId,
+                                                  Long mapProjectionId,
+                                                  Long displayProjectionId,
+                                                  CoordinatesFormat coordinatesFormat,
+                                                  ScaleBarUnits scaleBarUnits,
+                                                  StyleSettingsType styleSettingsType,
+                                                  VisibilitySettingsType visibilitySettingsType,
+                                                  LayerSettingsType layerSettingsType,
+                                                  List<ReferenceDataType> referenceDataType) throws SpatialModelMarshallException {
         return SpatialModuleRequestMapper.mapToSpatialSaveOrUpdateMapConfigurationRQ(reportId, spatialConnectId,
                 mapProjectionId, displayProjectionId, coordinatesFormat, scaleBarUnits,
-                styleSettingsType, visibilitySettingsType, layerSettingsType);
+                styleSettingsType, visibilitySettingsType, layerSettingsType, referenceDataType);
     }
 
     private SpatialSaveOrUpdateMapConfigurationRS getSaveOrUpdateMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {

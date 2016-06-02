@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;
 
+import java.util.Map;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "spatialConnectId",
@@ -38,6 +40,9 @@ public class MapConfigurationDTO {
     @JsonProperty("layerSettings")
     private LayerSettingsDto layerSettings;
 
+    @JsonProperty("referenceDataSettings")
+    private Map<String, ReferenceDataPropertiesDto> referenceData;
+
 
     /**
      * No args constructor for use in serialization
@@ -46,7 +51,15 @@ public class MapConfigurationDTO {
     }
 
     @Builder(builderMethodName = "MapConfigurationDTOBuilder")
-    public MapConfigurationDTO(Long spatialConnectId, Long mapProjectionId, Long displayProjectionId, String coordinatesFormat, String scaleBarUnits, VisibilitySettingsDto visibilitySettings, StyleSettingsDto styleSettings, LayerSettingsDto layerSettings) {
+    public MapConfigurationDTO(Long spatialConnectId,
+                               Long mapProjectionId,
+                               Long displayProjectionId,
+                               String coordinatesFormat,
+                               String scaleBarUnits,
+                               VisibilitySettingsDto visibilitySettings,
+                               StyleSettingsDto styleSettings,
+                               LayerSettingsDto layerSettings,
+                               Map<String, ReferenceDataPropertiesDto> referenceData) {
         this.spatialConnectId = spatialConnectId;
         this.mapProjectionId = mapProjectionId;
         this.displayProjectionId = displayProjectionId;
@@ -55,6 +68,7 @@ public class MapConfigurationDTO {
         this.visibilitySettings = visibilitySettings;
         this.styleSettings = styleSettings;
         this.layerSettings = layerSettings;
+        this.referenceData = referenceData;
     }
 
     @JsonProperty("mapProjectionId")
@@ -137,33 +151,14 @@ public class MapConfigurationDTO {
         this.layerSettings = layerSettings;
     }
 
-
-    public boolean isMapConfigEmpty() {
-        boolean isMapConfigEmpty = true;
-        if (getLayerSettings() != null) {
-            isMapConfigEmpty = false;
-        }
-        if (getStyleSettings() != null) {
-            isMapConfigEmpty = false;
-        }
-        if (getVisibilitySettings() != null) {
-            isMapConfigEmpty = false;
-        }
-        if (getCoordinatesFormat() != null) {
-            isMapConfigEmpty = false;
-        }
-        if (getDisplayProjectionId() != null) {
-            isMapConfigEmpty = false;
-        }
-        if (getMapProjectionId() != null) {
-            isMapConfigEmpty = false;
-        }
-        if (getScaleBarUnits() != null) {
-            isMapConfigEmpty = false;
-        }
-        if (getSpatialConnectId() != null) {
-            isMapConfigEmpty = false;
-        }
-        return isMapConfigEmpty;
+    @JsonProperty("referenceDataSettings")
+    public Map<String, ReferenceDataPropertiesDto> getReferenceData() {
+        return referenceData;
     }
+
+    @JsonProperty("referenceDataSettings")
+    public void setReferenceData(Map<String, ReferenceDataPropertiesDto> referenceData) {
+        this.referenceData = referenceData;
+    }
+
 }

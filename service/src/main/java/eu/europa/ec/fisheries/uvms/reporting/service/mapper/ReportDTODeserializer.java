@@ -1,12 +1,15 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
@@ -15,13 +18,12 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.ReferenceDataType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 
@@ -79,6 +81,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 VisibilitySettingsDto visibilitySettingsDto;
                 StyleSettingsDto styleSettingsDto;
                 LayerSettingsDto layerSettingsDto;
+                Map<String, ReferenceDataPropertiesDto> referenceData;
 
                 if (mapConfigJsonNode.get("visibilitySettings") != null) {
                     try {
@@ -110,6 +113,20 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     layerSettingsDto = null;
                 }
 
+                if (mapConfigJsonNode.get("referenceDataSettings") != null) {
+                    try {
+                        Object obj = objectMapper.treeToValue(mapConfigJsonNode.get("referenceDataSettings"), Map.class);
+                        String jsonString = objectMapper.writeValueAsString(obj);
+                        referenceData =objectMapper.readValue(jsonString, TypeFactory.defaultInstance().constructMapType(Map.class, String.class, ReferenceDataPropertiesDto.class));
+                    } catch (JsonProcessingException e) {
+                        referenceData = null;
+                    } catch (IOException e) {
+                        referenceData = null;
+                    }
+                } else {
+                    referenceData = null;
+                }
+
                 return MapConfigurationDTO.MapConfigurationDTOBuilder()
                         .spatialConnectId(spatialConnectId)
                         .mapProjectionId(mapProjectionId)
@@ -119,6 +136,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                         .styleSettings(styleSettingsDto)
                         .visibilitySettings(visibilitySettingsDto)
                         .layerSettings(layerSettingsDto)
+                        .referenceData(referenceData)
                         .build();
             }
         } else {

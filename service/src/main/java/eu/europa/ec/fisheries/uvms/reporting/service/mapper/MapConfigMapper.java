@@ -23,7 +23,8 @@ public abstract class MapConfigMapper {
             @Mapping(target = "scaleBarUnits", expression = "java(convertScaleBarUnitsToString(mapConfigurationType.getScaleBarUnits()))"),
             @Mapping(target = "visibilitySettings", ignore = true),
             @Mapping(target = "styleSettings", ignore = true),
-            @Mapping(target = "layerSettings", ignore = true)
+            @Mapping(target = "layerSettings", ignore = true),
+            @Mapping(target = "referenceData", ignore = true)
     })
     public abstract MapConfigurationDTO mapConfigurationTypeToMapConfigurationDTO(MapConfigurationType mapConfigurationType);
 
@@ -75,6 +76,30 @@ public abstract class MapConfigMapper {
             @Mapping(target = "areaLayers", expression = "java(getAreaLayers(layerSettingsType.getAreaLayers()))")
     })
     public abstract LayerSettingsDto getLayerSettingsDto(LayerSettingsType layerSettingsType);
+
+    public List<ReferenceDataType> getReferenceDataType(Map<String, ReferenceDataPropertiesDto> referenceData) {
+        if (referenceData == null || referenceData.isEmpty()) {
+            return null;
+        }
+        List<ReferenceDataType> referenceDataTypes = new ArrayList<>();
+        for (Map.Entry<String, ReferenceDataPropertiesDto> entry : referenceData.entrySet()) {
+            ReferenceDataPropertiesDto referenceDataPropertiesDto = entry.getValue();
+            referenceDataTypes.add(new ReferenceDataType(entry.getKey(), referenceDataPropertiesDto.getSelection(), referenceDataPropertiesDto.getCodes()));
+        }
+        return referenceDataTypes;
+    }
+
+    public Map<String, ReferenceDataPropertiesDto> getReferenceData(List<ReferenceDataType> referenceDataTypes) {
+        if (referenceDataTypes == null || referenceDataTypes.isEmpty()) {
+            return null;
+        }
+        Map<String, ReferenceDataPropertiesDto> referenceData = new HashMap<>();
+        for (ReferenceDataType referenceDataType : referenceDataTypes) {
+            referenceData.put(referenceDataType.getType(),
+                    new ReferenceDataPropertiesDto(referenceDataType.getSelection(), referenceDataType.getCodes()));
+        }
+        return referenceData;
+    }
 
     protected List<LayersDto> getLayers(List<LayersType> layersTypes) {
         if (layersTypes == null || layersTypes.isEmpty()) {
