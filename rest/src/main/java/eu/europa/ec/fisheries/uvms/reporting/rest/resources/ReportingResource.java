@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
+import eu.europa.ec.fisheries.uvms.spatial.model.layer.ServiceLayerUtils;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -137,14 +138,16 @@ public class ReportingResource extends UnionVMSResource {
     public Response getReport(@Context HttpServletRequest request,
                               @Context HttpServletResponse response,
                               @PathParam("id") Long id,
-                              @HeaderParam("scopeName") String scopeName) {
+                              @HeaderParam("scopeName") String scopeName,
+                              @HeaderParam("roleName") String roleName) {
 
         String username = request.getRemoteUser();
         ReportDTO report;
 
         try {
             boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-            report = reportService.findById(id, username, scopeName, isAdmin);
+            List<String> permittedServiceLayers = new ArrayList<>(ServiceLayerUtils.getUserPermittedLayersNames(usmService, request.getRemoteUser(), roleName, scopeName));
+            report = reportService.findById(id, username, scopeName, isAdmin, permittedServiceLayers);
         } catch (Exception e) {
             log.error("Failed to get report.", e);
             return createErrorResponse();
@@ -176,8 +179,8 @@ public class ReportingResource extends UnionVMSResource {
         boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
         try {
-
-            originalReport = reportService.findById(id, username, scopeName, isAdmin); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
+            //for delete operation, we don't really nead the permitted service layers, therefore we pass null
+            originalReport = reportService.findById(id, username, scopeName, isAdmin, null); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
         } catch (Exception e) {
             log.error("Failed to get report.", e);
             return createErrorResponse();
@@ -208,6 +211,7 @@ public class ReportingResource extends UnionVMSResource {
                                  @Context HttpServletResponse response,
                                  ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
                                  @HeaderParam("scopeName") String scopeName,
+                                 @HeaderParam("roleName") String roleName,
                                  @PathParam("id") Long id) {
 
         String username = request.getRemoteUser();
@@ -216,7 +220,8 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-            ReportDTO originalReport = reportService.findById(report.getId(), username, scopeName, isAdmin); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSO
+            List<String> permittedServiceLayers = new ArrayList<>(ServiceLayerUtils.getUserPermittedLayersNames(usmService, request.getRemoteUser(), roleName, scopeName));
+            ReportDTO originalReport = reportService.findById(report.getId(), username, scopeName, isAdmin, permittedServiceLayers); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSO
             ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport, username);
 
             if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
@@ -321,7 +326,9 @@ public class ReportingResource extends UnionVMSResource {
 
             try {
                 isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-                ReportDTO reportToUpdate = reportService.findById(id, username, scopeName, isAdmin);
+
+                //it's just a visibility update, therefore the permitted service layers don't matter much and we pass null
+                ReportDTO reportToUpdate = reportService.findById(id, username, scopeName, isAdmin, null);
 
                 if (reportToUpdate != null) {
                     reportToUpdate.setVisibility(newVisibility);

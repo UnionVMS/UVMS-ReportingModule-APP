@@ -74,7 +74,7 @@ public class ReportServiceBean {
     }
 
     @Transactional
-    public ReportDTO findById(Long id, String username, String scopeName, Boolean isAdmin) {
+    public ReportDTO findById(Long id, String username, String scopeName, Boolean isAdmin, List<String> permittedServiceLayers) {
 
         ReportDTO reportDTO;
 
@@ -84,7 +84,7 @@ public class ReportServiceBean {
             reportDTO =  mapper.reportToReportDTO(reportByReportId);
 
             if (reportDTO != null && reportDTO.getWithMap()) {
-                MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id);
+                MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id, permittedServiceLayers);
                 reportDTO.setMapConfiguration(mapConfiguratioDTO);
             }
         }

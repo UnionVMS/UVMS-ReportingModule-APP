@@ -102,7 +102,7 @@ public class ReportServiceBeanIT {
         assertNotNull(report);
 
         reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
-        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
+        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false, null);
         assertNull(report);
 
     }
@@ -138,7 +138,7 @@ public class ReportServiceBeanIT {
         assertNotNull(assetFilterDTO.getId());
 
         reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
-        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
+        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false, null);
         assertNull(report);
 
     }

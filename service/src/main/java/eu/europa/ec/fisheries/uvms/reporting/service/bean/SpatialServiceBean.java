@@ -8,6 +8,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MapConfigMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMapperException;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
+import eu.europa.ec.fisheries.uvms.spatial.model.layer.ServiceLayerUtils;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
@@ -19,10 +20,7 @@ import javax.ejb.Stateless;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Stateless
 @Local(SpatialService.class)
@@ -58,9 +56,9 @@ public class SpatialServiceBean implements SpatialService {
     }
 
     @Override
-    public MapConfigurationDTO getMapConfiguration(long reportId) throws ReportingServiceException {
+    public MapConfigurationDTO getMapConfiguration(long reportId, List<String> permittedServiceLayers) throws ReportingServiceException {
         try {
-            String getMapConfigurationRequest = createGetMapConfigurationRequest(reportId);
+            String getMapConfigurationRequest = createGetMapConfigurationRequest(reportId, permittedServiceLayers);
             String correlationId = spatialProducerBean.sendModuleMessage(getMapConfigurationRequest, reportingJMSConsumerBean.getDestination());
             Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
 
@@ -147,8 +145,8 @@ public class SpatialServiceBean implements SpatialService {
         }
     }
 
-    private String createGetMapConfigurationRequest(long reportId) throws SpatialModelMarshallException {
-        return SpatialModuleRequestMapper.mapToSpatialGetMapConfigurationRQ(reportId);
+    private String createGetMapConfigurationRequest(long reportId, List<String> permittedServiceLayers) throws SpatialModelMarshallException {
+        return SpatialModuleRequestMapper.mapToSpatialGetMapConfigurationRQ(reportId, permittedServiceLayers);
     }
 
     private String getDeleteMapConfigurationRequest(List<Long> spatialConnectIds) throws SpatialModelMarshallException {
