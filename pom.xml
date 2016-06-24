@@ -22,21 +22,21 @@
         <asset.model.version>2.0.0</asset.model.version>
         <audit.model.version>2.0.0</audit.model.version>
         <movement.model.version>2.0.0</movement.model.version>
-        <spatial.model.version>0.5.2-SNAPSHOT</spatial.model.version>
+        <spatial.model.version>0.5.2</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.9-SNAPSHOT</uvms.commons.version>
+        <uvms.commons.version>2.0.9</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
         <usm4uvms.version>2.0.11</usm4uvms.version>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>2.0.0</rules.model.version>
-		<reporting.model.version>0.5.2-SNAPSHOT</reporting.model.version>
+		<reporting.model.version>0.5.2</reporting.model.version>
         <uvms.test.version>0.0.1</uvms.test.version>
     </properties>
 
