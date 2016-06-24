@@ -6,7 +6,7 @@
     <artifactId>reporting-model</artifactId>
     <name>reporting-model</name>
     <packaging>ejb</packaging>
-    <version>0.5.2</version>
+    <version>0.5.3-SNAPSHOT</version>
     <description>This module shall have interfaces, XSD, and DTOs</description>
 
     <properties>
@@ -107,7 +107,7 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/tags/Reporting/reporting-model-0.5.2</connection>
+        <connection>scm:svn:https://webgate.ec.europa.eu/CITnet/svn/UNIONVMS/trunk/Modules/Reporting/APP/model</connection>
     </scm>
 
     <profiles>
