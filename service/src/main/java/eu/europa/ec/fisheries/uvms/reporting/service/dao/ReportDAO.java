@@ -138,4 +138,20 @@ public class ReportDAO extends AbstractDAO<Report> {
         return em.unwrap(Session.class);
     }
 
+    public List<Report> listTopExecutedReportByUsernameAndScope(String username, String scopeName, Boolean existent, boolean isAdmin, Integer numberOfReport) throws ReportingServiceException {
+
+        try {
+            List<Report> listReports =
+                    findEntityByNamedQuery(Report.class, Report.LIST_TOP_EXECUTED_BY_DATE,
+                            with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport);
+            if (listReports == null || listReports.isEmpty()) {
+                listReports = findEntityByNamedQuery(Report.class, Report.LIST_BY_CREATION_DATE,
+                        with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport);
+            }
+
+            return listReports;
+        } catch (ServiceException e) {
+            throw new ReportingServiceException(e.getMessage());
+        }
+    }
 }

@@ -5,8 +5,10 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.Report;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.Projection;
+import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import javax.ejb.EJB;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -82,43 +85,52 @@ public class ReportingResource extends UnionVMSResource {
     @GET
     @Path("/list")
     @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ReportingExceptionInterceptor.class)
     public Response listReports(@Context HttpServletRequest request,
                                 @Context HttpServletResponse response,
                                 @HeaderParam("scopeName") String scopeName,
                                 @HeaderParam("roleName") String roleName,
-                                @DefaultValue("Y") @QueryParam("existent") String existent) {
+                                @DefaultValue("Y") @QueryParam("existent") String existent) throws ServiceException, ReportingServiceException {
+        Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent, null);
+        return createSuccessResponse(reportDTOs);
+    }
+
+
+    @GET
+    @Path("/list/lastexecuted/{numberOfReport}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Interceptors(ReportingExceptionInterceptor.class)
+    public Response listLastExecutedReports(@Context HttpServletRequest request,
+                                @HeaderParam("scopeName") String scopeName,
+                                @HeaderParam("roleName") String roleName,
+                                @PathParam("numberOfReport") Integer numberOfReport,
+                                @DefaultValue("Y") @QueryParam("existent") String existent) throws ServiceException, ReportingServiceException {
+        if (numberOfReport == null || numberOfReport == 0) {
+            return createErrorResponse("Number of last executed report cannot be null or 0");
+        }
+        Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent, numberOfReport);
+        return createSuccessResponse(reportDTOs);
+    }
+
+    private Collection<ReportDTO> listReportByUsernameAndScope(HttpServletRequest request,
+                                                        String scopeName,
+                                                        String roleName,
+                                                        String existent,
+                                                        Integer numberOfReport) throws ServiceException, ReportingServiceException {
         final String username = request.getRemoteUser();
-
         log.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
+        Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
+        String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username,  getApplicationName(request), roleName, scopeName);
+        Long defaultReportId = StringUtils.isNotBlank(defaultId) ?  Long.valueOf(defaultId) : null;
+        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToListReports();
 
-        try {
-            Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
-            String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username,  getApplicationName(request), roleName, scopeName);
-            Long defaultReportId = null;
-            ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToListReports();
-
-            if (StringUtils.isNotBlank(defaultId)){
-                defaultReportId = Long.valueOf(defaultId);
-            }
-
-            if (username != null && features != null && (requiredFeature == null || request.isUserInRole(requiredFeature.toString()))) {
-
-                Collection<ReportDTO> reportsList;
-                try {
-                    reportsList = reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent), defaultReportId);
-                } catch (Exception e) {
-                    log.error("Failed to list reports.", e);
-                    return createErrorResponse();
-                }
-
-                return createSuccessResponse(reportsList);
-            } else {
-                return createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-            }
-        } catch (ServiceException e) {
-            return createErrorResponse("Unable to get user features from USM. Reason: " + e.getMessage());
+        if (username != null && features != null && (requiredFeature == null || request.isUserInRole(requiredFeature.toString()))) {
+            return reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent), defaultReportId, numberOfReport);
+        } else {
+            throw new ReportingServiceException(ErrorCodes.NOT_AUTHORIZED);
         }
     }
+
 
     /**
      * lazy loading of the app name from the web.xml

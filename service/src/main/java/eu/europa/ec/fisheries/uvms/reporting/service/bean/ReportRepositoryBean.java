@@ -95,6 +95,11 @@ public class ReportRepositoryBean implements ReportRepository {
     }
 
     @Override
+    public List<Report> listTopExecutedReportByUsernameAndScope(String username, String scopeName, Boolean existent, boolean isAdmin, Integer numberOfReport) throws ReportingServiceException {
+        return reportDAO.listTopExecutedReportByUsernameAndScope(username, scopeName, existent, isAdmin, numberOfReport);
+    }
+
+    @Override
     @Transactional
     public void remove(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
         reportDAO.softDelete(reportId, username, scopeName, isAdmin);

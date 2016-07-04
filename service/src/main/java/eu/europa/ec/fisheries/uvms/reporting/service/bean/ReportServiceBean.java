@@ -8,7 +8,6 @@ import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
@@ -17,22 +16,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
-import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -123,14 +114,38 @@ public class ReportServiceBean {
         repository.remove(reportId, username, scopeName, isAdmin);
     }
 
+    /**
+     * <p>This API search for Reports created by the User or shared to the user scope or
+     * a public Reports those are allowed to the logged in User. In case of the user is Admin then
+     * All the Reports are accessible.
+     * </p>
+     * @param features Usm features
+     * @param username User Name
+     * @param scopeName Scope Name
+     * @param existent Include deleted report if true
+     * @param defaultReportId default report Id stored in USM
+     * @param numberOfReport Limit number of report. If null then no limit is set
+     * @return List of Reports User is permited to see
+     * @throws ReportingServiceException
+     */
     @Transactional
-    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username, final String scopeName, final Boolean existent, final Long defaultReportId) throws ReportingServiceException {
+    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features,
+                                                        final String username,
+                                                        final String scopeName,
+                                                        final Boolean existent,
+                                                        final Long defaultReportId,
+                                                        final Integer numberOfReport) throws ReportingServiceException {
 
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).build();
 
         boolean isAdmin = AuthorizationCheckUtil.isAllowed(ReportFeatureEnum.MANAGE_ALL_REPORTS, features);
 
-        List<Report> reports = repository.listByUsernameAndScope(username, scopeName, existent, isAdmin);
+        List<Report> reports;
+        if (numberOfReport != null) {
+            reports = repository.listTopExecutedReportByUsernameAndScope(username, scopeName, existent, isAdmin, numberOfReport);
+        } else {
+            reports = repository.listByUsernameAndScope(username, scopeName, existent, isAdmin);
+        }
 
         List<ReportDTO> toReportDTOs = new ArrayList<>();
 
@@ -144,6 +159,7 @@ public class ReportServiceBean {
         }
         return toReportDTOs;
     }
+
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.SHARE)
     @Transactional
@@ -204,4 +220,5 @@ public class ReportServiceBean {
     private void validateReport(ReportDTO report) {
 
     }
+
 }

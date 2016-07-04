@@ -41,6 +41,16 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
                         "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
                         "AND r.isDeleted <> :existent " +
                         "ORDER BY r.id"),
+        @NamedQuery(name = Report.LIST_TOP_EXECUTED_BY_DATE, query =
+                "SELECT DISTINCT r FROM Report r INNER JOIN FETCH r.executionLogs l " +
+                        "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
+                        "AND r.isDeleted <> :existent " +
+                        "ORDER BY l.executedOn DESC"),
+        @NamedQuery(name = Report.LIST_BY_CREATION_DATE, query =
+                "SELECT DISTINCT r FROM Report r " +
+                        "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
+                        "AND r.isDeleted <> :existent " +
+                        "ORDER BY r.audit.createdOn DESC"),
         @NamedQuery(name = Report.FIND_BY_ID, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
                         "WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND ((1=:isAdmin) OR (r.details.createdBy = :username " +
@@ -57,6 +67,8 @@ public class Report extends BaseEntity {
     public static final String VISIBILITY = "visibility";
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String LIST_BY_USERNAME_AND_SCOPE = "Report.listByUsernameAndScope";
+    public static final String LIST_TOP_EXECUTED_BY_DATE = "Report.listTopExecutedByDate";
+    public static final String LIST_BY_CREATION_DATE = "Report.listByCreationDate";
     public static final String FIND_BY_ID = "Report.findReportByReportId";
 
     @OneToMany(mappedBy = "report", cascade = ALL)

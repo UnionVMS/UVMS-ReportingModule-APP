@@ -23,4 +23,6 @@ public interface ReportRepository {
     Report createEntity(Report reportEntity) throws ReportingServiceException;
 
     void changeVisibility(Long reportId, VisibilityEnum newVisibility, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException;
+
+    List<Report> listTopExecutedReportByUsernameAndScope(String username, String scopeName, Boolean existent, boolean isAdmin, Integer numberOfReport) throws ReportingServiceException;
 }
