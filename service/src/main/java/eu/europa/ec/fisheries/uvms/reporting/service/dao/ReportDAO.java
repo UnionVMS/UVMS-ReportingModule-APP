@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
@@ -151,12 +152,12 @@ public class ReportDAO extends AbstractDAO<Report> {
     public List<Report> listTopExecutedReportByUsernameAndScope(String username, String scopeName, Boolean existent, boolean isAdmin, Integer numberOfReport) throws ReportingServiceException {
 
         try {
-            List<Report> listReports =
-                    findEntityByNamedQuery(Report.class, Report.LIST_TOP_EXECUTED_BY_DATE,
-                            with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport);
-            if (listReports == null || listReports.isEmpty()) {
-                listReports = findEntityByNamedQuery(Report.class, Report.LIST_BY_CREATION_DATE,
-                        with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport);
+            List<Report> listReports = new ArrayList<>();
+            listReports.addAll(findEntityByNamedQuery(Report.class, Report.LIST_TOP_EXECUTED_BY_DATE,
+                    with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin ? 1 : 0).parameters(), numberOfReport));
+            if (listReports == null || listReports.isEmpty() || (listReports.size() < numberOfReport)) {
+                listReports.addAll(findEntityByNamedQuery(Report.class, Report.LIST_BY_CREATION_DATE,
+                        with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport - listReports.size()));
             }
 
             return listReports;

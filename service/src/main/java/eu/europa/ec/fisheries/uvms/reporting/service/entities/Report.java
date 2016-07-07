@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -52,9 +52,10 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
                         "AND r.isDeleted <> :existent " +
                         "ORDER BY r.id"),
         @NamedQuery(name = Report.LIST_TOP_EXECUTED_BY_DATE, query =
-                "SELECT DISTINCT r FROM Report r INNER JOIN FETCH r.executionLogs l " +
+                "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
                         "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
                         "AND r.isDeleted <> :existent " +
+                        "AND l.executedBy = :username " +
                         "ORDER BY l.executedOn DESC"),
         @NamedQuery(name = Report.LIST_BY_CREATION_DATE, query =
                 "SELECT DISTINCT r FROM Report r " +
