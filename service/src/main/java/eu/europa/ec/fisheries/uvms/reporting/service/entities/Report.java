@@ -52,15 +52,15 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
                         "AND r.isDeleted <> :existent " +
                         "ORDER BY r.id"),
         @NamedQuery(name = Report.LIST_TOP_EXECUTED_BY_DATE, query =
-                "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                        "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
+                "SELECT DISTINCT r FROM Report r INNER JOIN FETCH r.executionLogs l " +
+                        "WHERE ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
                         "AND r.isDeleted <> :existent " +
                         "AND l.executedBy = :username " +
                         "ORDER BY l.executedOn DESC"),
         @NamedQuery(name = Report.LIST_BY_CREATION_DATE, query =
-                "SELECT DISTINCT r FROM Report r " +
+                "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
                         "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
-                        "AND r.isDeleted <> :existent " +
+                        "AND r.isDeleted <> :existent AND l IS NULL " +
                         "ORDER BY r.audit.createdOn DESC"),
         @NamedQuery(name = Report.FIND_BY_ID, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
