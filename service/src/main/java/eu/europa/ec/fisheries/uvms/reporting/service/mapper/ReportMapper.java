@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -87,6 +87,7 @@ public class ReportMapper {
             return null;
         }
         Report report = factory.createReport();
+        report.setId(dto.getId());
         report.setDetails(new ReportDetails(
                 dto.getDescription(), dto.getName(), dto.getWithMap(), dto.getScopeName(), dto.getCreatedBy())
         );

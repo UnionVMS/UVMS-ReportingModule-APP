@@ -1,5 +1,5 @@
 /*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries ï¿½ European Union, 2015-2016.
 
 This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
 and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.SneakyThrows;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -46,7 +47,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
         public void shouldUpdateWhenValuesModified(){
 
-        Report existingReport = Report.builder().details(ReportDetails.builder().description("desc").createdBy("me").build()).build();
+        Report existingReport = Report.builder().id(1L).details(ReportDetails.builder().description("desc").createdBy("me").build()).build();
         ReportDTO incomingReport = ReportDTOBuilder().id(1L).createdBy("you").description("desc").build();
 
         daoMock.returns(existingReport).findEntityById(Report.class, null);
@@ -66,6 +67,7 @@ public class ReportMergerTest extends UnitilsJUnit4 {
     public void shouldNotUpdateWhenNothingHasChanged(){
 
         Report existingReport = Report.builder()
+                .id(1L)
                 .executionLogs(new HashSet<ExecutionLog>())
                 .details(ReportDetails.builder()
                         .description("desc")

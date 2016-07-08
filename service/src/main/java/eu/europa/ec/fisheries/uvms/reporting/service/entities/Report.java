@@ -15,22 +15,12 @@ import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -72,7 +62,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @ToString
 @Data
 @FilterDef(name = Report.EXECUTED_BY_USER, parameters = @ParamDef(name = "username", type = "string"))
-public class Report extends BaseEntity {
+public class Report implements Serializable {
 
     public static final String IS_DELETED = "is_deleted";
     public static final String VISIBILITY = "visibility";
@@ -81,6 +71,10 @@ public class Report extends BaseEntity {
     public static final String LIST_TOP_EXECUTED_BY_DATE = "Report.listTopExecutedByDate";
     public static final String LIST_BY_CREATION_DATE = "Report.listByCreationDate";
     public static final String FIND_BY_ID = "Report.findReportByReportId";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @OneToMany(mappedBy = "report", cascade = ALL)
     @org.hibernate.annotations.Filter(name = EXECUTED_BY_USER, condition = "executed_by = :username")
@@ -112,8 +106,9 @@ public class Report extends BaseEntity {
     private Audit audit;
 
     @Builder
-    public Report(ReportDetails details, String createdBy, Set<Filter> filters,
+    public Report(Long id, ReportDetails details, String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
+        this.id = id;
         this.details = details;
         this.visibility = VisibilityEnum.PRIVATE;
         this.filters = filters;
@@ -148,6 +143,7 @@ public class Report extends BaseEntity {
 
     public void merge(Report incoming) {
         mergeDetails(incoming.details);
+        this.id = incoming.id;
         this.isDeleted = incoming.isDeleted;
         this.deletedOn = incoming.deletedOn;
         this.deletedBy = incoming.deletedBy;
