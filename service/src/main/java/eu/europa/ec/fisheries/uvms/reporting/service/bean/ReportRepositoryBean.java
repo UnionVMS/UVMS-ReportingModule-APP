@@ -20,17 +20,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.merger.FilterMerger;
-import eu.europa.ec.fisheries.uvms.reporting.service.merger.ReportMerger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.Arrays;
 import java.util.List;
 
 @Stateless
@@ -41,10 +38,7 @@ public class ReportRepositoryBean implements ReportRepository {
     private ReportDAO reportDAO;
     private FilterDAO filterDAO;
     private ExecutionLogDAO executionLogDAO;
-
     private FilterMerger filterMerger;
-
-    private ReportMerger reportMerger;
 
     @PersistenceContext(unitName = "reportingPU")
     private EntityManager em;
@@ -55,7 +49,6 @@ public class ReportRepositoryBean implements ReportRepository {
         filterDAO = new FilterDAO(em);
         executionLogDAO = new ExecutionLogDAO(em);
         filterMerger = new FilterMerger(em);
-        reportMerger = new ReportMerger(em);
     }
 
     @Override
@@ -64,30 +57,22 @@ public class ReportRepositoryBean implements ReportRepository {
 
         try {
 
-             reportMerger.merge(Arrays.asList(reportDTO));
-
+            Report entityById = reportDAO.findEntityById(Report.class, reportDTO.getId());
+            entityById.getDetails().setDescription(reportDTO.getDescription());
+            entityById.getDetails().setName(reportDTO.getName());
+            entityById.getDetails().setWithMap(reportDTO.getWithMap());
+            entityById.setVisibility(reportDTO.getVisibility());
             List<FilterDTO> filters = reportDTO.getFilters();
-
             if (CollectionUtils.isNotEmpty(filters)) {
-
                 filterMerger.merge(filters);
-
           }
-
         } catch (ServiceException e) {
-
             String message = "UPDATE FAILED";
-
             log.error(message, e);
-
             throw new ReportingServiceException(message, e);
-
         }
-
         return true;
-
     }
-
 
     @Override
     public Report findReportByReportId(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
