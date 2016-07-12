@@ -104,6 +104,8 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     @SneakyThrows
     public void testUpdateWithVmsFilter(){
 
+        em.getTransaction().begin();
+
         Collection<FilterDTO> collection =  new ArrayList<>();
         VmsPositionFilterDTO positionFilterDTO = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
                 .movementActivity(MovementActivityTypeType.AUT)
@@ -128,12 +130,16 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
         assertEquals(accept, positionFilterDTO);
 
+        em.flush();
+        em.getTransaction().rollback();
     }
 
 
     @Test
     @SneakyThrows
     public void testMergeAssetFilterUntouched(){
+
+        em.getTransaction().begin();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
         collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
@@ -149,12 +155,16 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
         assertTrue(!updated);
 
+        em.flush();
+        em.getTransaction().rollback();
     }
 
 
     @Test
     @SneakyThrows
     public void testMergeAssetFilter(){
+
+        em.getTransaction().begin();
 
         asset2 = AssetFilterDTOBuilder().id(null).guid("sf3da03a2-13c2-342e-v3ab-14c12469b7e").name("JEANNE").build();
 
@@ -172,11 +182,15 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         filterDAOMock.assertInvoked().createEntity(null);
         assertNoMoreInvocations();
 
+        em.flush();
+        em.getTransaction().rollback();
     }
 
     @Test
     @SneakyThrows
     public void testMergeAssetFilterUpdateAndDelete(){
+
+        em.getTransaction().begin();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
         collection.add(AssetFilterDTOBuilder().guid("guidguid").name("asset1").build());
@@ -188,23 +202,23 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
         filterDAOMock.returns(existingFilters).listByReportId(null);
 
-        em.getTransaction().begin();
-
         boolean updated = merger.merge(collection);
-
-        em.flush();
-        em.getTransaction().commit();
 
         filterDAOMock.assertInvoked().createEntity(null);
         filterDAOMock.assertInvoked().deleteBy(47L);
         filterDAOMock.assertInvoked().deleteBy(49L);
         assertNoMoreInvocations();
         assertTrue(updated);
+
+        em.flush();
+        em.getTransaction().rollback();
     }
 
     @Test
     @SneakyThrows
     public void testMergeAssetFilterInsert(){
+
+        em.getTransaction().begin();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
         collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
@@ -220,5 +234,8 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         filterDAOMock.assertInvoked().createEntity(assetFilter);
         assertNoMoreInvocations();
         assertTrue(updated);
+
+        em.flush();
+        em.getTransaction().rollback();
     }
 }
