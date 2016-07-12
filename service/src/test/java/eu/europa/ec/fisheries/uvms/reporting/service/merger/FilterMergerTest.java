@@ -137,7 +137,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     }
 
 
-    @Test
     @SneakyThrows
     public void testMergeAssetFilterUntouched(){
 
@@ -165,8 +164,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     @Ignore
     public void testMergeAssetFilter(){
 
-        em.getTransaction().begin();
-
         asset2 = AssetFilterDTOBuilder().id(null).guid("sf3da03a2-13c2-342e-v3ab-14c12469b7e").name("JEANNE").build();
 
         Collection<FilterDTO> incoming =  new ArrayList<>();
@@ -183,8 +180,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         filterDAOMock.assertInvoked().createEntity(null);
         assertNoMoreInvocations();
 
-        em.flush();
-        em.getTransaction().rollback();
     }
 
     @Test
