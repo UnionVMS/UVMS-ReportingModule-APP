@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.uvms.BaseDAOTest;
 import static com.ninja_squad.dbsetup.Operations.deleteAllFrom;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 
-public class BaseReportingDAOTest extends BaseDAOTest {
+public abstract class BaseReportingDAOTest extends BaseDAOTest {
 
     protected static final Operation DELETE_ALL = sequenceOf(
             deleteAllFrom("reporting.filter"),
