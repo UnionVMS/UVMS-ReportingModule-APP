@@ -164,6 +164,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void testMergeAssetFilter(){
 
         em.getTransaction().begin();
@@ -219,6 +220,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void testMergeAssetFilterInsert(){
 
         em.getTransaction().begin();
