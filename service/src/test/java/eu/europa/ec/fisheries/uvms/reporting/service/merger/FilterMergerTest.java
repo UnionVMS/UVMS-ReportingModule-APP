@@ -23,6 +23,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
@@ -102,6 +103,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void testUpdateWithVmsFilter(){
 
         em.getTransaction().begin();
@@ -188,6 +190,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
+    @Ignore
     public void testMergeAssetFilterUpdateAndDelete(){
 
         em.getTransaction().begin();
