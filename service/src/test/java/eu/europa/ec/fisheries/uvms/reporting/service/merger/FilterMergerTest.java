@@ -10,47 +10,35 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 
-import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import com.ninja_squad.dbsetup.DbSetup;
+import com.ninja_squad.dbsetup.destination.DataSourceDestination;
+import com.ninja_squad.dbsetup.operation.Operation;
+import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.BaseReportingDAOTest;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
+import static com.ninja_squad.dbsetup.Operations.insertInto;
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO.AssetFilterDTOBuilder;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO.AssetGroupFilterDTOBuilder;
 import static junit.framework.TestCase.assertTrue;
 import static org.unitils.mock.MockUnitils.assertNoMoreInvocations;
 
-public class FilterMergerTest extends UnitilsJUnit4 {
+public class FilterMergerTest extends BaseReportingDAOTest {
 
-    @PersistenceContext
-    private EntityManager em;
+    private FilterDAO filterDAO = new FilterDAO(em);
 
     @TestedObject
     private FilterMerger merger = new FilterMerger(em);
@@ -72,29 +60,49 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     @Before
     public void before(){
 
+        Operation operation =
+                sequenceOf(
+                        DELETE_ALL,
+                        INSERT_REFERENCE_DATA,
+                        insertInto("reporting.report")
+                                .columns("ID", ReportDetails.CREATED_BY, ReportDetails.NAME, Audit.CREATED_ON, ReportDetails.WITH_MAP, Report.VISIBILITY, "is_deleted", ReportDetails.SCOPE_NAME)
+                                .values(1, "testUser", "France", java.sql.Date.valueOf("2014-12-12"), '1', VisibilityEnum.PRIVATE, 'N', "testScope")
+                                .values(2, "testUser", "United States", java.sql.Date.valueOf("2014-12-13"), '1', VisibilityEnum.PRIVATE, 'N', "testScope")
+                                .build(),
+                        insertInto("reporting.filter")
+                                .columns("filter_id", "guid", "name", Filter.REPORT_ID, "filter_type")
+                                .values(49L, "guid1", "asset1", 1L, "ASSET")
+                                .values(47L, "dddd", "vvvv", 1L, "ASSET")
+                                .values(50L, "ae9a03a4-62c6-462e-a5ab-27c22439b7e6", "EMMALIE", 1L, "ASSET")
+                                .build());
+
+
+        DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
+        dbSetupTracker.launchIfNecessary(dbSetup);
+
         asset1 = AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build();
 
-        vgroup2 = AssetGroupFilterDTOBuilder().id(48L).guid("2").userName("ddd").name("name").build();
+        //vgroup2 = AssetGroupFilterDTOBuilder().id(48L).guid("2").userName("ddd").name("name").build();
 
-        asset2 = AssetFilterDTOBuilder().id(49L).guid("gui4564").name("asset2").build();
+        //vasset2 = AssetFilterDTOBuilder().id(49L).guid("gui4564").name("asset2").build();
 
-        vgroup1 = AssetGroupFilterDTOBuilder().id(45L).guid("1").userName("ffsdfs").name("name2").build();
+        //vvgroup1 = AssetGroupFilterDTOBuilder().id(45L).guid("1").userName("ffsdfs").name("name2").build();
 
-        vms = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
-                .movementActivity(MovementActivityTypeType.ANC)
-                .minimumSpeed(100F)
-                .maximumSpeed(123F)
-                .movementType(MovementTypeType.ENT)
-                .build();
+        //vvms = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
+        //v.movementActivity(MovementActivityTypeType.ANC)
+        //v.minimumSpeed(100F)
+        //v.maximumSpeed(123F)
+        //v.movementType(MovementTypeType.ENT)
+        //v.build();
 
-        common = CommonFilterDTOBuilder()
-                .id(46L)
-                .positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
-                .endDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
-                .startDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
-                .build();
+        //vcommon = CommonFilterDTOBuilder()
+        //v.id(46L)
+        //v.positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
+        //v.endDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
+        //v.startDate(DateUtils.stringToDate("2015-10-09 08:56:48 +0200"))
+        //v.build();
 
-        area = AreaFilterDTO.AreaFilterDTOBuilder().areaId(20L).areaType("EEZ").build();
+        //varea = AreaFilterDTO.AreaFilterDTOBuilder().areaId(20L).areaType("EEZ").build();
     }
 
 
@@ -103,12 +111,10 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     public void testMergeAssetFilterUntouched(){
 
         Collection<FilterDTO> collection =  new ArrayList<>();
-
-        collection.add(asset1);
+        collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
 
         List<Filter> existingFilters = new ArrayList<>();
-        AssetFilter existingFilter = AssetFilter.builder().guid("guid1").name("asset1").build();
-        existingFilters.add(existingFilter);
+        existingFilters.add(filterDAO.findEntityById(Filter.class, 49L));
 
         filterDAOMock.returns(existingFilters).listByReportId(null);
 
@@ -125,7 +131,7 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void testMergeAssetFilter(){
 
-        asset1 = AssetFilterDTOBuilder().id(null).guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build();
+        asset1 = AssetFilterDTOBuilder().id(50L).guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build();
         asset2 = AssetFilterDTOBuilder().id(null).guid("sf3da03a2-13c2-342e-v3ab-14c12469b7e").name("JEANNE").build();
 
         Collection<FilterDTO> incoming =  new ArrayList<>();
@@ -133,17 +139,14 @@ public class FilterMergerTest extends UnitilsJUnit4 {
         incoming.add(asset2);
 
         List<Filter> existingFilters = new ArrayList<>();
-        AssetFilter existingFilter = AssetFilter.builder().guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build();
-
-        existingFilters.add(existingFilter);
+        existingFilters.add(filterDAO.findEntityById(Filter.class, 50L));
 
         filterDAOMock.returns(existingFilters).listByReportId(null);
 
-        boolean updated = merger.merge(incoming);
+        merger.merge(incoming);
 
         filterDAOMock.assertInvoked().createEntity(null);
         assertNoMoreInvocations();
-        //assertTrue(updated);
 
     }
 
@@ -152,48 +155,21 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     public void testMergeAssetFilterUpdateAndDelete(){
 
         Collection<FilterDTO> collection =  new ArrayList<>();
-        collection.add(asset1);
+        collection.add(AssetFilterDTOBuilder().guid("guidguid").name("asset1").build());
 
         List<Filter> existingFilters = new ArrayList<>();
-        AssetFilter existingFilter = AssetFilter.builder().guid("guid").name("asset1").build();
-        AssetFilter existingFilter2 = AssetFilter.builder().guid("dddd").name("vvvv").build();
 
-        existingFilters.add(existingFilter); // this one is an update
-        existingFilters.add(existingFilter2); // this one has to go
+        existingFilters.add(filterDAO.findEntityById(Filter.class, 49L));
+        existingFilters.add(filterDAO.findEntityById(Filter.class, 47L));
 
         filterDAOMock.returns(existingFilters).listByReportId(null);
 
         boolean updated = merger.merge(collection);
 
         filterDAOMock.assertInvoked().createEntity(null);
-       // filterDAOMock.assertInvoked().deleteBy(49L);
-       // filterDAOMock.assertInvoked().deleteBy(47L);
-       // assertNoMoreInvocations();
-        assertTrue(updated);
-    }
-
-    @Test
-    @SneakyThrows
-    public void testMergeAssetFilterUpdateAndDeleteAreaFilters(){
-
-        Collection<FilterDTO> collection =  new ArrayList<>();
-        collection.add(area);
-
-        List<Filter> existingFilters = new ArrayList<>();
-        AreaFilter existingFilter = AreaFilter.builder().areaId(10L).areaType("BBB").build();
-        AreaFilter existingFilter2 = AreaFilter.builder().areaId(11L).areaType("CCC").build();
-
-        existingFilters.add(existingFilter); // this one is an update
-        existingFilters.add(existingFilter2); // this one has to go
-
-        filterDAOMock.returns(existingFilters).listByReportId(null);
-
-        boolean updated = merger.merge(collection);
-
-        filterDAOMock.assertInvoked().createEntity(null);
-       // filterDAOMock.assertInvoked().deleteBy(47L);
-       // filterDAOMock.assertInvoked().deleteBy(48L);
-        //assertNoMoreInvocations();
+        filterDAOMock.assertInvoked().deleteBy(47L);
+        filterDAOMock.assertInvoked().deleteBy(49L);
+        assertNoMoreInvocations();
         assertTrue(updated);
     }
 
@@ -202,7 +178,7 @@ public class FilterMergerTest extends UnitilsJUnit4 {
     public void testMergeAssetFilterInsert(){
 
         Collection<FilterDTO> collection =  new ArrayList<>();
-        collection.add(asset1);
+        collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
 
         Report report = Report.builder().build();
         filterDAOMock.returns(new ArrayList<>()).listByReportId(null); // empty array
@@ -216,5 +192,4 @@ public class FilterMergerTest extends UnitilsJUnit4 {
         assertNoMoreInvocations();
         assertTrue(updated);
     }
-
 }

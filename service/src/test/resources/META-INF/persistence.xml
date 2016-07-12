@@ -8,6 +8,8 @@
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Report</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter</class>
+
         <properties>
             <property name="hibernate.default_schema" value="reporting"/>
             <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
