@@ -137,6 +137,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     }
 
 
+    @Test
     @SneakyThrows
     public void testMergeAssetFilterUntouched(){
 
@@ -146,9 +147,9 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
 
         List<Filter> existingFilters = new ArrayList<>();
-        existingFilters.add(filterDAO.findEntityById(Filter.class, 49L));
+        //existingFilters.add(filterDAO.findEntityById(Filter.class, 49L));
 
-        filterDAOMock.returns(existingFilters).listByReportId(null);
+        //filterDAOMock.returns(existingFilters).listByReportId(null);
 
         boolean updated = merger.merge(collection);
 
