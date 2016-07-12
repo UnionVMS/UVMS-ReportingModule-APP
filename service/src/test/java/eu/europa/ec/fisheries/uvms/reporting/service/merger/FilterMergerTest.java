@@ -50,7 +50,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     @InjectIntoByType
     private Mock<FilterDAO> filterDAOMock;
 
-    private AssetFilterDTO asset1;
     private AssetGroupFilterDTO vgroup2;
     private AssetFilterDTO asset2;
     private AssetGroupFilterDTO vgroup1;
@@ -84,8 +83,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);
-
-        asset1 = AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build();
 
         //vgroup2 = AssetGroupFilterDTOBuilder().id(48L).guid("2").userName("ddd").name("name").build();
 
@@ -159,11 +156,10 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     @SneakyThrows
     public void testMergeAssetFilter(){
 
-        asset1 = AssetFilterDTOBuilder().id(50L).guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build();
         asset2 = AssetFilterDTOBuilder().id(null).guid("sf3da03a2-13c2-342e-v3ab-14c12469b7e").name("JEANNE").build();
 
         Collection<FilterDTO> incoming =  new ArrayList<>();
-        incoming.add(asset1);
+        incoming.add(AssetFilterDTOBuilder().id(50L).guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build());
         incoming.add(asset2);
 
         List<Filter> existingFilters = new ArrayList<>();
