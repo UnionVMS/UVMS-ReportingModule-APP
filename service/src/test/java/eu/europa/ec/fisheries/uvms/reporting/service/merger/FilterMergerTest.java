@@ -13,6 +13,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.BaseReportingDAOTest;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
@@ -25,14 +27,13 @@ import org.junit.Test;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import static com.ninja_squad.dbsetup.Operations.insertInto;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO.AssetFilterDTOBuilder;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.unitils.mock.MockUnitils.assertNoMoreInvocations;
 
@@ -74,6 +75,10 @@ public class FilterMergerTest extends BaseReportingDAOTest {
                                 .values(49L, "guid1", "asset1", 1L, "ASSET")
                                 .values(47L, "dddd", "vvvv", 1L, "ASSET")
                                 .values(50L, "ae9a03a4-62c6-462e-a5ab-27c22439b7e6", "EMMALIE", 1L, "ASSET")
+                                .build(),
+                        insertInto("reporting.filter")
+                                .columns("filter_id", "min_speed", "max_speed", "MOV_ACTIVITY", "MOV_TYPE", "filter_type", Filter.REPORT_ID)
+                                .values(1L, "2", "2", MovementActivityTypeType.ANC.ordinal(), MovementTypeType.ENT.ordinal(), "VMSPOS", 2L)
                                 .build());
 
 
@@ -88,13 +93,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
         //vvgroup1 = AssetGroupFilterDTOBuilder().id(45L).guid("1").userName("ffsdfs").name("name2").build();
 
-        //vvms = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
-        //v.movementActivity(MovementActivityTypeType.ANC)
-        //v.minimumSpeed(100F)
-        //v.maximumSpeed(123F)
-        //v.movementType(MovementTypeType.ENT)
-        //v.build();
-
         //vcommon = CommonFilterDTOBuilder()
         //v.id(46L)
         //v.positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
@@ -103,6 +101,36 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         //v.build();
 
         //varea = AreaFilterDTO.AreaFilterDTOBuilder().areaId(20L).areaType("EEZ").build();
+    }
+
+    @Test
+    @SneakyThrows
+    public void testUpdateWithVmsFilter(){
+
+        Collection<FilterDTO> collection =  new ArrayList<>();
+        VmsPositionFilterDTO positionFilterDTO = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
+                .movementActivity(MovementActivityTypeType.AUT)
+                .minimumSpeed(100F).maximumSpeed(123F)
+                .movementType(MovementTypeType.EXI).build();
+        collection.add(positionFilterDTO);
+
+        List<Filter> existingFilters = new ArrayList<>();
+        existingFilters.add(filterDAO.findEntityById(Filter.class, 1L));
+
+        filterDAOMock.returns(existingFilters).listByReportId(null);
+
+        boolean updated = merger.merge(collection);
+
+        filterDAOMock.assertInvoked().updateEntity(null);
+
+        assertNoMoreInvocations();
+
+        assertTrue(updated);
+
+        FilterDTO accept = filterDAO.findEntityById(Filter.class, 1L).accept(new Filter.FilterToDTOVisitor());
+
+        assertEquals(accept, positionFilterDTO);
+
     }
 
 
