@@ -25,7 +25,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
@@ -115,10 +114,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testUpdateWithVmsFilter(){
-
-        em.getTransaction().begin();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
         VmsPositionFilterDTO positionFilterDTO = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
@@ -144,8 +140,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
         assertEquals(accept, positionFilterDTO);
 
-        em.flush();
-        em.getTransaction().rollback();
     }
 
 
@@ -174,7 +168,6 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testMergeAssetFilter(){
 
         asset2 = AssetFilterDTOBuilder().id(null).guid("sf3da03a2-13c2-342e-v3ab-14c12469b7e").name("JEANNE").build();
@@ -197,10 +190,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testMergeAssetFilterUpdateAndDelete(){
-
-        em.getTransaction().begin();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
         collection.add(AssetFilterDTOBuilder().guid("guidguid").name("asset1").build());
@@ -220,16 +210,11 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         assertNoMoreInvocations();
         assertTrue(updated);
 
-        em.flush();
-        em.getTransaction().rollback();
     }
 
     @Test
     @SneakyThrows
-    @Ignore
     public void testMergeAssetFilterInsert(){
-
-        em.getTransaction().begin();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
         collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
@@ -246,7 +231,5 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         assertNoMoreInvocations();
         assertTrue(updated);
 
-        em.flush();
-        em.getTransaction().rollback();
     }
 }
