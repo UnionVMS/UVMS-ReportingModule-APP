@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import com.ninja_squad.dbsetup.DbSetup;
+import com.ninja_squad.dbsetup.DbSetupTracker;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
@@ -21,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.List;
 
 import static com.ninja_squad.dbsetup.Operations.insertInto;
@@ -30,6 +32,7 @@ import static junit.framework.TestCase.assertEquals;
 public class FilterDAOTest extends BaseReportingDAOTest {
 
     private FilterDAO dao = new FilterDAO(em);
+    protected DbSetupTracker dbSetupTracker = new DbSetupTracker();
 
     @Before
     public void prepare(){

@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 
 import com.ninja_squad.dbsetup.DbSetup;
+import com.ninja_squad.dbsetup.DbSetupTracker;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
@@ -22,15 +23,18 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import static com.ninja_squad.dbsetup.Operations.insertInto;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO.AssetFilterDTOBuilder;
@@ -41,6 +45,7 @@ import static org.unitils.mock.MockUnitils.assertNoMoreInvocations;
 public class FilterMergerTest extends BaseReportingDAOTest {
 
     private FilterDAO filterDAO = new FilterDAO(em);
+    protected DbSetupTracker dbSetupTracker = new DbSetupTracker();
 
     @TestedObject
     private FilterMerger merger = new FilterMerger(em);
@@ -85,6 +90,8 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);
 
+        em.getTransaction().begin();
+
         //vgroup2 = AssetGroupFilterDTOBuilder().id(48L).guid("2").userName("ddd").name("name").build();
 
         //vasset2 = AssetFilterDTOBuilder().id(49L).guid("gui4564").name("asset2").build();
@@ -99,6 +106,11 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         //v.build();
 
         //varea = AreaFilterDTO.AreaFilterDTOBuilder().areaId(20L).areaType("EEZ").build();
+    }
+
+    @After
+    public void test(){
+        em.getTransaction().rollback();
     }
 
     @Test
@@ -147,9 +159,9 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
 
         List<Filter> existingFilters = new ArrayList<>();
-        //existingFilters.add(filterDAO.findEntityById(Filter.class, 49L));
+        existingFilters.add(filterDAO.findEntityById(Filter.class, 49L));
 
-        //filterDAOMock.returns(existingFilters).listByReportId(null);
+        filterDAOMock.returns(existingFilters).listByReportId(null);
 
         boolean updated = merger.merge(collection);
 
