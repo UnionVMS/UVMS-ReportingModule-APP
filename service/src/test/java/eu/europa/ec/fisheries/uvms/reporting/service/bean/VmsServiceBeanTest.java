@@ -12,15 +12,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
-import org.junit.Ignore;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -29,7 +23,6 @@ import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
 
-import javax.ejb.EJB;
 import javax.jms.TextMessage;
 import java.util.HashSet;
 import java.util.Set;
@@ -97,7 +90,6 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    @Ignore("Repair later")
     public void testGetVmsDataByReportIdWithoutAsset() {
 
         Set<Filter> filterSet = new HashSet<>();
@@ -108,7 +100,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getVmsDataByReportId("test", null, null, null, null, false);
+        service.getVmsDataByReportId("test", null, null, null, DateTime.now(), false);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);
