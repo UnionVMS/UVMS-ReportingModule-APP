@@ -75,12 +75,12 @@ public class ReportServiceBean {
     }
 
     @Transactional
-    public ReportDTO findById(Long id, String username, String scopeName, Boolean isAdmin, List<String> permittedServiceLayers) {
+    public ReportDTO findById(final Set<String> features, Long id, String username, String scopeName, Boolean isAdmin, List<String> permittedServiceLayers) {
 
         ReportDTO reportDTO;
 
         try {
-            ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
+            ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).filters(true).build();
             Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
             reportDTO =  mapper.reportToReportDTO(reportByReportId);
 

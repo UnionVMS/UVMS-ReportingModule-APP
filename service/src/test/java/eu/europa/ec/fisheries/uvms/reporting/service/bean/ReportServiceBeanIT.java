@@ -40,7 +40,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -112,7 +114,8 @@ public class ReportServiceBeanIT {
         assertNotNull(report);
 
         reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
-        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false, null);
+        Set<String> features = new HashSet<>();
+        report = reportBean.findById(features, report.getId(), report.getCreatedBy(), report.getScopeName(), false, null);
         assertNull(report);
 
     }
@@ -148,7 +151,8 @@ public class ReportServiceBeanIT {
         assertNotNull(assetFilterDTO.getId());
 
         reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
-        report = reportBean.findById(report.getId(), report.getCreatedBy(), report.getScopeName(), false, null);
+        Set<String> features = new HashSet<>();
+        report = reportBean.findById(features, report.getId(), report.getCreatedBy(), report.getScopeName(), false, null);
         assertNull(report);
 
     }

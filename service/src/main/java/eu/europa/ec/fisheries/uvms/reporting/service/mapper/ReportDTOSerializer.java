@@ -36,11 +36,10 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeStartObject();
 
         serializeReportFields(reportDTO, jgen);
+        serializeAccessFields(reportDTO, jgen);
 
         if (filters != null && !filters.isEmpty()) {
             serializeFilterFields(jgen, filters);
-        } else {
-            serializeAccessFields(reportDTO, jgen);
         }
 
         jgen.writeEndObject();
