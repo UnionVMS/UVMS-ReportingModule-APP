@@ -19,7 +19,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMap
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true, of = {"movementType", "movementActivity", "minimumSpeed", "maximumSpeed"})
+import java.util.List;
+
+@EqualsAndHashCode(callSuper = true, of = {"movementType", "movementActivity", "minimumSpeed", "maximumSpeed", "movementSources"})
 public class VmsPositionFilterDTO extends FilterDTO {
 
     public static final String MOV_MIN_SPEED = "movMinSpeed";
@@ -27,6 +29,7 @@ public class VmsPositionFilterDTO extends FilterDTO {
     public static final String MOV_TYPE = "movType";
     public static final String MOV_ACTIVITY = "movActivity";
     public static final String VMS_POSITION = "vmsposition";
+    public static final String MOV_SOURCES = "movsources";
 
     @JsonProperty(MOV_MIN_SPEED)
     private Float minimumSpeed;
@@ -40,6 +43,9 @@ public class VmsPositionFilterDTO extends FilterDTO {
     @JsonProperty(MOV_ACTIVITY)
     private MovementActivityTypeType movementActivity;
 
+    @JsonProperty(MOV_SOURCES)
+    private List<String> movementSources;
+
     public VmsPositionFilterDTO() {
         super(FilterType.vmspos);
     }
@@ -50,12 +56,14 @@ public class VmsPositionFilterDTO extends FilterDTO {
 
     @Builder(builderMethodName = "VmsPositionFilterDTOBuilder")
     public VmsPositionFilterDTO(Long reportId, Long id, Float minimumSpeed, Float maximumSpeed,
-                                MovementTypeType movementType, MovementActivityTypeType movementActivity) {
+                                MovementTypeType movementType, MovementActivityTypeType movementActivity,
+                                List<String> movementSources) {
         this(id, reportId);
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
         this.movementType = movementType;
         this.movementActivity = movementActivity;
+        this.movementSources = movementSources;
         validate();
     }
 
@@ -94,5 +102,13 @@ public class VmsPositionFilterDTO extends FilterDTO {
 
     public void setMovementActivity(MovementActivityTypeType movementActivity) {
         this.movementActivity = movementActivity;
+    }
+
+    public List<String> getMovementSources() {
+        return movementSources;
+    }
+
+    public void setMovementSources(List<String> movementSources) {
+        this.movementSources = movementSources;
     }
 }

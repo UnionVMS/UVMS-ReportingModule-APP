@@ -14,10 +14,12 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import lombok.Builder;
@@ -45,18 +47,23 @@ public class VmsPositionFilter extends Filter {
     @Column(name = "MOV_ACTIVITY")
     private MovementActivityTypeType movementActivity;
 
+    @Convert(converter = ListStringConverter.class)
+    @Column(name = "MOV_SOURCES")
+    private List<String> movementSources;
+
     public VmsPositionFilter() {
         super(FilterType.vmspos);
     }
 
     @Builder
     public VmsPositionFilter(MovementActivityTypeType movementActivity, MovementTypeType movementType,
-                             Float maximumSpeed, Float minimumSpeed) {
+                             Float maximumSpeed, Float minimumSpeed, List<String> movementSources) {
         super(FilterType.vmspos);
         this.movementActivity = movementActivity;
         this.movementType = movementType;
         this.maximumSpeed = maximumSpeed;
         this.minimumSpeed = minimumSpeed;
+        this.movementSources = movementSources;
     }
 
     @Override
@@ -77,8 +84,17 @@ public class VmsPositionFilter extends Filter {
     @Override
     public List<ListCriteria> movementListCriteria() {
         List<ListCriteria> criteria = new ArrayList<>();
-        criteria.add(VmsPositionFilterMapper.INSTANCE.movementActivityToListCriteria(this));
-        criteria.add(VmsPositionFilterMapper.INSTANCE.movementTypeToListCriteria(this));
+        if (movementActivity != null) {
+            criteria.add(VmsPositionFilterMapper.INSTANCE.movementActivityToListCriteria(this));
+        }
+        if (movementType != null) {
+            criteria.add(VmsPositionFilterMapper.INSTANCE.movementTypeToListCriteria(this));
+        }
+        if (movementSources != null) {
+            for (String movementSource : movementSources) {
+                criteria.add(VmsPositionFilterMapper.INSTANCE.movementSourceToListCriteria(movementSource));
+            }
+        }
         return criteria;
     }
 
@@ -119,4 +135,11 @@ public class VmsPositionFilter extends Filter {
         this.maximumSpeed = maximumSpeed;
     }
 
+    public List<String> getMovementSources() {
+        return movementSources;
+    }
+
+    public void setMovementSources(List<String> movementSources) {
+        this.movementSources = movementSources;
+    }
 }

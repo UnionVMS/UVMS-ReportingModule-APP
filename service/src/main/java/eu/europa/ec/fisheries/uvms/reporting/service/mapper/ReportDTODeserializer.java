@@ -334,6 +334,11 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             dto.setMovementType(MovementTypeType
                     .valueOf(next.get(VmsPositionFilterDTO.MOV_TYPE).textValue()));
         }
+        if (next.get(VmsPositionFilterDTO.MOV_SOURCES) != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            List<String> movSources = mapper.convertValue(next.get(VmsPositionFilterDTO.MOV_SOURCES), List.class);
+            dto.setMovementSources(movSources);
+        }
         filterDTOList.add(dto);
     }
 

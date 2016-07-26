@@ -31,6 +31,9 @@ public interface VmsPositionFilterMapper {
 
     VmsPositionFilterDTO vmsPositionFilterToVmsPositionFilterDTO(VmsPositionFilter vmsPositionFilter);
 
+    @Mappings({
+        @Mapping(source = "movementSources", target = "movementSources")
+    })
     VmsPositionFilter vmsPositionFilterDTOToVmsPositionFilter(VmsPositionFilterDTO vmsPositionFilterDTO);
 
     @Mappings({
@@ -62,7 +65,14 @@ public interface VmsPositionFilterMapper {
 
     @Mappings({
             @Mapping(target = "report", ignore = true),
-            @Mapping(target = "reportId", ignore = true)
+            @Mapping(target = "reportId", ignore = true),
+            @Mapping(target = "movementSources", expression = "java(incoming.getMovementSources())")
     })
     void merge(VmsPositionFilter incoming, @MappingTarget VmsPositionFilter current);
+
+    @Mappings({
+            @Mapping(constant = "SOURCE", target = "key"),
+            @Mapping(target = "value", expression = "java(movementSource)")
+    })
+    ListCriteria movementSourceToListCriteria(String movementSource);
 }

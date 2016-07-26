@@ -31,6 +31,7 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -81,8 +82,8 @@ public class FilterMergerTest extends BaseReportingDAOTest {
                                 .values(50L, "ae9a03a4-62c6-462e-a5ab-27c22439b7e6", "EMMALIE", 1L, "ASSET")
                                 .build(),
                         insertInto("reporting.filter")
-                                .columns("filter_id", "min_speed", "max_speed", "MOV_ACTIVITY", "MOV_TYPE", "filter_type", Filter.REPORT_ID)
-                                .values(1L, "2", "2", MovementActivityTypeType.ANC.ordinal(), MovementTypeType.ENT.ordinal(), "VMSPOS", 2L)
+                                .columns("filter_id", "min_speed", "max_speed", "MOV_ACTIVITY", "MOV_TYPE", "MOV_SOURCES", "filter_type", Filter.REPORT_ID)
+                                .values(1L, "2", "2", MovementActivityTypeType.ANC.ordinal(), MovementTypeType.ENT.ordinal(), "OTHER,NAF", "VMSPOS", 2L)
                                 .build());
 
 
@@ -116,11 +117,14 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     @SneakyThrows
     public void testUpdateWithVmsFilter(){
 
+        List<String> list = new ArrayList<>();
+        list.add("NAF");
+        list.add("AIS");
         Collection<FilterDTO> collection =  new ArrayList<>();
         VmsPositionFilterDTO positionFilterDTO = VmsPositionFilterDTO.VmsPositionFilterDTOBuilder().id(1L)
                 .movementActivity(MovementActivityTypeType.AUT)
                 .minimumSpeed(100F).maximumSpeed(123F)
-                .movementType(MovementTypeType.EXI).build();
+                .movementType(MovementTypeType.EXI).movementSources(list).build();
         collection.add(positionFilterDTO);
 
         List<Filter> existingFilters = new ArrayList<>();
