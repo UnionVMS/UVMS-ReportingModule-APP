@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.model.vms;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -36,6 +37,8 @@ public class VmsPosition {
     private String movType;
     @JsonProperty("movActivity")
     private String movActivity;
+    @JsonProperty("movsources")
+    private List<String> movSources;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -55,13 +58,14 @@ public class VmsPosition {
      * @param type
      * @param movMinSpeed
      */
-    public VmsPosition(Long id, String type, Float movMinSpeed, Float movMaxSpeed, String movType, String movActivity) {
+    public VmsPosition(Long id, String type, Float movMinSpeed, Float movMaxSpeed, String movType, String movActivity, List<String> movSources) {
         this.id = id;
         this.type = type;
         this.movMinSpeed = movMinSpeed;
         this.movMaxSpeed = movMaxSpeed;
         this.movType = movType;
         this.movActivity = movActivity;
+        this.movSources = movSources;
     }
 
     /**
@@ -212,6 +216,16 @@ public class VmsPosition {
     public VmsPosition withMovActivity(String movActivity) {
         this.movActivity = movActivity;
         return this;
+    }
+
+    @JsonProperty("movsources")
+    public List<String> getMovSources() {
+        return movSources;
+    }
+
+    @JsonProperty("movsources")
+    public void setMovSources(List<String> movSources) {
+        this.movSources = movSources;
     }
 
     @Override

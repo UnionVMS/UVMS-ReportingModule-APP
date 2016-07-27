@@ -40,7 +40,8 @@ public interface VmsPositionFilterMapper {
             @Mapping(target = "minimumSpeed", source = "movMinSpeed"),
             @Mapping(target = "maximumSpeed", source = "movMaxSpeed"),
             @Mapping(target = "movementActivity", expression = "java(dto.getMovActivity() != null ? Enum.valueOf( MovementActivityTypeType.class, dto.getMovActivity()) : null)"),
-            @Mapping(target = "movementType", expression = "java(dto.getMovType() != null ? Enum.valueOf( MovementTypeType.class, dto.getMovType()) : null)")
+            @Mapping(target = "movementType", expression = "java(dto.getMovType() != null ? Enum.valueOf( MovementTypeType.class, dto.getMovType()) : null)"),
+            @Mapping(target = "movementSources", source = "movSources")
     })
     VmsPositionFilter vmsPositionToVmsPositionFilter(VmsPosition dto);
 
