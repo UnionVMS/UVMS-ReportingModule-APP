@@ -23,8 +23,8 @@ import javax.interceptor.InvocationContext;
  * Created by padhyad on 7/4/2016.
  */
 @Interceptor
-@Slf4j
-public class ReportingExceptionInterceptor extends UnionVMSResource {
+ @Slf4j
+ public class ReportingExceptionInterceptor extends UnionVMSResource {
 
     @AroundInvoke
     public Object createResponse(final InvocationContext ic) {
