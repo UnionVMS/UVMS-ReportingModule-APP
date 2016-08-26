@@ -288,36 +288,55 @@ public class ReportingResource extends UnionVMSResource {
         if (StringUtils.isBlank(scopeName)) {
             result = createErrorResponse(ErrorCodes.USER_SCOPE_MISSING);
         } else {
+            if (isScopeAllowed(report.getVisibility(), request)) {
+                report.setCreatedBy(username);
+                report.setScopeName(scopeName);
 
-            report.setCreatedBy(username);
-            report.setScopeName(scopeName);
-
-            ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
-            ReportDTO reportDTO;
-            if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-                try {
-                    reportDTO = reportService.create(report);
-                    switch (Projection.valueOf(projection.toUpperCase())){
-
-                        case DETAILED:
-                            result = createSuccessResponse(reportDTO);
-                            break;
-
-                        default:
-                            result = createSuccessResponse(reportDTO.getId());
+                ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
+                ReportDTO reportDTO;
+                if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
+                    try {
+                        reportDTO = reportService.create(report);
+                        switch (Projection.valueOf(projection.toUpperCase())){
+                            case DETAILED:
+                                result = createSuccessResponse(reportDTO);
+                                break;
+                            default:
+                                result = createSuccessResponse(reportDTO.getId());
+                        }
+                    } catch (Exception e) {
+                        log.error("createReport failed.", e);
+                        result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
                     }
-                } catch (Exception e) {
-                    log.error("createReport failed.", e);
-                    result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
+                } else {
+                    result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
                 }
-
             } else {
                 result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
             }
         }
-
         return result;
     }
+
+    private boolean isScopeAllowed(VisibilityEnum visibility, HttpServletRequest request) {
+        boolean isScopeAllowed = true;
+        if (visibility.equals(VisibilityEnum.PUBLIC) || visibility.equals(VisibilityEnum.SCOPE)) {
+            ReportFeatureEnum requiredFeature = null;
+            switch (visibility) {
+                case SCOPE:
+                    requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE;
+                    break;
+                case PUBLIC:
+                    requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
+                    break;
+            }
+            if (requiredFeature == null || !request.isUserInRole(requiredFeature.toString())) {
+                isScopeAllowed = false;
+            }
+        }
+        return isScopeAllowed;
+    }
+
 
     @PUT
     @Path("/share/{id}/{visibility}")
