@@ -98,7 +98,7 @@ public class ReportServiceBeanIT {
         deserialized.setScopeName("EC");
         deserialized.setCreatedBy("rep_power");
 
-        ReportDTO savedReport = reportBean.create(deserialized);
+        ReportDTO savedReport = reportBean.create(deserialized, "test");
         assertNotNull(savedReport);
 
         ReportGetStartAndEndDateRS response = reportBean.getReportDates("2016-03-18T11:00:00", savedReport.getId(), "rep_power", "EC");
@@ -110,7 +110,7 @@ public class ReportServiceBeanIT {
     @Test
     @Transactional(TransactionMode.ROLLBACK)
     public void testInterceptor() throws ReportingServiceException, ServiceException {
-        ReportDTO report = reportBean.create(DTOUtil.createRandomReport());
+        ReportDTO report = reportBean.create(DTOUtil.createRandomReport(), "test");
         assertNotNull(report);
 
         reportBean.delete(report.getId(), report.getCreatedBy(), report.getScopeName(), false);
@@ -133,7 +133,7 @@ public class ReportServiceBeanIT {
 
         newReport.setFilters(filters);
 
-        ReportDTO report = reportBean.create(newReport);
+        ReportDTO report = reportBean.create(newReport, "test");
         assertNotNull(report);
 
         assertEquals(report.getFilters().size(), filters.size());
@@ -171,7 +171,7 @@ public class ReportServiceBeanIT {
         deserialized.setScopeName("test");
         deserialized.setCreatedBy("test");
 
-        ReportDTO savedReport = reportBean.create(deserialized);
+        ReportDTO savedReport = reportBean.create(deserialized, "test");
 
         assertTrue(savedReport.equals(deserialized));
 
@@ -191,7 +191,7 @@ public class ReportServiceBeanIT {
         deserialized.setScopeName("test");
         deserialized.setCreatedBy("test");
 
-        ReportDTO savedReport = reportBean.create(deserialized);
+        ReportDTO savedReport = reportBean.create(deserialized, "test");
 
         assertTrue(savedReport.equals(deserialized));
 
@@ -211,7 +211,7 @@ public class ReportServiceBeanIT {
         deserialized.setScopeName("test");
         deserialized.setCreatedBy("test");
 
-        ReportDTO savedReport = reportBean.create(deserialized);
+        ReportDTO savedReport = reportBean.create(deserialized, "test");
 
         assertTrue(savedReport.equals(deserialized));
 
@@ -231,7 +231,7 @@ public class ReportServiceBeanIT {
         deserialized.setScopeName("test");
         deserialized.setCreatedBy("test");
 
-        ReportDTO savedReport = reportBean.create(deserialized);
+        ReportDTO savedReport = reportBean.create(deserialized, "test");
 
         assertTrue(savedReport.equals(deserialized));
 
@@ -251,7 +251,7 @@ public class ReportServiceBeanIT {
         deserialized.setScopeName("test");
         deserialized.setCreatedBy("test");
 
-        ReportDTO savedReport = reportBean.create(deserialized);
+        ReportDTO savedReport = reportBean.create(deserialized, "test");
 
         assertTrue(savedReport.equals(deserialized));
 
@@ -271,7 +271,7 @@ public class ReportServiceBeanIT {
         deserialized.setScopeName("test");
         deserialized.setCreatedBy("test");
 
-        ReportDTO savedReport = reportBean.create(deserialized);
+        ReportDTO savedReport = reportBean.create(deserialized, "test");
 
         assertTrue(savedReport.equals(deserialized));
 

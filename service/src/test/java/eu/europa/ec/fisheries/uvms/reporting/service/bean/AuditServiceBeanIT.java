@@ -70,9 +70,9 @@ public class AuditServiceBeanIT {
 		@Transactional(TransactionMode.ROLLBACK)
 		public void testSendAuditReport() {	
 			try {
-				auditService.sendAuditReport(AuditActionEnum.CREATE, "123");
-				auditService.sendAuditReport(AuditActionEnum.MODIFY, "123");
-				auditService.sendAuditReport(AuditActionEnum.DELETE, "123");
+				auditService.sendAuditReport(AuditActionEnum.CREATE, "123", "test");
+				auditService.sendAuditReport(AuditActionEnum.MODIFY, "123", "test");
+				auditService.sendAuditReport(AuditActionEnum.DELETE, "123", "test");
 			} catch (ReportingServiceException e) {
 				assertNull(e);
 			}

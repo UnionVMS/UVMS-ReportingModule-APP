@@ -21,8 +21,8 @@ import java.util.Map;
 
 public interface VmsService {
 
-    VmsDTO getVmsDataByReportId(String username, String scopeName, Long id, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin) throws ReportingServiceException;
+    VmsDTO getVmsDataByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin) throws ReportingServiceException;
 
-    VmsDTO getVmsDataBy(Report report, List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException;
+    VmsDTO getVmsDataBy(Report report, List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException;
 
 }

@@ -24,8 +24,9 @@ public interface AuditService {
 	 * 
 	 * @param auditActionEnum {@link AuditActionEnum}
 	 * @param objectId {@link String}
+	 * @param username User Name
 	 * @throws ReportingServiceException {@link ReportingServiceException}
 	 */
-	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId) throws ReportingServiceException;
+	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String username) throws ReportingServiceException;
 
 }

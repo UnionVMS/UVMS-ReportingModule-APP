@@ -41,9 +41,9 @@ public class AuditServiceBeanTest {
 	@Test
 	public void testInterceptor() {
 		try {
-			auditServiceBean.sendAuditReport(AuditActionEnum.CREATE, "123");
-			auditServiceBean.sendAuditReport(AuditActionEnum.MODIFY, "123");
-			auditServiceBean.sendAuditReport(AuditActionEnum.DELETE, "123");
+			auditServiceBean.sendAuditReport(AuditActionEnum.CREATE, "123", "test");
+			auditServiceBean.sendAuditReport(AuditActionEnum.MODIFY, "123", "test");
+			auditServiceBean.sendAuditReport(AuditActionEnum.DELETE, "123", "test");
 		} catch (ReportingServiceException e) {
 			assertNull(e);
 		}

@@ -46,80 +46,58 @@ public class AuditInterceptor implements Serializable {
 		AuditActionEnum auditAction = auditActionInterface.auditActionType();
 		
 		if (auditAction.equals(AuditActionEnum.CREATE)) {
-
             ReportDTO report = (ReportDTO)result;
-
+			String username = (parameters[1] instanceof String) ? (String)parameters[1] : null;
 			if (report != null) {
-
 				Long id = report.getId();
-
-				sendAuditReport(auditAction, id);
-
-			}			
-			
+				sendAuditReport(auditAction, id, username);
+			}
 		}
 
         else if (auditAction.equals(AuditActionEnum.MODIFY)) {
-
             ReportDTO report = (ReportDTO)parameters[0];
-
+			String username = (parameters[1] instanceof String) ? (String)parameters[1] : null;
 			if (report != null) {
-
 				Long id = report.getId();
-
-				sendAuditReport(auditAction, id);
-
-			}			
-			
+				sendAuditReport(auditAction, id, username);
+			}
 		}
 
         else if (auditAction.equals(AuditActionEnum.DELETE)) {
-
 			Long id = (Long)parameters[0];
-
+			String username = (parameters[1] instanceof String) ? (String)parameters[1] : null;
 			if (id != null) {
-
-				sendAuditReport(auditAction, id);
-
+				sendAuditReport(auditAction, id, username);
 			}
-
 		}
 
         else if (auditAction.equals(AuditActionEnum.EXECUTE)) {
-
-            Long id = (Long)parameters[2];
-
+            Long id = (Long)parameters[0];
+			String username = (parameters[1] instanceof String) ? (String)parameters[1] : null;
             if (id != null) {
-
-                sendAuditReport(auditAction, id);
-
+                sendAuditReport(auditAction, id, username);
             }
-
         }
 
         else if (auditAction.equals(AuditActionEnum.SHARE)) {
-
             Long reportId = (Long)parameters[0];
-
+			String username = (parameters[1] instanceof String) ? (String)parameters[1] : null;
             if (reportId != null) {
-                sendAuditReport(auditAction, reportId);
+                sendAuditReport(auditAction, reportId, username);
             }
-
         }
 
         else {
-
 			LOG.warn("Audit action cannot be intercepted");
-
 		}
 
 		return result;
 	}
 	
-	private void sendAuditReport(AuditActionEnum auditAction, Long id) {
+	private void sendAuditReport(AuditActionEnum auditAction, Long id, String username) {
 		try {
 			LOG.info("Audit type received is : " + auditAction.getAuditType() + " ID : " + id);
-			auditService.sendAuditReport(auditAction, id.toString());
+			auditService.sendAuditReport(auditAction, id.toString(), username);
 		} catch (ReportingServiceException e) {
 			LOG.error("Exception occurred while executing interceptor", e);
 		}				

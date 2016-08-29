@@ -54,7 +54,7 @@ public class ReportServiceBean {
     }
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
     @Transactional
-    public ReportDTO create(ReportDTO report) throws ReportingServiceException {
+    public ReportDTO create(ReportDTO report, String username) throws ReportingServiceException {
         ReportDTO reportDTO = saveReport(report);
 
         saveMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
@@ -99,7 +99,7 @@ public class ReportServiceBean {
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     @Transactional
-    public ReportDTO update(final ReportDTO report, Boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException, ServiceException {
+    public ReportDTO update(final ReportDTO report, String username, Boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException, ServiceException {
 
         if (report == null) {
             throw new IllegalArgumentException("REPORT CAN NOT BE NULL");
@@ -173,7 +173,7 @@ public class ReportServiceBean {
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.SHARE)
     @Transactional
-    public void share(Long reportId, VisibilityEnum newVisibility, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
+    public void share(Long reportId, String username, String scopeName, Boolean isAdmin, VisibilityEnum newVisibility) throws ReportingServiceException {
         repository.changeVisibility(reportId, newVisibility, username, scopeName, isAdmin);
     }
 

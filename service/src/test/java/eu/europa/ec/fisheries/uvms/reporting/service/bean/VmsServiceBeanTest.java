@@ -60,7 +60,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null, false);
 
-        service.getVmsDataByReportId("userName", "scope",  null, null, null, false);
+        service.getVmsDataByReportId(null, "userName", "scope", null, null, false);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
@@ -78,7 +78,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getVmsDataByReportId("test", null, null, null, null, false);
+        service.getVmsDataByReportId(null, "test", null, null, null, false);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
@@ -100,7 +100,7 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getVmsDataByReportId("test", null, null, null, DateTime.now(), false);
+        service.getVmsDataByReportId(null, "test", null, null, DateTime.now(), false);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -113,6 +113,6 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     @Test(expected = ReportingServiceException.class)
     @SneakyThrows
     public void testReportNull() {
-        service.getVmsDataByReportId("test", null, null, null, null, false);
+        service.getVmsDataByReportId(null, "test", null, null, null, false);
     }
 }

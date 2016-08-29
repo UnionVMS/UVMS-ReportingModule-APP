@@ -54,7 +54,7 @@ public class VmsServiceBean implements VmsService {
     @Override
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
-    public VmsDTO getVmsDataByReportId(final String username, final String scopeName, final Long id, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
+    public VmsDTO getVmsDataByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
 
         log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
@@ -72,13 +72,13 @@ public class VmsServiceBean implements VmsService {
     }
 
     @Override
-    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
+    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException {
 
         Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
         DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
         Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
         VmsDTO vmsData = getVmsData(toReport, areaRestrictions, dateTime);
-        auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName());
+        auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
         return vmsData;
     }
 

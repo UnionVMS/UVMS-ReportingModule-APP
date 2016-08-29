@@ -254,7 +254,7 @@ public class ReportingResource extends UnionVMSResource {
                 result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
             }
             else {
-                ReportDTO update = reportService.update(report, originalReport.getWithMap(), originalReport.getMapConfiguration());
+                ReportDTO update = reportService.update(report, username, originalReport.getWithMap(), originalReport.getMapConfiguration());
                 switch (Projection.valueOf(projection.toUpperCase())){
 
                     case DETAILED:
@@ -296,7 +296,7 @@ public class ReportingResource extends UnionVMSResource {
                 ReportDTO reportDTO;
                 if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
                     try {
-                        reportDTO = reportService.create(report);
+                        reportDTO = reportService.create(report, username);
                         switch (Projection.valueOf(projection.toUpperCase())){
                             case DETAILED:
                                 result = createSuccessResponse(reportDTO);
@@ -320,7 +320,9 @@ public class ReportingResource extends UnionVMSResource {
 
     private boolean isScopeAllowed(VisibilityEnum visibility, HttpServletRequest request) {
         boolean isScopeAllowed = true;
-        if (visibility.equals(VisibilityEnum.PUBLIC) || visibility.equals(VisibilityEnum.SCOPE)) {
+        if (visibility.equals(VisibilityEnum.PRIVATE) || request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString())) {
+            isScopeAllowed = true;
+        } else if (visibility.equals(VisibilityEnum.PUBLIC) || visibility.equals(VisibilityEnum.SCOPE)) {
             ReportFeatureEnum requiredFeature = null;
             switch (visibility) {
                 case SCOPE:
@@ -379,7 +381,7 @@ public class ReportingResource extends UnionVMSResource {
                 if (reportToUpdate != null) {
                     reportToUpdate.setVisibility(newVisibility);
 
-                    reportService.share(id, newVisibility, reportToUpdate.getCreatedBy(), reportToUpdate.getScopeName(), isAdmin);
+                    reportService.share(id, reportToUpdate.getCreatedBy(), reportToUpdate.getScopeName(), isAdmin, newVisibility);
 
                     restResponse = createSuccessResponse(AuthorizationCheckUtil.listAllowedVisibilityOptions(reportToUpdate.getCreatedBy(), username, features));
                 } else {
@@ -420,7 +422,7 @@ public class ReportingResource extends UnionVMSResource {
             List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
             Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
-            ObjectNode jsonNodes = vmsService.getVmsDataByReportId(username, scopeName, id, areaRestrictions, dateTime, isAdmin).toJson(format);
+            ObjectNode jsonNodes = vmsService.getVmsDataByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin).toJson(format);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
@@ -452,7 +454,7 @@ public class ReportingResource extends UnionVMSResource {
             final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
-            ObjectNode jsonNodes = vmsService.getVmsDataBy(report, areaRestrictions).toJson(displayFormat);
+            ObjectNode jsonNodes = vmsService.getVmsDataBy(report, areaRestrictions, username).toJson(displayFormat);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {

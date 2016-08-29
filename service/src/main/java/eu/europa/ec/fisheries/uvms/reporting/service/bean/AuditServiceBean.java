@@ -34,11 +34,11 @@ public class AuditServiceBean implements AuditService {
 	private AuditMessageServiceBean auditProducerBean;
 
 	@Override
-	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId) throws ReportingServiceException {
+	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
 		
 		LOG.info("Audit report request received for : " + auditActionEnum.getAuditType());
 		try {
-			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, ReportingServiceConstants.REPORTING_UNSPECIFIED_USER);
+			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
 			LOG.info("Sending JMS message to Audit : " + msgToSend);			
 			auditProducerBean.sendModuleMessage(msgToSend);
 			
