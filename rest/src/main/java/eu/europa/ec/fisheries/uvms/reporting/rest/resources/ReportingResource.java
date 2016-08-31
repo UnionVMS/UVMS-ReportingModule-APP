@@ -69,7 +69,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 public class ReportingResource extends UnionVMSResource {
 
     public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
-    private static String APPLICATION_NAME;
     public static final String USM_APPLICATION = "usmApplication";
 
     @Context
@@ -84,6 +83,8 @@ public class ReportingResource extends UnionVMSResource {
     @EJB
     private USMService usmService;
 
+    private String applicationName;
+
     /**
      *
      * @responseMessage 200 Success
@@ -97,7 +98,6 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ReportingExceptionInterceptor.class)
     public Response listReports(@Context HttpServletRequest request,
-                                @Context HttpServletResponse response,
                                 @HeaderParam("scopeName") String scopeName,
                                 @HeaderParam("roleName") String roleName,
                                 @DefaultValue("Y") @QueryParam("existent") String existent) throws ServiceException, ReportingServiceException {
@@ -148,17 +148,16 @@ public class ReportingResource extends UnionVMSResource {
      * @return
      */
     private String getApplicationName(HttpServletRequest request) {
-        if (APPLICATION_NAME == null) {
-            APPLICATION_NAME = request.getServletContext().getInitParameter(USM_APPLICATION);
+        if (applicationName == null) {
+            applicationName = request.getServletContext().getInitParameter(USM_APPLICATION);
         }
-        return APPLICATION_NAME;
+        return applicationName;
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReport(@Context HttpServletRequest request,
-                              @Context HttpServletResponse response,
                               @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName,
                               @HeaderParam("roleName") String roleName) {
@@ -191,7 +190,6 @@ public class ReportingResource extends UnionVMSResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteReport(@Context HttpServletRequest request,
-                                 @Context HttpServletResponse response,
                                  @PathParam("id") Long id,
                                  @HeaderParam("scopeName") String scopeName,
                                  @HeaderParam("roleName") String roleName) {
@@ -233,7 +231,6 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateReport(@Context HttpServletRequest request,
-                                 @Context HttpServletResponse response,
                                  ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
                                  @HeaderParam("scopeName") String scopeName,
                                  @HeaderParam("roleName") String roleName,
@@ -277,7 +274,6 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createReport(@Context HttpServletRequest request,
-                                 @Context HttpServletResponse response,
                                  ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
                                  @HeaderParam("scopeName") String scopeName) {
         Response result;
@@ -292,22 +288,24 @@ public class ReportingResource extends UnionVMSResource {
                 report.setCreatedBy(username);
                 report.setScopeName(scopeName);
 
-                ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
-                ReportDTO reportDTO;
-                if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-                    try {
+            ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
+            ReportDTO reportDTO;
+            if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
+                try {
                         reportDTO = reportService.create(report, username);
-                        switch (Projection.valueOf(projection.toUpperCase())){
-                            case DETAILED:
-                                result = createSuccessResponse(reportDTO);
-                                break;
-                            default:
-                                result = createSuccessResponse(reportDTO.getId());
-                        }
-                    } catch (Exception e) {
-                        log.error("createReport failed.", e);
-                        result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
+                    switch (Projection.valueOf(projection.toUpperCase())){
+
+                        case DETAILED:
+                            result = createSuccessResponse(reportDTO);
+                            break;
+
+                        default:
+                            result = createSuccessResponse(reportDTO.getId());
                     }
+                } catch (Exception e) {
+                    log.error("createReport failed.", e);
+                    result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
+                }
                 } else {
                     result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
                 }
@@ -319,21 +317,17 @@ public class ReportingResource extends UnionVMSResource {
     }
 
     private boolean isScopeAllowed(VisibilityEnum visibility, HttpServletRequest request) {
-        boolean isScopeAllowed = true;
+        boolean isScopeAllowed = false;
         if (visibility.equals(VisibilityEnum.PRIVATE) || request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString())) {
             isScopeAllowed = true;
-        } else if (visibility.equals(VisibilityEnum.PUBLIC) || visibility.equals(VisibilityEnum.SCOPE)) {
-            ReportFeatureEnum requiredFeature = null;
+        } else {
             switch (visibility) {
                 case SCOPE:
-                    requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE;
+                    isScopeAllowed = request.isUserInRole(ReportFeatureEnum.SHARE_REPORT_SCOPE.toString());
                     break;
                 case PUBLIC:
-                    requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
+                    isScopeAllowed = request.isUserInRole(ReportFeatureEnum.SHARE_REPORT_PUBLIC.toString());
                     break;
-            }
-            if (requiredFeature == null || !request.isUserInRole(requiredFeature.toString())) {
-                isScopeAllowed = false;
             }
         }
         return isScopeAllowed;
@@ -345,7 +339,6 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response shareReport(@Context HttpServletRequest request,
-                                @Context HttpServletResponse response,
                                 @PathParam("id") Long id,
                                 @PathParam("visibility") String visibility,
                                 @HeaderParam("scopeName") String scopeName,
@@ -363,6 +356,8 @@ public class ReportingResource extends UnionVMSResource {
         switch (newVisibility) {
             case SCOPE: requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE; break;
             case PUBLIC: requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC; break;
+            default: //it is private scope which does not require any feature
+                break;
         }
 
         Response restResponse;
@@ -406,7 +401,6 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response runReport(@Context HttpServletRequest request,
-                              @Context HttpServletResponse response,
                               @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName,
                               @HeaderParam("roleName") String roleName,
@@ -465,29 +459,26 @@ public class ReportingResource extends UnionVMSResource {
 
     private List<AreaIdentifierType> getRestrictionAreas(String username, String scopeName, String roleName) throws ServiceException {
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        if (datasets != null && !datasets.isEmpty()) {
-            List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
+        List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
 
-            for (Dataset dataset : datasets) {
-                int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
+        for (Dataset dataset : datasets) {
+            int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
 
-                if (lastIndexDelimiter > -1 )  {
-                    AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
-                    //add AREATYPE/AREA_ID into a map
-                    AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0,lastIndexDelimiter));
-                    String areaId = dataset.getDiscriminator().substring(lastIndexDelimiter + 1);
+            if (lastIndexDelimiter > -1 )  {
+                AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
+                //add AREATYPE/AREA_ID into a map
+                AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0,lastIndexDelimiter));
+                String areaId = dataset.getDiscriminator().substring(lastIndexDelimiter + 1);
 
-                    if (areaType!= null && StringUtils.isNotBlank(areaId)) {
-                        areaIdentifierType.setAreaType(areaType);
-                        areaIdentifierType.setId(areaId);
-                        areaRestrictions.add(areaIdentifierType);
-                    }
+                if (areaType!= null && StringUtils.isNotBlank(areaId)) {
+                    areaIdentifierType.setAreaType(areaType);
+                    areaIdentifierType.setId(areaId);
+                    areaRestrictions.add(areaIdentifierType);
                 }
             }
-
-            return areaRestrictions;
         }
-        return null;
+
+        return areaRestrictions;
     }
 
     @POST
