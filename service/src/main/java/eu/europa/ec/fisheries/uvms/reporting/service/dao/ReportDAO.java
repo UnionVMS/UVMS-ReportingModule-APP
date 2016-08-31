@@ -155,14 +155,14 @@ public class ReportDAO extends AbstractDAO<Report> {
             List<Report> listReports = new ArrayList<>();
             listReports.addAll(findEntityByNamedQuery(Report.class, Report.LIST_TOP_EXECUTED_BY_DATE,
                     with("scopeName", scopeName).and("username", username).and("existent", existent).parameters(), numberOfReport));
-            if (listReports == null || listReports.isEmpty() || (listReports.size() < numberOfReport)) {
+            if (listReports.isEmpty() || (listReports.size() < numberOfReport)) {
                 listReports.addAll(findEntityByNamedQuery(Report.class, Report.LIST_BY_CREATION_DATE,
                         with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport - listReports.size()));
             }
 
             return listReports;
         } catch (ServiceException e) {
-            throw new ReportingServiceException(e.getMessage());
+            throw new ReportingServiceException(e.getMessage(), e);
         }
     }
 }
