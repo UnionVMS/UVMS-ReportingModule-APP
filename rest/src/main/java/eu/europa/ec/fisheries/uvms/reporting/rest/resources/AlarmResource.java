@@ -43,6 +43,7 @@ public class AlarmResource extends UnionVMSResource {
         try {
             return createSuccessResponse(alarmService.getAlarmsForMovements(alarmMovementList, request.getRemoteUser()));
         } catch (ReportingServiceException e) {
+            log.error("Unable to get alarms.", e);
             return createErrorResponse(e.getMessage());
         }
     }
