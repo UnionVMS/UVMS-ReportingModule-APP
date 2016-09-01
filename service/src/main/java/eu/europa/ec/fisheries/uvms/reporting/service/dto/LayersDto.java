@@ -106,4 +106,13 @@ public class LayersDto implements Comparable<LayersDto> {
         return !(order != null ? !order.equals(layersDto.order) : layersDto.order != null);
 
     }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (serviceLayerId != null ? serviceLayerId.hashCode() : 0);
+        result = 31 * result + (subType != null ? subType.hashCode() : 0);
+        result = 31 * result + (order != null ? order.hashCode() : 0);
+        return result;
+    }
 }
