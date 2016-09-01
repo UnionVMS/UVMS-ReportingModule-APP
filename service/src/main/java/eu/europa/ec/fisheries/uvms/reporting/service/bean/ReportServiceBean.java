@@ -66,10 +66,12 @@ public class ReportServiceBean {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
             Report reportEntity = mapper.reportDTOToReport(report);
-            reportEntity = repository.createEntity(reportEntity); // TODO @Greg mapping in repository
+            reportEntity = repository.createEntity(reportEntity);
             ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
             return reportDTO;
         } catch (Exception e) {
+            //throwing unchecked exception because of the Spatial JMS transaction.
+            //if Spatial throws an exception, this transaction was not rolled back, unless we throw unchecked exception.
             throw new RuntimeException("Error during the creation of the report", e);
         }
     }
@@ -91,7 +93,9 @@ public class ReportServiceBean {
         }
 
         catch (Exception e){
-            throw new RuntimeException("Error during reading map configuration in spatial module");//FIXME @Greg investigate runtime is there not a cleaner way?
+            //throwing unchecked exception because of the Spatial JMS transaction.
+            //if Spatial throws an exception, this transaction was not rolled back, unless we throw unchecked exception.
+            throw new RuntimeException("Error during reading map configuration in spatial module", e);
         }
 
         return reportDTO;
@@ -202,7 +206,9 @@ public class ReportServiceBean {
                 }
                 saveOrUpdateMapConfiguration(reportId, mapConfiguration);
             } catch (Exception e) {
-                throw new RuntimeException("Error during the creation of the map configuration");
+                //throwing unchecked exception because of the Spatial JMS transaction.
+                //if Spatial throws an exception, this transaction was not rolled back, unless we throw unchecked exception.
+                throw new RuntimeException("Error during the creation of the map configuration", e);
             }
         }
     }
@@ -225,10 +231,6 @@ public class ReportServiceBean {
         } catch (Exception e) {
             throw new RuntimeException("Error during the update of the map configuration", e);
         }
-    }
-
-    private void validateReport(ReportDTO report) {
-
     }
 
 }

@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.Setter;
 
 import javax.measure.converter.UnitConverter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +84,7 @@ public class TrackDTO {
     }
 
     private boolean geometryContainsOnlyOnePoint() {
-        return geometry.getLength() == 0;
+        return BigDecimal.valueOf(geometry.getLength()).compareTo(BigDecimal.valueOf(0)) == 0;
     }
 
     private void computeEnvelope() {

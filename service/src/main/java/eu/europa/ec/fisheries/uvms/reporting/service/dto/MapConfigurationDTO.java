@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -28,7 +29,7 @@ import java.util.Map;
         "styleSettings",
         "layerSettings"
 })
-public class MapConfigurationDTO {
+public class MapConfigurationDTO implements Serializable{
 
     @JsonProperty("spatialConnectId")
     private Long spatialConnectId;

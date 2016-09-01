@@ -16,9 +16,11 @@ import javax.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Embeddable
 @Data
-public class PositionSelector {
+public class PositionSelector implements Serializable{
 
     private Float value;
 

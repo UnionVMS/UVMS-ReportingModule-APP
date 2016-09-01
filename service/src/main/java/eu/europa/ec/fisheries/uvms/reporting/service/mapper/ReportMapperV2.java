@@ -26,7 +26,7 @@ import java.util.Set;
 @Mapper(imports = {ReportDetails.class, Report.class, DateUtils.class, Audit.class, VisibilityEnum.class}, uses = {ObjectFactory.class})
 public abstract class ReportMapperV2 {
 
-    public static ReportMapperV2 INSTANCE = Mappers.getMapper(ReportMapperV2.class);
+    public static final ReportMapperV2 INSTANCE = Mappers.getMapper(ReportMapperV2.class);
 
     @Mappings({
             @Mapping(target = "visibility", expression = "java(VisibilityEnum.getByName(dto.getVisibility()))"),

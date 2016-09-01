@@ -97,6 +97,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     try {
                         visibilitySettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("visibilitySettings"), VisibilitySettingsDto.class);
                     } catch (JsonProcessingException e) {
+                        log.warn("Unable to deserialize visibilitySettings JSON property", e);
                         visibilitySettingsDto = null;
                     }
                 } else {
@@ -107,6 +108,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     try {
                         styleSettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("stylesSettings"), StyleSettingsDto.class);
                     } catch (JsonProcessingException e) {
+                        log.warn("Unable to deserialize stylesSettings JSON property", e);
                         styleSettingsDto = null;
                     }
                 } else {
@@ -117,6 +119,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     try {
                         layerSettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("layerSettings"), LayerSettingsDto.class);
                     } catch (JsonProcessingException e) {
+                        log.warn("Unable to deserialize layerSettings JSON property", e);
                         layerSettingsDto = null;
                     }
                 } else {
@@ -128,9 +131,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                         Object obj = objectMapper.treeToValue(mapConfigJsonNode.get("referenceDataSettings"), Map.class);
                         String jsonString = objectMapper.writeValueAsString(obj);
                         referenceData =objectMapper.readValue(jsonString, TypeFactory.defaultInstance().constructMapType(Map.class, String.class, ReferenceDataPropertiesDto.class));
-                    } catch (JsonProcessingException e) {
-                        referenceData = null;
                     } catch (IOException e) {
+                        log.warn("Unable to deserialize referenceDataSettings JSON property", e);
                         referenceData = null;
                     }
                 } else {

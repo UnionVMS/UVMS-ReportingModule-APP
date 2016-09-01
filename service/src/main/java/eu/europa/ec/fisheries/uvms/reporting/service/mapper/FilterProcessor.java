@@ -109,7 +109,7 @@ public class FilterProcessor {
     }
 
     public boolean hasAssetsOrAssetGroups() {
-        return hasAssets() | hasAssetGroups();
+        return hasAssets() || hasAssetGroups();
     }
 
     public boolean hasAssets() {

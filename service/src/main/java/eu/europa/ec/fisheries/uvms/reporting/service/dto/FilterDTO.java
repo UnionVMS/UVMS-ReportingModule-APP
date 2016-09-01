@@ -20,12 +20,13 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode( of = {"id"})
-public abstract class FilterDTO {
+public abstract class FilterDTO  implements Serializable{
 
     public static final String ID = "id";
     public static final String TYPE = "type";

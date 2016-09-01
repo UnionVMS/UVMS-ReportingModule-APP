@@ -17,9 +17,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AuditDTO {
+public class AuditDTO  implements Serializable{
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date createdOn;
