@@ -32,8 +32,10 @@ import javax.interceptor.InvocationContext;
         try {
             return ic.proceed();
         } catch (IllegalArgumentException e) {
+            log.error(e.getMessage(), e);
             return createErrorResponse(ErrorCodes.INPUT_NOT_SUPPORTED);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             if (e.getCause() instanceof ReportingServiceException) {
                 return createErrorResponse(((ReportingServiceException)e.getCause()).getMessage());
             }

@@ -20,10 +20,12 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Embeddable
 @EqualsAndHashCode
 @ToString
-public class ReportDetails {
+public class ReportDetails implements Serializable{
 
     public static final String CREATED_BY = "created_by";
     public static final String NAME = "name";

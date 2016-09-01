@@ -75,7 +75,7 @@ public class ReportingMessageServiceBean extends AbstractMessageService {
             response.setJMSCorrelationID(message.getMessage().getJMSMessageID());
             session.createProducer(message.getMessage().getJMSReplyTo()).send(response);
         } catch (JMSException | ReportingModelException e) {
-            log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace());
+            log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace(), e);
         } finally {
             disconnectQueue();
         }

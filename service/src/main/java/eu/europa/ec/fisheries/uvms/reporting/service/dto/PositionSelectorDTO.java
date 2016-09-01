@@ -15,8 +15,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 @EqualsAndHashCode(of = {"value", "selector"})
-public class PositionSelectorDTO {
+public class PositionSelectorDTO implements Serializable{
 
     public final static String X_VALUE = "xValue";
     public final static String POSITION_TYPE_SELECTOR = "positionTypeSelector";

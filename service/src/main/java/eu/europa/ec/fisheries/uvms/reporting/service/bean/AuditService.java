@@ -13,11 +13,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 
+import java.io.Serializable;
+
 /**
  * Audit Service interface to provide entry point methods for all the services related to Audit module
  *
  */
-public interface AuditService {
+public interface AuditService extends Serializable{
 	
 	/**
 	 * Send Audit report to Audit module for CRUD operations on Report

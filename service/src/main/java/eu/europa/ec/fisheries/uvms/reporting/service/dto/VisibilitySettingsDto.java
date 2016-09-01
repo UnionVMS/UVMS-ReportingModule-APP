@@ -14,12 +14,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Created by padhyad on 11/30/2015.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class VisibilitySettingsDto {
+public class VisibilitySettingsDto implements Serializable{
 
     @NotNull
     @JsonProperty("positions")
