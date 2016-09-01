@@ -26,7 +26,7 @@ import java.util.Map;
 @Mapper
 public abstract class MapConfigMapper {
 
-    public static MapConfigMapper INSTANCE = Mappers.getMapper(MapConfigMapper.class);
+    public static final MapConfigMapper INSTANCE = Mappers.getMapper(MapConfigMapper.class);
 
     @Mappings({
             @Mapping(target = "coordinatesFormat", expression = "java(convertCoordinatesFormatToString(mapConfigurationType.getCoordinatesFormat()))"),

@@ -91,4 +91,19 @@ public class LayersDto implements Comparable<LayersDto> {
         }
         return Long.compare(this.getOrder(), layersDto.getOrder());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LayersDto layersDto = (LayersDto) o;
+
+        if (name != null ? !name.equals(layersDto.name) : layersDto.name != null) return false;
+        if (serviceLayerId != null ? !serviceLayerId.equals(layersDto.serviceLayerId) : layersDto.serviceLayerId != null)
+            return false;
+        if (subType != null ? !subType.equals(layersDto.subType) : layersDto.subType != null) return false;
+        return !(order != null ? !order.equals(layersDto.order) : layersDto.order != null);
+
+    }
 }
