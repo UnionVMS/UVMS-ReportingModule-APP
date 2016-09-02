@@ -8,7 +8,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
         <artifactId>reporting</artifactId>
-        <version>0.5.3-SNAPSHOT</version>
+        <version>0.5.4-SNAPSHOT</version>
     </parent>
     
     <dependencies>
@@ -206,7 +206,6 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -215,7 +214,14 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
-            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
     
