@@ -14,13 +14,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Created by padhyad on 11/25/2015.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SegmentsDto {
+public class SegmentsDto implements Serializable{
 
     @NotNull
     @JsonProperty("attribute")

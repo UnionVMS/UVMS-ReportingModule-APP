@@ -82,6 +82,7 @@ public class MovementServiceBean  extends AbstractJAXBMarshaller {
             isErrorResponse = true;
         } catch (JAXBException | JMSException e) {
             //do nothing  since it's not a UserFault
+            log.error("Unexpected exception was thrown.", e);
         }
 
         return isErrorResponse;

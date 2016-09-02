@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.Transient;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
@@ -31,6 +32,7 @@ public abstract class FilterDTO  implements Serializable{
     public static final String ID = "id";
     public static final String TYPE = "type";
 
+    @Transient
     protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @JsonIgnore

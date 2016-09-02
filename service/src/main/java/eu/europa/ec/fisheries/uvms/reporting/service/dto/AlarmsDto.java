@@ -13,11 +13,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Created by padhyad on 4/1/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class AlarmsDto {
+public class AlarmsDto implements Serializable{
 
     @JsonProperty("size")
     private Integer size;
