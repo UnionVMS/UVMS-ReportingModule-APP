@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.persistence.Transient;
 
 import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
@@ -31,9 +30,8 @@ public class AuditServiceBean implements AuditService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class.getName());
 
-	@Transient
 	@EJB
-	private AuditMessageServiceBean auditProducerBean;
+	private transient AuditMessageServiceBean auditProducerBean;
 
 	@Override
 	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
