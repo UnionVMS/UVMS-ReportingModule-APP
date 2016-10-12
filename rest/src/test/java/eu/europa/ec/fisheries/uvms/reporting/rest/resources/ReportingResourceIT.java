@@ -19,7 +19,7 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.util.ArquillianTest;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.RestDTOUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
-import eu.europa.ec.fisheries.uvms.rest.security.JwtTokenHandler;
+import eu.europa.ec.mare.usm.jwt.DefaultJwtTokenHandler;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 import org.jboss.arquillian.extension.rest.client.Header;
@@ -59,7 +59,7 @@ public class ReportingResourceIT extends ArquillianTest {
 
 	@Before
 	public void setUp() {
-		JwtTokenHandler tokenHandler = new JwtTokenHandler();
+		DefaultJwtTokenHandler tokenHandler = new DefaultJwtTokenHandler();
 		authToken = tokenHandler.createToken("rep_power");//rep_power has all features
 	}
 
