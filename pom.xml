@@ -22,9 +22,9 @@
         <mapstruct.version>1.0.0.CR2</mapstruct.version>
         <jackson.version>2.4.1</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
-        <asset.model.version>2.0.0</asset.model.version>
+        <asset.model.version>2.0.6</asset.model.version>
         <audit.model.version>2.0.0</audit.model.version>
-        <movement.model.version>2.0.0</movement.model.version>
+        <movement.model.version>2.0.6</movement.model.version>
         <spatial.model.version>0.5.4</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>

@@ -14,6 +14,8 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.message.AbstractJAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
@@ -68,7 +70,7 @@ public class MovementServiceBean  extends AbstractJAXBMarshaller {
                 throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
 
-        } catch (ModelMapperException | JMSException | MessageException e) {
+        } catch (ModelMapperException | JMSException | MessageException | MovementFaultException | MovementDuplicateException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT", e);
         }
     }

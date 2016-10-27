@@ -19,6 +19,8 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 
@@ -40,7 +42,7 @@ public class ExtMovementMessageMapper {
         return MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(query);
     }
 
-    public static List<MovementMapResponseType> mapToMovementMapResponse(final TextMessage message) throws ModelMapperException, JMSException {
+    public static List<MovementMapResponseType> mapToMovementMapResponse(final TextMessage message) throws ModelMapperException, JMSException, MovementFaultException, MovementDuplicateException {
         if (message == null){
             throw new IllegalArgumentException("TextMessage can not be null.");
         }
@@ -55,7 +57,7 @@ public class ExtMovementMessageMapper {
         });
     }
 
-    public static List<MovementType> mapToMovementListResponse(TextMessage message) throws ModelMapperException, JMSException {
+    public static List<MovementType> mapToMovementListResponse(TextMessage message) throws ModelMapperException, JMSException, MovementFaultException, MovementDuplicateException {
         if (message == null){
             throw new IllegalArgumentException("TextMessage can not be null.");
         }
