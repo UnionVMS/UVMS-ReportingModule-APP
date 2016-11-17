@@ -22,11 +22,13 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -61,6 +63,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             addAssets(filterNode.get(AssetFilterDTO.ASSETS), filterDTOList, reportId);
             addArea(filterNode.get("areas"), filterDTOList, reportId);
             addCommon(filterNode.get("common"), filterDTOList, reportId);
+            addFaFilters(filterNode.get("fa"), filterDTOList, reportId);
         }
 
         boolean withMap = node.get(ReportDTO.WITH_MAP).booleanValue();
@@ -153,6 +156,38 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             }
         } else {
             return null;
+        }
+    }
+
+    private void addFaFilters(JsonNode fa, List<FilterDTO> filterDTOList, Long reportId) {
+        FaFilter faFilter = null;
+        if (fa != null) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                faFilter = objectMapper.treeToValue(fa, FaFilter.class);
+            } catch (JsonProcessingException e)  {
+                faFilter = null;
+            }
+        }
+        FaFilterDTO faFilterDTO;
+        if (faFilter != null) {
+            faFilterDTO = FaFilterDTO.FaFilterBuilder().
+                    id(fa.get(FilterDTO.ID) != null ? fa.get(FilterDTO.ID).longValue() : null)
+                    .reportId(reportId)
+                    .reportType(faFilter.getReportType())
+                    .activityType(faFilter.getActivityType())
+                    .master(faFilter.getMaster())
+                    .departurePort(faFilter.getFaPort() != null ? faFilter.getFaPort().getDeparture() : null)
+                    .arrivalPort(faFilter.getFaPort() != null ? faFilter.getFaPort().getArrival() : null)
+                    .landingPort(faFilter.getFaPort() != null ? faFilter.getFaPort().getLanding() : null)
+                    .gearOnboard(faFilter.getFaGear() != null ? faFilter.getFaGear().getOnboard() : null)
+                    .gearDeployed(faFilter.getFaGear() != null ? faFilter.getFaGear().getDeployed() : null)
+                    .species(faFilter.getSpecies())
+                    .weightMin(faFilter.getFaWeight() != null ? faFilter.getFaWeight().getMin() : null)
+                    .weightMax(faFilter.getFaWeight() != null ? faFilter.getFaWeight().getMax() : null)
+                    .weightUnit(faFilter.getFaWeight() != null ? faFilter.getFaWeight().getUnit() : null)
+                    .build();
+            filterDTOList.add(faFilterDTO);
         }
     }
 

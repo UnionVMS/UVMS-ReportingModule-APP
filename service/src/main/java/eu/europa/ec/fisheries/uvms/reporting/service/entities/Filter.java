@@ -14,13 +14,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
@@ -179,6 +173,11 @@ public abstract class Filter extends BaseEntity {
         @Override
         public FilterDTO visitCommonFilter(CommonFilter commonFilter) {
             return CommonFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(commonFilter);
+        }
+
+        @Override
+        public FilterDTO visitFaFilter(FaFilter faFilter) {
+            return FaFilterMapper.INSTANCE.FaFilterToFaFilterDTO(faFilter);
         }
     }
 }
