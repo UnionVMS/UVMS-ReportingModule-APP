@@ -39,7 +39,7 @@ public class FaFilter extends Filter {
     @Column(name = "master")
     private String master;
 
-    @Column(name = "species")
+    @Column(columnDefinition = "text", name = "species")
     @Convert(converter = ListStringConverter.class)
     private List<String> species;
 
