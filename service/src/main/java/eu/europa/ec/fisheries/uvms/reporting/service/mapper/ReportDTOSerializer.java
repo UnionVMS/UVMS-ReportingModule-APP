@@ -14,6 +14,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaGear;
+import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaPort;
+import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaWeight;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import org.joda.time.DateTime;
@@ -68,6 +72,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         VmsSegmentFilterDTO segment = null;
         TrackFilterDTO track = null;
         CommonFilterDTO commonFilter = null;
+        FaFilterDTO faFilter = null;
 
         for (FilterDTO filterDTO : filters) {
             FilterType type = filterDTO.getType();
@@ -93,6 +98,9 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case vgroup:
                     assetFilterDTOList.add(filterDTO);
                     break;
+                case fa:
+                    faFilter = (FaFilterDTO) filterDTO;
+                    break;
                 default:
                     break;
             }
@@ -108,7 +116,23 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 
         writeAreaFilters(jgen, areaFilterDTOList);
         writeAssets(jgen, assetFilterDTOList);
+        writeFaFilters(jgen, faFilter);
         jgen.writeEndObject();
+    }
+
+    private void writeFaFilters(JsonGenerator jgen, FaFilterDTO faFilter) throws IOException {
+        if (faFilter != null) {
+            FaFilter faFilterDTO = new FaFilter();
+            faFilterDTO.setReportType(faFilter.getReportType());
+            faFilterDTO.setActivityType(faFilter.getActivityType());
+            faFilterDTO.setMaster(faFilter.getMaster());
+            faFilterDTO.setSpecies(faFilter.getSpecies());
+            faFilterDTO.setFaGear(new FaGear(faFilter.getGearOnboard(), faFilter.getGearDeployed()));
+            faFilterDTO.setFaPort(new FaPort(faFilter.getDeparturePort(), faFilter.getArrivalPort(), faFilter.getLandingPort()));
+            faFilterDTO.setFaWeight(new FaWeight(faFilter.getWeightMin(), faFilter.getWeightMax(), faFilter.getWeightUnit()));
+            jgen.writeFieldName(FilterType.fa.name());
+            jgen.writeObject(faFilterDTO);
+        }
     }
 
 

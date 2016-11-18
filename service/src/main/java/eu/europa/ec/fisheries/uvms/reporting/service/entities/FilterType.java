@@ -19,4 +19,5 @@ public enum FilterType {
     vmspos,
     vmstrack,
     vmsseg,
+    fa
 }
