@@ -67,6 +67,7 @@ public class ReportMapper {
         reportDTO.setDeletedOn(report.getDeletedOn());
         reportDTO.setDeletedBy(report.getDeletedBy());
         reportDTO.setVisibility(report.getVisibility());
+        reportDTO.setReportTypeEnum(report.getReportType());
 
         if (filters) {
             reportDTO.setFilters(filterSetToFilterDTOSet(report.getFilters()));
@@ -99,6 +100,7 @@ public class ReportMapper {
         report.setDeletedOn(dto.getDeletedOn());
         report.setDeletedBy(dto.getDeletedBy());
         report.setVisibility(dto.getVisibility());
+        report.setReportType(dto.getReportTypeEnum());
         return report;
     }
 

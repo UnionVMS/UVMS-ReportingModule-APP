@@ -183,6 +183,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
         jgen.writeBooleanField(WITH_MAP, reportDTO.getWithMap());
         jgen.writeBooleanField(IS_DEFAULT, reportDTO.isDefault());
+        jgen.writeStringField(REPORT_TYPE, reportDTO.getReportTypeEnum().getType());
 
         writeMapConfigFileds(reportDTO, jgen);
     }

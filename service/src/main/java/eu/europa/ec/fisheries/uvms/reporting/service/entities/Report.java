@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
@@ -66,6 +67,7 @@ public class Report extends BaseEntity {
 
     public static final String IS_DELETED = "is_deleted";
     public static final String VISIBILITY = "visibility";
+    public static final String REPORT_TYPE = "report_type";
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String LIST_BY_USERNAME_AND_SCOPE = "Report.listByUsernameAndScope";
     public static final String LIST_TOP_EXECUTED_BY_DATE = "Report.listTopExecutedByDate";
@@ -83,6 +85,11 @@ public class Report extends BaseEntity {
     @Column(name = VISIBILITY)
     @NotNull
     private VisibilityEnum visibility;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = REPORT_TYPE)
+    @NotNull
+    private ReportTypeEnum reportType;
 
     @Convert(converter = CharBooleanConverter.class)
     @Column(name = IS_DELETED, nullable = true, length = 1)
@@ -142,6 +149,7 @@ public class Report extends BaseEntity {
         this.deletedOn = incoming.deletedOn;
         this.deletedBy = incoming.deletedBy;
         this.visibility = incoming.visibility;
+        this.reportType = incoming.reportType;
     }
 
     public void mergeDetails(ReportDetails reportDetails) {
@@ -183,5 +191,13 @@ public class Report extends BaseEntity {
 
     public void setVisibility(VisibilityEnum visibility) {
         this.visibility = visibility;
+    }
+
+    public ReportTypeEnum getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(ReportTypeEnum reportType) {
+        this.reportType = reportType;
     }
 }
