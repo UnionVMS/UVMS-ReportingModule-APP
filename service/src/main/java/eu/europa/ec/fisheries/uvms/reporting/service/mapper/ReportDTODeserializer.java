@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
@@ -75,6 +76,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .createdBy(node.get(ReportDTO.CREATED_BY) != null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
                 .filters(filterDTOList)
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
+                .reportTypeEnum(node.get(ReportDTO.REPORT_TYPE) != null ? ReportTypeEnum.valueOf(node.get(ReportDTO.REPORT_TYPE).textValue().toUpperCase()) : ReportTypeEnum.ALL)
                 .mapConfiguration(createMapConfigurationDTO(withMap, node.get(ReportDTO.MAP_CONFIGURATION)))
                 .build();
     }

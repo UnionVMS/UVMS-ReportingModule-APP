@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
@@ -177,6 +178,7 @@ public class ReportDTOSerializerDeserializerTest {
         return ReportDTOBuilder().createdBy("georgi").scopeName("356456731").withMap(false)
                 .filters(new ArrayList<FilterDTO>()).createdOn(DateUtils.stringToDate("2015-10-11 13:02:23 +0200"))
                 .visibility(VisibilityEnum.PRIVATE)
+                .reportTypeEnum(ReportTypeEnum.ALL)
                 .description("This is a report descri created on 2015/09/28 13:31")
                 .name("ReportName788").isDeleted(false).id(5L).build();
     }
