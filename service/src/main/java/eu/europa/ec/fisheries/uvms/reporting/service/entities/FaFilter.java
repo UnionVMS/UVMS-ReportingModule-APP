@@ -13,12 +13,17 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -77,6 +82,21 @@ public class FaFilter extends Filter {
     @Override
     public void merge(Filter filter) {
         FaFilterMapper.INSTANCE.merge((FaFilter) filter, this);
+    }
+
+    @Override
+    public List<FAFilterType> getFaFilters(DateTime now) {
+        List<FAFilterType> faFilterTypes = new ArrayList<>();
+        faFilterTypes.add(new FAFilterType(SearchFilter.REPORT_TYPE, reportType));
+        faFilterTypes.add(new FAFilterType(SearchFilter.ACTIVITY_TYPE, activityType));
+        faFilterTypes.add(new FAFilterType(SearchFilter.MASTER, master));
+        if (CollectionUtils.isEmpty(species)) {
+            faFilterTypes.add(new FAFilterType(SearchFilter.SPECIES, species.get(0)));
+        }
+        if (faWeight != null) {
+            faFilterTypes.addAll(faWeight.getFaFilters());
+        }
+        return faFilterTypes;
     }
 
     @Override

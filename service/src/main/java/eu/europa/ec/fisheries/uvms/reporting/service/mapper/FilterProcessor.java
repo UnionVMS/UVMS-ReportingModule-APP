@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -24,7 +25,10 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import org.joda.time.DateTime;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -37,6 +41,7 @@ public class FilterProcessor {
     private final Set<AssetListCriteriaPair> assetListCriteriaPairs = new HashSet<>();
     private final Set<AssetGroup> assetGroupList = new HashSet<>();
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<>();
+    private final List<FAFilterType> filterTypes = new ArrayList<>();
     private DateTime now;
 
     public FilterProcessor(Set<Filter> filters, DateTime now) throws ProcessorException {
@@ -67,6 +72,7 @@ public class FilterProcessor {
         assetGroupList.addAll(filter.assetGroupCriteria());
         rangeCriteria.addAll(filter.movementRangeCriteria(now));
         movementListCriteria.addAll(filter.movementListCriteria());
+        filterTypes.addAll(filter.getFaFilters(now));
     }
 
     private void addAreaIdentifier(Filter filter) {
@@ -134,6 +140,10 @@ public class FilterProcessor {
 
     public Set<AreaIdentifierType> getAreaIdentifierList() {
         return areaIdentifierList;
+    }
+
+    public List<FAFilterType> getFaFilters() {
+        return filterTypes;
     }
 
     public DateTime getNow() {

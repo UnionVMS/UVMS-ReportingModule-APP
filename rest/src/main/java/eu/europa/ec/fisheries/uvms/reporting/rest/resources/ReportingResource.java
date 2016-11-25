@@ -21,7 +21,7 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.constants.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.VmsService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.LengthType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
@@ -40,7 +40,6 @@ import org.joda.time.DateTime;
 import javax.ejb.EJB;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -78,7 +77,7 @@ public class ReportingResource extends UnionVMSResource {
     private ReportServiceBean reportService;
 
     @EJB
-    private VmsService vmsService;
+    private ReportExecutionService reportExecutionService;
 
     @EJB
     private USMService usmService;
@@ -416,7 +415,7 @@ public class ReportingResource extends UnionVMSResource {
             List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
             Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
-            ObjectNode jsonNodes = vmsService.getVmsDataByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin).toJson(format);
+            ObjectNode jsonNodes = reportExecutionService.getVmsDataByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin).toJson(format);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
@@ -448,7 +447,7 @@ public class ReportingResource extends UnionVMSResource {
             final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
-            ObjectNode jsonNodes = vmsService.getVmsDataBy(report, areaRestrictions, username).toJson(displayFormat);
+            ObjectNode jsonNodes = reportExecutionService.getVmsDataBy(report, areaRestrictions, username).toJson(displayFormat);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {

@@ -11,8 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -20,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.asset;
 import static java.util.Arrays.asList;
@@ -70,6 +75,12 @@ public class AssetFilter extends Filter {
     @Override
     public List<ListCriteria> movementListCriteria() {
         return asList(AssetFilterMapper.INSTANCE.assetFilterToListCriteria(this));
+    }
+
+    @Override
+    public List<FAFilterType> getFaFilters(DateTime now) {
+        FAFilterType filterType = new FAFilterType(SearchFilter.VESSEL_NAME, name);
+        return Arrays.asList(filterType);
     }
 
     public String getGuid() {

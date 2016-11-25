@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
@@ -55,7 +55,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Override
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
-    public VmsDTO getVmsDataByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
+    public ExecutionResultDTO getVmsDataByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
         try {
             log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
             Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
@@ -66,11 +66,11 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 throw new ReportingServiceException(error);
             }
             FilterProcessor processor = new FilterProcessor(reportByReportId.getFilters(), now);
-
-            VmsDTO vmsDto = getVmsData(processor, reportByReportId, areaRestrictions, now);
+            ExecutionResultDTO resultDTO = new ExecutionResultDTO();
+            getVmsData(resultDTO, processor, reportByReportId, areaRestrictions, now);
             reportByReportId.updateExecutionLog(username);
             log.debug("[END] getVmsDataByReportId(...)");
-            return vmsDto;
+            return resultDTO;
         }   catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
             log.error(error, e);
@@ -79,15 +79,16 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     @Override
-    public VmsDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException {
+    public ExecutionResultDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException {
         try {
             Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
             DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
             Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
             FilterProcessor processor = new FilterProcessor(toReport.getFilters(), dateTime);
-            VmsDTO vmsData = getVmsData(processor, toReport, areaRestrictions, dateTime);
+            ExecutionResultDTO resultDTO = new ExecutionResultDTO();
+            getVmsData(resultDTO, processor, toReport, areaRestrictions, dateTime);
             auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
-            return vmsData;
+            return resultDTO;
         }  catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
             log.error(error, e);
@@ -95,10 +96,43 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
-    private List<String> getFishingTripsAndActivities(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
+    private void getFishingTripsAndActivities(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
         List<FAFilterType> filterTypes = getFaFilters(processor, scopeAreaIdentifierList);
         List<String> trips = activityService.getFishingTrips(filterTypes);
-        return trips;
+        // TODO do Fishing Activity specific modification
+    }
+
+    private void getVmsData(ExecutionResultDTO resultDTO, FilterProcessor processor, Report report, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
+
+        try {
+            Collection<MovementMapResponseType> movementMap;
+            Map<String, MovementMapResponseType> responseTypeMap;
+            Map<String, Asset> assetMap;
+
+            final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
+            processor.addAreaCriteria(getFilterAreaWkt(areaIdentifierList, scopeAreaIdentifierList));
+            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
+
+            if (processor.hasAssetsOrAssetGroups()) {
+                assetMap = ExtAssetMessageMapper.getAssetMap(getAssets(processor));
+                processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
+                movementMap = movementModule.getMovement(processor);
+            } else {
+                responseTypeMap = movementModule.getMovementMap(processor);
+                Set<String> assetGuids = responseTypeMap.keySet();
+                movementMap = responseTypeMap.values();
+                processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
+                assetMap = ExtAssetMessageMapper.getAssetMap(getAssets(processor));
+            }
+
+            resultDTO.setAssetMap(assetMap);
+            resultDTO.setMovementMap(movementMap);
+
+        } catch (ReportingServiceException e) {
+            String error = "Exception during retrieving filter area";
+            log.error(error, e);
+            throw new ReportingServiceException(error, e);
+        }
     }
 
     private List<FAFilterType> getFaFilters(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
@@ -123,34 +157,10 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return null;
     }
 
-    private VmsDTO getVmsData(FilterProcessor processor, Report report, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
-
+    private Set<Asset> getAssets(FilterProcessor processor) throws ReportingServiceException {
         try {
-
-            Collection<MovementMapResponseType> movementMap;
-            Map<String, MovementMapResponseType> responseTypeMap;
-            Map<String, Asset> assetMap;
-
-            final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
-
-            processor.addAreaCriteria(getFilterAreaWkt(areaIdentifierList, scopeAreaIdentifierList));
-
-            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
-
-            if (processor.hasAssetsOrAssetGroups()) {
-                assetMap = assetModule.getAssetMap(processor);
-                processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
-                movementMap = movementModule.getMovement(processor);
-            } else {
-                responseTypeMap = movementModule.getMovementMap(processor);
-                Set<String> assetGuids = responseTypeMap.keySet();
-                movementMap = responseTypeMap.values();
-                processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
-                assetMap = assetModule.getAssetMap(processor);
-            }
-
-            return new VmsDTO(assetMap, movementMap);
-
+            Set<Asset> assets = assetModule.getAssetMap(processor);
+            return assets;
         } catch (ReportingServiceException e) {
             String error = "Exception during retrieving filter area";
             log.error(error, e);

@@ -47,7 +47,7 @@ public class VmsDTOTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/VmsDTOTest.testToJsonEmpty.json");
         String expectedJSONString = Resources.toString(url, Charsets.UTF_8);
 
-        VmsDTO dto = new VmsDTO(null, null);
+        ExecutionResultDTO dto = new ExecutionResultDTO();
 
         //assertEquals(expectedJSONString, prettify(dto.toJson()));
 
@@ -120,7 +120,9 @@ public class VmsDTOTest extends UnitilsJUnit4 {
         URL url = Resources.getResource("payloads/VmsDTOTest.testToJsonHappy.json");
         String expectedJSONString = Resources.toString(url, Charsets.UTF_8);
 
-        VmsDTO dto = new VmsDTO(new ImmutableMap.Builder<String, Asset>().put("guid", asset).build(), Arrays.asList(movementMapResponseType));
+        ExecutionResultDTO dto = new ExecutionResultDTO();
+        dto.setMovementMap(Arrays.asList(movementMapResponseType));
+        dto.setAssetMap(new ImmutableMap.Builder<String, Asset>().put("guid", asset).build());
 
         //assertEquals(expectedJSONString, prettify(dto.toJson(null)));
 

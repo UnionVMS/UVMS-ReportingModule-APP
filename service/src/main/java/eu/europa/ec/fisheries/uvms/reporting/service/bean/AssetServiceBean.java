@@ -43,7 +43,7 @@ public class AssetServiceBean {
     private ReportingModuleReceiverBean receiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Map<String, Asset> getAssetMap(final FilterProcessor processor) throws ReportingServiceException {
+    public Set<Asset> getAssetMap(final FilterProcessor processor) throws ReportingServiceException {
         Set<Asset> assetList = new HashSet<>();
 
         try {
@@ -63,12 +63,11 @@ public class AssetServiceBean {
                 assetList.addAll(groupList);
             }
 
-
         } catch (MessageException | AssetModelMapperException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM ASSET", e);
         }
 
-        return ExtAssetMessageMapper.getAssetMap(assetList);
+        return assetList;
     }
 
     public List<Asset> getAssets(AssetListQuery assetList) throws ReportingServiceException {

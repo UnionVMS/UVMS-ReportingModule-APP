@@ -30,7 +30,7 @@ public class PositionSelector implements Serializable{
     @Enumerated(EnumType.STRING)
     private Position position;
 
-    PositionSelector() {
+    public PositionSelector() {
 
     }
 

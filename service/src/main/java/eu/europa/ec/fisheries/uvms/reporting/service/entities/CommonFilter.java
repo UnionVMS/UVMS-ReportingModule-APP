@@ -12,10 +12,15 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
@@ -105,6 +110,32 @@ public class CommonFilter extends Filter {
         if (date.getFrom() == null) {
             date.setFrom(DateUtils.dateToString(DateUtils.START_OF_TIME.toDate()));
         }
+    }
+
+    @Override
+    public List<FAFilterType> getFaFilters(DateTime now) {
+        Selector selector = getPositionSelector().getSelector();
+        Date startDate = null;
+        Date endDate = null;
+        List<FAFilterType> faFilterTypes = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z");
+        switch (selector) {
+            case all:
+                startDate = getDateRange().getStartDate();
+                endDate = getDateRange().getEndDate();
+                break;
+            case last:
+                if (getPositionSelector().getPosition().equals(Position.positions)) {
+                    return Collections.emptyList();
+                }
+                Float hours = getPositionSelector().getValue();
+                startDate = DateUtils.nowUTCMinusSeconds(now, hours).toDate();
+                endDate = now.toDate();
+                break;
+        }
+        faFilterTypes.add(new FAFilterType(SearchFilter.PERIOD_START, dateFormat.format(startDate)));
+        faFilterTypes.add(new FAFilterType(SearchFilter.PERIOD_START, dateFormat.format(endDate)));
+        return faFilterTypes;
     }
 
     // UT

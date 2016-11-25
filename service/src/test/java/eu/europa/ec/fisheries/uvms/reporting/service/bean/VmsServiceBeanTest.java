@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import lombok.SneakyThrows;
@@ -24,13 +25,14 @@ import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
 
 import javax.jms.TextMessage;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
     @TestedObject
-    private VmsServiceBean service;
+    private ReportExecutionServiceBean service;
 
     @InjectIntoByType
     private Mock<SpatialService> spatialModule;
@@ -54,10 +56,11 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
         Set<Filter> filterSet = new HashSet<>();
         filterSet.add(AssetFilter.builder().guid("1234").build());
+        filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
         report.returns(filterSet).getFilters();
 
-        asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
+        asset.returns(ImmutableSet.<String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null, false);
 
         service.getVmsDataByReportId(null, "userName", "scope", null, null, false);
@@ -74,9 +77,10 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
 
         Set<Filter> filterSet = new HashSet<>();
         filterSet.add(AssetGroupFilter.builder().groupId("123").build());
+        filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
         report.returns(filterSet).getFilters();
-        asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
+        asset.returns(ImmutableSet.<String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
         service.getVmsDataByReportId(null, "test", null, null, null, false);
 
@@ -93,12 +97,10 @@ public class VmsServiceBeanTest extends UnitilsJUnit4 {
     public void testGetVmsDataByReportIdWithoutAsset() {
 
         Set<Filter> filterSet = new HashSet<>();
-        filterSet.add(CommonFilter.builder()
-                .positionSelector(PositionSelector.builder().selector(Selector.all).build())
-                .build());
+        filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
         report.returns(filterSet).getFilters();
-        asset.returns(ImmutableMap.<String, String>builder().build()).getAssetMap(null);
+        asset.returns(ImmutableSet.<String>builder().build()).getAssetMap(null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
         service.getVmsDataByReportId(null, "test", null, null, DateTime.now(), false);
 
