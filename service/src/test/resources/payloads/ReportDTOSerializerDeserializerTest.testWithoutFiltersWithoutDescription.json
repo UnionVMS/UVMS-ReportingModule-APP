@@ -2,6 +2,7 @@
   "id" : 5,
   "name" : "ReportName788",
   "visibility" : "private",
+  "reportType" : "all",
   "createdOn" : "2015-10-11T13:02:23",
   "createdBy" : "georgi",
   "withMap" : false,

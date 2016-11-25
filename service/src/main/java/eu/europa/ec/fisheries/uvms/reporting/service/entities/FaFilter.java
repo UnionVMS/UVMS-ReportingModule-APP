@@ -101,7 +101,7 @@ public class FaFilter extends Filter {
 
     @Override
     public Object getUniqKey() {
-        return getId();
+        return hashCode();
     }
 
     public String getReportType() {

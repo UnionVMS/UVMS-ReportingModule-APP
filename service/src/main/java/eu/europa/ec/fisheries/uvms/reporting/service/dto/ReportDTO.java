@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTODeserializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDTOSerializer;
@@ -38,6 +39,7 @@ public class ReportDTO implements Serializable {
     public static final String CREATED_ON = "createdOn";
     public static final String SCOPE_ID = "scopeId";
     public static final String VISIBILITY = "visibility";
+    public static final String REPORT_TYPE = "reportType";
     public static final String FILTER_EXPRESSION = "filterExpression";
     public static final String SHAREABLE = "shareable";
     public static final String DELETABLE = "deletable";
@@ -57,6 +59,7 @@ public class ReportDTO implements Serializable {
     private VisibilityEnum visibility;
     private boolean isDeleted;
     private Boolean isDefault = false;
+    private ReportTypeEnum reportTypeEnum;
 
 
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -85,6 +88,7 @@ public class ReportDTO implements Serializable {
                      Date createdOn,
                      Date deletedOn,
                      String deletedBy,
+                     ReportTypeEnum reportTypeEnum,
                      List<FilterDTO> filters,
                      MapConfigurationDTO mapConfiguration) {
         this.id = id;
@@ -103,6 +107,7 @@ public class ReportDTO implements Serializable {
         }
         this.audit.setCreatedOn(createdOn);
         this.mapConfiguration = mapConfiguration;
+        this.reportTypeEnum = reportTypeEnum;
     }
 
     public Long getId() {
@@ -253,5 +258,13 @@ public class ReportDTO implements Serializable {
 
     public void setMapConfiguration(MapConfigurationDTO mapConfiguration) {
         this.mapConfiguration = mapConfiguration;
+    }
+
+    public ReportTypeEnum getReportTypeEnum() {
+        return reportTypeEnum;
+    }
+
+    public void setReportTypeEnum(ReportTypeEnum reportTypeEnum) {
+        this.reportTypeEnum = reportTypeEnum;
     }
 }
