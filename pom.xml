@@ -4,7 +4,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
     <artifactId>reporting</artifactId>
-    <version>0.5.6-SNAPSHOT</version>
+    <version>0.5.6</version>
     <packaging>pom</packaging>
     <description>Maven projekt-archetype for UnionVms modules</description>
 
@@ -366,7 +366,8 @@
 		 <connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</connection>
 		 <developerConnection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</developerConnection>
 		 <url>https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
-	</scm>
+	  <tag>reporting-0.5.6</tag>
+  </scm>
 
     <build>
         <pluginManagement>
