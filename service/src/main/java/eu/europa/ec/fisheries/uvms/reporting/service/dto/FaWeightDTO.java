@@ -13,9 +13,12 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * Created by padhyad on 11/30/2016.
  */
+@EqualsAndHashCode(of = {"weightMin", "weightMax", "weightUnit"})
 public class FaWeightDTO {
 
     private Double weightMin;
