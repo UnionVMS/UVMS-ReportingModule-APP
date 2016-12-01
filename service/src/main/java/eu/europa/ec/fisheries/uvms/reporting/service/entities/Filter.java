@@ -177,7 +177,7 @@ public abstract class Filter extends BaseEntity {
 
         @Override
         public FilterDTO visitFaFilter(FaFilter faFilter) {
-            return FaFilterMapper.INSTANCE.FaFilterToFaFilterDTO(faFilter);
+            return FaFilterMapper.INSTANCE.faFilterToFaFilterDto(faFilter);
         }
     }
 }

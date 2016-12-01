@@ -32,10 +32,7 @@ import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
@@ -106,13 +103,13 @@ public class ReportDTOSerializerDeserializerTest {
         ReportDTO report6 = createReport();
         filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder().positionSelector(PositionSelectorDTOBuilder()
-                        .selector(Selector.last).position(Position.hours).value(23.45F).build()).build());
+                .selector(Selector.last).position(Position.hours).value(23.45F).build()).build());
         report6.setFilters(filterDTOList);
 
         ReportDTO report7 = createReport();
         filterDTOList = new ArrayList<>();
         filterDTOList.add(CommonFilterDTOBuilder().positionSelector(PositionSelectorDTOBuilder()
-                        .selector(Selector.last).position(Position.positions).value(23F).build()).build());
+                .selector(Selector.last).position(Position.positions).value(23F).build()).build());
         report7.setFilters(filterDTOList);
 
         ReportDTO report8 = createReport();
@@ -157,6 +154,18 @@ public class ReportDTOSerializerDeserializerTest {
         filterDTOList.add(AreaFilterDTO.AreaFilterDTOBuilder().id(67L).areaId(56546L).areaType("rfmo").build());
         report13.setFilters(filterDTOList);
 
+        ReportDTO report14 = createReport();
+        filterDTOList = new ArrayList<>();
+        filterDTOList.add(FaFilterDTO.FaFilterBuilder().
+                reportTypes(Arrays.asList("NOTIFICATION", "DECLARATION")).
+                activityTypes(Arrays.asList("ARRIVAL", "DEPARTURE")).
+                gears(Arrays.asList("gears1", "gear2")).
+                masters(Arrays.asList("master1", "master2")).
+                ports(Arrays.asList("SWE", "DNE")).
+                species(Arrays.asList("species1", "species2")).
+                faWeight(new FaWeightDTO(1.0, 100.0, "KG")).build());
+        report14.setFilters(filterDTOList);
+
         return $(
                 $(report1, "payloads/ReportDTOSerializerDeserializerTest.testWithoutFilters.json"),
                 $(report2, "payloads/ReportDTOSerializerDeserializerTest.testWithoutFiltersWithoutDescription.json"),
@@ -170,7 +179,8 @@ public class ReportDTOSerializerDeserializerTest {
                 $(report10, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsPositions.json"),
                 $(report11, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsPositionsWithoutSomeFields.json"),
                 $(report12, "payloads/ReportDTOSerializerDeserializerTest.testWithFiltersWithVmsSegmentsVmsPosition.json"),
-                $(report13, "payloads/ReportDTOSerializerDeserializerTest.testWithAreaFilters.json")
+                $(report13, "payloads/ReportDTOSerializerDeserializerTest.testWithAreaFilters.json"),
+                $(report14, "payloads/ReportDTOSerializerDeserializerTest.testWithFaFilters.json")
         );
     }
 

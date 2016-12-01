@@ -1,0 +1,46 @@
+{
+  "id" : 5,
+  "name" : "ReportName788",
+  "desc" : "This is a report descri created on 2015/09/28 13:31",
+  "visibility" : "private",
+  "reportType" : "all",
+  "createdOn" : "2015-10-11T13:02:23",
+  "createdBy" : "georgi",
+  "withMap" : false,
+  "filterExpression" : {
+    "vms" : { },
+    "areas" : [ ],
+    "assets" : [ ],
+    "fa": {
+      "reportTypes": [
+        "NOTIFICATION",
+        "DECLARATION"
+      ],
+      "activityTypes": [
+        "ARRIVAL",
+        "DEPARTURE"
+      ],
+      "masters": [
+        "master1",
+        "master2"
+      ],
+      "ports": [
+        "SWE",
+        "DNE"
+      ],
+      "gears": [
+        "gears1",
+        "gear2"
+      ],
+      "species": [
+        "species1",
+        "species2"
+      ],
+      "weight": {
+        "min": 1,
+        "max": 100,
+        "unit": "KG"
+      }
+    }
+  }
+}

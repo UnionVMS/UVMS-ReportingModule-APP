@@ -30,24 +30,29 @@ import java.util.List;
 @ToString
 public class FaFilter extends Filter {
 
-    @Column(name = "report_type")
-    private String reportType;
+    @Column(columnDefinition = "text", name = "report_types")
+    @Convert(converter = ListStringConverter.class)
+    private List<String> reportTypes;
 
-    @Column(name = "activity_type")
-    private String activityType;
+    @Column(columnDefinition = "text", name = "activity_types")
+    @Convert(converter = ListStringConverter.class)
+    private List<String> activityTypes;
 
-    @Column(name = "master")
-    private String master;
+    @Column(columnDefinition = "text", name = "masters")
+    @Convert(converter = ListStringConverter.class)
+    private List<String> masters;
 
     @Column(columnDefinition = "text", name = "species")
     @Convert(converter = ListStringConverter.class)
     private List<String> species;
 
-    @Embedded
-    private FaPort faPort;
+    @Column(columnDefinition = "text", name = "ports")
+    @Convert(converter = ListStringConverter.class)
+    private List<String> faPorts;
 
-    @Embedded
-    private FaGear faGear;
+    @Column(columnDefinition = "text", name = "gears")
+    @Convert(converter = ListStringConverter.class)
+    private List<String> faGears;
 
     @Embedded
     private FaWeight faWeight;
@@ -57,13 +62,13 @@ public class FaFilter extends Filter {
         super(FilterType.fa);
     }
 
-    public FaFilter(String reportType, String activityType, String master, FaPort faPort, FaGear faGear, FaWeight faWeight, List<String> species) {
+    public FaFilter(List<String> reportTypes, List<String> activityTypes, List<String> masters, List<String> faPorts, List<String> faGears, FaWeight faWeight, List<String> species) {
         super(FilterType.fa);
-        this.reportType = reportType;
-        this.activityType = activityType;
-        this.master = master;
-        this.faPort = faPort;
-        this.faGear = faGear;
+        this.reportTypes = reportTypes;
+        this.activityTypes = activityTypes;
+        this.masters = masters;
+        this.faPorts = faPorts;
+        this.faGears = faGears;
         this.faWeight = faWeight;
         this.species = species;
     }
@@ -84,52 +89,28 @@ public class FaFilter extends Filter {
         return hashCode();
     }
 
-    public String getReportType() {
-        return reportType;
+    public List<String> getReportTypes() {
+        return reportTypes;
     }
 
-    public void setReportType(String reportType) {
-        this.reportType = reportType;
+    public void setReportTypes(List<String> reportTypes) {
+        this.reportTypes = reportTypes;
     }
 
-    public String getActivityType() {
-        return activityType;
+    public List<String> getActivityTypes() {
+        return activityTypes;
     }
 
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
+    public void setActivityTypes(List<String> activityTypes) {
+        this.activityTypes = activityTypes;
     }
 
-    public String getMaster() {
-        return master;
+    public List<String> getMasters() {
+        return masters;
     }
 
-    public void setMaster(String master) {
-        this.master = master;
-    }
-
-    public FaPort getFaPort() {
-        return faPort;
-    }
-
-    public void setFaPort(FaPort faPort) {
-        this.faPort = faPort;
-    }
-
-    public FaGear getFaGear() {
-        return faGear;
-    }
-
-    public void setFaGear(FaGear faGear) {
-        this.faGear = faGear;
-    }
-
-    public FaWeight getFaWeight() {
-        return faWeight;
-    }
-
-    public void setFaWeight(FaWeight faWeight) {
-        this.faWeight = faWeight;
+    public void setMasters(List<String> masters) {
+        this.masters = masters;
     }
 
     public List<String> getSpecies() {
@@ -138,5 +119,29 @@ public class FaFilter extends Filter {
 
     public void setSpecies(List<String> species) {
         this.species = species;
+    }
+
+    public List<String> getFaPorts() {
+        return faPorts;
+    }
+
+    public void setFaPorts(List<String> faPorts) {
+        this.faPorts = faPorts;
+    }
+
+    public List<String> getFaGears() {
+        return faGears;
+    }
+
+    public void setFaGears(List<String> faGears) {
+        this.faGears = faGears;
+    }
+
+    public FaWeight getFaWeight() {
+        return faWeight;
+    }
+
+    public void setFaWeight(FaWeight faWeight) {
+        this.faWeight = faWeight;
     }
 }
