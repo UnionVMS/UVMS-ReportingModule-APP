@@ -13,8 +13,8 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
@@ -51,11 +51,11 @@ public class FaWeight {
         this.weightUnit = weightUnit;
     }
 
-    public List<FAFilterType> getFaFilters() {
-        List<FAFilterType> faFilterTypes = new ArrayList<>();
-        faFilterTypes.add(new FAFilterType(SearchFilter.QUNTITY_MAX, String.valueOf(weightMax)));
-        faFilterTypes.add(new FAFilterType(SearchFilter.QUNTITY_MIN, String.valueOf(weightMin)));
-        faFilterTypes.add(new FAFilterType(SearchFilter.WEIGHT_MEASURE, String.valueOf(weightUnit)));
+    public List<SingleValueTypeFilter> getFaFilters() {
+        List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
+        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MAX, String.valueOf(weightMax)));
+        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MIN, String.valueOf(weightMin)));
+        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.WEIGHT_MEASURE, String.valueOf(weightUnit)));
         return faFilterTypes;
     }
 

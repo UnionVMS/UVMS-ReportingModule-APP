@@ -13,8 +13,9 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import lombok.EqualsAndHashCode;
@@ -90,14 +91,19 @@ public class FaFilter extends Filter {
     }
 
     @Override
-    public List<FAFilterType> getFaFilters(DateTime now) {
-        List<FAFilterType> faFilterTypes = new ArrayList<>();
-        faFilterTypes.add(new FAFilterType(SearchFilter.REPORT_TYPE, reportType));
-        faFilterTypes.add(new FAFilterType(SearchFilter.ACTIVITY_TYPE, activityType));
-        faFilterTypes.add(new FAFilterType(SearchFilter.MASTER, master));
-        if (CollectionUtils.isEmpty(species)) {
-            faFilterTypes.add(new FAFilterType(SearchFilter.SPECIES, species.get(0)));
-        }
+    public List<ListValueTypeFilter> getListValueFilters(DateTime now) {
+        List<ListValueTypeFilter> faFilterTypes = new ArrayList<>();
+        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.REPORT_TYPE, reportTypes));
+        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.ACTIVITY_TYPE, activityTypes));
+        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.MASTER, masters));
+        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.SPECIES, species));
+        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.GEAR, faGears));
+        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.PORT, faPorts));
+        return faFilterTypes;
+    }
+
+    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
+        List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
         if (faWeight != null) {
             faFilterTypes.addAll(faWeight.getFaFilters());
         }

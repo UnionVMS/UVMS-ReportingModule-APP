@@ -18,6 +18,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMa
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ActivityModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
@@ -46,16 +48,16 @@ public class ActivityServiceBean implements ActivityService {
     private ReportingModuleReceiverBean reportingModule;
 
     @Override
-    public List<String> getFishingTrips(List<FAFilterType> listFilter) throws ReportingServiceException {
+    public List<String> getFishingTrips(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException {
         try {
-            String request = ActivityModuleRequestMapper.mapToActivityGetFishingTripRequest(listFilter);
+            String request = ActivityModuleRequestMapper.mapToActivityGetFishingTripRequest(listValueTypeFilters, singleValueTypeFilters);
             String correlationId = activityModule.sendModuleMessage(request, reportingModule.getDestination());
             TextMessage response = reportingModule.getMessage(correlationId, TextMessage.class);
             List<String> trips = new ArrayList<>();
             if (response != null) {
                 FishingTripResponse fishingTripResponse = ActivityModuleResponseMapper.mapToActivityFishingTripFromResponse(response, correlationId);
                 if (fishingTripResponse != null) {
-                    trips = fishingTripResponse.getFishingTripIds();
+                    //trips = fishingTripResponse.getFishingTripIds();
                 }
             }
             return trips;

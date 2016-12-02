@@ -14,7 +14,8 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -41,7 +42,8 @@ public class FilterProcessor {
     private final Set<AssetListCriteriaPair> assetListCriteriaPairs = new HashSet<>();
     private final Set<AssetGroup> assetGroupList = new HashSet<>();
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<>();
-    private final List<FAFilterType> filterTypes = new ArrayList<>();
+    private final List<SingleValueTypeFilter> singleValueTypeFilters = new ArrayList<>();
+    private final List<ListValueTypeFilter> listValueTypeFilters = new ArrayList<>();
     private DateTime now;
 
     public FilterProcessor(Set<Filter> filters, DateTime now) throws ProcessorException {
@@ -72,7 +74,8 @@ public class FilterProcessor {
         assetGroupList.addAll(filter.assetGroupCriteria());
         rangeCriteria.addAll(filter.movementRangeCriteria(now));
         movementListCriteria.addAll(filter.movementListCriteria());
-        filterTypes.addAll(filter.getFaFilters(now));
+        singleValueTypeFilters.addAll(filter.getSingleValueFilters(now));
+        listValueTypeFilters.addAll(filter.getListValueFilters(now));
     }
 
     private void addAreaIdentifier(Filter filter) {
@@ -142,8 +145,12 @@ public class FilterProcessor {
         return areaIdentifierList;
     }
 
-    public List<FAFilterType> getFaFilters() {
-        return filterTypes;
+    public List<SingleValueTypeFilter> getSingleValueTypeFilters() {
+        return singleValueTypeFilters;
+    }
+
+    public List<ListValueTypeFilter> getListValueTypeFilters() {
+        return listValueTypeFilters;
     }
 
     public DateTime getNow() {

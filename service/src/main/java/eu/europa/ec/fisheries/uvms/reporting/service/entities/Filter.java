@@ -12,7 +12,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
@@ -137,7 +138,11 @@ public abstract class Filter extends BaseEntity {
         return new AreaIdentifierType();
     }
 
-    public List<FAFilterType> getFaFilters(DateTime now) {
+    public List<ListValueTypeFilter> getListValueFilters(DateTime now) {
+        return Collections.emptyList();
+    }
+
+    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
         return Collections.emptyList();
     }
 

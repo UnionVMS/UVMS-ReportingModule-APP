@@ -12,8 +12,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
@@ -113,11 +113,11 @@ public class CommonFilter extends Filter {
     }
 
     @Override
-    public List<FAFilterType> getFaFilters(DateTime now) {
+    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
         Selector selector = getPositionSelector().getSelector();
         Date startDate = null;
         Date endDate = null;
-        List<FAFilterType> faFilterTypes = new ArrayList<>();
+        List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z");
         switch (selector) {
             case all:
@@ -133,8 +133,8 @@ public class CommonFilter extends Filter {
                 endDate = now.toDate();
                 break;
         }
-        faFilterTypes.add(new FAFilterType(SearchFilter.PERIOD_START, dateFormat.format(startDate)));
-        faFilterTypes.add(new FAFilterType(SearchFilter.PERIOD_START, dateFormat.format(endDate)));
+        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_START, dateFormat.format(startDate)));
+        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_START, dateFormat.format(endDate)));
         return faFilterTypes;
     }
 

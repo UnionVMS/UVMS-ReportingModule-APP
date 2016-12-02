@@ -11,8 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
@@ -97,8 +98,9 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     private void getFishingTripsAndActivities(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
-        List<FAFilterType> filterTypes = getFaFilters(processor, scopeAreaIdentifierList);
-        List<String> trips = activityService.getFishingTrips(filterTypes);
+        List<SingleValueTypeFilter> singleValueTypeFilters = getSingleValueFilters(processor, scopeAreaIdentifierList);
+        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor);
+        List<String> trips = activityService.getFishingTrips();
         // TODO do Fishing Activity specific modification
     }
 
@@ -135,16 +137,26 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
-    private List<FAFilterType> getFaFilters(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
-        List<FAFilterType> filterTypes = new ArrayList<>();
-        filterTypes.addAll(processor.getFaFilters()); // Add all the Fa filter criteria from the filters
+    private List<SingleValueTypeFilter> getSingleValueFilters(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
+        List<SingleValueTypeFilter> filterTypes = new ArrayList<>();
+        filterTypes.addAll(processor.getSingleValueTypeFilters()); // Add all the Fa filter criteria from the filters
 
         log.info("generate filtered area WKT by combining area filters and scope area");
         Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
         String areaWkt = getFilterAreaWkt(areaIdentifierList, scopeAreaIdentifierList);
-        filterTypes.add(new FAFilterType(SearchFilter.AREA_GEOM, areaWkt));
+        filterTypes.add(new SingleValueTypeFilter(SearchFilter.AREA_GEOM, areaWkt));
         return filterTypes;
     }
+
+    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor) {
+        List<ListValueTypeFilter> filterTypes = new ArrayList<>();
+        filterTypes.addAll(processor.getListValueTypeFilters());
+
+        // TODO add vessels
+
+        return filterTypes;
+    }
+
 
     private String getFilterAreaWkt(Set<AreaIdentifierType> areaIdentifierList, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
         if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
