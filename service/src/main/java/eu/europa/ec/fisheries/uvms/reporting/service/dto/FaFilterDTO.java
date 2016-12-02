@@ -24,32 +24,22 @@ import java.util.List;
 /**
  * Created by padhyad on 11/16/2016.
  */
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of = {"reportTypes", "activityTypes", "masters", "faPorts", "faGears", "species", "faWeight"})
 public class FaFilterDTO extends FilterDTO {
 
-    private String reportType;
+    private List<String> reportTypes;
 
-    private String activityType;
+    private List<String> activityTypes;
 
-    private String master;
+    private List<String> masters;
 
-    private String departurePort;
+    private List<String> faPorts;
 
-    private String arrivalPort;
-
-    private String landingPort;
-
-    private String gearOnboard;
-
-    private String gearDeployed;
+    private List<String> faGears;
 
     private List<String> species;
 
-    private Double weightMin;
-
-    private Double weightMax;
-
-    private String weightUnit;
+    private FaWeightDTO faWeight;
 
     public FaFilterDTO() {
         super(FilterType.fa);
@@ -60,20 +50,15 @@ public class FaFilterDTO extends FilterDTO {
     }
 
     @Builder(builderMethodName = "FaFilterBuilder")
-    public FaFilterDTO(Long reportId, Long id, String reportType, String activityType, String master, String departurePort, String arrivalPort, String landingPort, String gearOnboard, String gearDeployed, List<String> species, Double weightMin, Double weightMax, String weightUnit) {
+    public FaFilterDTO(Long reportId, Long id, List<String> reportTypes, List<String> activityTypes, List<String> masters, List<String> ports, List<String> gears, List<String> species, FaWeightDTO faWeight) {
         this(id, reportId);
-        this.reportType = reportType;
-        this.activityType = activityType;
-        this.master = master;
-        this.departurePort = departurePort;
-        this.arrivalPort = arrivalPort;
-        this.landingPort = landingPort;
-        this.gearOnboard = gearOnboard;
-        this.gearDeployed = gearDeployed;
+        this.reportTypes = reportTypes;
+        this.activityTypes = activityTypes;
+        this.masters = masters;
+        this.faPorts = ports;
+        this.faGears = gears;
         this.species = species;
-        this.weightMin = weightMin;
-        this.weightMax = weightMax;
-        this.weightUnit = weightUnit;
+        this.faWeight = faWeight;
         validate();
     }
 
@@ -82,68 +67,44 @@ public class FaFilterDTO extends FilterDTO {
         return FaFilterMapper.INSTANCE.faFilterDtoToFaFilter(this);
     }
 
-    public String getReportType() {
-        return reportType;
+    public List<String> getReportTypes() {
+        return reportTypes;
     }
 
-    public void setReportType(String reportType) {
-        this.reportType = reportType;
+    public void setReportTypes(List<String> reportTypes) {
+        this.reportTypes = reportTypes;
     }
 
-    public String getActivityType() {
-        return activityType;
+    public List<String> getActivityTypes() {
+        return activityTypes;
     }
 
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
+    public void setActivityTypes(List<String> activityTypes) {
+        this.activityTypes = activityTypes;
     }
 
-    public String getMaster() {
-        return master;
+    public List<String> getMasters() {
+        return masters;
     }
 
-    public void setMaster(String master) {
-        this.master = master;
+    public void setMasters(List<String> masters) {
+        this.masters = masters;
     }
 
-    public String getDeparturePort() {
-        return departurePort;
+    public List<String> getFaPorts() {
+        return faPorts;
     }
 
-    public void setDeparturePort(String departurePort) {
-        this.departurePort = departurePort;
+    public void setFaPorts(List<String> faPorts) {
+        this.faPorts = faPorts;
     }
 
-    public String getArrivalPort() {
-        return arrivalPort;
+    public List<String> getFaGears() {
+        return faGears;
     }
 
-    public void setArrivalPort(String arrivalPort) {
-        this.arrivalPort = arrivalPort;
-    }
-
-    public String getLandingPort() {
-        return landingPort;
-    }
-
-    public void setLandingPort(String landingPort) {
-        this.landingPort = landingPort;
-    }
-
-    public String getGearOnboard() {
-        return gearOnboard;
-    }
-
-    public void setGearOnboard(String gearOnboard) {
-        this.gearOnboard = gearOnboard;
-    }
-
-    public String getGearDeployed() {
-        return gearDeployed;
-    }
-
-    public void setGearDeployed(String gearDeployed) {
-        this.gearDeployed = gearDeployed;
+    public void setFaGears(List<String> faGears) {
+        this.faGears = faGears;
     }
 
     public List<String> getSpecies() {
@@ -154,27 +115,11 @@ public class FaFilterDTO extends FilterDTO {
         this.species = species;
     }
 
-    public Double getWeightMin() {
-        return weightMin;
+    public FaWeightDTO getFaWeight() {
+        return faWeight;
     }
 
-    public void setWeightMin(Double weightMin) {
-        this.weightMin = weightMin;
-    }
-
-    public Double getWeightMax() {
-        return weightMax;
-    }
-
-    public void setWeightMax(Double weightMax) {
-        this.weightMax = weightMax;
-    }
-
-    public String getWeightUnit() {
-        return weightUnit;
-    }
-
-    public void setWeightUnit(String weightUnit) {
-        this.weightUnit = weightUnit;
+    public void setFaWeight(FaWeightDTO faWeight) {
+        this.faWeight = faWeight;
     }
 }

@@ -176,18 +176,13 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             faFilterDTO = FaFilterDTO.FaFilterBuilder().
                     id(fa.get(FilterDTO.ID) != null ? fa.get(FilterDTO.ID).longValue() : null)
                     .reportId(reportId)
-                    .reportType(faFilter.getReportType())
-                    .activityType(faFilter.getActivityType())
-                    .master(faFilter.getMaster())
-                    .departurePort(faFilter.getFaPort() != null ? faFilter.getFaPort().getDeparture() : null)
-                    .arrivalPort(faFilter.getFaPort() != null ? faFilter.getFaPort().getArrival() : null)
-                    .landingPort(faFilter.getFaPort() != null ? faFilter.getFaPort().getLanding() : null)
-                    .gearOnboard(faFilter.getFaGear() != null ? faFilter.getFaGear().getOnboard() : null)
-                    .gearDeployed(faFilter.getFaGear() != null ? faFilter.getFaGear().getDeployed() : null)
+                    .reportTypes(faFilter.getReportTypes())
+                    .activityTypes(faFilter.getActivityTypes())
+                    .masters(faFilter.getMasters())
+                    .ports(faFilter.getFaPorts())
+                    .gears(faFilter.getFaGears())
                     .species(faFilter.getSpecies())
-                    .weightMin(faFilter.getFaWeight() != null ? faFilter.getFaWeight().getMin() : null)
-                    .weightMax(faFilter.getFaWeight() != null ? faFilter.getFaWeight().getMax() : null)
-                    .weightUnit(faFilter.getFaWeight() != null ? faFilter.getFaWeight().getUnit() : null)
+                    .faWeight(new FaWeightDTO(faFilter.getFaWeight().getMin(), faFilter.getFaWeight().getMax(), faFilter.getFaWeight().getUnit()))
                     .build();
             filterDTOList.add(faFilterDTO);
         }
