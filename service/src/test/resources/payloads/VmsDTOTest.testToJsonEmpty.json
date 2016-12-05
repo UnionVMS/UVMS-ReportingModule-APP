@@ -7,5 +7,7 @@
     "features" : [ ],
     "type" : "FeatureCollection"
   },
-  "tracks" : [ ]
+  "tracks" : [ ],
+  "activities" : null,
+  "trips" : null
 }

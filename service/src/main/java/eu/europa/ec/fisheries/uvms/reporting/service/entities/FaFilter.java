@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStri
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.collections4.CollectionUtils;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;

@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

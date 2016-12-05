@@ -62,5 +62,19 @@
     "distance" : 300.0,
     "duration" : 212.0,
     "totalTimeAtSea" : 200.0
-  } ]
+  } ],
+  "trips" : [
+    {
+      "tripId" : "TRIP1",
+      "schemeId" : "SCHEME1",
+      "geometry" : "MULTIPOINT(10 20, 30 40)"
+    }
+  ],
+  "activities" : [
+    {
+      "activityType" : "DEPARTURE",
+      "geometry" : "MULTIPOINT(10 20, 30 40)",
+      "occurrence" : null
+    }
+  ]
 }

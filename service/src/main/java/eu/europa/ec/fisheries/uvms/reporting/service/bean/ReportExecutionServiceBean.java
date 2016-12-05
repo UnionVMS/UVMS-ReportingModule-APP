@@ -11,15 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -56,67 +55,66 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Override
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
-    public ExecutionResultDTO getVmsDataByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
-        try {
-            log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
-            Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
-
-            if (reportByReportId == null) {
-                final String error = "No report found with id " + id;
-                log.error(error);
-                throw new ReportingServiceException(error);
-            }
-            FilterProcessor processor = new FilterProcessor(reportByReportId.getFilters(), now);
-            ExecutionResultDTO resultDTO = new ExecutionResultDTO();
-            getVmsData(resultDTO, processor, reportByReportId, areaRestrictions, now);
-            reportByReportId.updateExecutionLog(username);
-            log.debug("[END] getVmsDataByReportId(...)");
-            return resultDTO;
-        }   catch (ProcessorException e) {
-            String error = "Error while processing reporting filters";
-            log.error(error, e);
-            throw new ReportingServiceException(error, e);
+    public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
+        log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
+        Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
+        if (reportByReportId == null) {
+            final String error = "No report found with id " + id;
+            log.error(error);
+            throw new ReportingServiceException(error);
         }
+        ExecutionResultDTO resultDTO = executeReport(reportByReportId, now, areaRestrictions);
+        reportByReportId.updateExecutionLog(username);
+        log.debug("[END] getReportExecutionByReportId(...)");
+        return resultDTO;
     }
 
     @Override
-    public ExecutionResultDTO getVmsDataBy(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException {
+    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException {
+        Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+        DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+        Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
+
+        ExecutionResultDTO resultDTO = executeReport(toReport, dateTime, areaRestrictions);
+        auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
+        return resultDTO;
+    }
+
+    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
         try {
-            Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
-            DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
-            Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
-            FilterProcessor processor = new FilterProcessor(toReport.getFilters(), dateTime);
+            FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
+            String wkt = getFilterAreaWkt(processor, areaRestrictions);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
-            getVmsData(resultDTO, processor, toReport, areaRestrictions, dateTime);
-            auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
+            getVmsData(resultDTO, processor, wkt, dateTime);
+            getFishingTripsAndActivities(resultDTO, processor, wkt, report.getReportType());
             return resultDTO;
-        }  catch (ProcessorException e) {
+        } catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
             log.error(error, e);
             throw new ReportingServiceException(error, e);
         }
     }
 
-    private void getFishingTripsAndActivities(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
-        List<SingleValueTypeFilter> singleValueTypeFilters = getSingleValueFilters(processor, scopeAreaIdentifierList);
-        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor);
-        List<String> trips = activityService.getFishingTrips();
-        // TODO do Fishing Activity specific modification
+    private void getFishingTripsAndActivities(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, ReportTypeEnum reportType) throws ReportingServiceException {
+        List<SingleValueTypeFilter> singleValueTypeFilters = getSingleValueFilters(processor, wkt);
+        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor, reportType, resultDTO.getAssetMap());
+        FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
+        resultDTO.setTrips(tripResponse.getFishingTripIdLists());
+        resultDTO.setActivities(tripResponse.getFishingActivityLists());
     }
 
-    private void getVmsData(ExecutionResultDTO resultDTO, FilterProcessor processor, Report report, List<AreaIdentifierType> scopeAreaIdentifierList, DateTime dateTime) throws ReportingServiceException {
+    private void getVmsData(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, DateTime dateTime) throws ReportingServiceException {
 
         try {
             Collection<MovementMapResponseType> movementMap;
             Map<String, MovementMapResponseType> responseTypeMap;
             Map<String, Asset> assetMap;
 
-            final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
-            processor.addAreaCriteria(getFilterAreaWkt(areaIdentifierList, scopeAreaIdentifierList));
+            processor.addAreaCriteria(wkt);
             log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
 
             if (processor.hasAssetsOrAssetGroups()) {
-                assetMap = ExtAssetMessageMapper.getAssetMap(getAssets(processor));
+                assetMap = assetModule.getAssetMap(processor);
                 processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
                 movementMap = movementModule.getMovement(processor);
             } else {
@@ -124,7 +122,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 Set<String> assetGuids = responseTypeMap.keySet();
                 movementMap = responseTypeMap.values();
                 processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
-                assetMap = ExtAssetMessageMapper.getAssetMap(getAssets(processor));
+                assetMap = assetModule.getAssetMap(processor);
             }
 
             resultDTO.setAssetMap(assetMap);
@@ -137,28 +135,38 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
-    private List<SingleValueTypeFilter> getSingleValueFilters(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
+    private List<SingleValueTypeFilter> getSingleValueFilters(FilterProcessor processor, String areaWkt) {
         List<SingleValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getSingleValueTypeFilters()); // Add all the Fa filter criteria from the filters
 
         log.info("generate filtered area WKT by combining area filters and scope area");
-        Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
-        String areaWkt = getFilterAreaWkt(areaIdentifierList, scopeAreaIdentifierList);
         filterTypes.add(new SingleValueTypeFilter(SearchFilter.AREA_GEOM, areaWkt));
         return filterTypes;
     }
 
-    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor) {
+    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor, ReportTypeEnum reportType, Map<String, Asset> assetMap) throws ReportingServiceException {
         List<ListValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getListValueTypeFilters());
 
-        // TODO add vessels
+        if (!reportType.equals(ReportTypeEnum.ALL)) { // If report type is all then assets are already fetched for VMS data
+            assetMap = assetModule.getAssetMap(processor);
+        }
+
+        if (assetMap != null) {
+            Collection<Asset> assets = assetMap.values();
+            List<String> assetName = new ArrayList<String>();
+            for (Asset asset : assets) {
+                assetName.add(asset.getName());
+            }
+            filterTypes.add(new ListValueTypeFilter(SearchFilter.VESSEL_NAME, assetName));
+        }
 
         return filterTypes;
     }
 
 
-    private String getFilterAreaWkt(Set<AreaIdentifierType> areaIdentifierList, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
+    private String getFilterAreaWkt(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
+        final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
         if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
             HashSet<AreaIdentifierType> areaIdentifierTypes = null;
             if (isNotEmpty(scopeAreaIdentifierList)){
@@ -167,16 +175,5 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             return spatialModule.getFilterArea(areaIdentifierTypes, areaIdentifierList);
         }
         return null;
-    }
-
-    private Set<Asset> getAssets(FilterProcessor processor) throws ReportingServiceException {
-        try {
-            Set<Asset> assets = assetModule.getAssetMap(processor);
-            return assets;
-        } catch (ReportingServiceException e) {
-            String error = "Exception during retrieving filter area";
-            log.error(error, e);
-            throw new ReportingServiceException(error, e);
-        }
     }
 }

@@ -18,6 +18,8 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -36,6 +38,8 @@ public class ExecutionResultDTO {
     private List<TrackDTO> tracks = new ArrayList<>();
     private Map<String, Asset> assetMap;
     private Collection<MovementMapResponseType> movementMap;
+    private List<FishingTripIdWithGeometry> trips;
+    private List<FishingActivitySummary> activities;
 
     public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
 
@@ -67,6 +71,8 @@ public class ExecutionResultDTO {
             rootNode.set("movements", new FeatureToGeoJsonJacksonMapper().convert(movements));
             rootNode.set("segments", new FeatureToGeoJsonJacksonMapper().convert(segments));
             rootNode.putPOJO("tracks", tracks);
+            rootNode.putPOJO("trips", trips);
+            rootNode.putPOJO("activities", activities);
 
         } catch (ParseException | IOException e) {
             throw new ReportingServiceException("ERROR WHILE CREATING GEOJSON", e);
@@ -89,5 +95,21 @@ public class ExecutionResultDTO {
 
     public void setMovementMap(Collection<MovementMapResponseType> movementMap) {
         this.movementMap = movementMap;
+    }
+
+    public List<FishingTripIdWithGeometry> getTrips() {
+        return trips;
+    }
+
+    public void setTrips(List<FishingTripIdWithGeometry> trips) {
+        this.trips = trips;
+    }
+
+    public List<FishingActivitySummary> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<FishingActivitySummary> activities) {
+        this.activities = activities;
     }
 }

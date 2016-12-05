@@ -415,7 +415,7 @@ public class ReportingResource extends UnionVMSResource {
             List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
             Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
-            ObjectNode jsonNodes = reportExecutionService.getVmsDataByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin).toJson(format);
+            ObjectNode jsonNodes = reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin).toJson(format);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
@@ -447,7 +447,7 @@ public class ReportingResource extends UnionVMSResource {
             final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
-            ObjectNode jsonNodes = reportExecutionService.getVmsDataBy(report, areaRestrictions, username).toJson(displayFormat);
+            ObjectNode jsonNodes = reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username).toJson(displayFormat);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {

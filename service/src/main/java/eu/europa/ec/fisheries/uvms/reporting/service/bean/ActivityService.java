@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FAFilterType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -25,6 +25,6 @@ import java.util.List;
  */
 public interface ActivityService {
 
-    List<String> getFishingTrips(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException;
+    FishingTripResponse getFishingTrips(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException;
 
 }
