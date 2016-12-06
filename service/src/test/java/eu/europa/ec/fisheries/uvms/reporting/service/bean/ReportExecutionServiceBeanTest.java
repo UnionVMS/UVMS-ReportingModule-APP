@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -28,7 +28,6 @@ import org.unitils.mock.PartialMock;
 import javax.jms.TextMessage;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
@@ -48,7 +47,12 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
     @InjectIntoByType
     private Mock<MovementServiceBean> movement;
 
+    @InjectIntoByType
+    private Mock<ActivityServiceBean> activity;
+
     private Mock<Report> report;
+
+    private Mock<FishingTripResponse> response;
 
     private PartialMock<TextMessage> assetResponse;
 
@@ -63,12 +67,15 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         report.returns(filterSet).getFilters();
 
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
+
+        activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null, false);
 
         service.getReportExecutionByReportId(null, "userName", "scope", null, null, false);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
+        activity.assertInvokedInSequence().getFishingTrips(null, null);
         report.assertInvokedInSequence().updateExecutionLog("userName");
         MockUnitils.assertNoMoreInvocations();
     }
@@ -83,11 +90,13 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
 
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
+        activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
         service.getReportExecutionByReportId(null, "test", null, null, null, false);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
+        activity.assertInvokedInSequence().getFishingTrips(null, null);
         report.assertInvokedInSequence().updateExecutionLog("test");
 
         MockUnitils.assertNoMoreInvocations();
@@ -103,11 +112,13 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
 
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
+        activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
         service.getReportExecutionByReportId(null, "test", null, null, DateTime.now(), false);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);
+        activity.assertInvokedInSequence().getFishingTrips(null, null);
         report.assertInvokedInSequence().updateExecutionLog("test");
 
         MockUnitils.assertNoMoreInvocations();

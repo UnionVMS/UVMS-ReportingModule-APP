@@ -8,6 +8,10 @@
     "type" : "FeatureCollection"
   },
   "tracks" : [ ],
-  "activities" : null,
+  "activities" : {
+    "features" : [ ],
+    "type" : "FeatureCollection"
+  },
+
   "trips" : null
 }

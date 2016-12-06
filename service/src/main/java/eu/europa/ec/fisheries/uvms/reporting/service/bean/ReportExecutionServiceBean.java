@@ -23,6 +23,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingTripMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -99,8 +100,9 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         List<SingleValueTypeFilter> singleValueTypeFilters = getSingleValueFilters(processor, wkt);
         List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor, reportType, resultDTO.getAssetMap());
         FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
-        resultDTO.setTrips(tripResponse.getFishingTripIdLists());
-        resultDTO.setActivities(tripResponse.getFishingActivityLists());
+        List<FishingTripIdWithGeometry> trips = tripResponse.getFishingTripIdLists();
+        resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(trips));
+        resultDTO.setActivityList(tripResponse.getFishingActivityLists());
     }
 
     private void getVmsData(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, DateTime dateTime) throws ReportingServiceException {
@@ -148,7 +150,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         List<ListValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getListValueTypeFilters());
 
-        if (!reportType.equals(ReportTypeEnum.ALL)) { // If report type is all then assets are already fetched for VMS data
+        if (reportType != null && !reportType.equals(ReportTypeEnum.ALL)) { // If report type is all then assets are already fetched for VMS data
             assetMap = assetModule.getAssetMap(processor);
         }
 

@@ -16,11 +16,15 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service;
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 
 import javax.annotation.Resource;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.jms.Destination;
 
 /**
  * Created by padhyad on 11/23/2016.
  */
+@Stateless
+@LocalBean
 public class ActivityModuleSenderBean extends AbstractProducer {
 
     @Resource(mappedName = "java:/jms/queue/UVMSActivityEvent")

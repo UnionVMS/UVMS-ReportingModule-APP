@@ -1,80 +1,137 @@
 {
-  "movements" : {
-    "type" : "FeatureCollection",
-    "features" : [ {
-      "type" : "Feature",
-      "geometry" : {
-        "type" : "Point",
-        "coordinates" : [ 30, 10 ]
-      },
-      "properties" : {
-        "positionTime" : "2013-02-28T13:24:56.000+01:00",
-        "connectionId" : "guid",
-        "status" : "STATUS",
-        "reportedCourse" : 23.0,
-        "calculatedSpeed" : 22.0,
-        "movementType" : "EXI",
-        "activityType" : "ANC",
-        "reportedSpeed" : 12.0,
-        "externalMarking" : "em",
-        "cfr" : "cfr",
-        "countryCode" : "BE",
-        "ircs" : "Ircs",
-        "name" : "name",
-        "movementGuid" : "movementGuid",
-        "source" : "AIS"
+  "movements": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            30,
+            10
+          ]
+        },
+        "properties": {
+          "positionTime": "2013-02-28T13:24:56.000+01:00",
+          "connectionId": "guid",
+          "status": "STATUS",
+          "reportedCourse": 23.0,
+          "calculatedSpeed": 22.0,
+          "movementType": "EXI",
+          "activityType": "ANC",
+          "reportedSpeed": 12.0,
+          "externalMarking": "em",
+          "cfr": "cfr",
+          "countryCode": "BE",
+          "ircs": "Ircs",
+          "name": "name",
+          "movementGuid": "movementGuid",
+          "source": "AIS"
+        }
       }
-    } ]
+    ]
   },
-  "segments" : {
-    "type" : "FeatureCollection",
-    "features" : [ {
-      "type" : "Feature",
-      "geometry" : {
-        "type" : "LineString",
-        "coordinates" : [ [ 30, 10 ], [ 10, 30 ], [ 40, 40 ] ]
-      },
-      "properties" : {
-        "courseOverGround" : 10.4,
-        "speedOverGround" : 13.5,
-        "duration" : 100.0,
-        "distance" : 200.0,
-        "cfr" : "cfr",
-        "countryCode" : "BE",
-        "externalMarking" : "em",
-        "ircs" : "Ircs",
-        "name" : "name",
-        "trackId" : "trackId",
-        "segmentCategory" : "GAP"
+  "segments": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              30,
+              10
+            ],
+            [
+              10,
+              30
+            ],
+            [
+              40,
+              40
+            ]
+          ]
+        },
+        "properties": {
+          "courseOverGround": 10.4,
+          "speedOverGround": 13.5,
+          "duration": 100.0,
+          "distance": 200.0,
+          "cfr": "cfr",
+          "countryCode": "BE",
+          "externalMarking": "em",
+          "ircs": "Ircs",
+          "name": "name",
+          "trackId": "trackId",
+          "segmentCategory": "GAP"
+        }
       }
-    } ]
+    ]
   },
-  "tracks" : [ {
-    "name" : "name",
-    "countryCode" : "BE",
-    "ircs" : "Ircs",
-    "externalMarking" : "em",
-    "cfr" : "cfr",
-    "guid" : null,
-    "nearestPoint" : [ 25.58479532163743, 21.666666666666668 ],
-    "extent" : [ 10.0, 5.0, 45.0, 45.0 ],
-    "id" : null,
-    "distance" : 300.0,
-    "duration" : 212.0,
-    "totalTimeAtSea" : 200.0
-  } ],
-  "trips" : [
+  "tracks": [
     {
-      "tripId" : "TRIP1",
-      "schemeId" : "SCHEME1",
-      "geometry" : "MULTIPOINT(10 20, 30 40)"
+      "name": "name",
+      "countryCode": "BE",
+      "ircs": "Ircs",
+      "externalMarking": "em",
+      "cfr": "cfr",
+      "guid": null,
+      "nearestPoint": [
+        25.58479532163743,
+        21.666666666666668
+      ],
+      "extent": [
+        10.0,
+        5.0,
+        45.0,
+        45.0
+      ],
+      "id": null,
+      "distance": 300.0,
+      "duration": 212.0,
+      "totalTimeAtSea": 200.0
     }
   ],
-  "activities" : [
+  "trips": [
     {
-      "activityType" : "DEPARTURE",
-      "geometry" : "MULTIPOINT(10 20, 30 40)",
-      "occurrence" : null
+      "tripId": "TRIP1",
+      "schemeId": "SCHEME1",
+      "multipointWkt": "MULTIPOINT(10 20, 30 40)"
     }
-  ]
+  ],
+  "activities": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "MultiPoint",
+          "coordinates": [
+            [
+              10,
+              20
+            ],
+            [
+              30,
+              40
+            ]
+          ]
+        },
+        "properties": {
+          "activityType": "DEPARTURE",
+          "acceptedDateTime": "2012-12-12T12:12:12.000+01:00",
+          "dataSource": "FLUX",
+          "reportType": "DECLARATION",
+          "purposeCode": "4",
+          "vesselName": "VESSEL1",
+          "gears": "[GEAR1]",
+          "species": "[SPECIES1]",
+          "ports": "[PORT1]",
+          "areas": "[AREA1]",
+          "vesselIdentifiers": "[VESSELID1]"
+        }
+      }
+    ]
+  }
 }

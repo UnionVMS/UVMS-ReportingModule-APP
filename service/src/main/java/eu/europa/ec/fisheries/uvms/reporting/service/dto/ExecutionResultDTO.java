@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -35,11 +34,12 @@ public class ExecutionResultDTO {
 
     private DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
     private DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
+    private DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
     private List<TrackDTO> tracks = new ArrayList<>();
     private Map<String, Asset> assetMap;
     private Collection<MovementMapResponseType> movementMap;
-    private List<FishingTripIdWithGeometry> trips;
-    private List<FishingActivitySummary> activities;
+    private List<TripDTO> trips;
+    private List<FishingActivitySummary> activityList;
 
     public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
 
@@ -64,6 +64,12 @@ public class ExecutionResultDTO {
                 }
             }
 
+            if (CollectionUtils.isNotEmpty(activityList)) {
+                for (FishingActivitySummary summary : activityList) {
+                    activities.add(new ActivityDTO(summary).toFeature());
+                }
+            }
+
             ObjectMapper mapper = new ObjectMapper();
 
             mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
@@ -72,7 +78,7 @@ public class ExecutionResultDTO {
             rootNode.set("segments", new FeatureToGeoJsonJacksonMapper().convert(segments));
             rootNode.putPOJO("tracks", tracks);
             rootNode.putPOJO("trips", trips);
-            rootNode.putPOJO("activities", activities);
+            rootNode.putPOJO("activities", new FeatureToGeoJsonJacksonMapper().convert(activities));
 
         } catch (ParseException | IOException e) {
             throw new ReportingServiceException("ERROR WHILE CREATING GEOJSON", e);
@@ -97,19 +103,19 @@ public class ExecutionResultDTO {
         this.movementMap = movementMap;
     }
 
-    public List<FishingTripIdWithGeometry> getTrips() {
+    public List<TripDTO> getTrips() {
         return trips;
     }
 
-    public void setTrips(List<FishingTripIdWithGeometry> trips) {
+    public void setTrips(List<TripDTO> trips) {
         this.trips = trips;
     }
 
-    public List<FishingActivitySummary> getActivities() {
-        return activities;
+    public List<FishingActivitySummary> getActivityList() {
+        return activityList;
     }
 
-    public void setActivities(List<FishingActivitySummary> activities) {
-        this.activities = activities;
+    public void setActivityList(List<FishingActivitySummary> activityList) {
+        this.activityList = activityList;
     }
 }

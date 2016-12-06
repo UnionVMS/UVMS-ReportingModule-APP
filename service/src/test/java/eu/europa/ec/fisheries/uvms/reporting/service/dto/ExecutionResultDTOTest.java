@@ -37,13 +37,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import static junit.framework.TestCase.assertEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 public class ExecutionResultDTOTest extends UnitilsJUnit4 {
 
-    private FishingTripIdWithGeometry trip;
+    private TripDTO trip;
 
     private FishingActivitySummary activity;
 
@@ -67,7 +69,7 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
     }
 
     @Before
-    public void before() throws DatatypeConfigurationException {
+    public void before() throws DatatypeConfigurationException, ParseException {
 
         asset = new Asset();
         asset.setName("name");
@@ -117,15 +119,24 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
                 "(30 20, 20 15, 20 25, 30 20)))");
         movementMapResponseType.getTracks().add(track);
 
-        trip = new FishingTripIdWithGeometry();
+        trip = new TripDTO();
         trip.setTripId("TRIP1");
         trip.setSchemeId("SCHEME1");
-        trip.setGeometry("MULTIPOINT(10 20, 30 40)");
+        trip.setMultipointWkt("MULTIPOINT(10 20, 30 40)");
 
         activity = new FishingActivitySummary();
         activity.setGeometry("MULTIPOINT(10 20, 30 40)");
         activity.setActivityType("DEPARTURE");
-        //activity.setOccurrence(DatatypeFactory.newInstance().newXMLGregorianCalendar());
+        activity.setReportType("DECLARATION");
+        activity.setAcceptedDateTime(getDate("2012-12-12 12:12:12"));
+        activity.setDataSource("FLUX");
+        activity.setPurposeCode("4");
+        activity.setVesselName("VESSEL1");
+        activity.setAreas(Arrays.asList("AREA1"));
+        activity.setGears(Arrays.asList("GEAR1"));
+        activity.setPorts(Arrays.asList("PORT1"));
+        activity.setSpecies(Arrays.asList("SPECIES1"));
+        activity.setVesselIdentifiers(Arrays.asList("VESSELID1"));
 
     }
 
@@ -145,12 +156,21 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
         dto.setMovementMap(Arrays.asList(movementMapResponseType));
         dto.setAssetMap(new ImmutableMap.Builder<String, Asset>().put("guid", asset).build());
         dto.setTrips(Arrays.asList(trip));
-        dto.setActivities(Arrays.asList(activity));
+        dto.setActivityList(Arrays.asList(activity));
 
         //assertEquals(expectedJSONString, prettify(dto.toJson(null)));
 
         assertJsonEquals(expectedJSONString, prettify(dto.toJson(null)));
 
+    }
+
+    private XMLGregorianCalendar getDate(String s) throws ParseException, DatatypeConfigurationException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(s);
+        GregorianCalendar gregorianCalendar = (GregorianCalendar)GregorianCalendar.getInstance();
+        gregorianCalendar.setTime(date);
+        XMLGregorianCalendar result = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+        return result;
     }
 
 }
