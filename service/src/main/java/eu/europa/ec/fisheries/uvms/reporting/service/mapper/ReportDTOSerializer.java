@@ -127,7 +127,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
             faFilterDTO.setSpecies(faFilter.getSpecies());
             faFilterDTO.setFaGears(faFilter.getFaGears());
             faFilterDTO.setFaPorts(faFilter.getFaPorts());
-            faFilterDTO.setFaWeight(new FaWeight(faFilter.getFaWeight().getWeightMin(), faFilter.getFaWeight().getWeightMax(), faFilter.getFaWeight().getWeightUnit()));
+            faFilterDTO.setFaWeight(faFilter.getFaWeight() != null ? new FaWeight(faFilter.getFaWeight().getWeightMin(), faFilter.getFaWeight().getWeightMax(), faFilter.getFaWeight().getWeightUnit()) : null);
             jgen.writeFieldName(FilterType.fa.name());
             jgen.writeObject(faFilterDTO);
         }

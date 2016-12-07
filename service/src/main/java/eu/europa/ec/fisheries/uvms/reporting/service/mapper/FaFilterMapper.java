@@ -43,4 +43,13 @@ public interface FaFilterMapper {
             @Mapping(target = "reportId", ignore = true)
     })
     void merge(FaFilter filter, @MappingTarget FaFilter faFilter);
+
+    FaFilter faFilterDtoToFaFilter(eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter faFilterDTO);
+
+    @Mappings({
+            @Mapping(target = "weightMin", source = "min"),
+            @Mapping(target = "weightMax", source = "max"),
+            @Mapping(target = "weightUnit", source = "unit")
+    })
+    FaWeight faWeightDtoToFaWeight(eu.europa.ec.fisheries.uvms.reporting.model.ers.FaWeight faWeightDTO);
 }

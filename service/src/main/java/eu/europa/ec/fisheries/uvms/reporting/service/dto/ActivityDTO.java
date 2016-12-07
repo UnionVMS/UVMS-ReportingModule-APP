@@ -13,11 +13,9 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;

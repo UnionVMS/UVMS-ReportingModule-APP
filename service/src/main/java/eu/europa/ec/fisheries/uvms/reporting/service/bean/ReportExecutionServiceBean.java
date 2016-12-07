@@ -84,10 +84,14 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
         try {
             FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
+            Boolean isAssetExist = false;
+            if (processor.hasAssetsOrAssetGroups()) {
+                isAssetExist = true;
+            }
             String wkt = getFilterAreaWkt(processor, areaRestrictions);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
-            getVmsData(resultDTO, processor, wkt, dateTime);
-            getFishingTripsAndActivities(resultDTO, processor, wkt, report.getReportType());
+            getVmsData(resultDTO, processor, wkt, dateTime); // Call assets and movements to get VMS positions
+            getFishingTripsAndActivities(resultDTO, processor, wkt, report.getReportType(), isAssetExist); // Call Activity to get activities and trips
             return resultDTO;
         } catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
@@ -96,9 +100,9 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
-    private void getFishingTripsAndActivities(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, ReportTypeEnum reportType) throws ReportingServiceException {
+    private void getFishingTripsAndActivities(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, ReportTypeEnum reportType, Boolean isAssetExist) throws ReportingServiceException {
         List<SingleValueTypeFilter> singleValueTypeFilters = getSingleValueFilters(processor, wkt);
-        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor, reportType, resultDTO.getAssetMap());
+        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor, reportType, resultDTO.getAssetMap(), isAssetExist);
         FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
         List<FishingTripIdWithGeometry> trips = tripResponse.getFishingTripIdLists();
         resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(trips));
@@ -142,19 +146,17 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         filterTypes.addAll(processor.getSingleValueTypeFilters()); // Add all the Fa filter criteria from the filters
 
         log.info("generate filtered area WKT by combining area filters and scope area");
-        filterTypes.add(new SingleValueTypeFilter(SearchFilter.AREA_GEOM, areaWkt));
+        if (areaWkt != null && !areaWkt.isEmpty()) {
+            filterTypes.add(new SingleValueTypeFilter(SearchFilter.AREA_GEOM, areaWkt));
+        }
         return filterTypes;
     }
 
-    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor, ReportTypeEnum reportType, Map<String, Asset> assetMap) throws ReportingServiceException {
+    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor, ReportTypeEnum reportType, Map<String, Asset> assetMap, Boolean isAssetsExist) throws ReportingServiceException {
         List<ListValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getListValueTypeFilters());
 
-        if (reportType != null && !reportType.equals(ReportTypeEnum.ALL)) { // If report type is all then assets are already fetched for VMS data
-            assetMap = assetModule.getAssetMap(processor);
-        }
-
-        if (assetMap != null) {
+        if (isAssetsExist && assetMap != null) {
             Collection<Asset> assets = assetMap.values();
             List<String> assetName = new ArrayList<String>();
             for (Asset asset : assets) {

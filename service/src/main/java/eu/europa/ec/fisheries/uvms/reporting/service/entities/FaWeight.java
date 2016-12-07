@@ -53,9 +53,15 @@ public class FaWeight {
 
     public List<SingleValueTypeFilter> getFaFilters() {
         List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
-        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MAX, String.valueOf(weightMax)));
-        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MIN, String.valueOf(weightMin)));
-        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.WEIGHT_MEASURE, String.valueOf(weightUnit)));
+        if (weightMax != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MAX, String.valueOf(weightMax)));
+        }
+        if (weightMin != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MIN, String.valueOf(weightMin)));
+        }
+        if (weightUnit != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.WEIGHT_MEASURE, String.valueOf(weightUnit)));
+        }
         return faFilterTypes;
     }
 

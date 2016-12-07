@@ -92,12 +92,28 @@ public class FaFilter extends Filter {
     @Override
     public List<ListValueTypeFilter> getListValueFilters(DateTime now) {
         List<ListValueTypeFilter> faFilterTypes = new ArrayList<>();
-        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.REPORT_TYPE, reportTypes));
-        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.ACTIVITY_TYPE, activityTypes));
-        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.MASTER, masters));
-        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.SPECIES, species));
-        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.GEAR, faGears));
-        faFilterTypes.add(new ListValueTypeFilter(SearchFilter.PORT, faPorts));
+        if (reportTypes != null && !reportTypes.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.REPORT_TYPE, reportTypes));
+        }
+        if (activityTypes != null && !activityTypes.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.ACTIVITY_TYPE, activityTypes));
+        }
+
+        if (masters != null && !masters.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.MASTER, masters));
+        }
+
+        if (species != null && !species.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.SPECIES, species));
+        }
+
+        if (faGears != null && !faGears.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.GEAR, faGears));
+        }
+
+        if (faPorts != null && !faPorts.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.PORT, faPorts));
+        }
         return faFilterTypes;
     }
 

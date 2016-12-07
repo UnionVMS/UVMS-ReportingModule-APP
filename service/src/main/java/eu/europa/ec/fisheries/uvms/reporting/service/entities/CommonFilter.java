@@ -118,7 +118,7 @@ public class CommonFilter extends Filter {
         Date startDate = null;
         Date endDate = null;
         List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss");
         switch (selector) {
             case all:
                 startDate = getDateRange().getStartDate();
@@ -133,8 +133,12 @@ public class CommonFilter extends Filter {
                 endDate = now.toDate();
                 break;
         }
-        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_START, dateFormat.format(startDate)));
-        faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_START, dateFormat.format(endDate)));
+        if (startDate != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_START, dateFormat.format(startDate)));
+        }
+        if (endDate != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_END, dateFormat.format(endDate)));
+        }
         return faFilterTypes;
     }
 

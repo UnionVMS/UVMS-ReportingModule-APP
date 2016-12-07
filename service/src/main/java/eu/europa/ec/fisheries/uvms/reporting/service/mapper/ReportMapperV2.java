@@ -62,6 +62,10 @@ public abstract class ReportMapperV2 {
             filterSet.add(VmsSegmentFilterMapper.INSTANCE.vmsSegmentToVmsSegmentFilter(dto.getFilterExpression().getVms().getVmssegment()));
         }
 
+        if (dto.getFilterExpression().getFaFilter() != null) {
+            filterSet.add(FaFilterMapper.INSTANCE.faFilterDtoToFaFilter(dto.getFilterExpression().getFaFilter()));
+        }
+
         return filterSet;
     }
 }
