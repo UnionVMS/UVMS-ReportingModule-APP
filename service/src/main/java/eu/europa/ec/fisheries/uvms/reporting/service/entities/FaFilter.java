@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
@@ -67,6 +68,7 @@ public class FaFilter extends Filter {
         super(FilterType.fa);
     }
 
+    @Builder
     public FaFilter(List<String> reportTypes, List<String> activityTypes, List<String> masters, List<String> faPorts, List<String> faGears, FaWeight faWeight, List<String> species) {
         super(FilterType.fa);
         this.reportTypes = reportTypes;
