@@ -13,11 +13,17 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
+import org.joda.time.DateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by padhyad on 11/16/2016.
@@ -43,6 +49,20 @@ public class FaWeight {
         this.weightMin = weightMin;
         this.weightMax = weightMax;
         this.weightUnit = weightUnit;
+    }
+
+    public List<SingleValueTypeFilter> getFaFilters() {
+        List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
+        if (weightMax != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MAX, String.valueOf(weightMax)));
+        }
+        if (weightMin != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.QUNTITY_MIN, String.valueOf(weightMin)));
+        }
+        if (weightUnit != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.WEIGHT_MEASURE, String.valueOf(weightUnit)));
+        }
+        return faFilterTypes;
     }
 
     public Double getWeightMin() {

@@ -63,7 +63,6 @@ public class AssetServiceBean {
                 assetList.addAll(groupList);
             }
 
-
         } catch (MessageException | AssetModelMapperException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM ASSET", e);
         }

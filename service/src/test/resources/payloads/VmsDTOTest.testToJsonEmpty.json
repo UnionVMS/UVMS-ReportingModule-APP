@@ -7,5 +7,11 @@
     "features" : [ ],
     "type" : "FeatureCollection"
   },
-  "tracks" : [ ]
+  "tracks" : [ ],
+  "activities" : {
+    "features" : [ ],
+    "type" : "FeatureCollection"
+  },
+
+  "trips" : null
 }

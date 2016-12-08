@@ -13,12 +13,18 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +68,7 @@ public class FaFilter extends Filter {
         super(FilterType.fa);
     }
 
+    @Builder
     public FaFilter(List<String> reportTypes, List<String> activityTypes, List<String> masters, List<String> faPorts, List<String> faGears, FaWeight faWeight, List<String> species) {
         super(FilterType.fa);
         this.reportTypes = reportTypes;
@@ -82,6 +89,42 @@ public class FaFilter extends Filter {
     @Override
     public void merge(Filter filter) {
         FaFilterMapper.INSTANCE.merge((FaFilter) filter, this);
+    }
+
+    @Override
+    public List<ListValueTypeFilter> getListValueFilters(DateTime now) {
+        List<ListValueTypeFilter> faFilterTypes = new ArrayList<>();
+        if (reportTypes != null && !reportTypes.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.REPORT_TYPE, reportTypes));
+        }
+        if (activityTypes != null && !activityTypes.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.ACTIVITY_TYPE, activityTypes));
+        }
+
+        if (masters != null && !masters.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.MASTER, masters));
+        }
+
+        if (species != null && !species.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.SPECIES, species));
+        }
+
+        if (faGears != null && !faGears.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.GEAR, faGears));
+        }
+
+        if (faPorts != null && !faPorts.isEmpty()) {
+            faFilterTypes.add(new ListValueTypeFilter(SearchFilter.PORT, faPorts));
+        }
+        return faFilterTypes;
+    }
+
+    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
+        List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
+        if (faWeight != null) {
+            faFilterTypes.addAll(faWeight.getFaFilters());
+        }
+        return faFilterTypes;
     }
 
     @Override

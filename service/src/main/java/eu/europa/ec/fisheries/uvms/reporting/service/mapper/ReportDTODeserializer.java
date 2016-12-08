@@ -182,7 +182,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                     .ports(faFilter.getFaPorts())
                     .gears(faFilter.getFaGears())
                     .species(faFilter.getSpecies())
-                    .faWeight(new FaWeightDTO(faFilter.getFaWeight().getMin(), faFilter.getFaWeight().getMax(), faFilter.getFaWeight().getUnit()))
+                    .faWeight(faFilter.getFaWeight() != null ? new FaWeightDTO(faFilter.getFaWeight().getMin(), faFilter.getFaWeight().getMax(), faFilter.getFaWeight().getUnit()) : null)
                     .build();
             filterDTOList.add(faFilterDTO);
         }

@@ -13,6 +13,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -71,6 +73,7 @@ public class AssetFilter extends Filter {
     public List<ListCriteria> movementListCriteria() {
         return asList(AssetFilterMapper.INSTANCE.assetFilterToListCriteria(this));
     }
+
 
     public String getGuid() {
         return guid;
