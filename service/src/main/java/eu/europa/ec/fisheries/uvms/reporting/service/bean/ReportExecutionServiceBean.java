@@ -91,7 +91,9 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             String wkt = getFilterAreaWkt(processor, areaRestrictions);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
             getVmsData(resultDTO, processor, wkt, dateTime); // Call assets and movements to get VMS positions
-            getFishingTripsAndActivities(resultDTO, processor, wkt, report.getReportType(), isAssetExist); // Call Activity to get activities and trips
+            if (!report.isLastPositionSelected()) {
+                getFishingTripsAndActivities(resultDTO, processor, wkt, isAssetExist); // Call Activity to get activities and trips
+            }
             return resultDTO;
         } catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
@@ -100,9 +102,9 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
-    private void getFishingTripsAndActivities(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, ReportTypeEnum reportType, Boolean isAssetExist) throws ReportingServiceException {
+    private void getFishingTripsAndActivities(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, Boolean isAssetExist) throws ReportingServiceException {
         List<SingleValueTypeFilter> singleValueTypeFilters = getSingleValueFilters(processor, wkt);
-        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor, reportType, resultDTO.getAssetMap(), isAssetExist);
+        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor, resultDTO.getAssetMap(), isAssetExist);
         FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
         List<FishingTripIdWithGeometry> trips = tripResponse.getFishingTripIdLists();
         resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(trips));
@@ -152,7 +154,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return filterTypes;
     }
 
-    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor, ReportTypeEnum reportType, Map<String, Asset> assetMap, Boolean isAssetsExist) throws ReportingServiceException {
+    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor, Map<String, Asset> assetMap, Boolean isAssetsExist) throws ReportingServiceException {
         List<ListValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getListValueTypeFilters());
 

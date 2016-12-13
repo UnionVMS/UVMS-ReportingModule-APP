@@ -143,6 +143,18 @@ public class Report extends BaseEntity {
 
     }
 
+    public boolean isLastPositionSelected() {
+        for (Filter filter : filters) {
+            if (filter instanceof CommonFilter) {
+                PositionSelector positionSelector = ((CommonFilter) filter).getPositionSelector();
+                if (positionSelector != null && positionSelector.getPosition() != null && positionSelector.getPosition().equals(Position.positions)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void merge(Report incoming) {
         mergeDetails(incoming.details);
         this.isDeleted = incoming.isDeleted;
