@@ -87,6 +87,7 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
             <artifactId>rules-model</artifactId>
+			<classifier>date</classifier>
         </dependency>
 
         <dependency>

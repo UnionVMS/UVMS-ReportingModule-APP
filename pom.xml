@@ -32,13 +32,13 @@
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.10</uvms.commons.version>
+        <uvms.commons.version>2.0.14-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
-        <usm4uvms.version>2.0.16</usm4uvms.version>
+        <usm4uvms.version>3.0.0-SNAPSHOT</usm4uvms.version>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-        <rules.model.version>2.0.0</rules.model.version>
+        <rules.model.version>3.0.0-SNAPSHOT</rules.model.version>
 		<reporting.model.version>0.5.6-SNAPSHOT</reporting.model.version>
         <uvms.test.version>0.0.3</uvms.test.version>
         <activity.model.version>0.5.8-SNAPSHOT</activity.model.version>
@@ -79,6 +79,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model.version}</version>
+                <classifier>date</classifier>
             </dependency>
         
             <dependency>
