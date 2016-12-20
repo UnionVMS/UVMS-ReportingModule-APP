@@ -16,7 +16,8 @@ import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.RulesProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMarshallException;
+import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesFaultException;
+import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleResponseMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -50,11 +51,12 @@ public class RulesEventServiceBean implements RulesEventService {
             String correlationId = producer.sendModuleMessage(request, consumer.getDestination());
             Message message = consumer.getMessage(correlationId, TextMessage.class);
             GetTicketsAndRulesByMovementsResponse response = RulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse(getText(message));
+
             if (response == null) {
                 return null;
             }
             return response.getTicketsAndRules();
-        } catch (RulesModelMarshallException | MessageException | JMSException e) {
+        } catch (MessageException | JMSException | RulesModelMapperException | RulesFaultException e) {
             throw new ReportingServiceException(e);
         }
     }
