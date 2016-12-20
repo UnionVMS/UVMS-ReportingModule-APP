@@ -50,9 +50,7 @@ public class RulesEventServiceBean implements RulesEventService {
             String request = RulesModuleRequestMapper.createGetTicketsAndRulesByMovementsRequest(movementId);
             String correlationId = producer.sendModuleMessage(request, consumer.getDestination());
             Message message = consumer.getMessage(correlationId, TextMessage.class);
-            GetTicketsAndRulesByMovementsResponse response = null;
-
-            response = RulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse(getText(message));
+            GetTicketsAndRulesByMovementsResponse response = RulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse(getText(message));
 
             if (response == null) {
                 return null;
