@@ -135,6 +135,8 @@
 					<groupId>eu.europa.ec.fisheries.uvms</groupId>
 					<artifactId>usm4uvms</artifactId>
 					<version>${usm4uvms.version}</version>
+					<classifier>weblogic</classifier>
+					
 				</dependency>
 			</dependencies>			
 			
@@ -156,6 +158,7 @@
 							   <jarModule>
 									<groupId>eu.europa.ec.fisheries.uvms</groupId>
 									<artifactId>usm4uvms</artifactId>		   
+									<classifier>weblogic</classifier>									
 									<bundleDir>/</bundleDir>					
 								</jarModule >						
 							   <jarModule>
