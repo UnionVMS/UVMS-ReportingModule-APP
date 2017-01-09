@@ -109,6 +109,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>uvms-commons</artifactId>
                 <version>${uvms.commons.version}</version>
+				<optional>true</optional>
             </dependency>
 
             <dependency>
@@ -400,6 +401,26 @@
             	<scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</scm.connection>
             </properties>
         </profile>
+		<profile>
+				<id>weblogic</id>
+				<properties>
+					<database.dialect>oracle</database.dialect> <!-- the record -->
+					<configDirectory>${basedir}/../container-conf/oracle</configDirectory>
+					<jndiReferenceName>jdbc/uvms_reporting</jndiReferenceName>				
+				</properties>				
+					<dependencies>				
+						<dependency>
+							<groupId>eu.europa.ec.fisheries.uvms</groupId>
+							<artifactId>uvms-commons</artifactId>
+							<version>${uvms.commons.version}</version>
+							<classifier>weblogic</classifier>
+						</dependency>					
+					</dependencies>
+				
+
+		</profile>
+			
+		
     </profiles>
 
     <build>
