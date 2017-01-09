@@ -92,6 +92,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
+				<optional>true</optional>				
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
@@ -415,6 +416,12 @@
 							<version>${uvms.commons.version}</version>
 							<classifier>weblogic</classifier>
 						</dependency>					
+						<dependency>
+							<groupId>eu.europa.ec.fisheries.uvms</groupId>
+							<artifactId>usm4uvms</artifactId>
+							<version>${usm4uvms.version}</version>
+							<classifier>weblogic</classifier>
+						</dependency>						
 					</dependencies>
 				
 
