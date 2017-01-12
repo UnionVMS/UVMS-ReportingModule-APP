@@ -126,16 +126,17 @@
         </profile>
 		
 	<profile>
-            <id>weblogic</id>
+            <id>weblogic-weblogic</id>
 				<properties>
 					<database.dialect>oracle</database.dialect> <!-- the record -->
+					<archive.classifier>weblogic-weblogic</archive.classifier> 					
 				</properties>				
 			<dependencies>			
 				<dependency>
 					<groupId>eu.europa.ec.fisheries.uvms</groupId>
 					<artifactId>usm4uvms</artifactId>
 					<version>${usm4uvms.version}</version>
-					<classifier>weblogic</classifier>
+					<classifier>weblogic-weblogic</classifier>
 					
 				</dependency>
 			</dependencies>			
@@ -177,7 +178,7 @@
 									<goal>ear</goal>
 								</goals>
 								<configuration>
-									<classifier>weblogic</classifier>
+									<classifier>weblogic-weblogic</classifier>
 								</configuration>
 							</execution>
 					</executions>						
@@ -207,6 +208,90 @@
 
         </profile>			
 		
+
+
+	<profile>
+            <id>weblogic-activemq</id>
+				<properties>
+					<database.dialect>oracle</database.dialect> <!-- the record -->
+					<archive.classifier>weblogic-activemq</archive.classifier> 					
+				</properties>				
+			<dependencies>			
+				<dependency>
+					<groupId>eu.europa.ec.fisheries.uvms</groupId>
+					<artifactId>usm4uvms</artifactId>
+					<version>${usm4uvms.version}</version>
+					<classifier>weblogic-activemq</classifier>
+					
+				</dependency>
+			</dependencies>			
+			
+            <build>
+                <plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-ear-plugin</artifactId>
+						<version>2.7</version>
+						<configuration>
+							<defaultLibBundleDir>APP-INF/lib</defaultLibBundleDir>					
+							<skinnyWars>true</skinnyWars>							
+							<modules>
+							 <ejbModule>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>reporting-model</artifactId>
+									<bundleDir>APP-INF/lib</bundleDir>							
+								</ejbModule>
+							   <jarModule>
+									<groupId>eu.europa.ec.fisheries.uvms</groupId>
+									<artifactId>usm4uvms</artifactId>		   
+									<classifier>weblogic</classifier>									
+									<bundleDir>/</bundleDir>					
+								</jarModule >						
+							   <jarModule>
+									<groupId>eu.europa.ec.mare.usm</groupId>
+									<artifactId>jwt-handler-impl</artifactId>
+									<bundleDir>/</bundleDir>					
+								</jarModule>						
+							</modules>
+						</configuration>
+
+						<executions>
+							<execution>
+								<id>weblogic-class</id>
+								<phase>package</phase>
+								<goals>
+									<goal>ear</goal>
+								</goals>
+								<configuration>
+									<classifier>weblogic-activemq</classifier>
+								</configuration>
+							</execution>
+					</executions>						
+						
+						
+					</plugin>
+					
+				
+				  
+				  <plugin>
+					<groupId>eu.europa.ec.fisheries.uvms.containerconversion</groupId>
+					<artifactId>uvms-wildfly-weblogic-convertor</artifactId>
+					 <version>1.5.0</version>
+					<executions>
+					  <execution>
+						<phase>package</phase>
+						<goals>
+						  <goal>convertReportingEAR</goal>
+						</goals>
+					  </execution>
+					</executions>
+				  </plugin>	
+					
+					
+                </plugins>
+            </build>
+
+        </profile>	
 		
 		
     </profiles>
