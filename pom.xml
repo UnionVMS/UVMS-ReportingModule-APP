@@ -403,7 +403,7 @@
             </properties>
         </profile>
 		<profile>
-				<id>weblogic</id>
+				<id>weblogic-weblogic</id>
 				<properties>
 					<database.dialect>oracle</database.dialect> <!-- the record -->
 					<configDirectory>${basedir}/../container-conf/oracle</configDirectory>
@@ -414,19 +414,42 @@
 							<groupId>eu.europa.ec.fisheries.uvms</groupId>
 							<artifactId>uvms-commons</artifactId>
 							<version>${uvms.commons.version}</version>
-							<classifier>weblogic</classifier>
+							<classifier>weblogic-weblogic</classifier>
 						</dependency>					
 						<dependency>
 							<groupId>eu.europa.ec.fisheries.uvms</groupId>
 							<artifactId>usm4uvms</artifactId>
 							<version>${usm4uvms.version}</version>
-							<classifier>weblogic</classifier>
+							<classifier>weblogic-weblogic</classifier>
 						</dependency>						
 					</dependencies>
 				
 
 		</profile>
-			
+		<profile>
+				<id>weblogic-activemq</id>
+				<properties>
+					<database.dialect>oracle</database.dialect> <!-- the record -->
+					<configDirectory>${basedir}/../container-conf/oracle</configDirectory>
+					<jndiReferenceName>jdbc/uvms_reporting</jndiReferenceName>				
+				</properties>				
+					<dependencies>				
+						<dependency>
+							<groupId>eu.europa.ec.fisheries.uvms</groupId>
+							<artifactId>uvms-commons</artifactId>
+							<version>${uvms.commons.version}</version>
+							<classifier>weblogic-activemq</classifier>
+						</dependency>					
+						<dependency>
+							<groupId>eu.europa.ec.fisheries.uvms</groupId>
+							<artifactId>usm4uvms</artifactId>
+							<version>${usm4uvms.version}</version>
+							<classifier>weblogic-activemq</classifier>
+						</dependency>						
+					</dependencies>
+				
+
+		</profile>			
 		
     </profiles>
 
