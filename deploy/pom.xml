@@ -159,7 +159,7 @@
 							   <jarModule>
 									<groupId>eu.europa.ec.fisheries.uvms</groupId>
 									<artifactId>usm4uvms</artifactId>		   
-									<classifier>weblogic</classifier>									
+									<classifier>weblogic-weblogic</classifier>
 									<bundleDir>/</bundleDir>					
 								</jarModule >						
 							   <jarModule>
@@ -191,7 +191,7 @@
 				  <plugin>
 					<groupId>eu.europa.ec.fisheries.uvms.containerconversion</groupId>
 					<artifactId>uvms-wildfly-weblogic-convertor</artifactId>
-					 <version>1.5.0</version>
+                      <version>${uvms-wildfly-weblogic-convertor}</version>
 					<executions>
 					  <execution>
 						<phase>package</phase>
@@ -244,7 +244,7 @@
 							   <jarModule>
 									<groupId>eu.europa.ec.fisheries.uvms</groupId>
 									<artifactId>usm4uvms</artifactId>		   
-									<classifier>weblogic</classifier>									
+									<classifier>weblogic-activemq</classifier>
 									<bundleDir>/</bundleDir>					
 								</jarModule >						
 							   <jarModule>
@@ -276,8 +276,8 @@
 				  <plugin>
 					<groupId>eu.europa.ec.fisheries.uvms.containerconversion</groupId>
 					<artifactId>uvms-wildfly-weblogic-convertor</artifactId>
-					 <version>1.5.0</version>
-					<executions>
+	                <version>${uvms-wildfly-weblogic-convertor}</version>
+				<executions>
 					  <execution>
 						<phase>package</phase>
 						<goals>
