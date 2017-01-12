@@ -261,6 +261,41 @@
                 </plugins>
             </build>
         </profile>        
+		
+		<profile>
+				<id>weblogic-weblogic</id>
+				<build>
+					<plugins>		
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-war-plugin</artifactId>
+							<version>2.4</version>
+							<configuration>
+								<generateApplicationXml>false</generateApplicationXml>						
+								<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>	
+							</configuration>
+						</plugin>
+						
+					</plugins>							
+				</build>				
+			</profile>
+			<profile>
+				<id>weblogic-activemq</id>
+				<build>
+					<plugins>		
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-war-plugin</artifactId>
+							<version>2.4</version>
+							<configuration>
+								<generateApplicationXml>false</generateApplicationXml>						
+								<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>	
+							</configuration>
+						</plugin>
+						
+					</plugins>							
+				</build>				
+			</profile>		
     </profiles> 
 
 </project>
