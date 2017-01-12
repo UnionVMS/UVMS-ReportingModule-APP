@@ -221,9 +221,14 @@
 					<groupId>eu.europa.ec.fisheries.uvms</groupId>
 					<artifactId>usm4uvms</artifactId>
 					<version>${usm4uvms.version}</version>
-					<classifier>weblogic-activemq</classifier>
-					
+					<classifier>weblogic-activemq</classifier>					
 				</dependency>
+			<dependency>
+					<groupId>eu.europa.ec.fisheries.uvms</groupId>
+					<artifactId>usm4uvms</artifactId>
+					<version>${usm4uvms.version}</version>
+					<classifier>weblogic-activemq</classifier>										
+			</dependency>				
 			</dependencies>			
 			
             <build>
