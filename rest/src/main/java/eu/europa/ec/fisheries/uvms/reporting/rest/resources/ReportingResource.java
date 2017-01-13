@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
@@ -414,14 +415,18 @@ public class ReportingResource extends UnionVMSResource {
             DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
             List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
             Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-
-            ObjectNode jsonNodes = reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin).toJson(format);
+            Boolean withActivity = withActivity(request);
+            ObjectNode jsonNodes = reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity).toJson(format);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
             log.error("Report execution failed.", e);
             return createErrorResponse(e.getMessage());
         }
+    }
+
+    private Boolean withActivity(HttpServletRequest request) {
+        return request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
     }
 
     @POST
@@ -446,8 +451,11 @@ public class ReportingResource extends UnionVMSResource {
 
             final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
+            Boolean withActivity = withActivity(request);
 
-            ObjectNode jsonNodes = reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username).toJson(displayFormat);
+            ObjectNode jsonNodes =
+                    reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username, withActivity).toJson(displayFormat);
+
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {

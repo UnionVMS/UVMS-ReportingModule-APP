@@ -13,20 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-/**
- * Created by padhyad on 12/8/2016.
- */
-/*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
-
-This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
-and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
-the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
-
- */
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -95,7 +81,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
         areaIdentifierType.setAreaType(AreaType.EEZ);
         areaIdentifierType.setId("1");
-        service.getReportExecutionWithoutSave(getReportDto(), Arrays.asList(areaIdentifierType), "TEST");
+        service.getReportExecutionWithoutSave(getReportDto(), Arrays.asList(areaIdentifierType), "TEST", true);
 
         spatialModule.assertInvokedInSequence().getFilterArea(null, null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -118,7 +104,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
         areaIdentifierType.setAreaType(AreaType.EEZ);
         areaIdentifierType.setId("1");
-        service.getReportExecutionByReportId(1L, "test", "EC", Arrays.asList(areaIdentifierType), DateTime.now(), false);
+        service.getReportExecutionByReportId(1L, "test", "EC", Arrays.asList(areaIdentifierType), DateTime.now(), false,true);
 
         spatialModule.assertInvokedInSequence().getFilterArea(null, null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -130,7 +116,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
     @Test(expected = ReportingServiceException.class)
     @SneakyThrows
     public void testReportNull() {
-        service.getReportExecutionByReportId(null, "test", null, null, null, false);
+        service.getReportExecutionByReportId(null, "test", null, null, null, false, true);
     }
 
     private eu.europa.ec.fisheries.uvms.reporting.model.vms.Report getReportDto() {

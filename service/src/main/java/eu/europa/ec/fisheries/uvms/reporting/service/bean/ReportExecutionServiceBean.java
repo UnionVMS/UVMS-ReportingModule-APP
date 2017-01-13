@@ -56,7 +56,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Override
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
-    public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin) throws ReportingServiceException {
+    public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity) throws ReportingServiceException {
         log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
         if (reportByReportId == null) {
@@ -64,24 +64,24 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             log.error(error);
             throw new ReportingServiceException(error);
         }
-        ExecutionResultDTO resultDTO = executeReport(reportByReportId, now, areaRestrictions);
+        ExecutionResultDTO resultDTO = executeReport(reportByReportId, now, areaRestrictions, withActivity);
         reportByReportId.updateExecutionLog(username);
         log.debug("[END] getReportExecutionByReportId(...)");
         return resultDTO;
     }
 
     @Override
-    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException {
+    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException {
         Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
         DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
         Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
 
-        ExecutionResultDTO resultDTO = executeReport(toReport, dateTime, areaRestrictions);
+        ExecutionResultDTO resultDTO = executeReport(toReport, dateTime, areaRestrictions, withActivity);
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
         return resultDTO;
     }
 
-    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions) throws ReportingServiceException {
+    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean withActivity) throws ReportingServiceException {
         try {
             FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
             Boolean isAssetExist = false;
@@ -90,8 +90,8 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             }
             String wkt = getFilterAreaWkt(processor, areaRestrictions);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
-            getVmsData(resultDTO, processor, wkt, dateTime); // Call assets and movements to get VMS positions
-            if (!report.isLastPositionSelected()) {
+            getVmsData(resultDTO, processor, wkt); // Call assets and movements to get VMS positions
+            if (withActivity && !report.isLastPositionSelected()) {
                 getFishingTripsAndActivities(resultDTO, processor, wkt, isAssetExist); // Call Activity to get activities and trips
             }
             return resultDTO;
@@ -111,7 +111,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         resultDTO.setActivityList(tripResponse.getFishingActivityLists());
     }
 
-    private void getVmsData(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, DateTime dateTime) throws ReportingServiceException {
+    private void getVmsData(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt) throws ReportingServiceException {
 
         try {
             Collection<MovementMapResponseType> movementMap;
