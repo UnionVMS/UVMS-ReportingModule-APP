@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
@@ -409,18 +410,30 @@ public class ReportingResource extends UnionVMSResource {
 
         log.info("{} is requesting runReport(...), with a ID={}", username, id);
 
+        Boolean runWithActivity = runWithActivity(username, roleName, scopeName);
+
         try {
             Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
             DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
             List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
             Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-
-            ObjectNode jsonNodes = reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin).toJson(format);
+            ObjectNode jsonNodes = reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin, runWithActivity).toJson(format);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {
             log.error("Report execution failed.", e);
             return createErrorResponse(e.getMessage());
+        }
+    }
+
+    private Boolean runWithActivity(String username, String roleName, String scopeName) {
+
+        try {
+            Set<String> features = usmService.getUserFeatures(username, "ACTIVITY", roleName, scopeName);
+            return (AuthorizationCheckUtil.isAllowed(ActivityFeaturesEnum.ACTIVITY_ALLOWED, features));
+        } catch (ServiceException e) {
+            log.error("NO APPLICATION FOUND FOR CONTEXT", e);
+            return false;
         }
     }
 
@@ -447,7 +460,9 @@ public class ReportingResource extends UnionVMSResource {
             final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 
-            ObjectNode jsonNodes = reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username).toJson(displayFormat);
+            Boolean runWithActivity = runWithActivity (username, roleName, scopeName);
+
+            ObjectNode jsonNodes = reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username, runWithActivity).toJson(displayFormat);
             return createSuccessResponse(jsonNodes);
 
         } catch (Exception e) {

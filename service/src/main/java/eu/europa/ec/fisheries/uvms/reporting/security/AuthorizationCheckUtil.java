@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.security;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
@@ -118,6 +119,15 @@ public class AuthorizationCheckUtil {
     }
 
     public static boolean isAllowed(final ReportFeatureEnum requiredFeature, final Set<String> grantedFeatures) {
+        boolean isAllowed = false;
+
+        if (requiredFeature == null || grantedFeatures.contains(requiredFeature.toString())) {
+            isAllowed = true;
+        }
+        return isAllowed;
+    }
+
+    public static boolean isAllowed(final ActivityFeaturesEnum requiredFeature, final Set<String> grantedFeatures) {
         boolean isAllowed = false;
 
         if (requiredFeature == null || grantedFeatures.contains(requiredFeature.toString())) {

@@ -95,7 +95,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "userName", null, false);
 
-        service.getReportExecutionByReportId(null, "userName", "scope", null, null, false);
+        service.getReportExecutionByReportId(null, "userName", "scope", null, null, false, true);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
@@ -116,7 +116,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getReportExecutionByReportId(null, "test", null, null, null, false);
+        service.getReportExecutionByReportId(null, "test", null, null, null, false, true);
 
         asset.assertInvokedInSequence().getAssetMap(null);
         movement.assertInvokedInSequence().getMovement(null);
@@ -138,7 +138,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getReportExecutionByReportId(null, "test", null, null, DateTime.now(), false);
+        service.getReportExecutionByReportId(null, "test", null, null, DateTime.now(), false, true);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -164,7 +164,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getReportExecutionByReportId(null, "test", null, null, DateTime.now(), false);
+        service.getReportExecutionByReportId(null, "test", null, null, DateTime.now(), false, true);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -177,6 +177,6 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
     @Test(expected = ReportingServiceException.class)
     @SneakyThrows
     public void testReportNull() {
-        service.getReportExecutionByReportId(null, "test", null, null, null, false);
+        service.getReportExecutionByReportId(null, "test", null, null, null, false, true);
     }
 }

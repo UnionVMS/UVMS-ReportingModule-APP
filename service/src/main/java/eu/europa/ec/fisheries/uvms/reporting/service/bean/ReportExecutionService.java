@@ -20,8 +20,8 @@ import java.util.List;
 
 public interface ReportExecutionService {
 
-    ExecutionResultDTO getReportExecutionByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin) throws ReportingServiceException;
+    ExecutionResultDTO getReportExecutionByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin, Boolean withActivity) throws ReportingServiceException;
 
-    ExecutionResultDTO getReportExecutionWithoutSave(Report report, List<AreaIdentifierType> areaRestrictions, String userName) throws ReportingServiceException;
+    ExecutionResultDTO getReportExecutionWithoutSave(Report report, List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException;
 
 }
