@@ -25,7 +25,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum.*;
  * Created by georgige on 10/1/2015.
  */
 
-//TODO unit tests!!!
 public class AuthorizationCheckUtil {
 
     private AuthorizationCheckUtil(){
@@ -119,15 +118,6 @@ public class AuthorizationCheckUtil {
     }
 
     public static boolean isAllowed(final ReportFeatureEnum requiredFeature, final Set<String> grantedFeatures) {
-        boolean isAllowed = false;
-
-        if (requiredFeature == null || grantedFeatures.contains(requiredFeature.toString())) {
-            isAllowed = true;
-        }
-        return isAllowed;
-    }
-
-    public static boolean isAllowed(final ActivityFeaturesEnum requiredFeature, final Set<String> grantedFeatures) {
         boolean isAllowed = false;
 
         if (requiredFeature == null || grantedFeatures.contains(requiredFeature.toString())) {
