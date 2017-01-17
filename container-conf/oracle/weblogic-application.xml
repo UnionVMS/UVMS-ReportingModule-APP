@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-application
+	xmlns="http://xmlns.oracle.com/weblogic/weblogic-application"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/javaee_5.xsd http://xmlns.oracle.com/weblogic/weblogic-application http://xmlns.oracle.com/weblogic/weblogic-application/1.2/weblogic-application.xsd">
+	<!--weblogic-version:10.3.4 -->
+	<application-param>
+		<param-name>webapp.encoding.default</param-name>
+		<param-value>UTF-8</param-value>
+	</application-param>
+
+	
+	 <classloader-structure>
+        <module-ref>
+            <module-uri>jwt-handler-impl-@jwtVersion@.jar</module-uri>
+        </module-ref>	 
+        <module-ref>
+            <module-uri>usm4uvms-@usm4uvmsVersion@.jar</module-uri>
+        </module-ref>
+        <module-ref>
+            <module-uri>message-@projectVersion@.jar</module-uri>
+        </module-ref>
+        <module-ref>
+            <module-uri>service-@projectVersion@.jar</module-uri>
+        </module-ref>
+		
+        <module-ref>
+            <module-uri>rest-@projectVersion@.war</module-uri>
+        </module-ref>
+    </classloader-structure>
+	
+	 <prefer-application-packages>
+      <package-name>org.joda.time.*</package-name>
+    </prefer-application-packages>
+	
+
+	</weblogic-application>
