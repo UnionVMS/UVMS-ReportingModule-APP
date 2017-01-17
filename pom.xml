@@ -42,7 +42,8 @@
 		<reporting.model.version>0.5.6-SNAPSHOT</reporting.model.version>
         <uvms.test.version>0.0.3-SNAPSHOT</uvms.test.version>
         <activity.model.version>0.5.8-SNAPSHOT</activity.model.version>
-        <uvms-wildfly-weblogic-convertor>1.6.0</uvms-wildfly-weblogic-convertor>
+
+        <uvms-wildfly-weblogic-convertor>1.7.1</uvms-wildfly-weblogic-convertor>
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
 
@@ -402,55 +403,6 @@
             	<scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</scm.connection>
             </properties>
         </profile>
-		<profile>
-				<id>weblogic-weblogic</id>
-				<properties>
-					<database.dialect>oracle</database.dialect> <!-- the record -->
-					<configDirectory>${basedir}/../container-conf/oracle</configDirectory>
-					<jndiReferenceName>jdbc/uvms_reporting</jndiReferenceName>				
-				</properties>				
-					<dependencies>				
-						<dependency>
-							<groupId>eu.europa.ec.fisheries.uvms</groupId>
-							<artifactId>uvms-commons</artifactId>
-							<version>${uvms.commons.version}</version>
-							<classifier>weblogic-weblogic</classifier>
-						</dependency>					
-						<dependency>
-							<groupId>eu.europa.ec.fisheries.uvms</groupId>
-							<artifactId>usm4uvms</artifactId>
-							<version>${usm4uvms.version}</version>
-							<classifier>weblogic-weblogic</classifier>
-						</dependency>						
-					</dependencies>
-				
-
-		</profile>
-		<profile>
-				<id>weblogic-activemq</id>
-				<properties>
-					<database.dialect>oracle</database.dialect> <!-- the record -->
-					<configDirectory>${basedir}/../container-conf/oracle</configDirectory>
-					<jndiReferenceName>jdbc/uvms_reporting</jndiReferenceName>				
-				</properties>				
-					<dependencies>				
-						<dependency>
-							<groupId>eu.europa.ec.fisheries.uvms</groupId>
-							<artifactId>uvms-commons</artifactId>
-							<version>${uvms.commons.version}</version>
-							<classifier>weblogic-activemq</classifier>
-						</dependency>					
-						<dependency>
-							<groupId>eu.europa.ec.fisheries.uvms</groupId>
-							<artifactId>usm4uvms</artifactId>
-							<version>${usm4uvms.version}</version>
-							<classifier>weblogic-activemq</classifier>
-						</dependency>						
-					</dependencies>
-				
-
-		</profile>			
-		
     </profiles>
 
     <build>
@@ -534,6 +486,7 @@
         <module>rest</module>
         <module>service</module>
         <module>message</module>
-        <module>deploy</module>
+        <module>deploy-wildfly</module>
+        <module>deploy-weblogic</module>
     </modules>
 </project>
