@@ -47,15 +47,13 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
+            <artifactId>uvms-commons-weblogic</artifactId>
             <version>${uvms.commons.version}</version>
-            <classifier>weblogic</classifier>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>usm4uvms</artifactId>
+            <artifactId>usm4uvms-weblogic</artifactId>
             <version>${usm4uvms.version}</version>
-            <classifier>weblogic</classifier>
         </dependency>
     </dependencies>
 
@@ -94,8 +92,7 @@
                         </ejbModule>
                         <jarModule>
                             <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                            <artifactId>usm4uvms</artifactId>
-                            <classifier>weblogic</classifier>
+                            <artifactId>usm4uvms-weblogic</artifactId>
                             <bundleDir>/</bundleDir>
                         </jarModule>
                         <jarModule>
