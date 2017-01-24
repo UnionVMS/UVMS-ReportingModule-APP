@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>usm4uvms</artifactId>
+            <artifactId>usm4uvms-wildfly</artifactId>
         </dependency>
 
     	<dependency>
@@ -85,7 +85,7 @@
         
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
+            <artifactId>uvms-commons-wildfly</artifactId>
         </dependency>
 
         <dependency>
