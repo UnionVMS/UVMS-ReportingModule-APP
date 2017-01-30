@@ -25,7 +25,7 @@
         <asset.model.version>3.0.0</asset.model.version>
         <audit.model.version>3.0.0</audit.model.version>
         <movement.model.version>3.0.4</movement.model.version>
-        <spatial.model.version>0.5.6</spatial.model.version>
+        <spatial.model.version>1.0.3</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
@@ -41,7 +41,7 @@
         <rules.model.version>3.0.0</rules.model.version>
 		<reporting.model.version>1.0.1</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activity.model.version>0.5.8</activity.model.version>
+        <activity.model.version>0.5.10</activity.model.version>
 
         <uvms-wildfly-weblogic-convertor>1.7.3</uvms-wildfly-weblogic-convertor>
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
