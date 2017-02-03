@@ -266,40 +266,6 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>jqassistant</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.buschmais.jqassistant.scm</groupId>
-                        <artifactId>jqassistant-maven-plugin</artifactId>
-                        <version>1.1.0</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>scan</goal>
-                                    <goal>analyze</goal>
-                                </goals>
-                                <configuration>
-                                    <failOnViolations>true</failOnViolations>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.buschmais.jqassistant.plugin</groupId>
-                                <artifactId>jqassistant.plugin.javaee6</artifactId>
-                                <version>1.1.0</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
-
     <build>
         <finalName>${project.name}-${project.version}</finalName>
         <resources>
