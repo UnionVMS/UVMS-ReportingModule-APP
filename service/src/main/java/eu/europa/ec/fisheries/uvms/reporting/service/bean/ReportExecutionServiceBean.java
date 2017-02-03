@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
@@ -18,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -57,7 +58,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
     public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity) throws ReportingServiceException {
-        log.debug("[START] getVmsDataByReportId({}, {}, {})", username, scopeName, id);
+        log.debug("[START] getReportExecutionByReportId({}, {}, {})", username, scopeName, id);
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
         if (reportByReportId == null) {
             final String error = "No report found with id " + id;

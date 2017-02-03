@@ -16,15 +16,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeightDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaGear;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaPort;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-/**
- * Created by padhyad on 11/16/2016.
- */
 @Mapper
 public interface FaFilterMapper {
 
