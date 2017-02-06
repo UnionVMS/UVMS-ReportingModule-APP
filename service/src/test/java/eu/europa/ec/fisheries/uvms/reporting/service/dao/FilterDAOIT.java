@@ -8,8 +8,11 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
+import eu.europa.ec.fisheries.uvms.domain.Range;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
@@ -135,7 +138,7 @@ public class FilterDAOIT {
         filterDAO.createEntity(filter6);
 
         VmsTrackFilter filter7 = VmsTrackFilter.builder()
-                .timeRange(new TimeRange(13F, 10F))
+                .timeRange(new Range(13F, 10F))
                 .durationRange(new DurationRange(11F, 12F))
                 .build();
         filter7.setReport(savedReport);
