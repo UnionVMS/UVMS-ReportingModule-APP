@@ -21,9 +21,6 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-/**
- * Created by padhyad on 11/16/2016.
- */
 @EqualsAndHashCode(callSuper = true, of = {"reportTypes", "activityTypes", "masters", "faPorts", "faGears", "species", "faWeight"})
 public class FaFilterDTO extends FilterDTO {
 

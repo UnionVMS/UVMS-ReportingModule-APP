@@ -197,7 +197,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         report.setIsDeleted(false);
         report.setFilters(getFilters());
         report.setVisibility(VisibilityEnum.PUBLIC);
-        report.setReportType(ReportTypeEnum.ALL);
+        report.setReportType(ReportTypeEnum.STANDARD);
         report.setDetails(new ReportDetails("This is Test", "Test report 1", false, "EC", "TEST"));
         return report;
     }

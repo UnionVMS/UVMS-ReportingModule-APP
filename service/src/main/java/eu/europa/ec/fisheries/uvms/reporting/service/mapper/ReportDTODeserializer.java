@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
@@ -24,12 +25,28 @@ import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeightDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.LayerSettingsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReferenceDataPropertiesDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.StyleSettingsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VisibilitySettingsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -37,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.IteratorUtils;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 
@@ -65,10 +83,12 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             addArea(filterNode.get("areas"), filterDTOList, reportId);
             addCommon(filterNode.get("common"), filterDTOList, reportId);
             addFaFilters(filterNode.get("fa"), filterDTOList, reportId);
+            addGroupBy(filterNode.get("criteria"), filterDTOList, reportId);
         }
 
         boolean withMap = node.get(ReportDTO.WITH_MAP).booleanValue();
-        return ReportDTO.ReportDTOBuilder()
+
+        ReportDTO build = ReportDTO.ReportDTOBuilder()
                 .description(node.get(ReportDTO.DESC) != null ? node.get(ReportDTO.DESC).textValue() : null)
                 .id(node.get(ReportDTO.ID) != null ? node.get(ReportDTO.ID).longValue() : null)
                 .name(node.get(ReportDTO.NAME).textValue())
@@ -76,9 +96,13 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .createdBy(node.get(ReportDTO.CREATED_BY) != null ? node.get(ReportDTO.CREATED_BY).textValue() : null)
                 .filters(filterDTOList)
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
-                .reportTypeEnum(node.get(ReportDTO.REPORT_TYPE) != null ? ReportTypeEnum.valueOf(node.get(ReportDTO.REPORT_TYPE).textValue().toUpperCase()) : ReportTypeEnum.ALL)
                 .mapConfiguration(createMapConfigurationDTO(withMap, node.get(ReportDTO.MAP_CONFIGURATION)))
                 .build();
+
+        ReportTypeEnum reportTypeEnum =
+                node.get(ReportDTO.REPORT_TYPE) != null ? ReportTypeEnum.getReportTypeEnum(node.get(ReportDTO.REPORT_TYPE).textValue()) : ReportTypeEnum.STANDARD;
+        build.setReportTypeEnum(reportTypeEnum);
+        return build;
     }
 
     private MapConfigurationDTO createMapConfigurationDTO(boolean withMap, JsonNode mapConfigJsonNode) {
@@ -158,6 +182,20 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             }
         } else {
             return null;
+        }
+    }
+
+    private void addGroupBy(JsonNode groupBy, List<FilterDTO> filterDTOList, Long reportId) {
+
+        if (groupBy != null){
+            List list = IteratorUtils.toList(groupBy.elements());
+            for (int i = 0; i < list.size(); i++){
+                String code = ((JsonNode)list.get(i)).get("code").asText();
+                JsonNode valueNode = ((JsonNode) list.get(i)).get("value");
+                String value = null;
+                if (valueNode != null) value = valueNode.asText();
+                filterDTOList.add(new CriteriaFilterDTO(code, value, i + 1, reportId));
+            }
         }
     }
 

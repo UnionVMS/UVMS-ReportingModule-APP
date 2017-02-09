@@ -10,6 +10,8 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
@@ -60,7 +62,6 @@ public class ReportDTO implements Serializable {
     private boolean isDeleted;
     private Boolean isDefault = false;
     private ReportTypeEnum reportTypeEnum;
-
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date deletedOn;

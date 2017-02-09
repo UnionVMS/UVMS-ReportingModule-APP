@@ -16,8 +16,22 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaWeight;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import java.security.InvalidParameterException;
+import java.util.Arrays;
+import java.util.Collections;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -71,6 +85,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         TrackFilterDTO track = null;
         CommonFilterDTO commonFilter = null;
         FaFilterDTO faFilter = null;
+        List<FilterDTO> criteriaFilterDTOList = new ArrayList<>();
 
         for (FilterDTO filterDTO : filters) {
             FilterType type = filterDTO.getType();
@@ -99,8 +114,11 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
                 case fa:
                     faFilter = (FaFilterDTO) filterDTO;
                     break;
-                default:
+                case criteria:
+                    criteriaFilterDTOList.add(filterDTO);
                     break;
+                default:
+                    throw new InvalidParameterException("FILTER TYPE NOT SUPPORTED");
             }
         }
         writeCommonFields(jgen, commonFilter);
@@ -115,6 +133,7 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         writeAreaFilters(jgen, areaFilterDTOList);
         writeAssets(jgen, assetFilterDTOList);
         writeFaFilters(jgen, faFilter);
+        writeCriteriaFilters(jgen, criteriaFilterDTOList);
         jgen.writeEndObject();
     }
 
@@ -133,6 +152,11 @@ public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
         }
     }
 
+
+    private void writeCriteriaFilters(JsonGenerator jgen, List<FilterDTO> criteriaFilterDTOList) throws IOException {
+        Collections.sort((List)criteriaFilterDTOList);
+        jgen.writeObjectField(FilterType.criteria.toString(), criteriaFilterDTOList);
+    }
 
     private void writeAreaFilters(JsonGenerator jgen, List<FilterDTO> areaFilterDTOList) throws IOException {
         jgen.writeObjectField(FilterType.areas.toString(), areaFilterDTOList);

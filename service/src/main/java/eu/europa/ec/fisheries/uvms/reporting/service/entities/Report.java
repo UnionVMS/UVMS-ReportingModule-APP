@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
@@ -35,6 +36,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Where;
@@ -122,11 +124,12 @@ public class Report extends BaseEntity {
     private Audit audit;
 
     @Builder
-    public Report(Long id, ReportDetails details, String createdBy, Set<Filter> filters,
+    public Report(ReportDetails details, String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
         this.details = details;
         this.visibility = VisibilityEnum.PRIVATE;
         this.filters = filters;
+        this.reportType = ReportTypeEnum.STANDARD;
         this.executionLogs = executionLogs;
         this.isDeleted = false;
         this.audit = audit;
@@ -218,5 +221,9 @@ public class Report extends BaseEntity {
 
     public void setReportType(ReportTypeEnum reportType) {
         this.reportType = reportType;
+    }
+
+    public Collection getFilters(String criteria) {
+        return CollectionUtils.typedCollection(this.filters, CriteriaFilter.class);
     }
 }

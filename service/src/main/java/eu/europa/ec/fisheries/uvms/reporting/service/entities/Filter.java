@@ -39,6 +39,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.joda.time.DateTime;
 
 @Entity
@@ -51,6 +52,7 @@ import org.joda.time.DateTime;
 })
 @EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "validator", "reportId"})
 @AttributeOverride(name = "id", column = @Column(name = "filter_id"))
+@ToString(callSuper = true, exclude = {"report", "validator", "type", "reportId"})
 public abstract class Filter extends BaseEntity {
 
     public static final String REPORT_ID = "report_id";
@@ -186,6 +188,11 @@ public abstract class Filter extends BaseEntity {
         @Override
         public FilterDTO visitFaFilter(FaFilter faFilter) {
             return FaFilterMapper.INSTANCE.faFilterToFaFilterDto(faFilter);
+        }
+
+        @Override
+        public FilterDTO visitCriteriaFilter(CriteriaFilter criteriaFilter) {
+            return CriteriaFilterMapper.INSTANCE.criteriaFilterToCriteriaFilterDTO(criteriaFilter);
         }
     }
 }
