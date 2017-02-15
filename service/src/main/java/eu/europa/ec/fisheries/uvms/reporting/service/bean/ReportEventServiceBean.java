@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.message.bean.ReportingMessageServiceBean;
@@ -25,14 +27,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-/**
- * Created by padhyad on 3/21/2016.
- */
 @Stateless
 @Slf4j
 public class ReportEventServiceBean implements ReportEventService {
 
-    private static int REPORTING_MESSAGE = 1700;
+    private static final int REPORTING_MESSAGE = 1700;
 
     @Inject
     @ReportingMessageErrorEvent

@@ -3,7 +3,7 @@
     "name": "1234",
     "desc": "testDesription",
     "visibility": "private",
-    "reportType" : "all",
+    "reportType" : "standard",
     "createdOn": "2016-02-02T08:51:12",
     "executedOn": null,
     "createdBy": "rep_power",

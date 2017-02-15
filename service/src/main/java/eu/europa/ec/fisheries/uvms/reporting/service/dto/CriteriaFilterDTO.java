@@ -1,35 +1,36 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import eu.europa.ec.fisheries.uvms.reporting.model.ers.CriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
+import java.util.List;
 
-public class CriteriaFilterDTO extends FilterDTO implements Comparable<CriteriaFilterDTO> {
+public class CriteriaFilterDTO extends FilterDTO implements Comparable<CriteriaFilterDTO>{
 
     @JsonIgnore
     private Integer orderSequence;
 
-    private CriteriaType code;
+    private String code;
 
-    private String value;
+    private List<GroupCriteriaType> values;
 
     public CriteriaFilterDTO() {
         super(FilterType.criteria);
     }
 
-    public CriteriaFilterDTO(String code, String value, Integer seq, Long reportId ) {
+    public CriteriaFilterDTO(String code, List<GroupCriteriaType> values, Integer seq, Long reportId ) {
         super(FilterType.criteria);
-        this.code = CriteriaType.valueOf(code);
-        this.value = value;
+        this.code = code;
+        this.values = values;
         this.orderSequence = seq;
         this.setReportId(reportId);
     }
 
     @Override
     public Filter convertToFilter() {
-        return CriteriaFilterMapper.INSTANCE.criteriaFilterDTOToCriteriaFilter(this);
+        return GroupCriteriaFilterMapper.INSTANCE.mapCriteriaFilterDTOToCriteriaFilter(this);
     }
 
     public Integer getOrderSequence() {
@@ -40,20 +41,20 @@ public class CriteriaFilterDTO extends FilterDTO implements Comparable<CriteriaF
         this.orderSequence = orderSequence;
     }
 
-    public CriteriaType getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(CriteriaType code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public String getValue() {
-        return value;
+    public List<GroupCriteriaType> getValues() {
+        return values;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValues(List<GroupCriteriaType> values) {
+        this.values = values;
     }
 
     @Override

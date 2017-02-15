@@ -28,6 +28,6 @@ public interface FilterVisitor<T> {
 
     T visitFaFilter(FaFilter faFilter);
 
-    T visitCriteriaFilter(CriteriaFilter criteriaFilter);
+    T visitCriteriaFilter(GroupCriteriaFilter criteriaFilter);
 
 }

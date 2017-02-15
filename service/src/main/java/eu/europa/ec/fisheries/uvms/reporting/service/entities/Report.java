@@ -14,11 +14,10 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
-import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embedded;
@@ -221,9 +220,5 @@ public class Report extends BaseEntity {
 
     public void setReportType(ReportTypeEnum reportType) {
         this.reportType = reportType;
-    }
-
-    public Collection getFilters(String criteria) {
-        return CollectionUtils.typedCollection(this.filters, CriteriaFilter.class);
     }
 }

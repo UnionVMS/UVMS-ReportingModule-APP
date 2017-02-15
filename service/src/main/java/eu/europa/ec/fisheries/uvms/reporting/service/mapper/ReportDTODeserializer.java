@@ -17,12 +17,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
@@ -67,6 +67,9 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
 
+        ReportTypeEnum reportTypeEnum =
+                node.get(ReportDTO.REPORT_TYPE) != null ? ReportTypeEnum.getReportTypeEnum(node.get(ReportDTO.REPORT_TYPE).textValue()) : ReportTypeEnum.STANDARD;
+
         List<FilterDTO> filterDTOList = new ArrayList<>();
 
         JsonNode reportIdNode = node.get(ReportDTO.ID);
@@ -83,7 +86,8 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
             addArea(filterNode.get("areas"), filterDTOList, reportId);
             addCommon(filterNode.get("common"), filterDTOList, reportId);
             addFaFilters(filterNode.get("fa"), filterDTOList, reportId);
-            addGroupBy(filterNode.get("criteria"), filterDTOList, reportId);
+            //if (ReportTypeEnum.SUMMARY_ERS == )
+            addGroupCriteria(filterNode.get("criteria"), filterDTOList, reportId, jsonParser);
         }
 
         boolean withMap = node.get(ReportDTO.WITH_MAP).booleanValue();
@@ -98,10 +102,7 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
                 .mapConfiguration(createMapConfigurationDTO(withMap, node.get(ReportDTO.MAP_CONFIGURATION)))
                 .build();
-
-        ReportTypeEnum reportTypeEnum =
-                node.get(ReportDTO.REPORT_TYPE) != null ? ReportTypeEnum.getReportTypeEnum(node.get(ReportDTO.REPORT_TYPE).textValue()) : ReportTypeEnum.STANDARD;
-        build.setReportTypeEnum(reportTypeEnum);
+                build.setReportTypeEnum(reportTypeEnum);
         return build;
     }
 
@@ -185,16 +186,19 @@ public class ReportDTODeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addGroupBy(JsonNode groupBy, List<FilterDTO> filterDTOList, Long reportId) {
+    private void addGroupCriteria(JsonNode groupBy, List<FilterDTO> filterDTOList, Long reportId, JsonParser jp) {
 
         if (groupBy != null){
             List list = IteratorUtils.toList(groupBy.elements());
             for (int i = 0; i < list.size(); i++){
                 String code = ((JsonNode)list.get(i)).get("code").asText();
-                JsonNode valueNode = ((JsonNode) list.get(i)).get("value");
-                String value = null;
-                if (valueNode != null) value = valueNode.asText();
-                filterDTOList.add(new CriteriaFilterDTO(code, value, i + 1, reportId));
+                JsonNode valueNode = ((JsonNode) list.get(i)).get("values");
+                List<GroupCriteriaType> groupCriteriaList = null;
+                if(valueNode != null){
+                    List<String> strings = ((ObjectMapper) jp.getCodec()).convertValue(valueNode, List.class);
+                    groupCriteriaList = GroupCriteriaFilterMapper.INSTANCE.mapGroupCriteriaTypeListToStringList(strings);
+                }
+                filterDTOList.add(new CriteriaFilterDTO(code, groupCriteriaList, i + 1, reportId));
             }
         }
     }

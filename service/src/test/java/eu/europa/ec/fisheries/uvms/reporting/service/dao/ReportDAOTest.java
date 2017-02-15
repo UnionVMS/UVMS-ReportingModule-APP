@@ -12,17 +12,19 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.DbSetupTracker;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.generator.ValueGenerators;
 import com.ninja_squad.dbsetup.operation.Operation;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.compartaor.GroupCriteriaFilterSequenceComparator;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.ers.CriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CriteriaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
@@ -125,18 +127,18 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         ReportDetails details = ReportDetails.builder().name("name").scopeName("DG_MARE").createdBy("CEDRIC").build();
         Report report = Report.builder().details(details).build();
-        CriteriaFilter gear = new CriteriaFilter();
-        gear.setCode(CriteriaType.GEAR_TYPE);
+        GroupCriteriaFilter gear = new GroupCriteriaFilter();
+        gear.setCode(GroupCriteriaType.FAO_AREA.name());
         gear.setOrderSequence(1);
         gear.setReport(report);
 
-        CriteriaFilter period = new CriteriaFilter();
-        period.setCode(CriteriaType.PERIOD);
-        period.setOrderSequence(2);
-        period.setValue("20");
-        period.setReport(report);
+        GroupCriteriaFilter catchType = new GroupCriteriaFilter();
+        catchType.setValues(Arrays.asList(GroupCriteriaType.CATCH_TYPE));
+        catchType.setCode("CATCH");
+        catchType.setOrderSequence(2);
+        catchType.setReport(report);
 
-        report.setFilters(new HashSet<Filter>(Arrays.asList(period, gear)));
+        report.setFilters(new HashSet<Filter>(Arrays.asList(catchType, gear)));
 
         em.getTransaction().begin();
 
@@ -144,20 +146,24 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         em.flush();
 
-        Collection criteria = savedReport.getFilters("CRITERIA");
+        Collection criteria = FluentIterable.from(savedReport.getFilters())
+                .filter(GroupCriteriaFilter.class)
+                .toSortedList(new GroupCriteriaFilterSequenceComparator());
 
         assertEquals(2, criteria.size());
 
-        CriteriaFilter filter1 = (CriteriaFilter) Iterables.get(criteria, 0);
+        GroupCriteriaFilter filter1 = (GroupCriteriaFilter) Iterables.get(criteria, 0);
 
         assertNotNull(filter1.getId());
         assertNotNull(filter1.getOrderSequence());
-        assertNull(filter1.getValue());
+        assertNotNull(filter1.getCode());
+        assertNull(filter1.getValues());
 
-        CriteriaFilter filter2 = (CriteriaFilter) Iterables.get(criteria, 0);
+        GroupCriteriaFilter filter2 = (GroupCriteriaFilter) Iterables.get(criteria, 0);
         assertNotNull(filter2.getId());
+        assertNotNull(filter2.getCode());
         assertNotNull(filter2.getOrderSequence());
-        assertNull(filter2.getValue());
+        assertNull(filter2.getValues());
 
         System.out.println(savedReport);
 

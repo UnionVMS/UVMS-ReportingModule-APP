@@ -16,12 +16,23 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -191,8 +202,8 @@ public abstract class Filter extends BaseEntity {
         }
 
         @Override
-        public FilterDTO visitCriteriaFilter(CriteriaFilter criteriaFilter) {
-            return CriteriaFilterMapper.INSTANCE.criteriaFilterToCriteriaFilterDTO(criteriaFilter);
+        public FilterDTO visitCriteriaFilter(GroupCriteriaFilter criteriaFilter) {
+            return GroupCriteriaFilterMapper.INSTANCE.mapCriteriaFilterToCriteriaFilterDTO(criteriaFilter);
         }
     }
 }

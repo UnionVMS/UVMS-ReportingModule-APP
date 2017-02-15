@@ -12,14 +12,27 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.compartaor.GroupCriteriaFilterSequenceComparator;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -29,6 +42,12 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import javax.ejb.EJB;
@@ -36,7 +55,6 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
-import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -83,19 +101,42 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean withActivity) throws ReportingServiceException {
+
         try {
+
+            Set<Filter> filters = report.getFilters();
             FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
-            Boolean isAssetExist = false;
-            if (processor.hasAssetsOrAssetGroups()) {
-                isAssetExist = true;
-            }
-            String wkt = getFilterAreaWkt(processor, areaRestrictions);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
-            getVmsData(resultDTO, processor, wkt); // Call assets and movements to get VMS positions
-            if (withActivity && !report.isLastPositionSelected()) {
-                getFishingTripsAndActivities(resultDTO, processor, wkt, isAssetExist); // Call Activity to get activities and trips
+            String wkt = getFilterAreaWkt(processor, areaRestrictions);
+            boolean hasAssets = processor.hasAssetsOrAssetGroups();
+
+            List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
+            List<ListValueTypeFilter> listValueTypeFilters = extractListValueFilters(processor, resultDTO.getAssetMap(), hasAssets);
+
+            if (ReportTypeEnum.STANDARD == report.getReportType()){
+
+                fetchPositionalData(resultDTO, processor, wkt);
+
+                if (withActivity && !report.isLastPositionSelected()) {
+                    FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
+                    resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(tripResponse.getFishingTripIdLists()));
+                    resultDTO.setActivityList(tripResponse.getFishingActivityLists());
+                }
             }
+
+            else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
+
+                if (withActivity && !report.isLastPositionSelected()) {
+
+                    List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
+                    FACatchSummaryReportResponse faCatchSummaryReport =
+                        activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
+                    resultDTO.setFaCatchSummaryList(faCatchSummaryReport.getSummaryRecords());
+                }
+            }
+
             return resultDTO;
+
         } catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
             log.error(error, e);
@@ -103,16 +144,22 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
-    private void getFishingTripsAndActivities(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt, Boolean isAssetExist) throws ReportingServiceException {
-        List<SingleValueTypeFilter> singleValueTypeFilters = getSingleValueFilters(processor, wkt);
-        List<ListValueTypeFilter> listValueTypeFilters = getListValueFilters(processor, resultDTO.getAssetMap(), isAssetExist);
-        FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
-        List<FishingTripIdWithGeometry> trips = tripResponse.getFishingTripIdLists();
-        resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(trips));
-        resultDTO.setActivityList(tripResponse.getFishingActivityLists());
+    private List<GroupCriteria> extractGroupCriteriaList(Set<Filter> filters) {
+
+        ImmutableList<GroupCriteriaFilter> groupCriteriaFilters = FluentIterable.from(filters)
+                                                                  .filter(GroupCriteriaFilter.class)
+                                                                  .toSortedList(new GroupCriteriaFilterSequenceComparator());
+
+        List<GroupCriteriaType> types = new ArrayList<>();
+
+        for (GroupCriteriaFilter filter : groupCriteriaFilters){
+            types.addAll(filter.getValues());
+        }
+
+        return GroupCriteriaFilterMapper.INSTANCE.mapGroupCriteriaTypeListToGroupCriteriaList(types);
     }
 
-    private void getVmsData(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt) throws ReportingServiceException {
+    private void fetchPositionalData(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt) throws ReportingServiceException {
 
         try {
             Collection<MovementMapResponseType> movementMap;
@@ -144,7 +191,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
-    private List<SingleValueTypeFilter> getSingleValueFilters(FilterProcessor processor, String areaWkt) {
+    private List<SingleValueTypeFilter> extractSingleValueFilters(FilterProcessor processor, String areaWkt) {
         List<SingleValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getSingleValueTypeFilters()); // Add all the Fa filter criteria from the filters
 
@@ -155,13 +202,13 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return filterTypes;
     }
 
-    private List<ListValueTypeFilter> getListValueFilters(FilterProcessor processor, Map<String, Asset> assetMap, Boolean isAssetsExist) throws ReportingServiceException {
+    private List<ListValueTypeFilter> extractListValueFilters(FilterProcessor processor, Map<String, Asset> assetMap, Boolean isAssetsExist) throws ReportingServiceException {
         List<ListValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getListValueTypeFilters());
 
         if (isAssetsExist && assetMap != null) {
             Collection<Asset> assets = assetMap.values();
-            List<String> assetName = new ArrayList<String>();
+            List<String> assetName = new ArrayList<>();
             for (Asset asset : assets) {
                 assetName.add(asset.getName());
             }

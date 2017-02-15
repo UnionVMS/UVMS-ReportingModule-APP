@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
@@ -41,6 +43,8 @@ public interface AssetFilterMapper {
             @Mapping(constant = "GUID", target = "key"),
     })
     AssetListCriteriaPair assetFilterToAssetListCriteriaPair(AssetFilter assetFilter);
+
+    Set<AssetListCriteriaPair> assetFilterListToAssetListCriteriaPairList(Set<AssetFilter> assetFilter);
 
     @Mappings({
             @Mapping(source = "guid", target = "value"),

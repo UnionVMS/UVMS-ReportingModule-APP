@@ -25,6 +25,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import java.util.Arrays;
 import java.util.Date;
@@ -75,6 +76,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         filterSet.add(AssetFilter.builder().guid("1234").build());
         filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
 
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
@@ -99,6 +101,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         filterSet.add(AssetGroupFilter.builder().groupId("123").build());
         filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
@@ -121,6 +124,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         Set<Filter> filterSet = new HashSet<>();
         filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
@@ -147,6 +151,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
                 species(Arrays.asList("Species1")).faGears(Arrays.asList("gear1")).
                 faPorts(Arrays.asList("port1")).faWeight(new FaWeight(10.0, 20.0, "KG")).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);

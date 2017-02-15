@@ -10,7 +10,7 @@
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter</class>
-        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.CriteriaFilter</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter</class>
 
         <properties>
             <property name="hibernate.default_schema" value="reporting"/>

@@ -22,17 +22,12 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-/**
- * Created by padhyad on 12/6/2016.
- */
 @Mapper
 public interface FishingTripMapper {
 
     FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
 
     @Mappings({
-            @Mapping(source = "tripId", target = "tripId"),
-            @Mapping(source = "schemeId", target = "schemeId"),
             @Mapping(source = "geometry", target = "multipointWkt")
     })
     TripDTO fishingTripToTripDto(FishingTripIdWithGeometry trip);

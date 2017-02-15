@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
@@ -32,7 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 public class FilterProcessor {
@@ -79,7 +81,7 @@ public class FilterProcessor {
     }
 
     private void addAreaIdentifier(Filter filter) {
-        if (filter instanceof AreaFilter) { // TODO instanceof not really needed to be checked
+        if (filter instanceof AreaFilter) {
             areaIdentifierList.add(filter.getAreaIdentifierType());
         }
     }
@@ -154,12 +156,11 @@ public class FilterProcessor {
     }
 
     public DateTime getNow() {
-
         return now;
     }
 
     public void setNow(DateTime now) {
-
         this.now = now;
     }
+
 }
