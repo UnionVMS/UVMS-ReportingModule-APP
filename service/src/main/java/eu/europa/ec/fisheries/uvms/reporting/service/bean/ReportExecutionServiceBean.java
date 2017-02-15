@@ -29,7 +29,7 @@ import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMappe
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.compartaor.GroupCriteriaFilterSequenceComparator;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;

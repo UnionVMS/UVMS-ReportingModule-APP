@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 
 
-package eu.europa.ec.fisheries.uvms.reporting.service.entities.compartaor;
+package eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import java.util.Comparator;
