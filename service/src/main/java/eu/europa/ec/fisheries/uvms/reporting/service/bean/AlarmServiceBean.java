@@ -10,16 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.Point;
 import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.rules.AlarmMovement;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.rules.AlarmMovementList;
-import eu.europa.ec.fisheries.uvms.reporting.service.helper.AlarmHelper;
-import eu.europa.ec.fisheries.uvms.reporting.service.helper.GeoJsonBuilder;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.AlarmHelper;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.GeoJsonBuilder;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;

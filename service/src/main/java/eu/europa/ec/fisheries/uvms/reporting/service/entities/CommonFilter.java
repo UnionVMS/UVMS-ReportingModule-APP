@@ -19,7 +19,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.validation.CommonFilterIsValid;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
