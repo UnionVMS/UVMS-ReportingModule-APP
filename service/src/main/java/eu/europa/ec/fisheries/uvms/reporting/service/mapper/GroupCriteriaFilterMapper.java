@@ -43,7 +43,7 @@ public interface GroupCriteriaFilterMapper {
     public List<GroupCriteriaType> mapGroupCriteriaListToGroupCriteriaTypeList(List<GroupCriteria> value);
 
     @ValueMappings({
-            @ValueMapping(source = "AREA",target = "<NULL>")
+            //@ValueMapping(source = "AREA",target = "<NULL>")
     })
     public GroupCriteriaType mapGroupCriteriaToGroupCriteriaType(GroupCriteria value);
 

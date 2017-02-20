@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -43,7 +44,7 @@ public class ExecutionResultDTO {
     private Collection<MovementMapResponseType> movementMap;
     private List<TripDTO> trips;
     private List<FishingActivitySummary> activityList;
-    private List<FACatchSummaryRecord> faCatchSummaryList;
+    private FACatchSummaryDTO faCatchSummaryDTO;
 
     public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
 
@@ -83,6 +84,7 @@ public class ExecutionResultDTO {
             rootNode.putPOJO("tracks", tracks);
             rootNode.putPOJO("trips", trips);
             rootNode.putPOJO("activities", new FeatureToGeoJsonJacksonMapper().convert(activities));
+            rootNode.putPOJO("criteria", faCatchSummaryDTO);
 
         } catch (ParseException | IOException e) {
             throw new ReportingServiceException("ERROR WHILE CREATING GEOJSON", e);
@@ -123,11 +125,11 @@ public class ExecutionResultDTO {
         this.activityList = activityList;
     }
 
-    public List<FACatchSummaryRecord> getFaCatchSummaryList() {
-        return faCatchSummaryList;
+    public FACatchSummaryDTO getFaCatchSummaryDTO() {
+        return faCatchSummaryDTO;
     }
 
-    public void setFaCatchSummaryList(List<FACatchSummaryRecord> faCatchSummaryList) {
-        this.faCatchSummaryList = faCatchSummaryList;
+    public void setFaCatchSummaryDTO(FACatchSummaryDTO faCatchSummaryDTO) {
+        this.faCatchSummaryDTO = faCatchSummaryDTO;
     }
 }

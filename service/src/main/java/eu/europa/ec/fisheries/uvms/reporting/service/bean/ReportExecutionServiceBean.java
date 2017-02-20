@@ -15,6 +15,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FACatchMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
@@ -100,7 +102,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return resultDTO;
     }
 
-    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean withActivity) throws ReportingServiceException {
+    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed) throws ReportingServiceException {
 
         try {
 
@@ -117,7 +119,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
                 fetchPositionalData(resultDTO, processor, wkt);
 
-                if (withActivity && !report.isLastPositionSelected()) {
+                if (userActivityAllowed && !report.isLastPositionSelected()) {
                     FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
                     resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(tripResponse.getFishingTripIdLists()));
                     resultDTO.setActivityList(tripResponse.getFishingActivityLists());
@@ -126,13 +128,15 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
             else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
 
-                if (withActivity && !report.isLastPositionSelected()) {
+                //if (userActivityAllowed) {
 
                     List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
                     FACatchSummaryReportResponse faCatchSummaryReport =
                         activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
-                    resultDTO.setFaCatchSummaryList(faCatchSummaryReport.getSummaryRecords());
-                }
+
+                    FACatchSummaryDTO faCatchSummaryDTO = FACatchMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
+                    resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
+                //}
             }
 
             return resultDTO;
