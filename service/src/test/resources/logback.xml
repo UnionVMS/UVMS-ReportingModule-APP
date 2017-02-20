@@ -70,7 +70,7 @@
 
   	<logger name="org.hibernate.type" level="ALL" />
 	<logger name="org.hibernate" level="DEBUG" />  
-	<logger name="eu.europa.ec.fisheries.uvms.reporting.service.dao" level="DEBUG"/>
+	<logger name="eu.europa.ec.fisheries.uvms.reporting.dao" level="DEBUG"/>
 
     <root level="DEBUG">
         <appender-ref ref="ERROR"/>

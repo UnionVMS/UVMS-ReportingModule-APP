@@ -11,8 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.merger;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
+import eu.europa.ec.fisheries.uvms.reporting.dao.FilterDAO;
+import eu.europa.ec.fisheries.uvms.reporting.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
