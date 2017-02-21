@@ -17,7 +17,7 @@ import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsResponseTESTD
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportResponseTESTDto;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.ArquillianTest;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.RestDTOUtil;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.mare.usm.jwt.DefaultJwtTokenHandler;
 import org.jboss.arquillian.container.test.api.RunAsClient;

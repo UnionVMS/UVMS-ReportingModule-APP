@@ -10,16 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.security;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import static eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum.*;
 
 /**
  * Created by georgige on 10/1/2015.

@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.vms.VmsSegment;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

@@ -38,7 +38,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingTripMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
@@ -92,11 +92,10 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     @Override
-    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException {
+    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException {
         Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
         DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
         Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
-
         ExecutionResultDTO resultDTO = executeReport(toReport, dateTime, areaRestrictions, withActivity);
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
         return resultDTO;

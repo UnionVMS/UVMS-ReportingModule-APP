@@ -14,7 +14,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeightDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
 import org.mapstruct.Mapper;
@@ -32,9 +31,7 @@ public interface FaFilterMapper {
 
     FaFilterDTO faFilterToFaFilterDto(FaFilter faFilter);
 
-    FaWeight faWeightDtoToFaWeight(FaWeightDTO faWeightDTO);
-
-    FaWeightDTO faWeightToFaWeightDTO(FaWeight faWeight);
+    eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight faWeightToFaWeightDTO(FaWeight faWeight);
 
     @Mappings({
             @Mapping(target = "report", ignore = true),
@@ -42,12 +39,12 @@ public interface FaFilterMapper {
     })
     void merge(FaFilter filter, @MappingTarget FaFilter faFilter);
 
-    FaFilter faFilterDtoToFaFilter(eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter faFilterDTO);
+    FaFilter faFilterDtoToFaFilter(eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter faFilterDTO);
 
     @Mappings({
             @Mapping(target = "weightMin", source = "min"),
             @Mapping(target = "weightMax", source = "max"),
             @Mapping(target = "weightUnit", source = "unit")
     })
-    FaWeight faWeightDtoToFaWeight(eu.europa.ec.fisheries.uvms.reporting.model.ers.FaWeight faWeightDTO);
+    FaWeight faWeightDtoToFaWeight(eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight faWeightDTO);
 }

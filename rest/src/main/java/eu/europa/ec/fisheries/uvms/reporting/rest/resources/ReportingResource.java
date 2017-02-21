@@ -17,7 +17,7 @@ import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
 import eu.europa.ec.fisheries.uvms.reporting.rest.constants.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
@@ -25,8 +25,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.LengthType;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VelocityType;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.VelocityType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ServiceLayerUtils;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
@@ -391,7 +391,6 @@ public class ReportingResource extends UnionVMSResource {
             }
         }
 
-
         return restResponse;
     }
 
@@ -441,16 +440,13 @@ public class ReportingResource extends UnionVMSResource {
 
         try {
             Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+            String speedUnitString = additionalProperties.get(SPEED_UNIT).toString();
+            String distanceUnitString = additionalProperties.get(DISTANCE_UNIT).toString();
+            VelocityType velocityType = VelocityType.valueOf(speedUnitString.toUpperCase());
+            LengthType lengthType = LengthType.valueOf(distanceUnitString.toUpperCase());
 
-            final String speedUnitString = additionalProperties.get(SPEED_UNIT).toString();
-            final String distanceUnitString = additionalProperties.get(DISTANCE_UNIT).toString();
-            final VelocityType velocityType =
-                    VelocityType.valueOf(speedUnitString.toUpperCase());
-            final LengthType lengthType =
-                    LengthType.valueOf(distanceUnitString.toUpperCase());
-
-            final DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
-            final List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
+            DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
+            List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
             Boolean withActivity = withActivity(request);
 
             ObjectNode jsonNodes =

@@ -69,6 +69,7 @@
       }
     ]
   },
+  "criteria": null,
   "tracks": [
     {
       "name": "name",

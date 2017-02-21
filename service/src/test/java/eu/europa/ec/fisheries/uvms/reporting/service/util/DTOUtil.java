@@ -15,12 +15,12 @@ import java.util.Date;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ReportDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO.ReportDTOBuilder;
 
 public class DTOUtil {
 

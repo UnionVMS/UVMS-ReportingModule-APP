@@ -1,6 +1,6 @@
 /*
  *
- * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+ * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
  *
  * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
@@ -13,111 +13,101 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true, of = {"reportTypes", "activityTypes", "masters", "faPorts", "faGears", "species", "faWeight"})
-public class FaFilterDTO extends FilterDTO {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class FaFilter {
 
+    @JsonProperty("reportTypes")
     private List<String> reportTypes;
 
+    @JsonProperty("activityTypes")
     private List<String> activityTypes;
 
+    @JsonProperty("masters")
     private List<String> masters;
 
+    @JsonProperty("ports")
     private List<String> faPorts;
 
+    @JsonProperty("gears")
     private List<String> faGears;
 
+    @JsonProperty("species")
     private List<String> species;
 
+    @JsonProperty("weight")
     private FaWeight faWeight;
 
-    public FaFilterDTO() {
-        super(FilterType.fa);
-    }
-
-    public FaFilterDTO(Long id, Long reportId) {
-        super(FilterType.fa, id, reportId);
-    }
-
-    @Builder(builderMethodName = "FaFilterBuilder")
-    public FaFilterDTO(Long reportId, Long id, List<String> reportTypes, List<String> activityTypes,
-                       List<String> masters, List<String> ports, List<String> gears, List<String> species,
-                       FaWeight faWeight) {
-        this(id, reportId);
-        this.reportTypes = reportTypes;
-        this.activityTypes = activityTypes;
-        this.masters = masters;
-        this.faPorts = ports;
-        this.faGears = gears;
-        this.species = species;
-        this.faWeight = faWeight;
-        validate();
-    }
-
-    @Override
-    public Filter convertToFilter() {
-        return FaFilterMapper.INSTANCE.faFilterDtoToFaFilter(this);
-    }
-
+    @JsonProperty("reportTypes")
     public List<String> getReportTypes() {
         return reportTypes;
     }
 
+    @JsonProperty("reportTypes")
     public void setReportTypes(List<String> reportTypes) {
         this.reportTypes = reportTypes;
     }
 
+    @JsonProperty("activityTypes")
     public List<String> getActivityTypes() {
         return activityTypes;
     }
 
+    @JsonProperty("activityTypes")
     public void setActivityTypes(List<String> activityTypes) {
         this.activityTypes = activityTypes;
     }
 
+    @JsonProperty("masters")
     public List<String> getMasters() {
         return masters;
     }
 
+    @JsonProperty("masters")
     public void setMasters(List<String> masters) {
         this.masters = masters;
     }
 
+    @JsonProperty("ports")
     public List<String> getFaPorts() {
         return faPorts;
     }
 
+    @JsonProperty("ports")
     public void setFaPorts(List<String> faPorts) {
         this.faPorts = faPorts;
     }
 
+    @JsonProperty("gears")
     public List<String> getFaGears() {
         return faGears;
     }
 
+    @JsonProperty("gears")
     public void setFaGears(List<String> faGears) {
         this.faGears = faGears;
     }
 
+    @JsonProperty("species")
     public List<String> getSpecies() {
         return species;
     }
 
+    @JsonProperty("species")
     public void setSpecies(List<String> species) {
         this.species = species;
     }
 
+    @JsonProperty("weight")
     public FaWeight getFaWeight() {
         return faWeight;
     }
 
+    @JsonProperty("weight")
     public void setFaWeight(FaWeight faWeight) {
         this.faWeight = faWeight;
     }

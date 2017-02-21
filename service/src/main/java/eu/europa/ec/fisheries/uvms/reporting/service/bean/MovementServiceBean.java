@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMa
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
 import lombok.extern.slf4j.Slf4j;
 

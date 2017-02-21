@@ -6,6 +6,8 @@
   "reportType" : "standard",
   "createdOn" : "2015-10-11T13:02:23",
   "createdBy" : "georgi",
+  "editable" : false,
+  "deletable" : false,
   "withMap" : false,
   "filterExpression" : {
     "vms" : { },
@@ -29,6 +31,7 @@
       "areaType" : "rfmo",
       "gid" : 56546
     } ],
-    "assets" : [ ]
+    "assets" : [ ],
+    "criteria" : [ ]
   }
 }

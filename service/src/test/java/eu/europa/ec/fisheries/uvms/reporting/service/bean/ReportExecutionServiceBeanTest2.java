@@ -22,11 +22,14 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.Area;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.FilterExpression;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
@@ -128,8 +131,8 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         service.getReportExecutionByReportId(null, "test", null, null, null, false, true);
     }
 
-    private eu.europa.ec.fisheries.uvms.reporting.model.vms.Report getReportDto() {
-        eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report = new eu.europa.ec.fisheries.uvms.reporting.model.vms.Report();
+    private eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report getReportDto() {
+        eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report = new eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report();
         report.setCreatedBy("test");
         report.setCreatedOn("2016-12-07T14:57:42");
         report.setDesc("This is test report");
@@ -152,9 +155,9 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
 
         filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset(1L, "asset", "1", "EEZ", "TEST")));
 
-        eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter faFilter = new eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter();
+        eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter faFilter = new eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter();
         faFilter.setFaPorts(Arrays.asList("port1"));
-        faFilter.setFaWeight(new eu.europa.ec.fisheries.uvms.reporting.model.ers.FaWeight(10.0, 20.0, "KG"));
+        faFilter.setFaWeight(new eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight(10.0, 20.0, "KG"));
         faFilter.setFaGears(Arrays.asList("gear1"));
         faFilter.setMasters(Arrays.asList("master1"));
         faFilter.setSpecies(Arrays.asList("Species1"));

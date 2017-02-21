@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;

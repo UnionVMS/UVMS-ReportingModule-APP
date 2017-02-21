@@ -6,7 +6,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
 import java.util.List;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true, of = {"code", "values"})
 public class CriteriaFilterDTO extends FilterDTO implements Comparable<CriteriaFilterDTO>{
 
     @JsonIgnore

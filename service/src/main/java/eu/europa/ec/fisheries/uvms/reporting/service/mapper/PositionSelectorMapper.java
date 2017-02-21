@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

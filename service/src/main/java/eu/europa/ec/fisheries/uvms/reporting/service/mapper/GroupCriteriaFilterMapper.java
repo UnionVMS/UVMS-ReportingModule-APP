@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import java.util.List;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.IterableMapping;
@@ -11,7 +12,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
-import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
 import org.mapstruct.factory.Mappers;
 

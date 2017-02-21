@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
