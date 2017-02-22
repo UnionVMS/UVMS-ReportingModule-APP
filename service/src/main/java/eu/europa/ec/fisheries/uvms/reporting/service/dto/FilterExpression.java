@@ -23,21 +23,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
+@ToString
 public class FilterExpression {
 
     @JsonProperty("common")
     @Valid
     private DateTime common;
+
     @JsonProperty("vms")
     @Valid
     private Vms vms;
+
     @JsonProperty("areas")
     @Valid
     private List<Area> areas = new ArrayList<Area>();
+
     @JsonProperty("assets")
     @Valid
     private List<Asset> assets = new ArrayList<Asset>();
@@ -46,25 +50,14 @@ public class FilterExpression {
     private FaFilter faFilter;
 
     @JsonProperty("criteria")
-    CriteriaFilterDTO criteriaFilter;
+    private CriteriaFilterDTO criteriaFilter;
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
     public FilterExpression() {
     }
 
-    /**
-     * 
-     * @param assets
-     * @param common
-     * @param areas
-     * @param vms
-     */
     public FilterExpression(DateTime common, Vms vms, List<Area> areas, List<Asset> assets) {
         this.common = common;
         this.vms = vms;
@@ -72,104 +65,44 @@ public class FilterExpression {
         this.assets = assets;
     }
 
-    /**
-     * 
-     * @return
-     *     The common
-     */
     @JsonProperty("common")
     public DateTime getCommon() {
         return common;
     }
 
-    /**
-     * 
-     * @param common
-     *     The common
-     */
     @JsonProperty("common")
     public void setCommon(DateTime common) {
         this.common = common;
     }
 
-    public FilterExpression withCommon(DateTime common) {
-        this.common = common;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The vms
-     */
     @JsonProperty("vms")
     public Vms getVms() {
         return vms;
     }
 
-    /**
-     * 
-     * @param vms
-     *     The vms
-     */
     @JsonProperty("vms")
     public void setVms(Vms vms) {
         this.vms = vms;
     }
 
-    public FilterExpression withVms(Vms vms) {
-        this.vms = vms;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The areas
-     */
     @JsonProperty("areas")
     public List<Area> getAreas() {
         return areas;
     }
 
-    /**
-     * 
-     * @param areas
-     *     The areas
-     */
     @JsonProperty("areas")
     public void setAreas(List<Area> areas) {
         this.areas = areas;
     }
 
-    public FilterExpression withAreas(List<Area> areas) {
-        this.areas = areas;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The assets
-     */
     @JsonProperty("assets")
     public List<Asset> getAssets() {
         return assets;
     }
 
-    /**
-     * 
-     * @param assets
-     *     The assets
-     */
     @JsonProperty("assets")
     public void setAssets(List<Asset> assets) {
         this.assets = assets;
-    }
-
-    public FilterExpression withAssets(List<Asset> assets) {
-        this.assets = assets;
-        return this;
     }
 
     @JsonProperty("fa")
@@ -182,11 +115,6 @@ public class FilterExpression {
         this.faFilter = faFilter;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
@@ -195,11 +123,6 @@ public class FilterExpression {
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
-    }
-
-    public FilterExpression withAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-        return this;
     }
 
     public CriteriaFilterDTO getCriteriaFilter() {
