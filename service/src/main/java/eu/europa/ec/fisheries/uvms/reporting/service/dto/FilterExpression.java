@@ -22,11 +22,13 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode
 public class FilterExpression {
 
     @JsonProperty("common")
@@ -210,20 +212,4 @@ public class FilterExpression {
         this.criteriaFilter = criteriaFilter;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(common).append(vms).append(areas).append(assets).append(faFilter).append(additionalProperties).toHashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof FilterExpression) == false) {
-            return false;
-        }
-        FilterExpression rhs = ((FilterExpression) other);
-        return new EqualsBuilder().append(common, rhs.common).append(vms, rhs.vms).append(areas, rhs.areas).append(assets, rhs.assets).append(faFilter, rhs.faFilter).append(additionalProperties, rhs.additionalProperties).isEquals();
-    }
 }
