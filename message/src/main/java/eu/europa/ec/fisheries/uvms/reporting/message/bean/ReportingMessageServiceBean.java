@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.mappper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.message.util.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;

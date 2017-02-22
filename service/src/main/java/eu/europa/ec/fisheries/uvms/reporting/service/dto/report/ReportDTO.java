@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ReportDeserializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ReportSerializer;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;

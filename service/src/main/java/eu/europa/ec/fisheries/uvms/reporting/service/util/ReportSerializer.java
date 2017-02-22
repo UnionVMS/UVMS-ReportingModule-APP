@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.util;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;

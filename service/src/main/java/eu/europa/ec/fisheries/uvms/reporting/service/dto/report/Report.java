@@ -12,7 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto.report;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.MapConfiguration;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfiguration;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
 import java.util.HashMap;
 import java.util.Map;

@@ -19,7 +19,6 @@ import javax.jms.Destination;
 import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
 
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
-import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 
 /**
  * AuditMessageServiceBean responsible to send an receive messages to and from AUDIT module from Reporting
@@ -32,7 +31,9 @@ import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
 @LocalBean
 public class AuditMessageServiceBean extends AbstractMessageService {
 
-	@Resource(mappedName = QUEUE_AUDIT_EVENT)
+    public static final String MODULE_NAME = "reporting";
+
+    @Resource(mappedName = QUEUE_AUDIT_EVENT)
     private Destination request;
 
     @Resource(mappedName = QUEUE_AUDIT)

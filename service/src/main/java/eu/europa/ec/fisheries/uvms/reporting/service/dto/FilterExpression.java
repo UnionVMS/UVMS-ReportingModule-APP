@@ -12,10 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Area;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.DateTime;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Vms;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

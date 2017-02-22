@@ -58,7 +58,7 @@ import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
 
-import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless

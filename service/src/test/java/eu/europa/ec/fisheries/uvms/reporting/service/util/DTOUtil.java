@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;

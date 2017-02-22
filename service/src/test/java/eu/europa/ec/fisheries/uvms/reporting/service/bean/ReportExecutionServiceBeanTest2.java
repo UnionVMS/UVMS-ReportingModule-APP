@@ -26,9 +26,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -153,7 +153,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         FilterExpression filterExpression = new FilterExpression();
         filterExpression.setAreas(Arrays.asList(new Area(1L, "EEZ", "EEZ", 1L)));
 
-        filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset(1L, "asset", "1", "EEZ", "TEST")));
+        filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset(1L, "asset", "1", "EEZ", "TEST")));
 
         eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter faFilter = new eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter();
         faFilter.setFaPorts(Arrays.asList("port1"));
