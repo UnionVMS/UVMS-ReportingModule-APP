@@ -16,7 +16,7 @@ import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.dao.BaseReportingDAOTest;
 import eu.europa.ec.fisheries.uvms.reporting.dao.FilterDAO;

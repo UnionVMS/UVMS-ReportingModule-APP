@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;

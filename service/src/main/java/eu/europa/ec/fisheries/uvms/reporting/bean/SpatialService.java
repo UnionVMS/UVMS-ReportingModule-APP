@@ -8,20 +8,24 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.reporting.service.bean;
+
+
+package eu.europa.ec.fisheries.uvms.reporting.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
-public interface ReportExecutionService {
+public interface SpatialService {
 
-    ExecutionResultDTO getReportExecutionByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin, Boolean withActivity) throws ReportingServiceException;
+    String getFilterArea(Set<AreaIdentifierType> scopeAreas, Set<AreaIdentifierType> userAreas) throws ReportingServiceException;
 
-    ExecutionResultDTO getReportExecutionWithoutSave(Report report, List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException;
+    MapConfigurationDTO getMapConfiguration(long reportId, List<String> permittedServiceLayers) throws ReportingServiceException;
 
+    boolean saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException;
+
+    void deleteMapConfiguration(List<Long> spatialConnectIds) throws ReportingServiceException;
 }

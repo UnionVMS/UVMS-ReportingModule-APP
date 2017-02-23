@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.AreaTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.enums.AreaTypeEnum;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LayerAreaDto extends LayersDto {

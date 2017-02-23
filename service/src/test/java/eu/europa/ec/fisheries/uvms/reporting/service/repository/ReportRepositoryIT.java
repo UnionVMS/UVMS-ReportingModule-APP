@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.repository;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
+import eu.europa.ec.fisheries.uvms.reporting.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;

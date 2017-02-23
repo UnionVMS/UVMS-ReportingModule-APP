@@ -8,33 +8,17 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.reporting.service.type;
 
-/**
- * Created by padhyad on 3/2/2016.
- */
-public enum AreaTypeEnum {
 
-    sysarea("sysarea"),
-    userarea("userarea"),
-    areagroup("areagroup");
+package eu.europa.ec.fisheries.uvms.reporting.bean;
 
-    private AreaTypeEnum(String type) {
-        this.type = type;
-    }
+import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndDateEvent;
+import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 
-    private String type;
+import javax.ejb.Local;
+import javax.enterprise.event.Observes;
 
-    public String getType() {
-        return type;
-    }
-
-    public AreaTypeEnum getEnumFromValue(String value) {
-        for (AreaTypeEnum areaTypeEnum : AreaTypeEnum.values()) {
-            if (areaTypeEnum.getType().equalsIgnoreCase(value)) {
-                return areaTypeEnum;
-            }
-        }
-        return null;
-    }
+@Local
+public interface ReportEventService {
+    void getReportDates(@Observes @GetReportStartAndEndDateEvent ReportingMessageEvent event);
 }

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
+import eu.europa.ec.fisheries.uvms.reporting.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
 @IAuditInterceptor

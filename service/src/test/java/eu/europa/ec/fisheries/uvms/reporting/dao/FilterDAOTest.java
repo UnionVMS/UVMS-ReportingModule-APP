@@ -14,7 +14,7 @@ import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.DbSetupTracker;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;

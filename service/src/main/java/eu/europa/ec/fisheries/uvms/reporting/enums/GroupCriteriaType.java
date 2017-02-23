@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.type;
+package eu.europa.ec.fisheries.uvms.reporting.enums;
 
 
 public enum GroupCriteriaType {

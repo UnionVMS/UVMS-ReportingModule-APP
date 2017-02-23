@@ -10,25 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 
 
-package eu.europa.ec.fisheries.uvms.reporting.dao;
+package eu.europa.ec.fisheries.uvms.reporting.bean;
 
-import eu.europa.ec.fisheries.uvms.reporting.entities.ExecutionLog;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import lombok.extern.slf4j.Slf4j;
+public interface ReportingServiceConstants {
 
-import javax.persistence.EntityManager;
-
-@Slf4j
-public class ExecutionLogDAO extends AbstractDAO<ExecutionLog> {
-
-    private EntityManager em;
-
-    public ExecutionLogDAO(EntityManager em){
-        this.em = em;
-    }
-
-    @Override
-    public EntityManager getEntityManager() {
-        return em;
-    }
+	String REPORTING_MODULE = "REPORTING";
+	String REPORTING_UNSPECIFIED_USER = "REPORTING_UNSPECIFIED_USER";
 }

@@ -12,7 +12,7 @@
  */
 
 
-package eu.europa.ec.fisheries.uvms.reporting.service.bean;
+package eu.europa.ec.fisheries.uvms.reporting.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
@@ -22,10 +22,14 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.ActivityServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.AssetServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.MovementServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.ReportExecutionServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.entities.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.FaWeight;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.Area;

@@ -10,25 +10,30 @@ details. You should have received a copy of the GNU General Public License along
  */
 
 
-package eu.europa.ec.fisheries.uvms.reporting.dao;
+package eu.europa.ec.fisheries.uvms.reporting.enums;
 
-import eu.europa.ec.fisheries.uvms.reporting.entities.ExecutionLog;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import lombok.extern.slf4j.Slf4j;
+public enum AreaTypeEnum {
 
-import javax.persistence.EntityManager;
+    sysarea("sysarea"),
+    userarea("userarea"),
+    areagroup("areagroup");
 
-@Slf4j
-public class ExecutionLogDAO extends AbstractDAO<ExecutionLog> {
-
-    private EntityManager em;
-
-    public ExecutionLogDAO(EntityManager em){
-        this.em = em;
+    private AreaTypeEnum(String type) {
+        this.type = type;
     }
 
-    @Override
-    public EntityManager getEntityManager() {
-        return em;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public AreaTypeEnum getEnumFromValue(String value) {
+        for (AreaTypeEnum areaTypeEnum : AreaTypeEnum.values()) {
+            if (areaTypeEnum.getType().equalsIgnoreCase(value)) {
+                return areaTypeEnum;
+            }
+        }
+        return null;
     }
 }

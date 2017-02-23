@@ -13,7 +13,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.VelocityType;
+import eu.europa.ec.fisheries.uvms.reporting.enums.VelocityType;
 import lombok.Data;
 
 import java.util.HashMap;

@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,15 +20,15 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnu
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.Projection;
+import eu.europa.ec.fisheries.uvms.reporting.enums.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.ReportServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.LengthType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.VelocityType;
+import eu.europa.ec.fisheries.uvms.reporting.enums.VelocityType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ServiceLayerUtils;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;

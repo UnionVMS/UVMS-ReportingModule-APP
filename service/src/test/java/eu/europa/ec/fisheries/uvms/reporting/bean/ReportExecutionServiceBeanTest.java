@@ -10,11 +10,15 @@ details. You should have received a copy of the GNU General Public License along
  */
 
 
-package eu.europa.ec.fisheries.uvms.reporting.service.bean;
+package eu.europa.ec.fisheries.uvms.reporting.bean;
 
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.ActivityServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.AssetServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.MovementServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.bean.impl.ReportExecutionServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.entities.AssetFilter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.AssetGroupFilter;
@@ -25,7 +29,7 @@ import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Selector;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import java.util.Arrays;
 import java.util.Date;

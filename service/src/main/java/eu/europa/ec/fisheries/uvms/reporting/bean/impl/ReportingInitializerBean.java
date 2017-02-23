@@ -10,25 +10,25 @@ details. You should have received a copy of the GNU General Public License along
  */
 
 
-package eu.europa.ec.fisheries.uvms.reporting.dao;
+package eu.europa.ec.fisheries.uvms.reporting.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.reporting.entities.ExecutionLog;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import lombok.extern.slf4j.Slf4j;
+import eu.europa.ec.fisheries.uvms.init.AbstractModuleInitializerBean;
 
-import javax.persistence.EntityManager;
+import javax.ejb.Singleton;
+import java.io.InputStream;
 
-@Slf4j
-public class ExecutionLogDAO extends AbstractDAO<ExecutionLog> {
+@Singleton
+public class ReportingInitializerBean extends AbstractModuleInitializerBean {
 
-    private EntityManager em;
-
-    public ExecutionLogDAO(EntityManager em){
-        this.em = em;
+    @Override
+    protected InputStream getDeploymentDescriptorRequest() {
+        return this.getClass().getClassLoader().getResourceAsStream("usmDeploymentDescriptor.xml");
     }
 
     @Override
-    public EntityManager getEntityManager() {
-        return em;
+    protected boolean mustRedeploy() {
+        return true;
     }
+
+
 }

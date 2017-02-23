@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
+import eu.europa.ec.fisheries.uvms.reporting.enums.GroupCriteriaType;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 

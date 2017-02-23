@@ -10,25 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 
 
-package eu.europa.ec.fisheries.uvms.reporting.dao;
+package eu.europa.ec.fisheries.uvms.reporting.bean;
 
-import eu.europa.ec.fisheries.uvms.reporting.entities.ExecutionLog;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
-import lombok.extern.slf4j.Slf4j;
+import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 
-import javax.persistence.EntityManager;
+import java.util.List;
 
-@Slf4j
-public class ExecutionLogDAO extends AbstractDAO<ExecutionLog> {
+public interface RulesEventService {
 
-    private EntityManager em;
-
-    public ExecutionLogDAO(EntityManager em){
-        this.em = em;
-    }
-
-    @Override
-    public EntityManager getEntityManager() {
-        return em;
-    }
+    List<TicketAndRuleType> GetAlarmsForMovements(List<String> movementId) throws ReportingServiceException;
 }
