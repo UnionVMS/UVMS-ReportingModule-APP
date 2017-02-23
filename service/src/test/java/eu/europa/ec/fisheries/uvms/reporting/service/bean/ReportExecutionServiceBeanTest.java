@@ -8,30 +8,30 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import com.google.common.collect.ImmutableMap;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FilterProcessor;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SegmentType;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetIdType;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import javax.jms.TextMessage;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -41,18 +41,6 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
-
-import javax.jms.TextMessage;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.unitils.mock.ArgumentMatchers.any;
-import static org.unitils.mock.ArgumentMatchers.anyBoolean;
-import static org.unitils.mock.ArgumentMatchers.anyLong;
 
 public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
 
@@ -88,6 +76,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         filterSet.add(AssetFilter.builder().guid("1234").build());
         filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
 
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
@@ -112,6 +101,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         filterSet.add(AssetGroupFilter.builder().groupId("123").build());
         filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
@@ -134,6 +124,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         Set<Filter> filterSet = new HashSet<>();
         filterSet.add(CommonFilter.builder().dateRange(new DateRange(new Date(), new Date())).positionSelector(new PositionSelector(null, Selector.all, null)).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
@@ -160,6 +151,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
                 species(Arrays.asList("Species1")).faGears(Arrays.asList("gear1")).
                 faPorts(Arrays.asList("port1")).faWeight(new FaWeight(10.0, 20.0, "KG")).build());
 
+        report.returns(ReportTypeEnum.STANDARD).getReportType();
         report.returns(filterSet).getFilters();
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);

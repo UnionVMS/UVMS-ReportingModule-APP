@@ -21,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by padhyad on 7/20/2016.
- */
 @Converter(autoApply=true)
 public class ListStringConverter implements AttributeConverter<List, String> {
 

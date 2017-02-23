@@ -11,6 +11,7 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
@@ -20,17 +21,29 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.domain.DateRange;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Area;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.FilterExpression;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetIdType;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -45,7 +58,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
 
@@ -119,8 +131,8 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         service.getReportExecutionByReportId(null, "test", null, null, null, false, true);
     }
 
-    private eu.europa.ec.fisheries.uvms.reporting.model.vms.Report getReportDto() {
-        eu.europa.ec.fisheries.uvms.reporting.model.vms.Report report = new eu.europa.ec.fisheries.uvms.reporting.model.vms.Report();
+    private eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report getReportDto() {
+        eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report = new eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report();
         report.setCreatedBy("test");
         report.setCreatedOn("2016-12-07T14:57:42");
         report.setDesc("This is test report");
@@ -141,11 +153,11 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         FilterExpression filterExpression = new FilterExpression();
         filterExpression.setAreas(Arrays.asList(new Area(1L, "EEZ", "EEZ", 1L)));
 
-        filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset(1L, "asset", "1", "EEZ", "TEST")));
+        filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset(1L, "asset", "1", "EEZ", "TEST")));
 
-        eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter faFilter = new eu.europa.ec.fisheries.uvms.reporting.model.ers.FaFilter();
+        eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter faFilter = new eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter();
         faFilter.setFaPorts(Arrays.asList("port1"));
-        faFilter.setFaWeight(new eu.europa.ec.fisheries.uvms.reporting.model.ers.FaWeight(10.0, 20.0, "KG"));
+        faFilter.setFaWeight(new eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight(10.0, 20.0, "KG"));
         faFilter.setFaGears(Arrays.asList("gear1"));
         faFilter.setMasters(Arrays.asList("master1"));
         faFilter.setSpecies(Arrays.asList("Species1"));
@@ -188,7 +200,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         report.setIsDeleted(false);
         report.setFilters(getFilters());
         report.setVisibility(VisibilityEnum.PUBLIC);
-        report.setReportType(ReportTypeEnum.ALL);
+        report.setReportType(ReportTypeEnum.STANDARD);
         report.setDetails(new ReportDetails("This is Test", "Test report 1", false, "EC", "TEST"));
         return report;
     }

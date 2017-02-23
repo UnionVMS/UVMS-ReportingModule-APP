@@ -11,11 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.rest.filter;
 
 
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.rest.security.UserRoleRequestWrapper;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashSet;

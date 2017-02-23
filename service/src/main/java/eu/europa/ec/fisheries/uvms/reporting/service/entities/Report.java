@@ -8,14 +8,29 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.ReportTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,9 +39,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,7 +73,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 })
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(callSuper = false, exclude = {"executionLogs", "filters", "audit"})
-@ToString
+@ToString(callSuper = true)
 @Data
 @FilterDef(name = Report.EXECUTED_BY_USER, parameters = @ParamDef(name = "username", type = "string"))
 public class Report extends BaseEntity {
@@ -109,11 +122,12 @@ public class Report extends BaseEntity {
     private Audit audit;
 
     @Builder
-    public Report(Long id, ReportDetails details, String createdBy, Set<Filter> filters,
+    public Report(ReportDetails details, String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
         this.details = details;
         this.visibility = VisibilityEnum.PRIVATE;
         this.filters = filters;
+        this.reportType = ReportTypeEnum.STANDARD;
         this.executionLogs = executionLogs;
         this.isDeleted = false;
         this.audit = audit;
@@ -128,19 +142,13 @@ public class Report extends BaseEntity {
         ExecutionLog executionLog;
 
         if (isEmpty(executionLogs)) {
-
             executionLog = ExecutionLog.builder().report(this).executedBy(username).build();
-
             executionLogs.add(executionLog);
 
         } else {
-
             executionLog = executionLogs.iterator().next();
-
             executionLog.setExecutedOn(DateUtils.nowUTC().toDate());
-
         }
-
     }
 
     public boolean isLastPositionSelected() {

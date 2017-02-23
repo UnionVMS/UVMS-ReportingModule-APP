@@ -21,9 +21,6 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-/**
- * Created by padhyad on 11/16/2016.
- */
 @EqualsAndHashCode(callSuper = true, of = {"reportTypes", "activityTypes", "masters", "faPorts", "faGears", "species", "faWeight"})
 public class FaFilterDTO extends FilterDTO {
 
@@ -39,7 +36,7 @@ public class FaFilterDTO extends FilterDTO {
 
     private List<String> species;
 
-    private FaWeightDTO faWeight;
+    private FaWeight faWeight;
 
     public FaFilterDTO() {
         super(FilterType.fa);
@@ -50,7 +47,9 @@ public class FaFilterDTO extends FilterDTO {
     }
 
     @Builder(builderMethodName = "FaFilterBuilder")
-    public FaFilterDTO(Long reportId, Long id, List<String> reportTypes, List<String> activityTypes, List<String> masters, List<String> ports, List<String> gears, List<String> species, FaWeightDTO faWeight) {
+    public FaFilterDTO(Long reportId, Long id, List<String> reportTypes, List<String> activityTypes,
+                       List<String> masters, List<String> ports, List<String> gears, List<String> species,
+                       FaWeight faWeight) {
         this(id, reportId);
         this.reportTypes = reportTypes;
         this.activityTypes = activityTypes;
@@ -115,11 +114,11 @@ public class FaFilterDTO extends FilterDTO {
         this.species = species;
     }
 
-    public FaWeightDTO getFaWeight() {
+    public FaWeight getFaWeight() {
         return faWeight;
     }
 
-    public void setFaWeight(FaWeightDTO faWeight) {
+    public void setFaWeight(FaWeight faWeight) {
         this.faWeight = faWeight;
     }
 }

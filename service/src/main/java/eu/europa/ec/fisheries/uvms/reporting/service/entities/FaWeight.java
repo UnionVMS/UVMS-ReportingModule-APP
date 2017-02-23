@@ -25,9 +25,6 @@ import javax.persistence.Embeddable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by padhyad on 11/16/2016.
- */
 @Embeddable
 @EqualsAndHashCode
 @ToString

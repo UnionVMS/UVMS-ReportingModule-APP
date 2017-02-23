@@ -19,7 +19,7 @@
         <javaee.version>7.0</javaee.version>
         <sl4j.version>1.7.12</sl4j.version>
         <logback.version>1.1.2</logback.version>
-        <mapstruct.version>1.0.0.CR2</mapstruct.version>
+        <mapstruct.version>1.1.0.Final</mapstruct.version>
         <jackson.version>2.4.1</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
         <asset.model.version>3.0.0</asset.model.version>
@@ -32,16 +32,16 @@
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.15</uvms.commons.version>
+        <uvms.commons.version>2.0.16-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
         <usm4uvms.version>2.0.17</usm4uvms.version>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.0</rules.model.version>
-		<reporting.model.version>1.0.1</reporting.model.version>
+		<reporting.model.version>1.0.2-SNAPSHOT</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activity.model.version>0.5.10</activity.model.version>
+        <activity.model.version>0.5.11-SNAPSHOT</activity.model.version>
 
         <uvms-wildfly-weblogic-convertor>1.7.3</uvms-wildfly-weblogic-convertor>
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>

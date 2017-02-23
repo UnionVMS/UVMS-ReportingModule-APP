@@ -12,6 +12,6 @@
     "features" : [ ],
     "type" : "FeatureCollection"
   },
-
-  "trips" : null
+  "trips" : null,
+  "criteria" : null
 }

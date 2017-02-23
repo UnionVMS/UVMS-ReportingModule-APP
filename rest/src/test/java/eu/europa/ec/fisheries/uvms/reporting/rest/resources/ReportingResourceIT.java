@@ -12,12 +12,12 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.uvms.constants.AuthConstants;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportDetailsResponseTESTDto;
 import eu.europa.ec.fisheries.uvms.reporting.rest.dto.ReportResponseTESTDto;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.ArquillianTest;
 import eu.europa.ec.fisheries.uvms.reporting.rest.util.RestDTOUtil;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.mare.usm.jwt.DefaultJwtTokenHandler;
 import org.jboss.arquillian.container.test.api.RunAsClient;

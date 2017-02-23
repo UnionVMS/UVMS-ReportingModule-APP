@@ -16,12 +16,23 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -39,6 +50,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.joda.time.DateTime;
 
 @Entity
@@ -51,6 +63,7 @@ import org.joda.time.DateTime;
 })
 @EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "validator", "reportId"})
 @AttributeOverride(name = "id", column = @Column(name = "filter_id"))
+@ToString(callSuper = true, exclude = {"report", "validator", "type", "reportId"})
 public abstract class Filter extends BaseEntity {
 
     public static final String REPORT_ID = "report_id";
@@ -186,6 +199,11 @@ public abstract class Filter extends BaseEntity {
         @Override
         public FilterDTO visitFaFilter(FaFilter faFilter) {
             return FaFilterMapper.INSTANCE.faFilterToFaFilterDto(faFilter);
+        }
+
+        @Override
+        public FilterDTO visitCriteriaFilter(GroupCriteriaFilter criteriaFilter) {
+            return GroupCriteriaFilterMapper.INSTANCE.mapCriteriaFilterToCriteriaFilterDTO(criteriaFilter);
         }
     }
 }

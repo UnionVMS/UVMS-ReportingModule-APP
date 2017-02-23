@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +20,8 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
@@ -40,6 +44,7 @@ public class ExecutionResultDTO {
     private Collection<MovementMapResponseType> movementMap;
     private List<TripDTO> trips;
     private List<FishingActivitySummary> activityList;
+    private FACatchSummaryDTO faCatchSummaryDTO;
 
     public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
 
@@ -79,6 +84,7 @@ public class ExecutionResultDTO {
             rootNode.putPOJO("tracks", tracks);
             rootNode.putPOJO("trips", trips);
             rootNode.putPOJO("activities", new FeatureToGeoJsonJacksonMapper().convert(activities));
+            rootNode.putPOJO("criteria", faCatchSummaryDTO);
 
         } catch (ParseException | IOException e) {
             throw new ReportingServiceException("ERROR WHILE CREATING GEOJSON", e);
@@ -117,5 +123,13 @@ public class ExecutionResultDTO {
 
     public void setActivityList(List<FishingActivitySummary> activityList) {
         this.activityList = activityList;
+    }
+
+    public FACatchSummaryDTO getFaCatchSummaryDTO() {
+        return faCatchSummaryDTO;
+    }
+
+    public void setFaCatchSummaryDTO(FACatchSummaryDTO faCatchSummaryDTO) {
+        this.faCatchSummaryDTO = faCatchSummaryDTO;
     }
 }

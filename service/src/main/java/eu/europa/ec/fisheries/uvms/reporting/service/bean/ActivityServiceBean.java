@@ -11,12 +11,15 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMapperException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
@@ -29,12 +32,8 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.TextMessage;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by padhyad on 11/23/2016.
- */
 @Stateless
 @Local(ActivityService.class)
 @Slf4j
@@ -59,5 +58,22 @@ public class ActivityServiceBean implements ActivityService {
             throw new ReportingServiceException(e.getMessage(), e);
         }
         return null;
+    }
+
+    @Override
+    public FACatchSummaryReportResponse getFaCatchSummaryReport(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters, List<GroupCriteria> groupCriteriaList) throws ReportingServiceException {
+
+        FACatchSummaryReportResponse result = null;
+        try {
+            String request = ActivityModuleRequestMapper.mapToFaCatchSummaryReportRequestRequest(listValueTypeFilters, singleValueTypeFilters, groupCriteriaList);
+            String correlationId = activityModule.sendModuleMessage(request, reportingModule.getDestination());
+            TextMessage response = reportingModule.getMessage(correlationId, TextMessage.class);
+            if (response != null) {
+                result = ActivityModuleResponseMapper.mapToFaCatchSummaryResponseFromResponse(response, correlationId);
+            }
+        } catch (MessageException | ActivityModelMapperException e) {
+            throw new ReportingServiceException(e.getMessage(), e);
+        }
+        return result;
     }
 }

@@ -18,18 +18,19 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by padhyad on 11/16/2016.
- */
 @Entity
 @DiscriminatorValue("FAFILTER")
 @EqualsAndHashCode(callSuper = true)
