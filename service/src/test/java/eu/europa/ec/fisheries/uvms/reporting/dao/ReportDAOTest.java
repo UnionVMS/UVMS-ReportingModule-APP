@@ -22,7 +22,7 @@ import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.uvms.reporting.entities.comparator.GroupCriteriaFilterSequenceComparator;
 import eu.europa.ec.fisheries.uvms.reporting.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;

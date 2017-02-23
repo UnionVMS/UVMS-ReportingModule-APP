@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.uvms.reporting.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.domain.Range;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.VmsTrackFilterMapper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.AttributeOverride;

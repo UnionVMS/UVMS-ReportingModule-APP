@@ -13,7 +13,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.AssetFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 
 import java.util.List;

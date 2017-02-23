@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.repository;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.entities.CommonFilter;

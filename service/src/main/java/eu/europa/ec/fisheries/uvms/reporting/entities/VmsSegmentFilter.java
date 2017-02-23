@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.uvms.reporting.entities;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.VmsSegmentFilterMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

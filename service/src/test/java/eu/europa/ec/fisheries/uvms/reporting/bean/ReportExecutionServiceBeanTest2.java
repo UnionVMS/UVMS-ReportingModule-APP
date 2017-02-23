@@ -30,10 +30,10 @@ import eu.europa.ec.fisheries.uvms.reporting.entities.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.FaWeight;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.Area;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
+import eu.europa.ec.fisheries.uvms.reporting.dto.Area;
+import eu.europa.ec.fisheries.uvms.reporting.dto.FilterExpression;
 import eu.europa.ec.fisheries.uvms.reporting.entities.*;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
@@ -135,8 +135,8 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         service.getReportExecutionByReportId(null, "test", null, null, null, false, true);
     }
 
-    private eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report getReportDto() {
-        eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report = new eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report();
+    private eu.europa.ec.fisheries.uvms.reporting.dto.report.Report getReportDto() {
+        eu.europa.ec.fisheries.uvms.reporting.dto.report.Report report = new eu.europa.ec.fisheries.uvms.reporting.dto.report.Report();
         report.setCreatedBy("test");
         report.setCreatedOn("2016-12-07T14:57:42");
         report.setDesc("This is test report");
@@ -157,11 +157,11 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         FilterExpression filterExpression = new FilterExpression();
         filterExpression.setAreas(Arrays.asList(new Area(1L, "EEZ", "EEZ", 1L)));
 
-        filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset(1L, "asset", "1", "EEZ", "TEST")));
+        filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.dto.Asset(1L, "asset", "1", "EEZ", "TEST")));
 
-        eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter faFilter = new eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter();
+        eu.europa.ec.fisheries.uvms.reporting.dto.FaFilter faFilter = new eu.europa.ec.fisheries.uvms.reporting.dto.FaFilter();
         faFilter.setFaPorts(Arrays.asList("port1"));
-        faFilter.setFaWeight(new eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight(10.0, 20.0, "KG"));
+        faFilter.setFaWeight(new eu.europa.ec.fisheries.uvms.reporting.dto.FaWeight(10.0, 20.0, "KG"));
         faFilter.setFaGears(Arrays.asList("gear1"));
         faFilter.setMasters(Arrays.asList("master1"));
         faFilter.setSpecies(Arrays.asList("Species1"));

@@ -8,23 +8,23 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
+package eu.europa.ec.fisheries.uvms.reporting.mapper;
 
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.CREATED_BY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.CREATED_ON;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.DELETABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.DESC;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.EDITABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.FILTER_EXPRESSION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.ID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.IS_DEFAULT;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.MAP_CONFIGURATION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.NAME;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.SHAREABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.VISIBILITY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO.WITH_MAP;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.CREATED_BY;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.CREATED_ON;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.DELETABLE;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.DESC;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.EDITABLE;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.FILTER_EXPRESSION;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.ID;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.IS_DEFAULT;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.MAP_CONFIGURATION;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.NAME;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.SHAREABLE;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.VISIBILITY;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO.WITH_MAP;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,16 +37,16 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.joda.time.DateTime;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.AssetFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.ExecutionLogDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.PositionSelectorDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.VmsPositionFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.VmsSegmentFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.entities.FilterType;
 
 public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {

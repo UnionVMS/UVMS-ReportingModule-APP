@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.entities.converter.CharBooleanConverter;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDetailsMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.ReportDetailsMapper;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;

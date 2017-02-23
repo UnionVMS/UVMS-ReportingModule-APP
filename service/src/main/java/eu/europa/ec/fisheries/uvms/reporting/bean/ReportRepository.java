@@ -13,9 +13,9 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.bean;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
 
 import java.util.List;

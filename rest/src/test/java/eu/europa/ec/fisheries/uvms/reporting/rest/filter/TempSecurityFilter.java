@@ -12,7 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.filter;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.rest.utils.CrossOriginFilter;
 import eu.europa.ec.fisheries.uvms.rest.security.UserRoleRequestWrapper;
 
 import javax.servlet.*;

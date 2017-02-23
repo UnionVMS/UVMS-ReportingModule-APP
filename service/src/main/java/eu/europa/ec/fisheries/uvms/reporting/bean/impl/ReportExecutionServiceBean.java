@@ -37,15 +37,15 @@ import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMa
 import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.entities.comparator.GroupCriteriaFilterSequenceComparator;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
+import eu.europa.ec.fisheries.uvms.reporting.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingTripMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
+import eu.europa.ec.fisheries.uvms.reporting.util.FilterProcessor;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.FishingTripMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -63,7 +63,7 @@ import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.*;
+import static eu.europa.ec.fisheries.uvms.reporting.dto.report.Constants.*;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
@@ -102,7 +102,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     @Override
-    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException {
+    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.dto.report.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException {
         Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
         DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
         Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);

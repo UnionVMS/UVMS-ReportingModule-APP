@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.uvms.reporting.entities;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.enums.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.entities.converter.CharBooleanConverter;
 import javax.persistence.Column;

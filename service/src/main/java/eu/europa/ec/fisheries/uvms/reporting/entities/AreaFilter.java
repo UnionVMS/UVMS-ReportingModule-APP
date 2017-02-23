@@ -12,7 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.AreaFilterMapper;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;

@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.AssetGroupFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;

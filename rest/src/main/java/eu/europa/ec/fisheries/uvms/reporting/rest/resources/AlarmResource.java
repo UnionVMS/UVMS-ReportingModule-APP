@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.bean.impl.AlarmServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.rules.AlarmMovementList;
+import eu.europa.ec.fisheries.uvms.reporting.dto.rules.AlarmMovementList;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
 

@@ -14,10 +14,10 @@ package eu.europa.ec.fisheries.uvms.reporting.dao;
 
 import eu.europa.ec.fisheries.uvms.domain.Range;
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.DTOUtil;
+import eu.europa.ec.fisheries.uvms.reporting.util.DTOUtil;
 import lombok.SneakyThrows;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

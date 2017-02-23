@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.entities.converter.GroupCriteriaFilterConverter;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.enums.GroupCriteriaType;
 import java.util.List;
 import javax.persistence.Column;

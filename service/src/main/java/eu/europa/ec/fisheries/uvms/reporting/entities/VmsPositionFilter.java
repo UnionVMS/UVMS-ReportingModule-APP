@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.entities.converter.ListStringConverter;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.mapper.VmsPositionFilterMapper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
