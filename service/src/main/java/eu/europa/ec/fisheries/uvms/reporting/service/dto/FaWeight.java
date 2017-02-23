@@ -11,6 +11,7 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
@@ -18,9 +20,6 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 
-/**
- * Created by padhyad on 3/23/2016.
- */
 @Stateless
 @Local
 public class RulesProducerBean extends AbstractProducer {

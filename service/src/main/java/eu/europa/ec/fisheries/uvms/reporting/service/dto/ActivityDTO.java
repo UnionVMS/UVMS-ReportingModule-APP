@@ -11,6 +11,7 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -26,9 +27,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by padhyad on 12/6/2016.
- */
 public class ActivityDTO {
 
     public static final SimpleFeatureType ACTIVITY = build();

@@ -22,11 +22,12 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ToString
+@EqualsAndHashCode
 public class Report {
 
     private Long id;
@@ -38,12 +39,15 @@ public class Report {
     private Object executedOn;
     private String createdBy;
     private boolean withMap;
+
     @JsonProperty("mapConfiguration")
     @Valid
     private MapConfiguration mapConfiguration;
+
     @JsonProperty("filterExpression")
     @Valid
     private FilterExpression filterExpression;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -54,19 +58,6 @@ public class Report {
     public Report() {
     }
 
-    /**
-     * 
-     * @param executedOn
-     * @param createdOn
-     * @param id
-     * @param desc
-     * @param mapConfiguration
-     * @param createdBy
-     * @param visibility
-     * @param filterExpression
-     * @param name
-     * @param withMap
-     */
     public Report(Long id, String name, String desc, String visibility, String createdOn, Object executedOn, String createdBy, boolean withMap, MapConfiguration mapConfiguration, FilterExpression filterExpression) {
         this.id = id;
         this.name = name;
@@ -80,21 +71,11 @@ public class Report {
         this.filterExpression = filterExpression;
     }
 
-    /**
-     * 
-     * @return
-     *     The id
-     */
     @JsonProperty("id")
     public Long getId() {
         return id;
     }
 
-    /**
-     * 
-     * @param id
-     *     The id
-     */
     @JsonProperty("id")
     public void setId(Long id) {
         this.id = id;
@@ -105,21 +86,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The name
-     */
     @JsonProperty("name")
     public String getName() {
         return name;
     }
 
-    /**
-     * 
-     * @param name
-     *     The name
-     */
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
@@ -130,21 +101,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The desc
-     */
     @JsonProperty("desc")
     public String getDesc() {
         return desc;
     }
 
-    /**
-     * 
-     * @param desc
-     *     The desc
-     */
     @JsonProperty("desc")
     public void setDesc(String desc) {
         this.desc = desc;
@@ -155,21 +116,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The visibility
-     */
     @JsonProperty("visibility")
     public String getVisibility() {
         return visibility;
     }
 
-    /**
-     * 
-     * @param visibility
-     *     The visibility
-     */
     @JsonProperty("visibility")
     public void setVisibility(String visibility) {
         this.visibility = visibility;
@@ -180,21 +131,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The createdOn
-     */
     @JsonProperty("createdOn")
     public String getCreatedOn() {
         return createdOn;
     }
 
-    /**
-     * 
-     * @param createdOn
-     *     The createdOn
-     */
     @JsonProperty("createdOn")
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
@@ -205,21 +146,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The executedOn
-     */
     @JsonProperty("executedOn")
     public Object getExecutedOn() {
         return executedOn;
     }
 
-    /**
-     * 
-     * @param executedOn
-     *     The executedOn
-     */
     @JsonProperty("executedOn")
     public void setExecutedOn(Object executedOn) {
         this.executedOn = executedOn;
@@ -230,21 +161,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The createdBy
-     */
     @JsonProperty("createdBy")
     public String getCreatedBy() {
         return createdBy;
     }
 
-    /**
-     * 
-     * @param createdBy
-     *     The createdBy
-     */
     @JsonProperty("createdBy")
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
@@ -255,21 +176,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The withMap
-     */
     @JsonProperty("withMap")
     public boolean isWithMap() {
         return withMap;
     }
 
-    /**
-     * 
-     * @param withMap
-     *     The withMap
-     */
     @JsonProperty("withMap")
     public void setWithMap(boolean withMap) {
         this.withMap = withMap;
@@ -280,21 +191,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The mapConfiguration
-     */
     @JsonProperty("mapConfiguration")
     public MapConfiguration getMapConfiguration() {
         return mapConfiguration;
     }
 
-    /**
-     * 
-     * @param mapConfiguration
-     *     The mapConfiguration
-     */
     @JsonProperty("mapConfiguration")
     public void setMapConfiguration(MapConfiguration mapConfiguration) {
         this.mapConfiguration = mapConfiguration;
@@ -305,21 +206,11 @@ public class Report {
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The filterExpression
-     */
     @JsonProperty("filterExpression")
     public FilterExpression getFilterExpression() {
         return filterExpression;
     }
 
-    /**
-     * 
-     * @param filterExpression
-     *     The filterExpression
-     */
     @JsonProperty("filterExpression")
     public void setFilterExpression(FilterExpression filterExpression) {
         this.filterExpression = filterExpression;
@@ -328,11 +219,6 @@ public class Report {
     public Report withFilterExpression(FilterExpression filterExpression) {
         this.filterExpression = filterExpression;
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 
     @JsonAnyGetter
@@ -348,23 +234,6 @@ public class Report {
     public Report withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(id).append(name).append(desc).append(visibility).append(createdOn).append(executedOn).append(createdBy).append(withMap).append(mapConfiguration).append(filterExpression).append(additionalProperties).toHashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof Report) == false) {
-            return false;
-        }
-        Report rhs = ((Report) other);
-        return new EqualsBuilder().append(id, rhs.id).append(name, rhs.name).append(desc, rhs.desc).append(visibility, rhs.visibility).append(createdOn, rhs.createdOn).append(executedOn, rhs.executedOn).append(createdBy, rhs.createdBy).append(withMap, rhs.withMap).append(mapConfiguration, rhs.mapConfiguration).append(filterExpression, rhs.filterExpression).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

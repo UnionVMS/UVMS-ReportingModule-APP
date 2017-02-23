@@ -8,37 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+package eu.europa.ec.fisheries.uvms.reporting.service.type;
 
-
-package eu.europa.ec.fisheries.uvms.reporting.service.dto.report;
-
-public class Asset {
-
-    private String guid;
-    private String name;
-    private AssetType type;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public AssetType getType() {
-        return type;
-    }
-
-    public void setAssetType(AssetType type) {
-        this.type = type;
-    }
-
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+public enum Projection {
+    DETAILED, DEFAULT
 }

@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnu
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
-import eu.europa.ec.fisheries.uvms.reporting.rest.constants.Projection;
+import eu.europa.ec.fisheries.uvms.reporting.service.type.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportServiceBean;
