@@ -47,7 +47,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.entities.FilterType;
 
 public class ReportDTOSerializer extends JsonSerializer<ReportDTO> {
 

@@ -11,12 +11,12 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.reporting.service.entities;
+package eu.europa.ec.fisheries.uvms.reporting.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import javax.persistence.Column;
 import javax.persistence.Convert;

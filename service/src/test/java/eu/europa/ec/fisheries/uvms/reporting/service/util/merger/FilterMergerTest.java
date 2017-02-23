@@ -22,7 +22,7 @@ import eu.europa.ec.fisheries.uvms.reporting.dao.BaseReportingDAOTest;
 import eu.europa.ec.fisheries.uvms.reporting.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.entities.*;
 import lombok.SneakyThrows;
 import org.junit.After;
 import org.junit.Before;

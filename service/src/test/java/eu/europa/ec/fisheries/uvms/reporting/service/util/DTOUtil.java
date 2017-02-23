@@ -16,9 +16,9 @@ import java.util.Date;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Audit;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.entities.ReportDetails;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO.ReportDTOBuilder;
 

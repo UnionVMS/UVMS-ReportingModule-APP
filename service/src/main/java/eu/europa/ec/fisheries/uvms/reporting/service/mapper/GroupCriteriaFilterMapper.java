@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import java.util.List;

@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.entities.converter;
+package eu.europa.ec.fisheries.uvms.reporting.entities.converter;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;

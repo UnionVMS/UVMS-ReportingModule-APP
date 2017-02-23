@@ -18,7 +18,7 @@ import eu.europa.ec.fisheries.uvms.reporting.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.dao.ReportDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.merger.FilterMerger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;

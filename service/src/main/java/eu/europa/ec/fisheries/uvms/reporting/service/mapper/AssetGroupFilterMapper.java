@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.AssetGroupFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import org.mapstruct.Mapper;

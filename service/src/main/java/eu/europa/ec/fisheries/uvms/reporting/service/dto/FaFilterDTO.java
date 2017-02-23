@@ -13,8 +13,8 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

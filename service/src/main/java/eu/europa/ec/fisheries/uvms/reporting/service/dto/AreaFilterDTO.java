@@ -13,8 +13,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

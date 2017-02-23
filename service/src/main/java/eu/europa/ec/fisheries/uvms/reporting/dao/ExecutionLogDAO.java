@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.dao;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
+import eu.europa.ec.fisheries.uvms.reporting.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
 

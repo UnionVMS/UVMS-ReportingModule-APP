@@ -11,14 +11,12 @@
  *
  */
 
-package eu.europa.ec.fisheries.uvms.reporting.service.entities;
+package eu.europa.ec.fisheries.uvms.reporting.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.collections4.CollectionUtils;
-import org.joda.time.DateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

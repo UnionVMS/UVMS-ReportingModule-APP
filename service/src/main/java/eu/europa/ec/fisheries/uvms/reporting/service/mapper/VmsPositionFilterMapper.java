@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPosition;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.VmsPositionFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

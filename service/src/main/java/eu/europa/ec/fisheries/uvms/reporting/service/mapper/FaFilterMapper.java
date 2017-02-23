@@ -14,8 +14,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
+import eu.europa.ec.fisheries.uvms.reporting.entities.FaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.FaWeight;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

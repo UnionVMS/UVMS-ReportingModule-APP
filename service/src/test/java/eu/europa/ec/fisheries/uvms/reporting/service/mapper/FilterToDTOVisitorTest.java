@@ -14,9 +14,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.DurationRange;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.VmsTrackFilter;
 import org.junit.Ignore;
 import org.junit.Test;
 

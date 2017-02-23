@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
+import eu.europa.ec.fisheries.uvms.reporting.entities.ExecutionLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

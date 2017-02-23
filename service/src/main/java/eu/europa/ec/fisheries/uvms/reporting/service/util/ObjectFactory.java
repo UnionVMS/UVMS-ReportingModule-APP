@@ -18,14 +18,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Audit;
+import eu.europa.ec.fisheries.uvms.reporting.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.PositionSelector;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.VmsSegmentFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.VmsTrackFilter;
 
 public class ObjectFactory {
 

@@ -10,9 +10,9 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util.validation;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.PositionSelector;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Selector;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

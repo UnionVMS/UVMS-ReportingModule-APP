@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DateTime;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

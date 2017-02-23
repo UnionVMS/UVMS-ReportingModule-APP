@@ -1,6 +1,6 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.entities;
+package eu.europa.ec.fisheries.uvms.reporting.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.GroupCriteriaFilterConverter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.converter.GroupCriteriaFilterConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.type.GroupCriteriaType;
 import java.util.List;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.criteria;
+import static eu.europa.ec.fisheries.uvms.reporting.entities.FilterType.criteria;
 
 @Entity
 @DiscriminatorValue("GROUP_CRITERIA")

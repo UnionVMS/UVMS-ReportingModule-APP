@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entity;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.AssetGroupFilter;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import org.junit.Before;
 import org.junit.Test;

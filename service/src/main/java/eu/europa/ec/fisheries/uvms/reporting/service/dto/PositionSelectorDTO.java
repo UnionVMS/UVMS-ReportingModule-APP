@@ -12,8 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Position;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Selector;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 

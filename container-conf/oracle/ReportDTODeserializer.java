@@ -48,9 +48,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VisibilitySettingsDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Position;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Selector;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
