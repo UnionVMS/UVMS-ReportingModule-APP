@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entity;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Report;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;

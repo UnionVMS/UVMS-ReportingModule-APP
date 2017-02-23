@@ -8,10 +8,12 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.rest.filter;
 
-
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.dto.report.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.rest.utils.CrossOriginFilter;
 import eu.europa.ec.fisheries.uvms.rest.security.UserRoleRequestWrapper;
 
 import javax.servlet.*;
@@ -20,17 +22,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by georgige on 10/8/2015.
- */
-public class TempSecurityFilter extends CrossOriginFilter{
-
-
+public class TempSecurityFilter extends CrossOriginFilter {
 
         @Override
         public void init(FilterConfig filterConfig) throws ServletException {
         }
-
 
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -46,8 +42,6 @@ public class TempSecurityFilter extends CrossOriginFilter{
             ((HttpServletRequest) request).getSession().setAttribute("scopeName", "EC");
             super.doFilter(wrapper, response, chain);
         }
-
-
 
         @Override
         public void destroy() {

@@ -8,17 +8,19 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.dao;
 
 import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.entities.Filter;
 import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.DELETE_BY_ID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.LIST_BY_REPORT_ID;
+import static eu.europa.ec.fisheries.uvms.reporting.entities.Filter.DELETE_BY_ID;
+import static eu.europa.ec.fisheries.uvms.reporting.entities.Filter.LIST_BY_REPORT_ID;
 import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
 
 public class FilterDAO extends AbstractDAO<Filter> {

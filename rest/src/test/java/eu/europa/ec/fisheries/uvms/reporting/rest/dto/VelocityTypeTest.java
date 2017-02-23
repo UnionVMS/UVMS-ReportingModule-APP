@@ -14,7 +14,7 @@ import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.type.VelocityType;
+import eu.europa.ec.fisheries.uvms.reporting.enums.VelocityType;
 import org.junit.Test;
 import java.io.IOException;
 
