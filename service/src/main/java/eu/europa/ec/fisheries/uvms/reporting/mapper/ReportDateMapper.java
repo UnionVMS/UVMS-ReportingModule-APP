@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.mapper;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
@@ -21,9 +23,6 @@ import org.joda.time.DateTime;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by padhyad on 3/17/2016.
- */
 public class ReportDateMapper {
 
     private Date now;

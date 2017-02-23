@@ -11,6 +11,7 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.uvms.reporting.enums;
 
 public enum ReportTypeEnum {

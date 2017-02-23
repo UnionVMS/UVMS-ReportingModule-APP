@@ -11,6 +11,7 @@
  *
  */
 
+
 package eu.europa.ec.fisheries.uvms.reporting.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
