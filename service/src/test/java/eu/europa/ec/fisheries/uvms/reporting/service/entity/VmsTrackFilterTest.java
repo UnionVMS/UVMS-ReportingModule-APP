@@ -11,8 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.entity;
 
 import eu.europa.ec.fisheries.uvms.domain.Range;
-import eu.europa.ec.fisheries.uvms.reporting.entities.DurationRange;
-import eu.europa.ec.fisheries.uvms.reporting.entities.VmsTrackFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;

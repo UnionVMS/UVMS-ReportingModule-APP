@@ -10,14 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.rest.util;
 
-import eu.europa.ec.fisheries.uvms.reporting.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.dto.AuditDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static eu.europa.ec.fisheries.uvms.reporting.dto.report.ReportDTO.ReportDTOBuilder;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO.ReportDTOBuilder;
 
 public class RestDTOUtil {
 

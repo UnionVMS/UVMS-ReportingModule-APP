@@ -8,7 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.uvms.reporting.mapper;
+package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
 
@@ -33,24 +33,24 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.dto.AreaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.AssetFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.AssetGroupFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.LayerSettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.PositionSelectorDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.ReferenceDataPropertiesDto;
-import eu.europa.ec.fisheries.uvms.reporting.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.StyleSettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.VisibilitySettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.dto.VmsSegmentFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.entities.Position;
-import eu.europa.ec.fisheries.uvms.reporting.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.LayerSettingsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReferenceDataPropertiesDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.StyleSettingsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VisibilitySettingsDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
