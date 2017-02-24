@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.dto;
 
 import java.util.Collection;
 import java.util.Objects;
-import eu.europa.ec.fisheries.uvms.reporting.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
