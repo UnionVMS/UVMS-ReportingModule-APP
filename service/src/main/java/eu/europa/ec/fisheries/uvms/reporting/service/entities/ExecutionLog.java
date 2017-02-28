@@ -31,6 +31,12 @@ import lombok.ToString;
 @ToString(exclude = "report")
 public class ExecutionLog extends BaseEntity {
 
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="execution_log_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
+	private Long id;
+
     @Valid
     @JoinColumn(name = "report_id")
     @ManyToOne(fetch = FetchType.LAZY)

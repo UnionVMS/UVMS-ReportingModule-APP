@@ -87,6 +87,13 @@ public class Report extends BaseEntity {
     public static final String LIST_BY_CREATION_DATE = "Report.listByCreationDate";
     public static final String FIND_BY_ID = "Report.findReportByReportId";
 
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="report_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
+	private Long id;
+
+	
     @OneToMany(mappedBy = "report", cascade = ALL)
     @org.hibernate.annotations.Filter(name = EXECUTED_BY_USER, condition = "executed_by = :username")
     private Set<ExecutionLog> executionLogs = new HashSet<>();

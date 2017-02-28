@@ -70,6 +70,12 @@ public abstract class Filter extends BaseEntity {
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
     public static final String DELETE_BY_ID = "Filter.deleteById";
 
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="SEQ_GEN", sequenceName="filter_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
+	private Long id;
+	
     @Transient
     private FilterType type;
 
