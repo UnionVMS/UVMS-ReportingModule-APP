@@ -18,7 +18,7 @@ import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
 
@@ -31,37 +31,16 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
  */
 @Stateless
 @LocalBean
-public class AuditMessageServiceBean extends AbstractMessageService {
+public class AuditMessageServiceBean extends AbstractProducer {
 
     public static final String MODULE_NAME = "reporting";
 
     @Resource(mappedName = QUEUE_AUDIT_EVENT)
-    private Destination request;
+    private Destination destination;
 
-    @Resource(mappedName = QUEUE_AUDIT)
-    private Destination response;
-
-    @Resource(lookup = CONNECTION_FACTORY)
-    private ConnectionFactory connectionFactory;
-
-    @Override
-    protected ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
+    protected Destination getDestination() {
+        return destination;
     }
 
-    @Override
-    protected Destination getEventDestination() {
-        return request;
-    }
-
-    @Override
-    protected Destination getResponseDestination() {
-        return response;
-    }
-
-    @Override
-    protected String getModuleName() {
-        return MODULE_NAME;
-    }
 
 }

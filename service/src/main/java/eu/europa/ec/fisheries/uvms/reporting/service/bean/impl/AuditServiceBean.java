@@ -34,6 +34,9 @@ public class AuditServiceBean implements AuditService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class.getName());
 
+	@Resource(mappedName = MessageConstants.QUEUE_AUDIT)
+    private Destination auditResponse;
+	
 	@EJB
 	private transient AuditMessageServiceBean auditProducerBean;
 
@@ -44,7 +47,8 @@ public class AuditServiceBean implements AuditService {
 		try {
 			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
 			LOG.info("Sending JMS message to Audit : " + msgToSend);			
-			auditProducerBean.sendModuleMessage(msgToSend);
+			auditProducerBean.sendModuleMessage(msgToSend,auditResponse);
+			
 			
 		} catch (MessageException e) {
 			LOG.error("Exception in Sending Message to Audit Queue", e);
