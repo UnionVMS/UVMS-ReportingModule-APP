@@ -34,14 +34,18 @@ import static eu.europa.ec.fisheries.uvms.message.MessageConstants.CONNECTION_FA
 @Stateless
 @LocalBean
 @Slf4j
-public class ReportingMessageServiceBean  {
+public class ReportingMessageServiceBean extends AbstractProducer  {
 
 	
     @Override
     public String getModuleName() {
         return "reporting";
     }
+	
 
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_REPORTING_EVENT;
+	}			
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent message) {
