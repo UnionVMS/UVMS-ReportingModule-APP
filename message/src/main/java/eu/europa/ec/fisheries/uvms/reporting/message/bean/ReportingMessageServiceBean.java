@@ -12,7 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
@@ -27,35 +27,16 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
 import javax.jms.*;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.CONNECTION_FACTORY;
 
 @Stateless
 @LocalBean
 @Slf4j
-public class ReportingMessageServiceBean extends AbstractMessageService {
+public class ReportingMessageServiceBean  {
 
-    @Resource(mappedName = MessageConstants.QUEUE_REPORTING_EVENT)
-    private Destination request;
-
-    @Resource(lookup = CONNECTION_FACTORY)
-    private ConnectionFactory connectionFactory;
-
-    @Override
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    @Override
-    protected Destination getEventDestination() {
-        return request;
-    }
-
-    @Override
-    protected Destination getResponseDestination() {
-        return null;
-    }
-
+	
     @Override
     public String getModuleName() {
         return "reporting";

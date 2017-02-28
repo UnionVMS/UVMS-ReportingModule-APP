@@ -18,17 +18,15 @@ import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
 @Stateless
 @LocalBean
 public class MovementModuleSenderBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_MODULE_MOVEMENT)
-    private Destination destination;
 
-    @Override
-    protected Destination getDestination() {
-        return destination;
-    }
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_MODULE_MOVEMENT;
+	}	
 
 }

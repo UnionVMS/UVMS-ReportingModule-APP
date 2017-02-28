@@ -19,16 +19,14 @@ import javax.jms.Destination;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
 @Stateless
 @Local
 public class SpatialProducerBean extends AbstractProducer {
 	
-	@Resource(mappedName = MessageConstants.QUEUE_MODULE_SPATIAL)
-    private Destination destination;
-
-	@Override
-	protected Destination getDestination() {
-		return destination;
-	}
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_MODULE_SPATIAL;
+	}		
+	
 }

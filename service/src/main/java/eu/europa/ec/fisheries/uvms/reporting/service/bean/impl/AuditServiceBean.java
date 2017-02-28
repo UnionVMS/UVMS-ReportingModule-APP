@@ -34,12 +34,25 @@ public class AuditServiceBean implements AuditService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class.getName());
 
-	@Resource(mappedName = MessageConstants.QUEUE_AUDIT)
+		
     private Destination auditResponse;
 	
 	@EJB
 	private transient AuditMessageServiceBean auditProducerBean;
 
+
+	@PostConstruct
+    public void init() {
+        InitialContext ctx;
+        try {
+            ctx = new InitialContext();
+        } catch (Exception e) {
+            LOG.error("Failed to get InitialContext",e);
+            throw new RuntimeException(e);
+        }
+        auditResponse = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_AUDIT);
+    }	
+	
 	@Override
 	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
 		
