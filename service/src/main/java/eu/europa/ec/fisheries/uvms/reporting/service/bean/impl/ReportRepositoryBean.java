@@ -43,11 +43,27 @@ public class ReportRepositoryBean implements ReportRepository {
     private ExecutionLogDAO executionLogDAO;
     private FilterMerger filterMerger;
 
-    @PersistenceContext(unitName = "reportingPU")
     private EntityManager em;
 
+	
+    @PersistenceContext(unitName = "reportingPUposgres")
+    private EntityManager postgres;
+
+    @PersistenceContext(unitName = "reportingPUoracle")
+    private EntityManager oracle;	
+	
+    public void initEntityManager() {
+        String dbDialect = System.getProperty("db.dialect");
+        if ("oracle".equalsIgnoreCase(dbDialect)) {
+            em = oracle;
+        } else {
+            em = postgres;
+        }
+    }
+	
     @PostConstruct
     public void postConstruct(){
+		initEntityManager();	
         reportDAO = new ReportDAO(em);
         filterDAO = new FilterDAO(em);
         executionLogDAO = new ExecutionLogDAO(em);
