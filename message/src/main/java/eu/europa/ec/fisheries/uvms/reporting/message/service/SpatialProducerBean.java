@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -22,11 +23,10 @@ import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
 @Stateless
-@Local
-public class SpatialProducerBean extends AbstractProducer {
-	
+ @Local
+ public class SpatialProducerBean extends AbstractProducer {
+
 	public String getDestinationName(){
 		return MessageConstants.QUEUE_MODULE_SPATIAL;
-	}		
-	
+	}
 }

@@ -16,7 +16,7 @@ import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndD
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.model.mappper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.reporting.model.mappper.ReportingModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRQ;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleMethod;

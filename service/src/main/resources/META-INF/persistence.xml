@@ -10,6 +10,7 @@
             <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
             <property name="show_sql" value="false" />
             <property name="hibernate.default_schema" value="reporting"/>
+            <property name="hibernate.id.optimizer.pooled.preferred" value="NONE"/>
             <property name="format_sql" value="false" />
 			<property name="use_sql_comments" value="true" />
         </properties>
@@ -18,7 +19,7 @@
 
 	
     <persistence-unit name="reportingPUoracle" transaction-type="JTA">
-	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+<!--	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 	<jta-data-source>jdbc/uvms_reporting</jta-data-source>
 	<properties>
 		<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect" />
@@ -27,7 +28,7 @@
 		<property name="hibernate.default_schema" value="reporting"/>
 		<property name="hibernate.hbm2ddl.auto" value="none"/>
 		<property name="hibernate.show_sql" value="true"/>
-	</properties>
+	</properties>-->
 	</persistence-unit>
 	
 	</persistence>

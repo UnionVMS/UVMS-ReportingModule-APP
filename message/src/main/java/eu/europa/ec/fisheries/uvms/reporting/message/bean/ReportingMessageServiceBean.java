@@ -17,31 +17,26 @@ import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.model.mappper.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
-import javax.jms.*;
-import eu.europa.ec.fisheries.uvms.message.JMSUtils;
-
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.CONNECTION_FACTORY;
+import javax.jms.JMSException;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
 @Stateless
 @LocalBean
 @Slf4j
-public class ReportingMessageServiceBean extends AbstractProducer  {
+public class ReportingMessageServiceBean extends AbstractProducer {
 
-	
-    @Override
     public String getModuleName() {
         return "reporting";
     }
-	
 
 	public String getDestinationName(){
 		return MessageConstants.QUEUE_REPORTING_EVENT;
@@ -52,7 +47,8 @@ public class ReportingMessageServiceBean extends AbstractProducer  {
         try {
             log.info("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getMessage().getJMSMessageID(),
                     message.getMessage().getJMSReplyTo());
-            Session session = connectToQueue();
+            connectToQueue();
+            Session session = getSession();
             String data = JAXBMarshaller.marshall(message.getFault());
             TextMessage response = session.createTextMessage(data);
             response.setJMSCorrelationID(message.getMessage().getJMSMessageID());

@@ -22,6 +22,8 @@ import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
 import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+
 /**
  * AuditMessageServiceBean responsible to send an receive messages to and from AUDIT module from Reporting
  * The implementation of sending message to the queue is handled in generic implementation of AbstractProducer

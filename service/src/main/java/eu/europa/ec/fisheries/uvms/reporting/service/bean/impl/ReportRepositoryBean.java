@@ -50,7 +50,7 @@ public class ReportRepositoryBean implements ReportRepository {
     private EntityManager postgres;
 
     @PersistenceContext(unitName = "reportingPUoracle")
-    private EntityManager oracle;	
+    private EntityManager oracle;
 	
     public void initEntityManager() {
         String dbDialect = System.getProperty("db.dialect");
