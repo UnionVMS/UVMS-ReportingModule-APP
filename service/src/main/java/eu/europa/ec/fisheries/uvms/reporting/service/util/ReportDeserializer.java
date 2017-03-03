@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
@@ -89,8 +90,9 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
             addArea(filterNode.get("areas"), filterDTOList, reportId);
             addCommon(filterNode.get("common"), filterDTOList, reportId);
             addFaFilters(filterNode.get("fa"), filterDTOList, reportId);
-            //if (ReportTypeEnum.SUMMARY_ERS == )
-            addGroupCriteria(filterNode.get("criteria"), filterDTOList, reportId, jsonParser);
+            if (ReportTypeEnum.SUMMARY.equals(reportTypeEnum)){
+                addGroupCriteria(filterNode.get("criteria"), filterDTOList, reportId, jsonParser);
+            }
         }
 
         boolean withMap = node.get(ReportDTO.WITH_MAP).booleanValue();
@@ -105,7 +107,7 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 .visibility(VisibilityEnum.valueOf(node.get(ReportDTO.VISIBILITY).textValue().toUpperCase()))
                 .mapConfiguration(createMapConfigurationDTO(withMap, node.get(ReportDTO.MAP_CONFIGURATION)))
                 .build();
-                build.setReportTypeEnum(reportTypeEnum);
+        build.setReportTypeEnum(reportTypeEnum);
         return build;
     }
 
@@ -206,19 +208,11 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
         }
     }
 
-    private void addFaFilters(JsonNode fa, List<FilterDTO> filterDTOList, Long reportId) {
-        FaFilter faFilter = null;
+    private void addFaFilters(JsonNode fa, List<FilterDTO> filterDTOList, Long reportId) throws JsonProcessingException {
         if (fa != null) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                faFilter = objectMapper.treeToValue(fa, FaFilter.class);
-            } catch (JsonProcessingException e)  {
-                faFilter = null;
-            }
-        }
-        FaFilterDTO faFilterDTO;
-        if (faFilter != null) {
-            faFilterDTO = FaFilterDTO.FaFilterBuilder().
+            ObjectMapper objectMapper = new ObjectMapper();
+            FaFilter faFilter = objectMapper.treeToValue(fa, FaFilter.class);
+            FaFilterDTO faFilterDTO = FaFilterDTO.FaFilterBuilder().
                     id(fa.get(FilterDTO.ID) != null ? fa.get(FilterDTO.ID).longValue() : null)
                     .reportId(reportId)
                     .reportTypes(faFilter.getReportTypes())
@@ -231,6 +225,7 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                     .build();
             filterDTOList.add(faFilterDTO);
         }
+
     }
 
     private void addCommon(JsonNode common, List<FilterDTO> filterDTOList, Long reportId) throws InvalidParameterException {
