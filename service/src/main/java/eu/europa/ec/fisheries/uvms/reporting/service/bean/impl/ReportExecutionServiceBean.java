@@ -16,7 +16,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FACatchMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
@@ -37,6 +36,7 @@ import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMa
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
@@ -143,7 +143,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                     FACatchSummaryReportResponse faCatchSummaryReport =
                         activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
 
-                    FACatchSummaryDTO faCatchSummaryDTO = FACatchMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
+                    FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                     resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
                 }
             }
