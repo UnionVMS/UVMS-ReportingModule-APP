@@ -79,7 +79,7 @@ public class Report extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
-	@SequenceGenerator(name="report_seq", sequenceName="report_seq", allocationSize=1)
+	@SequenceGenerator(name="report_seq", sequenceName="report_seq")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="report_seq")
 	private Long id;
 
