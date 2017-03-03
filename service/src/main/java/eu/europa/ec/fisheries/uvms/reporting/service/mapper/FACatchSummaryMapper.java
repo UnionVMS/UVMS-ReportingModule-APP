@@ -58,7 +58,7 @@ public class FACatchSummaryMapper {
     public static SummaryTableDTO mapToSummaryTableDTO(SummaryTable summaryTable){
         SummaryTableDTO summaryTableDTO = new SummaryTableDTO();
 
-        Map<FishSizeClassEnum,Object> summaryFishSizeMap = new HashMap();
+        Map<FishSizeClassEnum,Object> summaryFishSizeMap = new HashMap<>();
         List<SummaryFishSize> fishSizeSummaries = summaryTable.getFishSizeSummaries();
         for(SummaryFishSize summaryFishSize:fishSizeSummaries){
             FishSizeClassEnum fishSizeClassEnum=  summaryFishSize.getFishSize();
@@ -73,7 +73,7 @@ public class FACatchSummaryMapper {
         summaryTableDTO.setSummaryFishSize(summaryFishSizeMap);
 
 
-        Map<FaCatchTypeEnum,Object> faCatchTypeEnumObjectMap = new HashMap();
+        Map<FaCatchTypeEnum,Object> faCatchTypeEnumObjectMap = new HashMap<>();
         List<SummaryFACatchtype> faCatchTypeSummaries = summaryTable.getFaCatchTypeSummaries();
         for(SummaryFACatchtype summaryFACatchtype:faCatchTypeSummaries){
             FaCatchTypeEnum faCatchTypeEnum =  summaryFACatchtype.getCatchType();
