@@ -33,20 +33,20 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class FACatchSummaryMapper {
 
-    public static FACatchSummaryDTO mapToFACatchSummaryDTO(FACatchSummaryReportResponse faCatchSummaryReportResponse){
+    public static FACatchSummaryDTO mapToFACatchSummaryDTO(FACatchSummaryReportResponse faCatchSummaryReportResponse) {
         FACatchSummaryDTO faCatchSummaryDTO = new FACatchSummaryDTO();
         List<FACatchSummaryRecordDTO> faCatchSummaryRecordDTOs = new ArrayList<>();
-        List<FACatchSummaryRecord> faCatchSummaryRecords= faCatchSummaryReportResponse.getSummaryRecords();
-        for(FACatchSummaryRecord faCatchSummaryRecord : faCatchSummaryRecords){
+        List<FACatchSummaryRecord> faCatchSummaryRecords = faCatchSummaryReportResponse.getSummaryRecords();
+        for (FACatchSummaryRecord faCatchSummaryRecord : faCatchSummaryRecords) {
             faCatchSummaryRecordDTOs.add(mapToFACatchSummaryRecordDTO(faCatchSummaryRecord));
         }
         faCatchSummaryDTO.setRecordDTOs(faCatchSummaryRecordDTOs);
         faCatchSummaryDTO.setTotal(mapToSummaryTableDTO(faCatchSummaryReportResponse.getTotal()));
 
-        return  faCatchSummaryDTO;
+        return faCatchSummaryDTO;
     }
 
-    public static FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTO(FACatchSummaryRecord faCatchSummaryRecord){
+    private static FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTO(FACatchSummaryRecord faCatchSummaryRecord) {
         FACatchSummaryRecordDTO faCatchSummaryRecordDTO = new FACatchSummaryRecordDTO();
         faCatchSummaryRecordDTO.setGroups(faCatchSummaryRecord.getGroups());
         faCatchSummaryRecordDTO.setSummaryTable(mapToSummaryTableDTO(faCatchSummaryRecord.getSummary()));
@@ -55,44 +55,44 @@ public class FACatchSummaryMapper {
 
     }
 
-    public static SummaryTableDTO mapToSummaryTableDTO(SummaryTable summaryTable){
+    private static SummaryTableDTO mapToSummaryTableDTO(SummaryTable summaryTable) {
         SummaryTableDTO summaryTableDTO = new SummaryTableDTO();
 
-        Map<FishSizeClassEnum,Object> summaryFishSizeMap = new HashMap<>();
+        Map<FishSizeClassEnum, Object> summaryFishSizeMap = new HashMap<>();
         List<SummaryFishSize> fishSizeSummaries = summaryTable.getFishSizeSummaries();
-        for(SummaryFishSize summaryFishSize:fishSizeSummaries){
-            FishSizeClassEnum fishSizeClassEnum=  summaryFishSize.getFishSize();
-            if(CollectionUtils.isNotEmpty(summaryFishSize.getSpecies())){
-                summaryFishSizeMap.put(fishSizeClassEnum,extractSpeciesMap(summaryFishSize.getSpecies()));
+        for (SummaryFishSize summaryFishSize : fishSizeSummaries) {
+            FishSizeClassEnum fishSizeClassEnum = summaryFishSize.getFishSize();
+            if (CollectionUtils.isNotEmpty(summaryFishSize.getSpecies())) {
+                summaryFishSizeMap.put(fishSizeClassEnum, extractSpeciesMap(summaryFishSize.getSpecies()));
 
-            }else if(summaryFishSize.getFishSizeCount() !=null){
-                summaryFishSizeMap.put(fishSizeClassEnum,summaryFishSize.getFishSizeCount());
+            } else if (summaryFishSize.getFishSizeCount() != null) {
+                summaryFishSizeMap.put(fishSizeClassEnum, summaryFishSize.getFishSizeCount());
             }
 
         }
         summaryTableDTO.setSummaryFishSize(summaryFishSizeMap);
 
 
-        Map<FaCatchTypeEnum,Object> faCatchTypeEnumObjectMap = new HashMap<>();
+        Map<FaCatchTypeEnum, Object> faCatchTypeEnumObjectMap = new HashMap<>();
         List<SummaryFACatchtype> faCatchTypeSummaries = summaryTable.getFaCatchTypeSummaries();
-        for(SummaryFACatchtype summaryFACatchtype:faCatchTypeSummaries){
-            FaCatchTypeEnum faCatchTypeEnum =  summaryFACatchtype.getCatchType();
-            if(CollectionUtils.isNotEmpty(summaryFACatchtype.getSpecies())){
-                faCatchTypeEnumObjectMap.put(faCatchTypeEnum,extractSpeciesMap(summaryFACatchtype.getSpecies()));
-            }else if(summaryFACatchtype.getCatchTypeCount() !=null){
-                faCatchTypeEnumObjectMap.put(faCatchTypeEnum,summaryFACatchtype.getCatchTypeCount());
+        for (SummaryFACatchtype summaryFACatchtype : faCatchTypeSummaries) {
+            FaCatchTypeEnum faCatchTypeEnum = summaryFACatchtype.getCatchType();
+            if (CollectionUtils.isNotEmpty(summaryFACatchtype.getSpecies())) {
+                faCatchTypeEnumObjectMap.put(faCatchTypeEnum, extractSpeciesMap(summaryFACatchtype.getSpecies()));
+            } else if (summaryFACatchtype.getCatchTypeCount() != null) {
+                faCatchTypeEnumObjectMap.put(faCatchTypeEnum, summaryFACatchtype.getCatchTypeCount());
             }
 
         }
         summaryTableDTO.setSummaryFaCatchType(faCatchTypeEnumObjectMap);
 
 
-        return  summaryTableDTO;
+        return summaryTableDTO;
     }
 
     private static Map<String, Double> extractSpeciesMap(List<SpeciesCount> speciesCounts) {
-        Map<String,Double> speciesMap=new HashMap<>();
-        for(SpeciesCount speciesCount : speciesCounts){
+        Map<String, Double> speciesMap = new HashMap<>();
+        for (SpeciesCount speciesCount : speciesCounts) {
             speciesMap.put(speciesCount.getSpaciesName(), speciesCount.getCount());
         }
         return speciesMap;
