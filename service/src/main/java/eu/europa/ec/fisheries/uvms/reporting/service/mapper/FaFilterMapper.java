@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
 import javax.persistence.Column;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -34,14 +35,6 @@ public interface FaFilterMapper {
     FaFilterDTO faFilterToFaFilterDto(FaFilter faFilter);
 
     @Mappings({
-            @Mapping(target = "min", source = "weightMin"),
-            @Mapping(target = "max", source = "weightMax"),
-            @Mapping(target = "unit", source = "weightUnit")
-
-    })
-    eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight faWeightToFaWeightDTO(FaWeight faWeight);
-
-    @Mappings({
             @Mapping(target = "report", ignore = true),
             @Mapping(target = "reportId", ignore = true)
     })
@@ -55,4 +48,7 @@ public interface FaFilterMapper {
             @Mapping(target = "weightUnit", source = "unit")
     })
     FaWeight faWeightDtoToFaWeight(eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight faWeightDTO);
+
+    @InheritInverseConfiguration
+    eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight faWeightToFaWeightDTO(FaWeight faWeight);
 }
