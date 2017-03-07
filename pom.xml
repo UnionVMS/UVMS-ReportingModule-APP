@@ -11,7 +11,7 @@
     <properties>
 
         <sonar.exclusions>src/main/webapp/apidocs/**/*</sonar.exclusions>
-
+        <additionalparam>-Xdoclint:none</additionalparam>
 		<release.branch.name>uvms-1.0.0</release.branch.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -449,9 +449,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.sonar-plugins.java</groupId>
-                <artifactId>sonar-java-plugin</artifactId>
-                <version>3.2</version>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.0.1</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
