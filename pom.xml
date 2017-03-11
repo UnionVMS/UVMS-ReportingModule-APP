@@ -7,11 +7,11 @@
     <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven projekt-archetype for UnionVms modules</description>
+    <url>http://www.your.site.com/</url>
 
     <properties>
 
         <sonar.exclusions>src/main/webapp/apidocs/**/*</sonar.exclusions>
-        <additionalparam>-Xdoclint:none</additionalparam>
 		<release.branch.name>uvms-1.0.0</release.branch.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -403,6 +403,17 @@
             	<scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</scm.connection>
             </properties>
         </profile>
+
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+
     </profiles>
 
     <build>
@@ -424,19 +435,28 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.9</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
+                            <configuration>
+                                <additionalparam>${javadoc.opts}</additionalparam>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
+
             </plugins>
         </pluginManagement>
-
 
         <plugins>
             <plugin>
