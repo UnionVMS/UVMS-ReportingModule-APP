@@ -103,19 +103,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>eu.europa.ec.fisheries.uvms.containerconversion</groupId>
-                <artifactId>uvms-wildfly-weblogic-convertor</artifactId>
-                <version>${uvms-wildfly-weblogic-convertor}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>convertReportingEAR</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>
