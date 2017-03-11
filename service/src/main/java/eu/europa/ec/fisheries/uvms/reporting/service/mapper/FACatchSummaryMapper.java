@@ -11,12 +11,13 @@
  *
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryRecordDTO;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.SummaryTableDTO;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
@@ -25,10 +26,9 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SpeciesCount;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryFACatchtype;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryFishSize;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SummaryTable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryRecordDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.SummaryTableDTO;
 import org.apache.commons.collections.CollectionUtils;
 
 public class FACatchSummaryMapper {
