@@ -12,10 +12,25 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.ADDITIONAL_PROPERTIES;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.TIMESTAMP;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.uvms.activity.model.dto.facatch.FACatchSummaryDTO;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
@@ -26,45 +41,32 @@ import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FACatchSummaryMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingTripMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.*;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(value = ReportExecutionService.class)
@@ -72,17 +74,24 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @Interceptors(TracingInterceptor.class)
 public class ReportExecutionServiceBean implements ReportExecutionService {
 
-    private @EJB
-    ReportRepository repository;
-    private @EJB
-    AuditService auditService;
-    private @EJB
-    AssetServiceBean assetModule;
-    private @EJB MovementServiceBean movementModule;
-    private @EJB
-    SpatialService spatialModule;
-    private @EJB
-    ActivityService activityService;
+
+    @EJB
+    private ReportRepository repository;
+
+    @EJB
+    private AuditService auditService;
+
+    @EJB
+    private AssetServiceBean assetModule;
+
+    @EJB
+    private MovementServiceBean movementModule;
+
+    @EJB
+    private SpatialService spatialModule;
+
+    @EJB
+    private ActivityService activityService;
 
     @Override
     @Transactional
@@ -124,7 +133,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
             List<ListValueTypeFilter> listValueTypeFilters = extractListValueFilters(processor, resultDTO.getAssetMap(), hasAssets);
 
-            if (ReportTypeEnum.STANDARD == report.getReportType()){
+            if (ReportTypeEnum.STANDARD == report.getReportType()) {
 
                 fetchPositionalData(resultDTO, processor, wkt);
 
@@ -133,15 +142,13 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                     resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(tripResponse.getFishingTripIdLists()));
                     resultDTO.setActivityList(tripResponse.getFishingActivityLists());
                 }
-            }
-
-            else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
+            } else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
 
                 if (userActivityAllowed) {
 
                     List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
                     FACatchSummaryReportResponse faCatchSummaryReport =
-                        activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
+                            activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
 
                     FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                     resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
@@ -160,12 +167,12 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     private List<GroupCriteria> extractGroupCriteriaList(Set<Filter> filters) {
 
         ImmutableList<GroupCriteriaFilter> groupCriteriaFilters = FluentIterable.from(filters)
-                                                                  .filter(GroupCriteriaFilter.class)
-                                                                  .toSortedList(new GroupCriteriaFilterSequenceComparator());
+                .filter(GroupCriteriaFilter.class)
+                .toSortedList(new GroupCriteriaFilterSequenceComparator());
 
         List<GroupCriteriaType> types = new ArrayList<>();
 
-        for (GroupCriteriaFilter filter : groupCriteriaFilters){
+        for (GroupCriteriaFilter filter : groupCriteriaFilters) {
             types.addAll(filter.getValues());
         }
 
@@ -236,7 +243,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
         if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
             HashSet<AreaIdentifierType> areaIdentifierTypes = null;
-            if (isNotEmpty(scopeAreaIdentifierList)){
+            if (isNotEmpty(scopeAreaIdentifierList)) {
                 areaIdentifierTypes = new HashSet<>(scopeAreaIdentifierList);
             }
             return spatialModule.getFilterArea(areaIdentifierTypes, areaIdentifierList);
