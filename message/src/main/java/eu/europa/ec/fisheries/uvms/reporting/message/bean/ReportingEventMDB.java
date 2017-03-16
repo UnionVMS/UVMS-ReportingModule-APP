@@ -16,11 +16,11 @@ import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndD
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.reporting.model.mappper.ReportingModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRQ;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleMethod;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleRequest;
+import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.ActivationConfigProperty;

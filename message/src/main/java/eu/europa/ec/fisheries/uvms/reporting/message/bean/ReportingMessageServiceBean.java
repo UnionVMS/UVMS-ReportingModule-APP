@@ -12,7 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
@@ -20,54 +20,35 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelExcep
 import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
-import javax.jms.*;
-
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.CONNECTION_FACTORY;
+import javax.jms.JMSException;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
 @Stateless
 @LocalBean
 @Slf4j
-public class ReportingMessageServiceBean extends AbstractMessageService {
+public class ReportingMessageServiceBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_REPORTING_EVENT)
-    private Destination request;
-
-    @Resource(lookup = CONNECTION_FACTORY)
-    private ConnectionFactory connectionFactory;
-
-    @Override
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    @Override
-    protected Destination getEventDestination() {
-        return request;
-    }
-
-    @Override
-    protected Destination getResponseDestination() {
-        return null;
-    }
-
-    @Override
     public String getModuleName() {
         return "reporting";
     }
 
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_REPORTING_EVENT;
+	}			
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent message) {
         try {
             log.info("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getMessage().getJMSMessageID(),
                     message.getMessage().getJMSReplyTo());
-            Session session = connectToQueue();
+            connectToQueue();
+            Session session = getSession();
             String data = JAXBMarshaller.marshall(message.getFault());
             TextMessage response = session.createTextMessage(data);
             response.setJMSCorrelationID(message.getMessage().getJMSMessageID());

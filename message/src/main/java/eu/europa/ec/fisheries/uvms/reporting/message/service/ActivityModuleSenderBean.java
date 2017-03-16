@@ -20,17 +20,15 @@ import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
 @Stateless
 @LocalBean
 public class ActivityModuleSenderBean extends AbstractProducer {
 
-    @Resource(mappedName = "java:/jms/queue/UVMSActivityEvent")
-    private Destination destination;
 
-    @Override
-    public Destination getDestination() {
-        return destination;
-    }
-
+	public String getDestinationName(){
+		return "jms/queue/UVMSActivityEvent";
+	}	
+	
 }

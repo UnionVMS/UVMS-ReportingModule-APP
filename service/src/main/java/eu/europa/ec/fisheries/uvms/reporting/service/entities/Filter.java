@@ -33,18 +33,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
@@ -70,6 +59,12 @@ public abstract class Filter extends BaseEntity {
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
     public static final String DELETE_BY_ID = "Filter.deleteById";
 
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="filter_seq", sequenceName="filter_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="filter_seq")
+	private Long id;
+	
     @Transient
     private FilterType type;
 
@@ -108,6 +103,14 @@ public abstract class Filter extends BaseEntity {
     }
 
     public abstract void merge(Filter filter);
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Report getReport() {
         return report;

@@ -26,7 +26,7 @@ import javax.interceptor.InvocationContext;
  public class ReportingExceptionInterceptor extends UnionVMSResource {
 
     @AroundInvoke
-    public Object createResponse(final InvocationContext ic) {
+    public Object createResponse(final InvocationContext ic) throws Exception {
         log.info("ExceptionInterceptor received");
         try {
             return ic.proceed();

@@ -32,10 +32,10 @@
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.19-SNAPSHOT</uvms.commons.version>
+        <uvms.commons.version>2.0.20-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
-        <usm4uvms.version>2.0.17</usm4uvms.version>
+        <usm4uvms.version>2.0.19-SNAPSHOT</usm4uvms.version>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.0</rules.model.version>
@@ -43,7 +43,7 @@
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>0.5.11-SNAPSHOT</activity.model.version>
 
-        <uvms-wildfly-weblogic-convertor>1.7.3</uvms-wildfly-weblogic-convertor>
+        <uvms-wildfly-weblogic-convertor>1.7.4-SNAPSHOT</uvms-wildfly-weblogic-convertor>
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
 
@@ -91,7 +91,7 @@
         
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>usm4uvms-wildfly</artifactId>
+                <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
 				<optional>true</optional>				
             </dependency>
@@ -109,7 +109,7 @@
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-commons-wildfly</artifactId>
+                <artifactId>uvms-commons</artifactId>
                 <version>${uvms.commons.version}</version>
 				<optional>true</optional>
             </dependency>

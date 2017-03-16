@@ -12,11 +12,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingServiceConstants;
+
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.naming.InitialContext;
 
 import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
@@ -34,9 +40,25 @@ public class AuditServiceBean implements AuditService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class.getName());
 
+		
+    private Destination auditResponse;
+	
 	@EJB
 	private transient AuditMessageServiceBean auditProducerBean;
 
+
+	@PostConstruct
+    public void init() {
+        InitialContext ctx;
+        try {
+            ctx = new InitialContext();
+        } catch (Exception e) {
+            LOG.error("Failed to get InitialContext",e);
+            throw new RuntimeException(e);
+        }
+        auditResponse = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_AUDIT);
+    }	
+	
 	@Override
 	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
 		
@@ -44,7 +66,8 @@ public class AuditServiceBean implements AuditService {
 		try {
 			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
 			LOG.info("Sending JMS message to Audit : " + msgToSend);			
-			auditProducerBean.sendModuleMessage(msgToSend);
+			auditProducerBean.sendModuleMessage(msgToSend,auditResponse);
+			
 			
 		} catch (MessageException e) {
 			LOG.error("Exception in Sending Message to Audit Queue", e);

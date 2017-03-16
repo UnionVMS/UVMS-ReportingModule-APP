@@ -19,16 +19,15 @@ import javax.jms.Destination;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+
 
 @Stateless
 @Local
 public class ReportingModuleReceiverBean extends AbstractConsumer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_REPORTING)
-    private Destination destination;
-
-    @Override
-    public Destination getDestination() {
-        return destination;
-    }
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_REPORTING;
+	}	
+	 
 }

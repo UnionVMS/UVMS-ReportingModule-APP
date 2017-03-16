@@ -18,19 +18,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import javax.persistence.*;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -87,6 +77,13 @@ public class Report extends BaseEntity {
     public static final String LIST_BY_CREATION_DATE = "Report.listByCreationDate";
     public static final String FIND_BY_ID = "Report.findReportByReportId";
 
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="report_seq", sequenceName="report_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="report_seq")
+	private Long id;
+
+	
     @OneToMany(mappedBy = "report", cascade = ALL)
     @org.hibernate.annotations.Filter(name = EXECUTED_BY_USER, condition = "executed_by = :username")
     private Set<ExecutionLog> executionLogs = new HashSet<>();
@@ -174,6 +171,14 @@ public class Report extends BaseEntity {
 
     public void mergeDetails(ReportDetails reportDetails) {
         this.details.merge(reportDetails);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @PrePersist

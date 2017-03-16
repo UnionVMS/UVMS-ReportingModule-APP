@@ -12,15 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
@@ -30,6 +22,12 @@ import lombok.ToString;
 @Table(name = "execution_log", uniqueConstraints = @UniqueConstraint(columnNames = {"report_id", "executed_by"}))
 @ToString(exclude = "report")
 public class ExecutionLog extends BaseEntity {
+
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="execution_log_seq", sequenceName="execution_log_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="execution_log_seq")
+	private Long id;
 
     @Valid
     @JoinColumn(name = "report_id")
@@ -53,6 +51,14 @@ public class ExecutionLog extends BaseEntity {
         this.report = report;
         this.executedBy = executedBy;
         this.executedOn = new Date();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Report getReport() {

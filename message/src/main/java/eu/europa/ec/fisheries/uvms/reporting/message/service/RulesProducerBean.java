@@ -19,16 +19,15 @@ import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+
 
 @Stateless
 @Local
 public class RulesProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_MODULE_RULES)
-    private Destination destination;
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_MODULE_RULES;
+	}	
 
-    @Override
-    protected Destination getDestination() {
-        return destination;
-    }
 }
