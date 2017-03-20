@@ -56,17 +56,17 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         Operation operation = sequenceOf(DELETE_ALL, INSERT_REFERENCE_DATA,
                 insertInto("reporting.report")
-                        .withGeneratedValue("ID", ValueGenerators.sequence().startingAt(1L).incrementingBy(1))
+                        .withGeneratedValue("ID", ValueGenerators.sequence().startingAt(50L).incrementingBy(1))
                         .columns(ReportDetails.CREATED_BY, ReportDetails.NAME, Audit.CREATED_ON, ReportDetails.WITH_MAP, Report.VISIBILITY, "is_deleted", ReportDetails.SCOPE_NAME, Report.REPORT_TYPE)
                         .values("testUser", "France", java.sql.Date.valueOf("2014-12-12"), '1', VisibilityEnum.PRIVATE, 'N', "testScope", ReportTypeEnum.STANDARD)
                         .values("testUser", "United States", java.sql.Date.valueOf("2014-12-13"), '1', VisibilityEnum.PRIVATE, 'N', "testScope", ReportTypeEnum.STANDARD)
                         .build(),
                 insertInto("reporting.filter")
-                        .row().column("FILTER_ID", 1L)
+                        .row().column("FILTER_ID", 50L)
                         .column("END_DATE", java.sql.Date.valueOf("2014-12-13"))
                         .column("START_DATE", java.sql.Date.valueOf("2015-12-13"))
                         .column("FILTER_TYPE", "DATETIME")
-                        .column("REPORT_ID", 1L)
+                        .column("REPORT_ID", 50L)
                         .end()
                         .build());
 
@@ -81,7 +81,7 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        assertNotNull(dao.findEntityById(Report.class, 1L));
+        assertNotNull(dao.findEntityById(Report.class, 50L));
 
     }
 
@@ -91,7 +91,7 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        assertNotNull(dao.findReportByReportId(1L, "testUser", "testScope", false));
+        assertNotNull(dao.findReportByReportId(50L, "testUser", "testScope", false));
 
     }
 
@@ -101,9 +101,9 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        dao.softDelete(1L, "testUser", "testScope", false);
+        dao.softDelete(50L, "testUser", "testScope", false);
 
-        assertNull(dao.findReportByReportId(1L, "testUser", "testScope", false));
+        assertNull(dao.findReportByReportId(50L, "testUser", "testScope", false));
 
     }
 
