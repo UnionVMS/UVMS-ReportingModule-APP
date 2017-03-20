@@ -61,7 +61,7 @@ public abstract class Filter extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
-	@SequenceGenerator(name="filter_seq", sequenceName="filter_seq")
+	@SequenceGenerator(name="filter_seq", sequenceName="filter_seq", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="filter_seq")
 	private Long id;
 	

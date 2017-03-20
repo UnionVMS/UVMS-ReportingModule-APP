@@ -25,7 +25,7 @@ public class ExecutionLog extends BaseEntity {
 
 	@Id
 	@Column(name = "id")
-	@SequenceGenerator(name="execution_log_seq", sequenceName="execution_log_seq")
+	@SequenceGenerator(name="execution_log_seq", sequenceName="execution_log_seq", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="execution_log_seq")
 	private Long id;
 
