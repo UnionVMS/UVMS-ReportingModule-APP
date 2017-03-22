@@ -108,6 +108,9 @@ public class ExecutionResultDTO {
     }
 
     public List<TripDTO> getTrips() {
+        if (trips == null) {
+            trips = new ArrayList<>();
+        }
         return trips;
     }
 

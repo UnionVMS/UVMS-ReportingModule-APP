@@ -121,7 +121,7 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
         trip = new TripDTO();
         trip.setTripId("TRIP1");
         trip.setSchemeId("SCHEME1");
-        trip.setMultipointWkt("MULTIPOINT(10 20, 30 40)");
+        trip.setGeometry("MULTIPOINT(10 20, 30 40)");
 
         activity = new FishingActivitySummary();
         activity.setGeometry("MULTIPOINT(10 20, 30 40)");
