@@ -21,22 +21,13 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
@@ -51,6 +42,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -139,7 +131,11 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
                     FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
-                    resultDTO.setTrips(FishingTripMapper.INSTANCE.fishingTripListToTripDtoList(tripResponse.getFishingTripIdLists()));
+                    for (FishingTripIdWithGeometry fishingTripIdWithGeometry : tripResponse.getFishingTripIdLists()) {
+                        TripDTO trip = FishingTripMapper.INSTANCE.fishingTripToTripDto(fishingTripIdWithGeometry);
+                        updateTripWithVmsPositionCount(trip, resultDTO.getMovementMap());
+                        resultDTO.getTrips().add(trip);
+                    }
                     resultDTO.setActivityList(tripResponse.getFishingActivityLists());
                 }
             } else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
@@ -162,6 +158,21 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             log.error(error, e);
             throw new ReportingServiceException(error, e);
         }
+    }
+
+    private void updateTripWithVmsPositionCount(TripDTO trip, Collection<MovementMapResponseType> movementMap) {
+        Integer count = 0;
+        for (MovementMapResponseType map : movementMap) {
+            for (MovementType movement : map.getMovements()) {
+                if (movement.getPositionTime() != null) {
+                    Date movementDate = movement.getPositionTime().toGregorianCalendar().getTime();
+                    if(movementDate.after(trip.getRelativeFirstFaDateTime()) && movementDate.before(trip.getRelativeLastFaDateTime())) {
+                        count ++;
+                    }
+                }
+            }
+        }
+        trip.setVmsPositionCount(count);
     }
 
     private List<GroupCriteria> extractGroupCriteriaList(Set<Filter> filters) {

@@ -28,10 +28,5 @@ public interface FishingTripMapper {
 
     FishingTripMapper INSTANCE = Mappers.getMapper(FishingTripMapper.class);
 
-    @Mappings({
-            @Mapping(source = "geometry", target = "multipointWkt")
-    })
     TripDTO fishingTripToTripDto(FishingTripIdWithGeometry trip);
-
-    List<TripDTO> fishingTripListToTripDtoList(List<FishingTripIdWithGeometry> trips);
 }
