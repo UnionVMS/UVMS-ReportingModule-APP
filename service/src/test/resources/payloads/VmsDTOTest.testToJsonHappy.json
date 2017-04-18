@@ -126,11 +126,11 @@
           "reportType": "DECLARATION",
           "purposeCode": "4",
           "vesselName": "VESSEL1",
-          "gears": "[GEAR1]",
-          "species": "[SPECIES1]",
-          "ports": "[PORT1]",
-          "areas": "[AREA1]",
-          "vesselIdentifiers": "[VESSELID1]"
+          "gears": ["GEAR1"],
+          "species": ["SPECIES1"],
+          "ports": ["PORT1"],
+          "areas": ["AREA1"],
+          "vesselIdentifiers": ["VESSELID1"]
         }
       }
     ]
