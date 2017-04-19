@@ -120,17 +120,24 @@
           ]
         },
         "properties": {
-          "activityType": "DEPARTURE",
-          "acceptedDateTime": "2012-12-12T12:12:12.000+01:00",
-          "dataSource": "FLUX",
-          "reportType": "DECLARATION",
-          "purposeCode": "4",
-          "vesselName": "VESSEL1",
-          "gears": ["GEAR1"],
-          "species": ["SPECIES1"],
-          "ports": ["PORT1"],
-          "areas": ["AREA1"],
-          "vesselIdentifiers": ["VESSELID1"]
+          "activityType" : "DEPARTURE",
+          "activityId" : "111",
+          "vesselGuid" : "abc",
+          "tripId" : "AAB777",
+          "flagState" : "countryName",
+          "isCorrection" : true,
+          "acceptedDateTime" : "2012-12-12T12:12:12.000+01:00",
+          "dataSource" : "FLUX",
+          "reportType" : "DECLARATION",
+          "purposeCode" : "4",
+          "vesselName" : "VESSEL1",
+          "gears" : [ "GEAR1" ],
+          "species" : [ "SPECIES1" ],
+          "ports" : [ "PORT1" ],
+          "areas" : [ "AREA1" ],
+          "vesselIdentifiers" : {
+            "CFR" : "CFR123"
+          }
         }
       }
     ]
