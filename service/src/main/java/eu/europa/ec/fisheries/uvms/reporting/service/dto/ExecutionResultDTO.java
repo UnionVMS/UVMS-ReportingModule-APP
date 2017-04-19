@@ -40,8 +40,7 @@ public class ExecutionResultDTO {
     private Map<String, Asset> assetMap;
     private Collection<MovementMapResponseType> movementMap;
     private List<TripDTO> trips;
-  //  private List<FishingActivitySummary> activityList;
-  private List<FishingActivitySummaryDTO> activityList;
+    private List<FishingActivitySummaryDTO> activityList;
     private FACatchSummaryDTO faCatchSummaryDTO;
 
     public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
