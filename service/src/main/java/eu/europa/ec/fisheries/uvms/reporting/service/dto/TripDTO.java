@@ -61,6 +61,8 @@ public class TripDTO {
     @JsonIgnore
     private Date relativeLastFaDateTime;
 
+
+
     public TripDTO() {
     }
 

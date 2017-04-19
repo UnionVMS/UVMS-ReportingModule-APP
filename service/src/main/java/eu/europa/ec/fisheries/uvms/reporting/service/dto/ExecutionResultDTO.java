@@ -11,12 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -25,12 +19,17 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class ExecutionResultDTO {
 
@@ -41,7 +40,7 @@ public class ExecutionResultDTO {
     private Map<String, Asset> assetMap;
     private Collection<MovementMapResponseType> movementMap;
     private List<TripDTO> trips;
-    private List<FishingActivitySummary> activityList;
+    private List<FishingActivitySummaryDTO> activityList;
     private FACatchSummaryDTO faCatchSummaryDTO;
 
     public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
@@ -68,7 +67,7 @@ public class ExecutionResultDTO {
             }
 
             if (CollectionUtils.isNotEmpty(activityList)) {
-                for (FishingActivitySummary summary : activityList) {
+                for (FishingActivitySummaryDTO summary : activityList) {
                     activities.add(new ActivityDTO(summary).toFeature());
                 }
             }
@@ -118,11 +117,11 @@ public class ExecutionResultDTO {
         this.trips = trips;
     }
 
-    public List<FishingActivitySummary> getActivityList() {
+    public List<FishingActivitySummaryDTO> getActivityList() {
         return activityList;
     }
 
-    public void setActivityList(List<FishingActivitySummary> activityList) {
+    public void setActivityList(List<FishingActivitySummaryDTO> activityList) {
         this.activityList = activityList;
     }
 

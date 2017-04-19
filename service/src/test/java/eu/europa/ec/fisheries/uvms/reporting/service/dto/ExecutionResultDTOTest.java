@@ -17,8 +17,14 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.schema.movement.v1.*;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
@@ -32,21 +38,23 @@ import org.unitils.UnitilsJUnit4;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import static junit.framework.TestCase.assertEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 public class ExecutionResultDTOTest extends UnitilsJUnit4 {
 
     private TripDTO trip;
 
-    private FishingActivitySummary activity;
+    private FishingActivitySummaryDTO activity;
 
     private MovementMapResponseType movementMapResponseType;
 
@@ -123,19 +131,26 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
         trip.setSchemeId("SCHEME1");
         trip.setGeometry("MULTIPOINT(10 20, 30 40)");
 
-        activity = new FishingActivitySummary();
+        activity = new FishingActivitySummaryDTO();
         activity.setGeometry("MULTIPOINT(10 20, 30 40)");
+        activity.setActivityId(111);
+        activity.setFlagState("countryName");
+        activity.setTripId("AAB777");
+        activity.setVesselGuid("abc");
+        activity.setCorrection(true);
         activity.setActivityType("DEPARTURE");
         activity.setReportType("DECLARATION");
         activity.setAcceptedDateTime(getDate("2012-12-12 12:12:12"));
         activity.setDataSource("FLUX");
         activity.setPurposeCode("4");
         activity.setVesselName("VESSEL1");
-        activity.setAreas(Arrays.asList("AREA1"));
-        activity.setGears(Arrays.asList("GEAR1"));
-        activity.setPorts(Arrays.asList("PORT1"));
-        activity.setSpecies(Arrays.asList("SPECIES1"));
-        activity.setVesselIdentifiers(Arrays.asList("VESSELID1"));
+        activity.setAreas(new ArrayList<>(Arrays.asList("AREA1")));
+        activity.setGears(new ArrayList<>(Arrays.asList("GEAR1")));
+        activity.setPorts(new ArrayList<>(Arrays.asList("PORT1")));
+        activity.setSpecies(new ArrayList<>(Arrays.asList("SPECIES1")));
+        Map<String,String> vesselIdMap = new HashMap<>();
+        vesselIdMap.put("CFR","CFR123");
+        activity.setVesselIdentifiers(vesselIdMap);
 
     }
 
@@ -159,9 +174,12 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
 
         //assertEquals(expectedJSONString, prettify(dto.toJson(null)));
 
-        assertJsonEquals(expectedJSONString, prettify(dto.toJson(null)));
+        String resultJson =prettify(dto.toJson(null));
+        assertJsonEquals(expectedJSONString,resultJson );
 
     }
+
+
 
     private XMLGregorianCalendar getDate(String s) throws ParseException, DatatypeConfigurationException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

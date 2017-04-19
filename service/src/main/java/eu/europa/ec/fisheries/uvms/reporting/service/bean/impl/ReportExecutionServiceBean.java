@@ -12,22 +12,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.ADDITIONAL_PROPERTIES;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.TIMESTAMP;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
-import java.util.*;
-
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
@@ -42,6 +38,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FishingActivitySummaryDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
@@ -50,6 +47,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCr
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FACatchSummaryMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingTripMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
@@ -59,6 +57,23 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.ADDITIONAL_PROPERTIES;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.TIMESTAMP;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(value = ReportExecutionService.class)
@@ -136,7 +151,11 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                         updateTripWithVmsPositionCount(trip, resultDTO.getMovementMap());
                         resultDTO.getTrips().add(trip);
                     }
-                    resultDTO.setActivityList(tripResponse.getFishingActivityLists());
+                    List<FishingActivitySummaryDTO> activitySummaryDTOs = new ArrayList<>();
+                    for(FishingActivitySummary summary: tripResponse.getFishingActivityLists()){
+                        activitySummaryDTOs.add(FishingActivityMapper.INSTANCE.activitySummaryToFishingActivitySummaryDTO(summary));
+                    }
+                    resultDTO.setActivityList(activitySummaryDTOs);
                 }
             } else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
 
