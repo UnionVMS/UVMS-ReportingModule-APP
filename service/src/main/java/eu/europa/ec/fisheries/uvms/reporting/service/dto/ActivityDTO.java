@@ -16,7 +16,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.io.ParseException;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -25,17 +24,23 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.util.List;
+import java.util.Map;
 
 public class ActivityDTO {
 
     public static final SimpleFeatureType ACTIVITY = build();
     private static final String GEOMETRY = "geometry";
     private static final String ACTIVITY_TYPE = "activityType";
+    private static final String ACTIVITY_ID = "activityId";
     private static final String ACCEPTED_DATE_TIME = "acceptedDateTime";
     private static final String DATA_SOURCE = "dataSource";
     private static final String REPORT_TYPE = "reportType";
     private static final String PURPOSE_CODE = "purposeCode";
     private static final String VESSEL_NAME = "vesselName";
+    private static final String VESSEL_GUID = "vesselGuid";
+    private static final String TRIPID = "tripId";
+    private static final String FLAG_STATE = "flagState";
+    private static final String IS_CORRECTION = "isCorrection";
     private static final String GEARS = "gears";
     private static final String SPECIES = "species";
     private static final String PORTS = "ports";
@@ -43,9 +48,9 @@ public class ActivityDTO {
     private static final String VESSEL_IDENTIFIERS = "vesselIdentifiers";
     private static final String ACTIVITIES = "activities";
 
-    private FishingActivitySummary summary;
+    private FishingActivitySummaryDTO summary;
 
-    public ActivityDTO(FishingActivitySummary summary) {
+    public ActivityDTO(FishingActivitySummaryDTO summary) {
         this.summary = summary;
     }
 
@@ -55,6 +60,11 @@ public class ActivityDTO {
         sb.setName(ACTIVITIES);
         sb.add(GEOMETRY, MultiPoint.class);
         sb.add(ACTIVITY_TYPE, String.class);
+        sb.add(ACTIVITY_ID, Integer.class);
+        sb.add(VESSEL_GUID, String.class);
+        sb.add(TRIPID, String.class);
+        sb.add(FLAG_STATE, String.class);
+        sb.add(IS_CORRECTION, Boolean.class);
         sb.add(ACCEPTED_DATE_TIME, String.class);
         sb.add(DATA_SOURCE, String.class);
         sb.add(REPORT_TYPE, String.class);
@@ -64,7 +74,7 @@ public class ActivityDTO {
         sb.add(SPECIES, List.class);
         sb.add(PORTS, List.class);
         sb.add(AREAS, List.class);
-        sb.add(VESSEL_IDENTIFIERS, List.class);
+        sb.add(VESSEL_IDENTIFIERS, Map.class);
         return sb.buildFeatureType();
     }
 
@@ -72,6 +82,11 @@ public class ActivityDTO {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(ACTIVITY);
         featureBuilder.set(GEOMETRY, GeometryUtil.toGeometry(summary.getGeometry()));
         featureBuilder.set(ACTIVITY_TYPE, summary.getActivityType());
+        featureBuilder.set(ACTIVITY_ID, summary.getActivityId());
+        featureBuilder.set(VESSEL_GUID, summary.getVesselGuid());
+        featureBuilder.set(TRIPID, summary.getTripId());
+        featureBuilder.set(FLAG_STATE, summary.getFlagState());
+        featureBuilder.set(IS_CORRECTION, summary.isCorrection());
         featureBuilder.set(ACCEPTED_DATE_TIME, summary.getAcceptedDateTime());
         featureBuilder.set(DATA_SOURCE, summary.getDataSource());
         featureBuilder.set(REPORT_TYPE, summary.getReportType());
