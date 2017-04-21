@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -64,8 +65,6 @@ public class TripDTO {
     @JsonIgnore
     private Date relativeLastFaDateTime;
 
-
-
     public TripDTO() {
     }
 
@@ -75,7 +74,7 @@ public class TripDTO {
         this.geometry = geometry;
     }
 
-    @JsonProperty("vesselIds")
+    @JsonAnyGetter
     public Map<String, String> generateVesselIdMap() {
         Map<String, String> vesselIds = new HashMap<>();
         if (vesselIdLists != null && !vesselIdLists.isEmpty()) {

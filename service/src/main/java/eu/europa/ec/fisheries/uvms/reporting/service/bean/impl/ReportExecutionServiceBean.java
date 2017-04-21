@@ -181,12 +181,15 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
     private void updateTripWithVmsPositionCount(TripDTO trip, Collection<MovementMapResponseType> movementMap) {
         Integer count = 0;
-        for (MovementMapResponseType map : movementMap) {
-            for (MovementType movement : map.getMovements()) {
-                if (movement.getPositionTime() != null) {
-                    Date movementDate = movement.getPositionTime().toGregorianCalendar().getTime();
-                    if(movementDate.after(trip.getRelativeFirstFaDateTime()) && movementDate.before(trip.getRelativeLastFaDateTime())) {
-                        count ++;
+
+        if (trip != null && (trip.getRelativeFirstFaDateTime() != null && trip.getRelativeLastFaDateTime() != null)) {
+            for (MovementMapResponseType map : movementMap) {
+                for (MovementType movement : map.getMovements()) {
+                    if (movement.getPositionTime() != null) {
+                        Date movementDate = movement.getPositionTime().toGregorianCalendar().getTime();
+                        if (movementDate.after(trip.getRelativeFirstFaDateTime()) && movementDate.before(trip.getRelativeLastFaDateTime())) {
+                            count++;
+                        }
                     }
                 }
             }

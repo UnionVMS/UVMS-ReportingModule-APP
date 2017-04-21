@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierScheme
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -107,7 +108,9 @@ public class ActivityDTO {
         List<VesselIdentifierType> vesselIdentifiers = summary.getVesselIdentifiers();
         if (!CollectionUtils.isEmpty(vesselIdentifiers)) {
             for (VesselIdentifierType vesselIdentifierType : vesselIdentifiers) {
-                featureBuilder.set(vesselIdentifierType.getKey().toString(), vesselIdentifierType.getValue());
+                if (!StringUtils.isEmpty(vesselIdentifierType.getValue())) {
+                    featureBuilder.set(vesselIdentifierType.getKey().toString(), vesselIdentifierType.getValue());
+                }
             }
         }
         return featureBuilder.buildFeature(null);
