@@ -12,13 +12,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 
 public class AuthorizationCheckUtil {
 
@@ -56,7 +56,8 @@ public class AuthorizationCheckUtil {
     public static ReportFeatureEnum getRequiredFeatureToEditReport(ReportDTO report, String username) {
         ReportFeatureEnum requiredFeature = null;
 
-        if (!report.getCreatedBy().equals(username)) {
+
+        if (report != null && !report.getCreatedBy().equals(username)) {
            requiredFeature = ReportFeatureEnum.MANAGE_ALL_REPORTS;
         }
 

@@ -14,21 +14,23 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.io.ParseException;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.util.List;
-import java.util.Map;
-
 public class ActivityDTO {
 
-    public static final SimpleFeatureType ACTIVITY = build();
     private static final String GEOMETRY = "geometry";
     private static final String ACTIVITY_TYPE = "activityType";
     private static final String ACTIVITY_ID = "activityId";
@@ -45,9 +47,8 @@ public class ActivityDTO {
     private static final String SPECIES = "species";
     private static final String PORTS = "ports";
     private static final String AREAS = "areas";
-    private static final String VESSEL_IDENTIFIERS = "vesselIdentifiers";
     private static final String ACTIVITIES = "activities";
-
+    public static final SimpleFeatureType ACTIVITY = build();
     private FishingActivitySummaryDTO summary;
 
     public ActivityDTO(FishingActivitySummaryDTO summary) {
@@ -74,7 +75,14 @@ public class ActivityDTO {
         sb.add(SPECIES, List.class);
         sb.add(PORTS, List.class);
         sb.add(AREAS, List.class);
-        sb.add(VESSEL_IDENTIFIERS, Map.class);
+
+        sb.add(VesselIdentifierSchemeIdEnum.ICCAT.value(), String.class);
+        sb.add(VesselIdentifierSchemeIdEnum.GFCM.value(), String.class);
+        sb.add(VesselIdentifierSchemeIdEnum.EXT_MARK.value(), String.class);
+        sb.add(VesselIdentifierSchemeIdEnum.IRCS.value(), String.class);
+        sb.add(VesselIdentifierSchemeIdEnum.CFR.value(), String.class);
+        sb.add(VesselIdentifierSchemeIdEnum.UVI.value(), String.class);
+
         return sb.buildFeatureType();
     }
 
@@ -96,7 +104,15 @@ public class ActivityDTO {
         featureBuilder.set(SPECIES, summary.getSpecies());
         featureBuilder.set(PORTS, summary.getPorts());
         featureBuilder.set(AREAS, summary.getAreas());
-        featureBuilder.set(VESSEL_IDENTIFIERS, summary.getVesselIdentifiers());
+
+        List<VesselIdentifierType> vesselIdentifiers = summary.getVesselIdentifiers();
+        if (!CollectionUtils.isEmpty(vesselIdentifiers)) {
+            for (VesselIdentifierType vesselIdentifierType : vesselIdentifiers) {
+                if (!StringUtils.isEmpty(vesselIdentifierType.getValue())) {
+                    featureBuilder.set(vesselIdentifierType.getKey().toString(), vesselIdentifierType.getValue());
+                }
+            }
+        }
         return featureBuilder.buildFeature(null);
     }
 }

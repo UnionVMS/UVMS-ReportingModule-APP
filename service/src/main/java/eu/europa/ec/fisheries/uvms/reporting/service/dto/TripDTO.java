@@ -13,13 +13,17 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.*;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 
 /**
  * Created by padhyad on 12/6/2016.
@@ -50,7 +54,7 @@ public class TripDTO {
 
     private String flagState;
 
-    private Integer vmsPositionCount;
+    private Integer vmsPositionCount = 0;
 
     @JsonIgnore
     private List<VesselIdentifierType> vesselIdLists;
@@ -61,8 +65,6 @@ public class TripDTO {
     @JsonIgnore
     private Date relativeLastFaDateTime;
 
-
-
     public TripDTO() {
     }
 
@@ -72,7 +74,7 @@ public class TripDTO {
         this.geometry = geometry;
     }
 
-    @JsonProperty("vesselIds")
+    @JsonAnyGetter
     public Map<String, String> generateVesselIdMap() {
         Map<String, String> vesselIds = new HashMap<>();
         if (vesselIdLists != null && !vesselIdLists.isEmpty()) {

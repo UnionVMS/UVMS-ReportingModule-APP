@@ -10,15 +10,14 @@
  *
  *
  */
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Created by sanera on 19/04/2017.
- */
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+
 public class FishingActivitySummaryDTO {
 
     private int activityId;
@@ -47,7 +46,7 @@ public class FishingActivitySummaryDTO {
     private List<String> species;
     private List<String> ports;
     private List<String> areas;
-    private Map<String,String> vesselIdentifiers;
+    private List<VesselIdentifierType> vesselIdentifiers;
 
     public int getActivityId() {
         return activityId;
@@ -177,11 +176,11 @@ public class FishingActivitySummaryDTO {
         this.areas = areas;
     }
 
-    public Map<String,String> getVesselIdentifiers() {
+    public List<VesselIdentifierType> getVesselIdentifiers() {
         return vesselIdentifiers;
     }
 
-    public void setVesselIdentifiers(Map<String,String> vesselIdentifiers) {
+    public void setVesselIdentifiers(List<VesselIdentifierType> vesselIdentifiers) {
         this.vesselIdentifiers = vesselIdentifiers;
     }
 }
