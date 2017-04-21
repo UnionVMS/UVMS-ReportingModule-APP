@@ -46,7 +46,6 @@ public class ActivityDTO {
     private static final String SPECIES = "species";
     private static final String PORTS = "ports";
     private static final String AREAS = "areas";
-    private static final String VESSEL_IDENTIFIERS = "vesselIdentifiers";
     private static final String ACTIVITIES = "activities";
     public static final SimpleFeatureType ACTIVITY = build();
     private FishingActivitySummaryDTO summary;
