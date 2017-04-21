@@ -159,7 +159,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 }
             } else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
 
-                //if (userActivityAllowed) {
+                if (userActivityAllowed) {
 
                     List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
                     FACatchSummaryReportResponse faCatchSummaryReport =
@@ -167,7 +167,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
                     FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                     resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
-                //}
+                }
             }
 
             return resultDTO;
