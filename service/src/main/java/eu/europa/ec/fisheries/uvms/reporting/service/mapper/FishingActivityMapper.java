@@ -10,42 +10,19 @@
  *
  *
  */
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FishingActivitySummaryDTO;
-import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Created by sanera on 19/04/2017.
- */
 @Mapper
-public abstract class FishingActivityMapper {
+public interface FishingActivityMapper {
 
-    public static final FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
+    FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
 
-    @Mappings({
-           @Mapping(target = "vesselIdentifiers", expression = "java(convertVesselIdentifierTypeToMap(activitySummary))")
-    })
-    public abstract FishingActivitySummaryDTO activitySummaryToFishingActivitySummaryDTO(FishingActivitySummary activitySummary);
+    FishingActivitySummaryDTO activitySummaryToFishingActivitySummaryDTO(FishingActivitySummary activitySummary);
 
-    protected Map<String,String> convertVesselIdentifierTypeToMap( FishingActivitySummary activitySummary){
-        if(activitySummary==null || CollectionUtils.isEmpty(activitySummary.getVesselIdentifiers()))
-            return null;
-
-        Map<String,String> vesselIdMap = new HashMap<>();
-
-        for(VesselIdentifierType vesselIdentifierType : activitySummary.getVesselIdentifiers()){
-            vesselIdMap.put(vesselIdentifierType.getKey().toString(),vesselIdentifierType.getValue());
-        }
-        return vesselIdMap;
-    }
 }

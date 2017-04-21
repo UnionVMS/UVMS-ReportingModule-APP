@@ -10,6 +10,21 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,21 +49,6 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.unitils.UnitilsJUnit4;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
 public class ExecutionResultDTOTest extends UnitilsJUnit4 {
 
@@ -150,7 +150,7 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
         activity.setSpecies(new ArrayList<>(Arrays.asList("SPECIES1")));
         Map<String,String> vesselIdMap = new HashMap<>();
         vesselIdMap.put("CFR","CFR123");
-        activity.setVesselIdentifiers(vesselIdMap);
+        //activity.setVesselIdentifiers(vesselIdMap);
 
     }
 
@@ -174,12 +174,10 @@ public class ExecutionResultDTOTest extends UnitilsJUnit4 {
 
         //assertEquals(expectedJSONString, prettify(dto.toJson(null)));
 
-        String resultJson =prettify(dto.toJson(null));
+        String resultJson = prettify(dto.toJson(null));
         assertJsonEquals(expectedJSONString,resultJson );
 
     }
-
-
 
     private XMLGregorianCalendar getDate(String s) throws ParseException, DatatypeConfigurationException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
