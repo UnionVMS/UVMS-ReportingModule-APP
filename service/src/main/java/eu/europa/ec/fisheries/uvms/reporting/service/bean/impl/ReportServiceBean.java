@@ -12,34 +12,40 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
-import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
+import static com.google.common.collect.Lists.newArrayList;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
+import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
+import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
 /**
  * Session Bean implementation class ReportBean
@@ -109,6 +115,7 @@ public class ReportServiceBean {
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.MODIFY)
     @Transactional
+    @Interceptors(TracingInterceptor.class)
     public ReportDTO update(final ReportDTO report, String username, Boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException, ServiceException {
 
         if (report == null) {

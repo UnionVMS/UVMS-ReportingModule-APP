@@ -14,12 +14,14 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonInclude(Include.NON_NULL)
 public class FaFilter {
 
     @JsonProperty("reportTypes")
@@ -40,7 +42,7 @@ public class FaFilter {
     @JsonProperty("species")
     private List<String> species;
 
-    @JsonProperty("weight")
+    @JsonProperty("weights")
     private FaWeight faWeight;
 
     @JsonProperty("reportTypes")
@@ -93,22 +95,20 @@ public class FaFilter {
         this.faGears = faGears;
     }
 
-    @JsonProperty("species")
     public List<String> getSpecies() {
         return species;
     }
 
-    @JsonProperty("species")
     public void setSpecies(List<String> species) {
         this.species = species;
     }
 
-    @JsonProperty("weight")
+    @JsonProperty("weights")
     public FaWeight getFaWeight() {
         return faWeight;
     }
 
-    @JsonProperty("weight")
+    @JsonProperty("weights")
     public void setFaWeight(FaWeight faWeight) {
         this.faWeight = faWeight;
     }

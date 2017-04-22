@@ -12,11 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.message.JMSUtils;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingServiceConstants;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -26,21 +21,21 @@ import javax.naming.InitialContext;
 
 import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingServiceConstants;
+import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @Local(value = AuditService.class)
+@Slf4j
 public class AuditServiceBean implements AuditService {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(AuditServiceBean.class.getName());
 
-		
     private Destination auditResponse;
 	
 	@EJB
@@ -53,7 +48,7 @@ public class AuditServiceBean implements AuditService {
         try {
             ctx = new InitialContext();
         } catch (Exception e) {
-            LOG.error("Failed to get InitialContext",e);
+            log.error("Failed to get InitialContext", e);
             throw new RuntimeException(e);
         }
         auditResponse = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_AUDIT);
@@ -61,20 +56,18 @@ public class AuditServiceBean implements AuditService {
 	
 	@Override
 	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
-		
-		LOG.info("Audit report request received for : " + auditActionEnum.getAuditType());
-		try {
+
+        log.debug("Audit report request received for type = {} ", auditActionEnum.getAuditType());
+        try {
 			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
-			LOG.info("Sending JMS message to Audit : " + msgToSend);			
-			auditProducerBean.sendModuleMessage(msgToSend,auditResponse);
-			
-			
-		} catch (MessageException e) {
-			LOG.error("Exception in Sending Message to Audit Queue", e);
-			throw new ReportingServiceException(e);
+            log.trace("Sending JMS message to Audit {} ", msgToSend);
+            auditProducerBean.sendModuleMessage(msgToSend, auditResponse);
+        } catch (MessageException e) {
+            log.error("Exception in Sending Message to Audit Queue", e);
+            throw new ReportingServiceException(e);
 		} catch (AuditModelMarshallException e) {
-			LOG.error("Audit model marshal exception", e);
-			throw new ReportingServiceException(e);
+            log.error("Audit model marshal exception", e);
+            throw new ReportingServiceException(e);
 		}
 	}
 }

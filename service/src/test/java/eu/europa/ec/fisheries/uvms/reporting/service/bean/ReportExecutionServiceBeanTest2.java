@@ -11,8 +11,22 @@
  *
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
@@ -57,21 +71,6 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
 
     @TestedObject
@@ -106,7 +105,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
         areaIdentifierType.setAreaType(AreaType.EEZ);
         areaIdentifierType.setId("1");
-        service.getReportExecutionWithoutSave(getReportDto(), Arrays.asList(areaIdentifierType), "TEST", true);
+        service.getReportExecutionWithoutSave(getReportDto(), Arrays.asList(areaIdentifierType), "TEST", true, null);
 
         spatialModule.assertInvokedInSequence().getFilterArea(null, null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -115,7 +114,6 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         auditModule.assertInvokedInSequence().sendAuditReport(null, null, null);
         MockUnitils.assertNoMoreInvocations();
     }
-
 
     @Test
     @SneakyThrows
@@ -129,7 +127,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
         areaIdentifierType.setAreaType(AreaType.EEZ);
         areaIdentifierType.setId("1");
-        service.getReportExecutionByReportId(1L, "test", "EC", Arrays.asList(areaIdentifierType), DateTime.now(), false,true);
+        service.getReportExecutionByReportId(1L, "test", "EC", Arrays.asList(areaIdentifierType), DateTime.now(), false, true, null);
 
         spatialModule.assertInvokedInSequence().getFilterArea(null, null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -141,7 +139,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
     @Test(expected = ReportingServiceException.class)
     @SneakyThrows
     public void testReportNull() {
-        service.getReportExecutionByReportId(null, "test", null, null, null, false, true);
+        service.getReportExecutionByReportId(null, "test", null, null, null, false, true, null);
     }
 
     private eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report getReportDto() {

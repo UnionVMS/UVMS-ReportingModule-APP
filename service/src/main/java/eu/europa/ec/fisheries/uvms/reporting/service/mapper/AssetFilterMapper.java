@@ -9,8 +9,10 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
+
+import java.util.List;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset;
@@ -23,8 +25,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import java.util.List;
-import java.util.Set;
 
 @Mapper(uses = ObjectFactory.class)
 public interface AssetFilterMapper {

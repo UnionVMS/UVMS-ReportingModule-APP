@@ -12,34 +12,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.enums.Projection;
-import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.LengthType;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.enums.VelocityType;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.ServiceLayerUtils;
-import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.ADDITIONAL_PROPERTIES;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.DISTANCE_UNIT;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.SPEED_UNIT;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.TIMESTAMP;
+
 import javax.ejb.EJB;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
@@ -58,13 +35,46 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.LengthType;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.enums.Projection;
+import eu.europa.ec.fisheries.uvms.reporting.service.enums.VelocityType;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.ServiceLayerUtils;
+import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
+import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
+import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
+import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 @Path("/report")
 @Slf4j
@@ -88,12 +98,9 @@ public class ReportingResource extends UnionVMSResource {
     private String applicationName;
 
     /**
-     *
      * @responseMessage 200 Success
      * @responseMessage 500 Error
-     *
      * @summary Gets a list of reports
-     *
      */
     @GET
     @Path("/list")
@@ -113,10 +120,10 @@ public class ReportingResource extends UnionVMSResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ReportingExceptionInterceptor.class)
     public Response listLastExecutedReports(@Context HttpServletRequest request,
-                                @HeaderParam("scopeName") String scopeName,
-                                @HeaderParam("roleName") String roleName,
-                                @PathParam("numberOfReport") Integer numberOfReport,
-                                @DefaultValue("Y") @QueryParam("existent") String existent) throws ServiceException, ReportingServiceException {
+                                            @HeaderParam("scopeName") String scopeName,
+                                            @HeaderParam("roleName") String roleName,
+                                            @PathParam("numberOfReport") Integer numberOfReport,
+                                            @DefaultValue("Y") @QueryParam("existent") String existent) throws ServiceException, ReportingServiceException {
         if (numberOfReport == null || numberOfReport == 0) {
             return createErrorResponse("Number of last executed report cannot be null or 0");
         }
@@ -125,15 +132,15 @@ public class ReportingResource extends UnionVMSResource {
     }
 
     private Collection<ReportDTO> listReportByUsernameAndScope(HttpServletRequest request,
-                                                        String scopeName,
-                                                        String roleName,
-                                                        String existent,
-                                                        Integer numberOfReport) throws ServiceException, ReportingServiceException {
+                                                               String scopeName,
+                                                               String roleName,
+                                                               String existent,
+                                                               Integer numberOfReport) throws ServiceException, ReportingServiceException {
         final String username = request.getRemoteUser();
-        log.info("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
+        log.debug("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
         Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
-        String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username,  getApplicationName(request), roleName, scopeName);
-        Long defaultReportId = StringUtils.isNotBlank(defaultId) ?  Long.valueOf(defaultId) : null;
+        String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, getApplicationName(request), roleName, scopeName);
+        Long defaultReportId = StringUtils.isNotBlank(defaultId) ? Long.valueOf(defaultId) : null;
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToListReports();
 
         if (username != null && features != null && (requiredFeature == null || request.isUserInRole(requiredFeature.toString()))) {
@@ -146,6 +153,7 @@ public class ReportingResource extends UnionVMSResource {
 
     /**
      * lazy loading of the app name from the web.xml
+     *
      * @param request
      * @return
      */
@@ -198,7 +206,7 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        log.info("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
+        log.debug("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
         ReportDTO originalReport;
         boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
@@ -251,10 +259,9 @@ public class ReportingResource extends UnionVMSResource {
 
             if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
                 result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-            }
-            else {
+            } else {
                 ReportDTO update = reportService.update(report, username, originalReport.getWithMap(), originalReport.getMapConfiguration());
-                switch (Projection.valueOf(projection.toUpperCase())){
+                switch (Projection.valueOf(projection.toUpperCase())) {
 
                     case DETAILED:
                         result = createSuccessResponse(update);
@@ -281,7 +288,7 @@ public class ReportingResource extends UnionVMSResource {
         Response result;
         String username = request.getRemoteUser();
 
-        log.info("{} is requesting createReport(...), with a ID={}, scopeName: {}, visibility: {}", username, report.getId(), scopeName, report.getVisibility());
+        log.debug("{} is requesting createReport(...), with a ID={}, scopeName: {}, visibility: {}", username, report.getId(), scopeName, report.getVisibility());
 
         if (StringUtils.isBlank(scopeName)) {
             result = createErrorResponse(ErrorCodes.USER_SCOPE_MISSING);
@@ -290,24 +297,24 @@ public class ReportingResource extends UnionVMSResource {
                 report.setCreatedBy(username);
                 report.setScopeName(scopeName);
 
-            ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
-            ReportDTO reportDTO;
-            if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-                try {
+                ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
+                ReportDTO reportDTO;
+                if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
+                    try {
                         reportDTO = reportService.create(report, username);
-                    switch (Projection.valueOf(projection.toUpperCase())){
+                        switch (Projection.valueOf(projection.toUpperCase())) {
 
-                        case DETAILED:
-                            result = createSuccessResponse(reportDTO);
-                            break;
+                            case DETAILED:
+                                result = createSuccessResponse(reportDTO);
+                                break;
 
-                        default:
-                            result = createSuccessResponse(reportDTO.getId());
+                            default:
+                                result = createSuccessResponse(reportDTO.getId());
+                        }
+                    } catch (Exception e) {
+                        log.error("createReport failed.", e);
+                        result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
                     }
-                } catch (Exception e) {
-                    log.error("createReport failed.", e);
-                    result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
-                }
                 } else {
                     result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
                 }
@@ -351,13 +358,17 @@ public class ReportingResource extends UnionVMSResource {
 
         boolean isAdmin;
 
-        log.info("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
+        log.debug("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
 
         ReportFeatureEnum requiredFeature = null;
 
         switch (newVisibility) {
-            case SCOPE: requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE; break;
-            case PUBLIC: requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC; break;
+            case SCOPE:
+                requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE;
+                break;
+            case PUBLIC:
+                requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
+                break;
             default: //it is private scope which does not require any feature
                 break;
         }
@@ -409,16 +420,20 @@ public class ReportingResource extends UnionVMSResource {
 
         String username = request.getRemoteUser();
 
-        log.info("{} is requesting runReport(...), with a ID={}", username, id);
+        log.debug("{} is requesting runReport(...), with a ID={}", username, id);
 
         try {
             Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
             DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
             List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
             Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-            Boolean withActivity = withActivity(request);
-            ObjectNode jsonNodes = reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity).toJson(format);
-            return createSuccessResponse(jsonNodes);
+            Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+
+            ExecutionResultDTO reportExecutionByReportId =
+                    reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format);
+
+            ObjectNode rootNode = mapWithGeoJson(reportExecutionByReportId);
+            return createSuccessResponse(rootNode);
 
         } catch (Exception e) {
             log.error("Report execution failed.", e);
@@ -426,8 +441,32 @@ public class ReportingResource extends UnionVMSResource {
         }
     }
 
-    private Boolean withActivity(HttpServletRequest request) {
-        return request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+    private ObjectNode mapWithGeoJson(ExecutionResultDTO dto) throws IOException {
+
+        ObjectNode rootNode;
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        rootNode = mapper.createObjectNode();
+        StringWriter stringWriter = new StringWriter();
+
+        GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getMovements(), stringWriter);
+
+        rootNode.set("movements", mapper.readTree(stringWriter.toString()));
+
+        stringWriter.getBuffer().setLength(0);
+        GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getSegments(), stringWriter);
+        rootNode.set("segments", mapper.readTree(stringWriter.toString()));
+
+        rootNode.putPOJO("tracks", dto.getTracks());
+        rootNode.putPOJO("trips", dto.getTrips());
+
+        stringWriter.getBuffer().setLength(0);
+        GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getActivities(), stringWriter);
+        rootNode.putPOJO("activities", mapper.readTree(stringWriter.toString()));
+        rootNode.putPOJO("criteria", dto.getFaCatchSummaryDTO());
+
+        return rootNode;
     }
 
     @POST
@@ -438,7 +477,7 @@ public class ReportingResource extends UnionVMSResource {
                               @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
 
         String username = request.getRemoteUser();
-        log.info("{} is requesting runReport(...), with a report={}", username, report);
+        log.trace("{} is requesting runReport(...), with a report={}", username, report);
 
         try {
             Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
@@ -449,12 +488,11 @@ public class ReportingResource extends UnionVMSResource {
 
             DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
             List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
-            Boolean withActivity = withActivity(request);
+            Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
 
-            ObjectNode jsonNodes =
-                    reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username, withActivity).toJson(displayFormat);
-
-            return createSuccessResponse(jsonNodes);
+            ExecutionResultDTO resultDTO = reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username, withActivity, displayFormat);
+            ObjectNode rootNode = mapWithGeoJson(resultDTO);
+            return createSuccessResponse(rootNode);
 
         } catch (Exception e) {
             log.error("Report execution failed.", e);
@@ -469,13 +507,13 @@ public class ReportingResource extends UnionVMSResource {
         for (Dataset dataset : datasets) {
             int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
 
-            if (lastIndexDelimiter > -1 )  {
+            if (lastIndexDelimiter > -1) {
                 AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
                 //add AREATYPE/AREA_ID into a map
-                AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0,lastIndexDelimiter));
+                AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0, lastIndexDelimiter));
                 String areaId = dataset.getDiscriminator().substring(lastIndexDelimiter + 1);
 
-                if (areaType!= null && StringUtils.isNotBlank(areaId)) {
+                if (areaType != null && StringUtils.isNotBlank(areaId)) {
                     areaIdentifierType.setAreaType(areaType);
                     areaIdentifierType.setId(areaId);
                     areaRestrictions.add(areaIdentifierType);
@@ -492,13 +530,13 @@ public class ReportingResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response defaultReport(@Context HttpServletRequest request, @PathParam("id") Long id,
                                   @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
-                                  Map<String,Object> payload) {
+                                  Map<String, Object> payload) {
 
         final String username = request.getRemoteUser();
         final String appName = getApplicationName(request);
         Boolean override = false;
 
-        if (payload != null){
+        if (payload != null) {
             override = Boolean.valueOf(String.valueOf(payload.get("override")));
         }
 
@@ -507,10 +545,9 @@ public class ReportingResource extends UnionVMSResource {
 
             String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, appName, roleName, scopeName);
 
-            if (!StringUtils.isEmpty(defaultId) && !override){
+            if (!StringUtils.isEmpty(defaultId) && !override) {
                 response = createErrorResponse("TRYING TO OVERRIDE ALREADY EXISTING VALUE");
-            }
-            else {
+            } else {
                 usmService.putUserPreference(DEFAULT_REPORT_ID, String.valueOf(id), appName, scopeName, roleName, username);
                 response = createSuccessResponse();
             }

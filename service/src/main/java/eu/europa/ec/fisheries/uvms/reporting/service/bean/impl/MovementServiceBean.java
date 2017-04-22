@@ -12,8 +12,20 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.uvms.message.AbstractJAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.message.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
@@ -26,19 +38,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBException;
-import java.util.List;
-import java.util.Map;
-
 @Stateless
 @Slf4j
-public class MovementServiceBean  extends AbstractJAXBMarshaller {
+public class MovementServiceBean {
 
     @EJB
     private MovementModuleSenderBean movementSender;
@@ -55,7 +57,7 @@ public class MovementServiceBean  extends AbstractJAXBMarshaller {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<MovementMapResponseType> getMovement(FilterProcessor processor) throws ReportingServiceException {
-        log.debug("getMovement({})", processor.toString());
+        log.trace("getMovement({})", processor.toString());
         return getMovementMapResponseTypes(processor);
     }
 
@@ -86,9 +88,16 @@ public class MovementServiceBean  extends AbstractJAXBMarshaller {
             isErrorResponse = true;
         } catch (JAXBException | JMSException e) {
             //do nothing  since it's not a UserFault
-            log.error("Unexpected exception was thrown.", e);
+            log.trace("Unexpected exception was thrown.", e);
         }
 
         return isErrorResponse;
+    }
+
+    protected <R> R unmarshallTextMessage(final TextMessage textMessage, final Class clazz) throws JAXBException, JMSException {
+        JAXBContext jc = JAXBContext.newInstance(clazz);
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        StringReader sr = new StringReader(textMessage.getText());
+        return (R) unmarshaller.unmarshal(sr);
     }
 }

@@ -32,6 +32,8 @@ import java.util.Set;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
@@ -53,9 +55,15 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FishingActivitySummaryDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementData;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
@@ -72,15 +80,16 @@ import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.joda.time.DateTime;
 
 @Stateless
 @Local(value = ReportExecutionService.class)
 @Slf4j
-@Interceptors(TracingInterceptor.class)
 public class ReportExecutionServiceBean implements ReportExecutionService {
-
 
     @EJB
     private ReportRepository repository;
@@ -103,31 +112,31 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Override
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
-    public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity) throws ReportingServiceException {
-        log.debug("[START] getReportExecutionByReportId({}, {}, {})", username, scopeName, id);
+    @Interceptors(TracingInterceptor.class)
+    public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat) throws ReportingServiceException {
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
         if (reportByReportId == null) {
             final String error = "No report found with id " + id;
-            log.error(error);
+            log.error("No report found with id " + id);
             throw new ReportingServiceException(error);
         }
-        ExecutionResultDTO resultDTO = executeReport(reportByReportId, now, areaRestrictions, withActivity);
+        ExecutionResultDTO resultDTO = executeReport(reportByReportId, now, areaRestrictions, withActivity, displayFormat);
         reportByReportId.updateExecutionLog(username);
-        log.debug("[END] getReportExecutionByReportId(...)");
         return resultDTO;
     }
 
     @Override
-    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity) throws ReportingServiceException {
+    public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity, DisplayFormat displayFormat) throws ReportingServiceException {
         Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
         DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
         Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
-        ExecutionResultDTO resultDTO = executeReport(toReport, dateTime, areaRestrictions, withActivity);
+        ExecutionResultDTO resultDTO = executeReport(toReport, dateTime, areaRestrictions, withActivity, displayFormat);
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
         return resultDTO;
     }
 
-    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed) throws ReportingServiceException {
+    @SneakyThrows
+    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed, DisplayFormat format) throws ReportingServiceException {
 
         try {
 
@@ -138,17 +147,19 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             boolean hasAssets = processor.hasAssetsOrAssetGroups();
 
             List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
-            List<ListValueTypeFilter> listValueTypeFilters = extractListValueFilters(processor, resultDTO.getAssetMap(), hasAssets);
+            List<ListValueTypeFilter> listValueTypeFilters = null;
+            MovementData movementData = null;
 
             if (ReportTypeEnum.STANDARD == report.getReportType()) {
 
-                fetchPositionalData(resultDTO, processor, wkt);
+                movementData = fetchPositionalData(processor, wkt);
+                listValueTypeFilters = extractListValueFilters(processor, movementData.getAssetMap(), hasAssets);
 
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
                     FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
                     for (FishingTripIdWithGeometry fishingTripIdWithGeometry : tripResponse.getFishingTripIdLists()) {
                         TripDTO trip = FishingTripMapper.INSTANCE.fishingTripToTripDto(fishingTripIdWithGeometry);
-                        updateTripWithVmsPositionCount(trip, resultDTO.getMovementMap());
+                        updateTripWithVmsPositionCount(trip, movementData.getMovementMap());
                         resultDTO.getTrips().add(trip);
                     }
                     List<FishingActivitySummaryDTO> activitySummaryDTOs = new ArrayList<>();
@@ -157,18 +168,50 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                     }
                     resultDTO.setActivityList(activitySummaryDTOs);
                 }
-            } else if (ReportTypeEnum.SUMMARY == report.getReportType()) {
 
-                if (userActivityAllowed) {
+            } else if (userActivityAllowed && ReportTypeEnum.SUMMARY == report.getReportType()) {
 
-                    List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
-                    FACatchSummaryReportResponse faCatchSummaryReport =
-                            activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
+                List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
+                FACatchSummaryReportResponse faCatchSummaryReport =
+                        activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
 
-                    FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
-                    resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
+                FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
+                resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
+
+            }
+
+            DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
+            DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
+            DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
+            List<TrackDTO> tracks = new ArrayList<>();
+
+            if (movementData != null && CollectionUtils.isNotEmpty(movementData.getMovementMap())) {
+                for (MovementMapResponseType map : movementData.getMovementMap()) {
+                    Asset asset = movementData.getAssetMap().get(map.getKey());
+                    if (asset != null) {
+                        for (MovementType movement : map.getMovements()) {
+                            movements.add(new MovementDTO(movement, asset, format).toFeature());
+                        }
+                        for (MovementSegment segment : map.getSegments()) {
+                            segments.add(new SegmentDTO(segment, asset, format).toFeature());
+                        }
+                        for (MovementTrack track : map.getTracks()) {
+                            tracks.add(new TrackDTO(track, asset, format));
+                        }
+                    }
                 }
             }
+
+            if (CollectionUtils.isNotEmpty(resultDTO.getActivityList())) {
+                for (FishingActivitySummaryDTO summary : resultDTO.getActivityList()) {
+                    activities.add(new ActivityDTO(summary).toFeature());
+                }
+            }
+
+            resultDTO.setActivities(activities);
+            resultDTO.setTracks(tracks);
+            resultDTO.setMovements(movements);
+            resultDTO.setSegments(segments);
 
             return resultDTO;
 
@@ -193,8 +236,8 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                     }
                 }
             }
+            trip.setVmsPositionCount(count);
         }
-        trip.setVmsPositionCount(count);
     }
 
     private List<GroupCriteria> extractGroupCriteriaList(Set<Filter> filters) {
@@ -212,15 +255,19 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return GroupCriteriaFilterMapper.INSTANCE.mapGroupCriteriaTypeListToGroupCriteriaList(types);
     }
 
-    private void fetchPositionalData(ExecutionResultDTO resultDTO, FilterProcessor processor, String wkt) throws ReportingServiceException {
+    @SneakyThrows
+    private MovementData fetchPositionalData(FilterProcessor processor, String wkt) throws ReportingServiceException {
+
+        MovementData movementData = new MovementData();
 
         try {
+
             Collection<MovementMapResponseType> movementMap;
-            Map<String, MovementMapResponseType> responseTypeMap;
+            Map<String, MovementMapResponseType> responseTypeMap = null;
             Map<String, Asset> assetMap;
 
             processor.addAreaCriteria(wkt);
-            log.debug("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
+            log.trace("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
 
             if (processor.hasAssetsOrAssetGroups()) {
                 assetMap = assetModule.getAssetMap(processor);
@@ -234,21 +281,23 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 assetMap = assetModule.getAssetMap(processor);
             }
 
-            resultDTO.setAssetMap(assetMap);
-            resultDTO.setMovementMap(movementMap);
+            movementData.setAssetMap(assetMap);
+            movementData.setMovementMap(movementMap);
+            movementData.setResponseTypeMap(responseTypeMap);
+
 
         } catch (ReportingServiceException e) {
             String error = "Exception during retrieving filter area";
             log.error(error, e);
             throw new ReportingServiceException(error, e);
         }
+
+        return movementData;
     }
 
     private List<SingleValueTypeFilter> extractSingleValueFilters(FilterProcessor processor, String areaWkt) {
         List<SingleValueTypeFilter> filterTypes = new ArrayList<>();
         filterTypes.addAll(processor.getSingleValueTypeFilters()); // Add all the Fa filter criteria from the filters
-
-        log.info("generate filtered area WKT by combining area filters and scope area");
         if (areaWkt != null && !areaWkt.isEmpty()) {
             filterTypes.add(new SingleValueTypeFilter(SearchFilter.AREA_GEOM, areaWkt));
         }

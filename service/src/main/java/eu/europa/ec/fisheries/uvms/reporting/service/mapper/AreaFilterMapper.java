@@ -9,18 +9,21 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
+
+import java.util.List;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import java.util.List;
-import java.util.Set;
 
 @Mapper(uses = ObjectFactory.class)
 public interface AreaFilterMapper {

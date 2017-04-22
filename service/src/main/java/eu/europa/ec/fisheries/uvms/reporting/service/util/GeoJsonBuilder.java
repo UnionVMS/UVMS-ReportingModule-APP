@@ -10,14 +10,18 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -27,21 +31,15 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.io.IOException;
-import java.util.Map;
-
 /**
  * Created by padhyad on 3/29/2016.
  */
 @Slf4j
 public class GeoJsonBuilder {
 
-    private static final String LONGITUDE = "longitude";
-
-    private static final String LATITUDE = "latitude";
-
     public static final String GEOMETRY = "geometry";
-
+    private static final String LONGITUDE = "longitude";
+    private static final String LATITUDE = "latitude";
     private SimpleFeatureType simpleFeatureType;
 
     private DefaultFeatureCollection alarms;
@@ -56,7 +54,9 @@ public class GeoJsonBuilder {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
             ObjectNode rootNode = mapper.createObjectNode();
-            rootNode.set("alarms", new FeatureToGeoJsonJacksonMapper().convert(alarms));
+            StringWriter writer = new StringWriter();
+            GeometryMapper.INSTANCE.featureCollectionToGeoJson(alarms, writer);
+            rootNode.set("alarms", mapper.readTree(writer.toString()));
             return rootNode;
         } catch (IOException e) {
             log.error("Exception in building geo Json for alarm properties", e);

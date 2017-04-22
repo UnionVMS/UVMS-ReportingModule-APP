@@ -1,11 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import java.util.List;
+
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
-import java.util.List;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
@@ -32,22 +33,22 @@ public interface GroupCriteriaFilterMapper {
     void merge(GroupCriteriaFilter incoming, @MappingTarget GroupCriteriaFilter current);
 
     @IterableMapping(elementTargetType = String.class)
-    public List<String> mapStringListToGroupCriteriaTypeList(List<GroupCriteriaType> value);
+    List<String> mapStringListToGroupCriteriaTypeList(List<GroupCriteriaType> value);
 
     @InheritInverseConfiguration
-    public List<GroupCriteriaType> mapGroupCriteriaTypeListToStringList(List<String> value);
+    List<GroupCriteriaType> mapGroupCriteriaTypeListToStringList(List<String> value);
 
-    public List<GroupCriteria> mapGroupCriteriaTypeListToGroupCriteriaList(List<GroupCriteriaType> value);
+    List<GroupCriteria> mapGroupCriteriaTypeListToGroupCriteriaList(List<GroupCriteriaType> value);
 
     @InheritInverseConfiguration
-    public List<GroupCriteriaType> mapGroupCriteriaListToGroupCriteriaTypeList(List<GroupCriteria> value);
+    List<GroupCriteriaType> mapGroupCriteriaListToGroupCriteriaTypeList(List<GroupCriteria> value);
 
     @ValueMappings({
             //@ValueMapping(source = "AREA",target = "<NULL>")
     })
-    public GroupCriteriaType mapGroupCriteriaToGroupCriteriaType(GroupCriteria value);
+    GroupCriteriaType mapGroupCriteriaToGroupCriteriaType(GroupCriteria value);
 
     @InheritInverseConfiguration
-    public GroupCriteria mapGroupCriteriaTypeToGroupCriteria(GroupCriteriaType value);
+    GroupCriteria mapGroupCriteriaTypeToGroupCriteria(GroupCriteriaType value);
 
 }

@@ -10,21 +10,19 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util.interceptor;
 
-import java.io.Serializable;
-
 import javax.ejb.EJB;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Serializable;
 
 import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @IAuditInterceptor
 @Interceptor
@@ -38,10 +36,8 @@ public class AuditInterceptor implements Serializable {
 	@AroundInvoke
 	public Object interceptAuditAction(final InvocationContext ic) throws Exception {
 		
-		LOG.info("In the interceptor before method execution");
 		Object result = ic.proceed();
 		Object[] parameters = ic.getParameters();
-		LOG.info("In the interceptor after method execution");
 		IAuditInterceptor auditActionInterface = ic.getMethod().getAnnotation(IAuditInterceptor.class);
 		AuditActionEnum auditAction = auditActionInterface.auditActionType();
 		
@@ -96,7 +92,6 @@ public class AuditInterceptor implements Serializable {
 	
 	private void sendAuditReport(AuditActionEnum auditAction, Long id, String username) {
 		try {
-			LOG.info("Audit type received is : " + auditAction.getAuditType() + " ID : " + id);
 			auditService.sendAuditReport(auditAction, id.toString(), username);
 		} catch (ReportingServiceException e) {
 			LOG.error("Exception occurred while executing interceptor", e);

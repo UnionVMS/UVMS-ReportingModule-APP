@@ -25,9 +25,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 
-/**
- * Created by padhyad on 12/6/2016.
- */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TripDTO {
 
