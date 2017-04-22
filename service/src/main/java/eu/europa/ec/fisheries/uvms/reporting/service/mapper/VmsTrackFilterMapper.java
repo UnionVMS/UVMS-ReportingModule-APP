@@ -9,14 +9,13 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.uvms.domain.Range;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsTrack;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsTrack;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DistanceRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;

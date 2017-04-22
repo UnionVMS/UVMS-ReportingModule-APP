@@ -12,14 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
-import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -28,6 +20,14 @@ import javax.enterprise.event.Observes;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
+import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
+import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @LocalBean
@@ -45,7 +45,7 @@ public class ReportingMessageServiceBean extends AbstractProducer {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent message) {
         try {
-            log.info("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getMessage().getJMSMessageID(),
+            log.debug("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getMessage().getJMSMessageID(),
                     message.getMessage().getJMSReplyTo());
             connectToQueue();
             Session session = getSession();

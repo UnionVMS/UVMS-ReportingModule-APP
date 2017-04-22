@@ -11,25 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vividsolutions.jts.io.ParseException;
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import org.apache.commons.collections4.CollectionUtils;
-import org.geotools.feature.DefaultFeatureCollection;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+
+import org.geotools.feature.DefaultFeatureCollection;
 
 public class ExecutionResultDTO {
 
@@ -37,79 +22,11 @@ public class ExecutionResultDTO {
     private DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
     private DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
     private List<TrackDTO> tracks = new ArrayList<>();
-    private Map<String, Asset> assetMap;
-    private Collection<MovementMapResponseType> movementMap;
-    private List<TripDTO> trips;
+    private List<TripDTO> trips = new ArrayList<>();
     private List<FishingActivitySummaryDTO> activityList;
     private FACatchSummaryDTO faCatchSummaryDTO;
 
-    public ObjectNode toJson(DisplayFormat format) throws ReportingServiceException {
-
-        ObjectNode rootNode;
-
-        try {
-
-            if (CollectionUtils.isNotEmpty(movementMap)){
-                for (MovementMapResponseType map : movementMap){
-                    Asset asset = assetMap.get(map.getKey());
-                    if (asset != null){
-                        for (MovementType movement : map.getMovements()){
-                            movements.add(new MovementDTO(movement, asset, format).toFeature());
-                        }
-                        for (MovementSegment segment : map.getSegments()){
-                            segments.add(new SegmentDTO(segment, asset, format).toFeature());
-                        }
-                        for (MovementTrack track : map.getTracks()){
-                            tracks.add(new TrackDTO(track, asset, format));
-                        }
-                    }
-                }
-            }
-
-            if (CollectionUtils.isNotEmpty(activityList)) {
-                for (FishingActivitySummaryDTO summary : activityList) {
-                    activities.add(new ActivityDTO(summary).toFeature());
-                }
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-            rootNode = mapper.createObjectNode();
-            rootNode.set("movements", new FeatureToGeoJsonJacksonMapper().convert(movements));
-            rootNode.set("segments", new FeatureToGeoJsonJacksonMapper().convert(segments));
-            rootNode.putPOJO("tracks", tracks);
-            rootNode.putPOJO("trips", trips);
-            rootNode.putPOJO("activities", new FeatureToGeoJsonJacksonMapper().convert(activities));
-            rootNode.putPOJO("criteria", faCatchSummaryDTO);
-
-        } catch (ParseException | IOException e) {
-            throw new ReportingServiceException("ERROR WHILE CREATING GEOJSON", e);
-        }
-
-        return rootNode;
-    }
-
-    public Map<String, Asset> getAssetMap() {
-        return assetMap;
-    }
-
-    public void setAssetMap(Map<String, Asset> assetMap) {
-        this.assetMap = assetMap;
-    }
-
-    public Collection<MovementMapResponseType> getMovementMap() {
-        return movementMap;
-    }
-
-    public void setMovementMap(Collection<MovementMapResponseType> movementMap) {
-        this.movementMap = movementMap;
-    }
-
     public List<TripDTO> getTrips() {
-        if (trips == null) {
-            trips = new ArrayList<>();
-        }
         return trips;
     }
 
@@ -131,5 +48,37 @@ public class ExecutionResultDTO {
 
     public void setFaCatchSummaryDTO(FACatchSummaryDTO faCatchSummaryDTO) {
         this.faCatchSummaryDTO = faCatchSummaryDTO;
+    }
+
+    public DefaultFeatureCollection getMovements() {
+        return movements;
+    }
+
+    public void setMovements(DefaultFeatureCollection movements) {
+        this.movements = movements;
+    }
+
+    public DefaultFeatureCollection getSegments() {
+        return segments;
+    }
+
+    public void setSegments(DefaultFeatureCollection segments) {
+        this.segments = segments;
+    }
+
+    public DefaultFeatureCollection getActivities() {
+        return activities;
+    }
+
+    public void setActivities(DefaultFeatureCollection activities) {
+        this.activities = activities;
+    }
+
+    public List<TrackDTO> getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(List<TrackDTO> tracks) {
+        this.tracks = tracks;
     }
 }
