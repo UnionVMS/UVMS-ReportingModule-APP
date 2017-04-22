@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="60 seconds" debug="false">
-    
+
     <!-- <property resource="logging.properties" /> -->
     
     <contextName>${application.name}</contextName>
@@ -68,16 +68,11 @@
         </encoder>
     </appender>
 
-  	<logger name="org.hibernate.type" level="ALL" />
-	<logger name="org.hibernate" level="DEBUG" />  
-	<logger name="eu.europa.ec.fisheries.uvms.reporting.service.dao" level="DEBUG"/>
-
     <root level="DEBUG">
         <appender-ref ref="ERROR"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="BOOT"/>
     </root>
-  
 
 </configuration>
