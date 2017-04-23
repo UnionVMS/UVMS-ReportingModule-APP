@@ -32,7 +32,7 @@
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.21-SNAPSHOT</uvms.commons.version>
+        <uvms.commons.version>2.0.18-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
         <usm4uvms.version>2.0.19</usm4uvms.version>
@@ -50,7 +50,6 @@
         <connection>${scm.connection}</connection>
         <tag>HEAD</tag>
     </scm>
-
 
     <distributionManagement>
         <repository>
@@ -94,12 +93,14 @@
                 <version>${usm4uvms.version}</version>
 				<optional>true</optional>				
             </dependency>
+
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>0.4</version>
                 <!--<scope>test</scope>-->
             </dependency>
+
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geojson</artifactId>
@@ -255,22 +256,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>uvms-test</artifactId>
                 <version>${uvms.test.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.1.8.Final</version>
-                <scope>test</scope>
-                <type>pom</type>
-            </dependency>
-
-            <!-- Arquillian -->
-            <dependency>
-                <groupId>org.jboss.arquillian.junit</groupId>
-                <artifactId>arquillian-junit-container</artifactId>
-                <version>1.1.8.Final</version>
                 <scope>test</scope>
             </dependency>
 
