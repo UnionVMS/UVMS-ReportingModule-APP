@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rest</artifactId>
     <name>${project.parent.artifactId}-rest</name>
@@ -84,58 +85,6 @@
 		 	<groupId>org.apache.commons</groupId>
 		 	<artifactId>commons-lang3</artifactId>
 		</dependency>
-		
- 		<dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-bom</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-            <version>2.2.0-beta-2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wildfly.arquillian</groupId>
-            <artifactId>wildfly-arquillian-container-remote</artifactId>
-            <version>1.0.0.Alpha5</version>
-            <scope>test</scope>
-            <exclusions>
-		      <exclusion>
-		        <groupId>sun.jdk</groupId>
-		        <artifactId>jconsole</artifactId>
-		      </exclusion>
-            </exclusions>
-        </dependency>
-        
-        <dependency>
-		  <groupId>org.jboss.arquillian.extension</groupId>
-		  <artifactId>arquillian-rest-warp-impl-resteasy</artifactId>
-		  <version>1.0.0.Alpha3</version>
-		  <scope>test</scope>
-		</dependency>
-	
-		<dependency>
-		  <groupId>org.jboss.arquillian.extension</groupId>
-		  <artifactId>arquillian-rest-client-api</artifactId>
-		  <version>1.0.0.Alpha3</version>
-		  <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-            <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-rest-client-impl-3x</artifactId>
-            <version>1.0.0.Alpha3</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.unitils</groupId>
