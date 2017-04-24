@@ -11,7 +11,6 @@
  *
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -24,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(Include.NON_NULL)
 public class FaFilter {
 
-    @JsonProperty("reportTypes")
+    @JsonProperty("reportType")
     private List<String> reportTypes;
 
     @JsonProperty("activityTypes")
@@ -42,55 +41,45 @@ public class FaFilter {
     @JsonProperty("species")
     private List<String> species;
 
-    @JsonProperty("weights")
+    @JsonProperty("weight")
     private FaWeight faWeight;
 
-    @JsonProperty("reportTypes")
     public List<String> getReportTypes() {
         return reportTypes;
     }
 
-    @JsonProperty("reportTypes")
     public void setReportTypes(List<String> reportTypes) {
         this.reportTypes = reportTypes;
     }
 
-    @JsonProperty("activityTypes")
     public List<String> getActivityTypes() {
         return activityTypes;
     }
 
-    @JsonProperty("activityTypes")
     public void setActivityTypes(List<String> activityTypes) {
         this.activityTypes = activityTypes;
     }
 
-    @JsonProperty("masters")
     public List<String> getMasters() {
         return masters;
     }
 
-    @JsonProperty("masters")
     public void setMasters(List<String> masters) {
         this.masters = masters;
     }
 
-    @JsonProperty("ports")
     public List<String> getFaPorts() {
         return faPorts;
     }
 
-    @JsonProperty("ports")
     public void setFaPorts(List<String> faPorts) {
         this.faPorts = faPorts;
     }
 
-    @JsonProperty("gears")
     public List<String> getFaGears() {
         return faGears;
     }
 
-    @JsonProperty("gears")
     public void setFaGears(List<String> faGears) {
         this.faGears = faGears;
     }
@@ -103,12 +92,10 @@ public class FaFilter {
         this.species = species;
     }
 
-    @JsonProperty("weights")
     public FaWeight getFaWeight() {
         return faWeight;
     }
 
-    @JsonProperty("weights")
     public void setFaWeight(FaWeight faWeight) {
         this.faWeight = faWeight;
     }
