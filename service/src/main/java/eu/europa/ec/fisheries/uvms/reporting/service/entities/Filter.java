@@ -10,6 +10,25 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.Collections;
+import java.util.List;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
@@ -28,16 +47,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.*;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
@@ -50,9 +59,9 @@ import org.joda.time.DateTime;
         @NamedQuery(name = Filter.LIST_BY_REPORT_ID, query = "SELECT f FROM Filter f WHERE report.id = :reportId"),
         @NamedQuery(name = Filter.DELETE_BY_ID, query = "DELETE FROM Filter WHERE id = :id")
 })
-@EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "validator", "reportId"})
+@EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "reportId"})
 @AttributeOverride(name = "id", column = @Column(name = "filter_id"))
-@ToString(callSuper = true, exclude = {"report", "validator", "type", "reportId"})
+@ToString(callSuper = true, exclude = {"report", "type", "reportId"})
 public abstract class Filter extends BaseEntity {
 
     public static final String REPORT_ID = "report_id";
@@ -67,9 +76,6 @@ public abstract class Filter extends BaseEntity {
 	
     @Transient
     private FilterType type;
-
-    @Transient
-    protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @ManyToOne
     @JoinColumn(name = REPORT_ID, nullable = false)
@@ -93,13 +99,13 @@ public abstract class Filter extends BaseEntity {
     public abstract <T> T accept(FilterVisitor<T> visitor);
 
     protected void validate() {
-        Set<ConstraintViolation<Filter>> violations =
-                validator.validate(this);
+        //Set<ConstraintViolation<Filter>> violations =
+        //        validator.validate(this);
 
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(
-                    new HashSet<ConstraintViolation<?>>(violations));
-        }
+        //if (!violations.isEmpty()) {
+        //    throw new ConstraintViolationException(
+        //            new HashSet<ConstraintViolation<?>>(violations));
+        //}
     }
 
     public abstract void merge(Filter filter);

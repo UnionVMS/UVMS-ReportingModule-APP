@@ -9,8 +9,11 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.dto.report;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -22,49 +25,35 @@ import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ReportDeserializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ReportSerializer;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @JsonDeserialize(using = ReportDeserializer.class)
 @JsonSerialize(using = ReportSerializer.class)
-@EqualsAndHashCode(of = {"description", "withMap", "visibility", "name", "deletable", "editable", "filters", "isDeleted"})
-public class ReportDTO implements Serializable {
-
-    public static final String DESC = "desc";
-    public static final String CREATED_BY = "createdBy";
-    public static final String ID = "id";
-    public static final String NAME = "name";
-    public static final String WITH_MAP = "withMap";
-    public static final String IS_DEFAULT = "isDefault";
-    public static final String CREATED_ON = "createdOn";
-    public static final String SCOPE_ID = "scopeId";
-    public static final String VISIBILITY = "visibility";
-    public static final String REPORT_TYPE = "reportType";
-    public static final String FILTER_EXPRESSION = "filterExpression";
-    public static final String SHAREABLE = "shareable";
-    public static final String DELETABLE = "deletable";
-    public static final String EDITABLE = "editable";
-    public static final String MAP_CONFIGURATION = "mapConfiguration";
+@EqualsAndHashCode(of = {"createdBy", "scopeName", "id", "description", "withMap", "visibility", "name", "deletable", "editable", "isDeleted"})
+public class ReportDTO {
 
     private Long id;
     private String name;
     private String description;
-    private Boolean withMap;
+    private boolean withMap = true;
     private String scopeName;
     private String createdBy;
     private List<VisibilityEnum> shareable;
-    private boolean editable;
+    private boolean editable = true;
     private boolean deletable;
-    private AuditDTO audit;
-    private VisibilityEnum visibility;
+    private AuditDTO audit = new AuditDTO();
+    private VisibilityEnum visibility = VisibilityEnum.PRIVATE;
     private boolean isDeleted;
-    private Boolean isDefault = false;
-    private ReportTypeEnum reportTypeEnum;
+    private boolean isDefault;
+    private ReportTypeEnum reportTypeEnum = ReportTypeEnum.STANDARD;
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date deletedOn;
@@ -75,44 +64,7 @@ public class ReportDTO implements Serializable {
 
     private ExecutionLogDTO executionLog;
 
-    private MapConfigurationDTO mapConfiguration;
-
-    public ReportDTO() {
-    }
-
-    @Builder(builderMethodName = "ReportDTOBuilder")
-    public ReportDTO(Long id,
-                     String name,
-                     String description,
-                     Boolean withMap,
-                     String scopeName,
-                     String createdBy,
-                     VisibilityEnum visibility,
-                     boolean isDeleted,
-                     Date createdOn,
-                     Date deletedOn,
-                     String deletedBy,
-                     ReportTypeEnum reportTypeEnum,
-                     List<FilterDTO> filters,
-                     MapConfigurationDTO mapConfiguration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.withMap = withMap;
-        this.scopeName = scopeName;
-        this.createdBy = createdBy;
-        this.visibility = visibility;
-        this.isDeleted = isDeleted;
-        this.deletedOn = deletedOn;
-        this.deletedBy = deletedBy;
-        this.filters = filters;
-        if (this.audit == null) {
-            this.audit = new AuditDTO();
-        }
-        this.audit.setCreatedOn(createdOn);
-        this.mapConfiguration = mapConfiguration;
-        this.reportTypeEnum = reportTypeEnum;
-    }
+    private MapConfigurationDTO mapConfiguration = new MapConfigurationDTO();
 
     public Long getId() {
         return id;
@@ -138,11 +90,11 @@ public class ReportDTO implements Serializable {
         this.description = description;
     }
 
-    public Boolean getWithMap() {
+    public boolean getWithMap() {
         return withMap;
     }
 
-    public void setWithMap(Boolean withMap) {
+    public void setWithMap(boolean withMap) {
         this.withMap = withMap;
     }
 
@@ -214,16 +166,16 @@ public class ReportDTO implements Serializable {
         return isDefault;
     }
 
-    public void setDefault(Boolean isDefault) {
+    public void setDefault(boolean isDefault) {
         this.isDefault = isDefault;
     }
 
     public Date getDeletedOn() {
-        Date deletedOn = null;
+        Date newDate = null;
         if (this.deletedOn != null){
-            deletedOn = new Date(this.deletedOn.getTime());
+            newDate = new Date(this.deletedOn.getTime());
         }
-        return deletedOn;
+        return newDate;
     }
 
     public void setDeletedOn(Date deletedOn) {
@@ -270,5 +222,9 @@ public class ReportDTO implements Serializable {
 
     public void setReportTypeEnum(ReportTypeEnum reportTypeEnum) {
         this.reportTypeEnum = reportTypeEnum;
+    }
+
+    public void addFilter(FilterDTO filter) {
+        filters.add(filter);
     }
 }

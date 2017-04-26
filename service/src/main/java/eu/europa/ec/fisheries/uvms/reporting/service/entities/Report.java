@@ -12,15 +12,36 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import static javax.persistence.CascadeType.ALL;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
-
-import javax.persistence.*;
-
+import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,14 +49,6 @@ import lombok.ToString;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Where;
-
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import static javax.persistence.CascadeType.ALL;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Entity
 @Table(name = "report")
@@ -69,7 +82,6 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 public class Report extends BaseEntity {
 
     public static final String IS_DELETED = "is_deleted";
-    public static final String VISIBILITY = "visibility";
     public static final String REPORT_TYPE = "report_type";
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String LIST_BY_USERNAME_AND_SCOPE = "Report.listByUsernameAndScope";
@@ -92,17 +104,14 @@ public class Report extends BaseEntity {
     private Set<Filter> filters = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = VISIBILITY)
-    @NotNull
-    private VisibilityEnum visibility;
+    private VisibilityEnum visibility = VisibilityEnum.PRIVATE;
 
     @Enumerated(EnumType.STRING)
     @Column(name = REPORT_TYPE)
-    @NotNull
-    private ReportTypeEnum reportType;
+    private ReportTypeEnum reportType = ReportTypeEnum.STANDARD;
 
     @Convert(converter = CharBooleanConverter.class)
-    @Column(name = IS_DELETED, nullable = true, length = 1)
+    @Column(name = IS_DELETED, length = 1)
     private Boolean isDeleted;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -116,7 +125,7 @@ public class Report extends BaseEntity {
     private ReportDetails details = new ReportDetails();
 
     @Embedded
-    private Audit audit;
+    private Audit audit = new Audit();
 
     @Builder
     public Report(ReportDetails details, String createdBy, Set<Filter> filters,
@@ -183,7 +192,7 @@ public class Report extends BaseEntity {
 
     @PrePersist
     private void onCreate() {
-        audit = new Audit(DateUtils.nowUTC().toDate());
+        audit.setCreatedOn(DateUtils.nowUTC().toDate());
     }
 
     public Audit getAudit() {

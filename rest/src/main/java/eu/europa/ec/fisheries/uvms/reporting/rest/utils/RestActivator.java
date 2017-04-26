@@ -12,17 +12,15 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.utils;
 
-import eu.europa.ec.fisheries.uvms.reporting.rest.resources.AlarmResource;
-import eu.europa.ec.fisheries.uvms.reporting.rest.resources.ReportingResource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import eu.europa.ec.fisheries.uvms.reporting.rest.resources.AlarmResource;
+import eu.europa.ec.fisheries.uvms.reporting.rest.resources.ReportingResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationPath("/rest")
 public class RestActivator extends Application {

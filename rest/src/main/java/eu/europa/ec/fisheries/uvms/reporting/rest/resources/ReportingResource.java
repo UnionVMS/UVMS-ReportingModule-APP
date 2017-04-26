@@ -12,10 +12,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.ADDITIONAL_PROPERTIES;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.DISTANCE_UNIT;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.SPEED_UNIT;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.TIMESTAMP;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL_PROPERTIES;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DISTANCE_UNIT;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SPEED_UNIT;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 
 import javax.ejb.EJB;
 import javax.interceptor.Interceptors;
@@ -34,7 +34,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -65,6 +64,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.enums.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.VelocityType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ServiceLayerUtils;
+import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
@@ -72,19 +72,21 @@ import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 @Path("/report")
 @Slf4j
+@NoArgsConstructor
 public class ReportingResource extends UnionVMSResource {
 
     public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
     public static final String USM_APPLICATION = "usmApplication";
 
-    @Context
-    private UriInfo context;
+    //@Context
+    //private UriInfo context;
 
     @EJB
     private ReportServiceBean reportService;
@@ -215,8 +217,9 @@ public class ReportingResource extends UnionVMSResource {
             //for delete operation, we don't really nead the permitted service layers, therefore we pass null
             originalReport = reportService.findById(features, id, username, scopeName, isAdmin, null); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
         } catch (Exception e) {
-            log.error("Failed to get report.", e);
-            return createErrorResponse();
+            String errorMsg = "Failed to get report.";
+            log.error(errorMsg, e);
+            return createErrorResponse(errorMsg);
         }
 
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport, username);
@@ -432,7 +435,7 @@ public class ReportingResource extends UnionVMSResource {
             ExecutionResultDTO reportExecutionByReportId =
                     reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format);
 
-            ObjectNode rootNode = mapWithGeoJson(reportExecutionByReportId);
+            ObjectNode rootNode = mapToGeoJson(reportExecutionByReportId);
             return createSuccessResponse(rootNode);
 
         } catch (Exception e) {
@@ -441,7 +444,7 @@ public class ReportingResource extends UnionVMSResource {
         }
     }
 
-    private ObjectNode mapWithGeoJson(ExecutionResultDTO dto) throws IOException {
+    private ObjectNode mapToGeoJson(ExecutionResultDTO dto) throws IOException {
 
         ObjectNode rootNode;
 
@@ -461,9 +464,9 @@ public class ReportingResource extends UnionVMSResource {
         rootNode.putPOJO("tracks", dto.getTracks());
         rootNode.putPOJO("trips", dto.getTrips());
 
-        stringWriter.getBuffer().setLength(0);
-        GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getActivities(), stringWriter);
-        rootNode.putPOJO("activities", mapper.readTree(stringWriter.toString()));
+        ObjectNode activityNode = new FeatureToGeoJsonJacksonMapper().convert(dto.getActivities());
+        rootNode.putPOJO("activities", activityNode);
+
         rootNode.putPOJO("criteria", dto.getFaCatchSummaryDTO());
 
         return rootNode;
@@ -491,7 +494,7 @@ public class ReportingResource extends UnionVMSResource {
             Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
 
             ExecutionResultDTO resultDTO = reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username, withActivity, displayFormat);
-            ObjectNode rootNode = mapWithGeoJson(resultDTO);
+            ObjectNode rootNode = mapToGeoJson(resultDTO);
             return createSuccessResponse(rootNode);
 
         } catch (Exception e) {
