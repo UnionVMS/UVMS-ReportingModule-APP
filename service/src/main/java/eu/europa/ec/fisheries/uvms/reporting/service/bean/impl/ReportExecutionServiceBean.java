@@ -9,11 +9,10 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.ADDITIONAL_PROPERTIES;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Constants.TIMESTAMP;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL_PROPERTIES;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 import javax.ejb.EJB;
@@ -148,11 +147,11 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
             List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
             List<ListValueTypeFilter> listValueTypeFilters = null;
-            MovementData movementData = null;
+
+            MovementData movementData = fetchPositionalData(processor, wkt);
 
             if (ReportTypeEnum.STANDARD == report.getReportType()) {
 
-                movementData = fetchPositionalData(processor, wkt);
                 listValueTypeFilters = extractListValueFilters(processor, movementData.getAssetMap(), hasAssets);
 
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
@@ -164,7 +163,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                     }
                     List<FishingActivitySummaryDTO> activitySummaryDTOs = new ArrayList<>();
                     for(FishingActivitySummary summary: tripResponse.getFishingActivityLists()){
-                        activitySummaryDTOs.add(FishingActivityMapper.INSTANCE.activitySummaryToFishingActivitySummaryDTO(summary));
+                        activitySummaryDTOs.add(FishingActivityMapper.INSTANCE.mapToFishingActivity(summary));
                     }
                     resultDTO.setActivityList(activitySummaryDTOs);
                 }

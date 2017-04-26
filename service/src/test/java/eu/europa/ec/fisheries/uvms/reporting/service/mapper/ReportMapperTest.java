@@ -10,9 +10,15 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
@@ -20,12 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 
 //TODO implement more tests
 public class ReportMapperTest extends UnitilsJUnit4 {
@@ -53,7 +53,7 @@ public class ReportMapperTest extends UnitilsJUnit4 {
     @Test
     public void testReportToReportDTOWithNoFilters(){
 
-        ReportDTO expectedDTO = ReportDTO.ReportDTOBuilder()
+        ReportDTO expectedDTO = ReportDTO.builder()
                 .id(1L)
                 .createdBy("you")
                 .description("desc")

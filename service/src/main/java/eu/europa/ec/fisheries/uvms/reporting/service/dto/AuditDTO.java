@@ -8,38 +8,39 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
-import lombok.Builder;
-
-import java.io.Serializable;
 import java.util.Date;
 
-public class AuditDTO  implements Serializable{
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import lombok.ToString;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
-    private Date createdOn;
-
-    public AuditDTO(){
-
-    }
-
-    @Builder(builderMethodName = "AuditDTOBuilder")
-    @JsonCreator
-    public AuditDTO(@JsonProperty("createdOn") Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
+@ToString
+public class AuditDTO {
 
     @JsonIgnore
+    private Date createdOn;
+
+    public AuditDTO(String createdOnValue) {
+        if (createdOnValue != null) {
+            createdOn = DateUtils.UI_FORMATTER.parseDateTime(createdOnValue).toDate();
+        } else {
+            createdOn = DateUtils.nowUTC().toDate();
+        }
+    }
+
+    public AuditDTO(){
+        createdOn = DateUtils.getNowDateUTC();
+    }
+
+    @JsonProperty("createdOn")
+    public String getCreatedOn() {
+        return DateUtils.UI_FORMATTER.print(new org.joda.time.DateTime(createdOn));
+    }
+
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }

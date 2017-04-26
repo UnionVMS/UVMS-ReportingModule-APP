@@ -10,19 +10,39 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util.merger;
 
+import static com.ninja_squad.dbsetup.Operations.insertInto;
+import static com.ninja_squad.dbsetup.Operations.sequenceOf;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.unitils.mock.MockUnitils.assertNoMoreInvocations;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.DbSetupTracker;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
-import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.BaseReportingDAOTest;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
+import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import lombok.SneakyThrows;
 import org.junit.After;
 import org.junit.Before;
@@ -32,23 +52,11 @@ import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static com.ninja_squad.dbsetup.Operations.insertInto;
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO.AssetFilterDTOBuilder;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.unitils.mock.MockUnitils.assertNoMoreInvocations;
-
 @Ignore("FIXME")
 public class FilterMergerTest extends BaseReportingDAOTest {
 
-    private FilterDAO filterDAO = new FilterDAO(em);
     protected DbSetupTracker dbSetupTracker = new DbSetupTracker();
-
+    private FilterDAO filterDAO = new FilterDAO(em);
     @TestedObject
     private FilterMerger merger = new FilterMerger(em);
 
@@ -73,7 +81,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
                         DELETE_ALL,
                         INSERT_REFERENCE_DATA,
                         insertInto("reporting.report")
-                                .columns("ID", ReportDetails.CREATED_BY, ReportDetails.NAME, Audit.CREATED_ON, ReportDetails.WITH_MAP, Report.VISIBILITY, "is_deleted", ReportDetails.SCOPE_NAME, Report.REPORT_TYPE)
+                                .columns("ID", ReportDetails.CREATED_BY, ReportDetails.NAME, Audit.CREATED_ON, ReportDetails.WITH_MAP, VISIBILITY, "is_deleted", ReportDetails.SCOPE_NAME, Report.REPORT_TYPE)
                                 .values(1, "testUser", "France", java.sql.Date.valueOf("2014-12-12"), '1', VisibilityEnum.PRIVATE, 'N', "testScope", ReportTypeEnum.STANDARD)
                                 .values(2, "testUser", "United States", java.sql.Date.valueOf("2014-12-13"), '1', VisibilityEnum.PRIVATE, 'N', "testScope", ReportTypeEnum.STANDARD)
                                 .build(),
@@ -156,7 +164,13 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         dbSetupTracker.skipNextLaunch();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
-        collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
+
+        AssetFilterDTO asset = new AssetFilterDTO();
+        asset2.setGuid("guid1-62c6-462e-a5ab-27c22439b7e6");
+        asset2.setName("asset1");
+        asset2.setId(47L);
+
+        collection.add(asset);
 
         List<Filter> existingFilters = new ArrayList<>();
         existingFilters.add(filterDAO.findEntityById(Filter.class, 49L));
@@ -176,10 +190,19 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     @SneakyThrows
     public void testMergeAssetFilter(){
 
-        asset2 = AssetFilterDTOBuilder().id(null).guid("sf3da03a2-13c2-342e-v3ab-14c12469b7e").name("JEANNE").build();
+        asset2 = new AssetFilterDTO();
+        asset2.setGuid("sf3da03a2-13c2-342e-v3ab-14c12469b7e");
+        asset2.setName("JEANNE");
+        asset2.setId(null);
 
         Collection<FilterDTO> incoming =  new ArrayList<>();
-        incoming.add(AssetFilterDTOBuilder().id(50L).guid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6").name("EMMALIE").build());
+
+        AssetFilterDTO asset = new AssetFilterDTO();
+        asset2.setGuid("ae9a03a4-62c6-462e-a5ab-27c22439b7e6");
+        asset2.setName("EMMALIE");
+        asset2.setId(50L);
+
+        incoming.add(asset);
         incoming.add(asset2);
 
         List<Filter> existingFilters = new ArrayList<>();
@@ -199,7 +222,11 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     public void testMergeAssetFilterUpdateAndDelete(){
 
         Collection<FilterDTO> collection =  new ArrayList<>();
-        collection.add(AssetFilterDTOBuilder().guid("guidguid").name("asset1").build());
+        AssetFilterDTO asset = new AssetFilterDTO();
+        asset.setGuid("guid1");
+        asset.setName("asset1");
+        asset.setId(47L);
+        collection.add(asset);
 
         List<Filter> existingFilters = new ArrayList<>();
 
@@ -223,7 +250,11 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     public void testMergeAssetFilterInsert(){
 
         Collection<FilterDTO> collection =  new ArrayList<>();
-        collection.add(AssetFilterDTOBuilder().id(47L).guid("guid1").name("asset1").build());
+        AssetFilterDTO asset = new AssetFilterDTO();
+        asset.setGuid("guid1");
+        asset.setName("asset1");
+        asset.setId(47L);
+        collection.add(asset);
 
         Report report = Report.builder().build();
         filterDAOMock.returns(new ArrayList<>()).listByReportId(null); // empty array

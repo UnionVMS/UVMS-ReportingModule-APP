@@ -10,28 +10,26 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode( of = {"id"})
+@NoArgsConstructor
+@ToString
 public abstract class FilterDTO  implements Serializable{
 
     public static final String ID = "id";
     public static final String TYPE = "type";
 
-    protected transient Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    //protected transient Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @JsonIgnore
     private Long reportId;
@@ -53,13 +51,13 @@ public abstract class FilterDTO  implements Serializable{
     public abstract Filter convertToFilter();
 
     public void validate() {
-        Set<ConstraintViolation<FilterDTO>> violations =
-                validator.validate(this);
+        // Set<ConstraintViolation<FilterDTO>> violations =
+        //         validator.validate(this);
 
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(
-                    new HashSet<ConstraintViolation<?>>(violations));
-        }
+        //if (!violations.isEmpty()) {
+        //    throw new ConstraintViolationException(
+        //             new HashSet<ConstraintViolation<?>>(violations));
+        // }
     }
 
     public Long getId() {

@@ -10,35 +10,50 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import java.security.InvalidParameterException;
-import java.util.Collections;
-import org.joda.time.DateTime;
+import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ASSETS;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_BY;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_ON;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DELETABLE;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DESC;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.EDITABLE;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.FILTER_EXPRESSION;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ID;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.IS_DEFAULT;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.MAP_CONFIGURATION;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.NAME;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.REPORT_TYPE;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SHAREABLE;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
-import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO.*;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
+import org.joda.time.DateTime;
 
 public class ReportSerializer extends JsonSerializer<ReportDTO> {
 
@@ -153,7 +168,7 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
 
 
     private void writeCriteriaFilters(JsonGenerator jgen, List<FilterDTO> criteriaFilterDTOList) throws IOException {
-        Collections.sort((List)criteriaFilterDTOList);
+        Collections.sort((List) criteriaFilterDTOList);
         jgen.writeObjectField(FilterType.criteria.toString(), criteriaFilterDTOList);
     }
 
@@ -176,7 +191,7 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
     }
 
     private void writeAssets(JsonGenerator jgen, List<FilterDTO> assetFilterDTOList) throws IOException {
-        jgen.writeObjectField(AssetFilterDTO.ASSETS, assetFilterDTOList);
+        jgen.writeObjectField(ASSETS, assetFilterDTOList);
     }
 
     private void writeVmsPosition(JsonGenerator jgen, VmsPositionFilterDTO position) throws IOException {
@@ -186,31 +201,60 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         }
     }
 
-    private void serializeReportFields(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
-        jgen.writeNumberField(ID, reportDTO.getId());
-        jgen.writeStringField(NAME, reportDTO.getName());
-        if (reportDTO.getDescription() != null) {
-            jgen.writeStringField(DESC, reportDTO.getDescription());
+    private void handleCreatedOnField(AuditDTO audit, JsonGenerator js) throws IOException {
+        if (audit != null) {
+            String createdOn = audit.getCreatedOn();
+            if (createdOn != null) {
+                js.writeStringField(CREATED_ON, createdOn);
+            }
         }
-        jgen.writeStringField(VISIBILITY, reportDTO.getVisibility().getName());
-        jgen.writeStringField(CREATED_ON, UI_FORMATTER.print(new DateTime(reportDTO.getAudit().getCreatedOn())));
-        ExecutionLogDTO executionLog = reportDTO.getExecutionLog();
+    }
+
+    private void handleExecutedOnField(ExecutionLogDTO executionLog, JsonGenerator js) throws IOException {
         if (executionLog != null) {
-            String executedOn = UI_FORMATTER.print(new DateTime(executionLog.getExecutedOn()));
-            jgen.writeStringField(ExecutionLogDTO.EXECUTED_ON, executedOn);
+            Date executedOn = executionLog.getExecutedOn();
+            if (executedOn != null) {
+                js.writeStringField(ExecutionLogDTO.EXECUTED_ON, UI_FORMATTER.print(new DateTime(executedOn)));
+            }
         } else {
-            jgen.writeStringField(ExecutionLogDTO.EXECUTED_ON, null);
+            js.writeStringField(ExecutionLogDTO.EXECUTED_ON, null); // TODO check if this else is required
         }
+    }
+
+    private void serializeReportFields(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
+        Long id = reportDTO.getId();
+        if (id != null) {
+            jgen.writeNumberField(ID, id);
+        }
+        jgen.writeStringField(NAME, reportDTO.getName());
+        jgen.writeStringField(DESC, reportDTO.getDescription());
+        VisibilityEnum visibility = reportDTO.getVisibility();
+        if (visibility != null) {
+            jgen.writeStringField(VISIBILITY, visibility.getName());
+        }
+
+        handleCreatedOnField(reportDTO.getAudit(), jgen);
+        handleExecutedOnField(reportDTO.getExecutionLog(), jgen);
+
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
-        jgen.writeBooleanField(WITH_MAP, reportDTO.getWithMap());
+
+        Boolean withMap = reportDTO.getWithMap();
+        if (withMap != null) {
+            jgen.writeBooleanField(WITH_MAP, withMap);
+        }
         jgen.writeBooleanField(IS_DEFAULT, reportDTO.isDefault());
-        jgen.writeStringField(REPORT_TYPE, reportDTO.getReportTypeEnum().getType());
+
+        ReportTypeEnum reportTypeEnum = reportDTO.getReportTypeEnum();
+        if (reportTypeEnum != null) {
+            jgen.writeStringField(REPORT_TYPE, reportTypeEnum.getType());
+        }
 
         writeMapConfigFileds(reportDTO, jgen);
     }
 
     private void writeMapConfigFileds(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
-        if (reportDTO.getWithMap() && (reportDTO.getMapConfiguration() != null)) {
+        Boolean withMap = reportDTO.getWithMap();
+        if (withMap != null && withMap && reportDTO.getMapConfiguration() != null) {
             jgen.writeFieldName(MAP_CONFIGURATION);
             jgen.writeStartObject();
             MapConfigurationDTO mapConfiguration = reportDTO.getMapConfiguration();

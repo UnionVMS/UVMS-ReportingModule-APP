@@ -23,6 +23,6 @@ public interface FishingActivityMapper {
 
     FishingActivityMapper INSTANCE = Mappers.getMapper(FishingActivityMapper.class);
 
-    FishingActivitySummaryDTO activitySummaryToFishingActivitySummaryDTO(FishingActivitySummary activitySummary);
+    FishingActivitySummaryDTO mapToFishingActivity(FishingActivitySummary activitySummary);
 
 }

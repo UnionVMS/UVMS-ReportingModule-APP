@@ -8,7 +8,10 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
+
+import java.util.Date;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
@@ -17,10 +20,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import java.util.Date;
-
-@EqualsAndHashCode(callSuper = true, of = {"startDate", "endDate"})
+@ToString
+@EqualsAndHashCode(callSuper = true, exclude = {"startDate", "endDate"})
 public class CommonFilterDTO extends FilterDTO {
 
     public static final String START_DATE = "startDate";
@@ -50,7 +53,6 @@ public class CommonFilterDTO extends FilterDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.positionSelector = positionSelector;
-        validate();
     }
 
     @Override
