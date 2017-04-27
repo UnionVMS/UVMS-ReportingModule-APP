@@ -13,15 +13,17 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import java.util.List;
+
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
-
-import java.util.List;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true, of = {"reportTypes", "activityTypes", "masters", "faPorts", "faGears", "species", "faWeight"})
+@ToString
 public class FaFilterDTO extends FilterDTO {
 
     private List<String> reportTypes;
