@@ -151,8 +151,9 @@ public class ReportingResourceTest extends JerseyTest {
 
         FaFilterDTO activity = new FaFilterDTO();
         activity.setId(1L);
+        activity.setReportId(1L);
         activity.setActivityTypes(Arrays.asList("type1", "type2"));
-        //reportDto.addFilter(activity); // TODO
+        reportDto.addFilter(activity); // TODO
 
         assertNotNull(reportDto.getAudit().getCreatedOn());
         assertEquals(ReportTypeEnum.STANDARD, reportDto.getReportTypeEnum());

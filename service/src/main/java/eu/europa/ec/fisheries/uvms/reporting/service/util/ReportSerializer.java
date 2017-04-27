@@ -153,6 +153,7 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
     private void writeFaFilters(JsonGenerator jgen, FaFilterDTO faFilter) throws IOException {
         if (faFilter != null) {
             FaFilter faFilterDTO = new FaFilter();
+            faFilterDTO.setId(faFilter.getId());
             faFilterDTO.setReportTypes(faFilter.getReportTypes());
             faFilterDTO.setActivityTypes(faFilter.getActivityTypes());
             faFilterDTO.setMasters(faFilter.getMasters());
@@ -254,7 +255,7 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
 
     private void writeMapConfigFileds(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
         Boolean withMap = reportDTO.getWithMap();
-        if (withMap != null && withMap && reportDTO.getMapConfiguration() != null) {
+        if (withMap && reportDTO.getMapConfiguration() != null) {
             jgen.writeFieldName(MAP_CONFIGURATION);
             jgen.writeStartObject();
             MapConfigurationDTO mapConfiguration = reportDTO.getMapConfiguration();
@@ -304,13 +305,10 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
             PositionSelectorDTO positionSelector = commonFilter.getPositionSelector();
             if (positionSelector != null) {
                 jgen.writeStringField(CommonFilterDTO.POSITION_SELECTOR, positionSelector.getSelector().name());
-                switch (positionSelector.getSelector()) {
-                    case last:
-                        jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().toString());
-                        jgen.writeNumberField(PositionSelectorDTO.X_VALUE, positionSelector.getValue());
-                        break;
-                    default:
-                        break;
+                if (positionSelector.getSelector() == eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector.last) {
+                    jgen.writeStringField(PositionSelectorDTO.POSITION_TYPE_SELECTOR, positionSelector.getPosition().toString());
+                    jgen.writeNumberField(PositionSelectorDTO.X_VALUE, positionSelector.getValue());
+
                 }
             }
             Date startDate = commonFilter.getStartDate();

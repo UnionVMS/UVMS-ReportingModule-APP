@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(Include.NON_NULL)
 public class FaFilter {
 
+    private Long id;
+
     @JsonProperty("reportType")
     private List<String> reportTypes;
 
@@ -98,5 +100,13 @@ public class FaFilter {
 
     public void setFaWeight(FaWeight faWeight) {
         this.faWeight = faWeight;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
