@@ -32,6 +32,7 @@ import javax.ws.rs.ext.Provider;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
@@ -43,6 +44,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
@@ -186,7 +188,10 @@ public class ReportingResourceTest extends JerseyTest {
 
         assertEquals(reportResponse, reportDto);
 
-        assertThat(reportResponse.getFilters()).containsOnlyElementsOf(reportDto.getFilters());
+        List<FilterDTO> filters = reportResponse.getFilters();
+        for (FilterDTO filterDTO : filters) {
+            assertThat(filters).contains(filterDTO);
+        }
 
     }
 
