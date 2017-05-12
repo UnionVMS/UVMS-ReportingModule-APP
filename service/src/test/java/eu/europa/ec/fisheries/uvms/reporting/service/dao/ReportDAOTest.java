@@ -126,7 +126,7 @@ public class ReportDAOTest extends BaseReportingDAOTest {
         dbSetupTracker.skipNextLaunch();
 
         ReportDetails details = ReportDetails.builder().name("name").scopeName("DG_MARE").createdBy("CEDRIC").build();
-        Report report = Report.builder().details(details).build();
+        Report report = Report.builder().details(details).audit(new Audit()).build();
         GroupCriteriaFilter gear = new GroupCriteriaFilter();
         gear.setCode(GroupCriteriaType.FAO_AREA.name());
         gear.setOrderSequence(1);

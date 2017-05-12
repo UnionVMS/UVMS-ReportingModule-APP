@@ -10,12 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
+import java.util.Date;
+
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -31,7 +32,7 @@ public class Audit implements Serializable {
     @Column(name = CREATED_ON, nullable = false)
     private Date createdOn;
 
-    Audit() {
+    public Audit() {
     }
 
     @Builder
