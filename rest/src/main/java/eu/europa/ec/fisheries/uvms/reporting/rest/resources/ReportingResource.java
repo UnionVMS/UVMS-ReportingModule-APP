@@ -16,6 +16,7 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DISTANCE_UNIT;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SPEED_UNIT;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.ejb.EJB;
 import javax.interceptor.Interceptors;
@@ -32,7 +33,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -85,9 +85,6 @@ public class ReportingResource extends UnionVMSResource {
     public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
     public static final String USM_APPLICATION = "usmApplication";
 
-    //@Context
-    //private UriInfo context;
-
     @EJB
     private ReportServiceBean reportService;
 
@@ -106,7 +103,7 @@ public class ReportingResource extends UnionVMSResource {
      */
     @GET
     @Path("/list")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     @Interceptors(ReportingExceptionInterceptor.class)
     public Response listReports(@Context HttpServletRequest request,
                                 @HeaderParam("scopeName") String scopeName,
@@ -119,7 +116,7 @@ public class ReportingResource extends UnionVMSResource {
 
     @GET
     @Path("/list/lastexecuted/{numberOfReport}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     @Interceptors(ReportingExceptionInterceptor.class)
     public Response listLastExecutedReports(@Context HttpServletRequest request,
                                             @HeaderParam("scopeName") String scopeName,
@@ -168,7 +165,7 @@ public class ReportingResource extends UnionVMSResource {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     public Response getReport(@Context HttpServletRequest request,
                               @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName,
@@ -200,7 +197,7 @@ public class ReportingResource extends UnionVMSResource {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
     public Response deleteReport(@Context HttpServletRequest request,
                                  @PathParam("id") Long id,
                                  @HeaderParam("scopeName") String scopeName,
@@ -241,8 +238,8 @@ public class ReportingResource extends UnionVMSResource {
 
     @PUT
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public Response updateReport(@Context HttpServletRequest request,
                                  ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
                                  @HeaderParam("scopeName") String scopeName,
@@ -283,8 +280,8 @@ public class ReportingResource extends UnionVMSResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public Response createReport(@Context HttpServletRequest request,
                                  ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
                                  @HeaderParam("scopeName") String scopeName) {
@@ -348,8 +345,8 @@ public class ReportingResource extends UnionVMSResource {
 
     @PUT
     @Path("/share/{id}/{visibility}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public Response shareReport(@Context HttpServletRequest request,
                                 @PathParam("id") Long id,
                                 @PathParam("visibility") String visibility,
@@ -413,8 +410,8 @@ public class ReportingResource extends UnionVMSResource {
 
     @POST
     @Path("/execute/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public Response runReport(@Context HttpServletRequest request,
                               @PathParam("id") Long id,
                               @HeaderParam("scopeName") String scopeName,
@@ -474,8 +471,8 @@ public class ReportingResource extends UnionVMSResource {
 
     @POST
     @Path("/execute/")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public Response runReport(@Context HttpServletRequest request, Report report,
                               @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
 
@@ -529,8 +526,8 @@ public class ReportingResource extends UnionVMSResource {
 
     @POST
     @Path("/default/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    @Consumes(APPLICATION_JSON)
     public Response defaultReport(@Context HttpServletRequest request, @PathParam("id") Long id,
                                   @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
                                   Map<String, Object> payload) {
