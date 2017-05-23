@@ -54,38 +54,49 @@ import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 @LocalBean
 public class ReportServiceBean {
 
-    private @EJB
-    ReportRepository repository;
-    private @EJB
-    SpatialService spatialModule;
+    @EJB
+    private ReportRepository repository;
+
+    @EJB
+    private SpatialService spatialModule;
+
     private ReportMapper reportMapper;
 
     @PostConstruct
     public void init() {
         reportMapper = new ReportMapper();
     }
+
     @IAuditInterceptor(auditActionType = AuditActionEnum.CREATE)
     @Transactional
     public ReportDTO create(ReportDTO report, String username) throws ReportingServiceException {
-        ReportDTO reportDTO = saveReport(report);
 
-        saveMapConfiguration(reportDTO.getId(), report.getWithMap(), report.getMapConfiguration());
+        ReportDTO reportDTO;
 
-        return reportDTO;
-    }
-
-    public ReportDTO saveReport(ReportDTO report) {
         try {
+
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().filters(true).build();
             Report reportEntity = mapper.reportDTOToReport(report);
-            reportEntity = repository.createEntity(reportEntity);
-            ReportDTO reportDTO = mapper.reportToReportDTO(reportEntity);
-            return reportDTO;
+
+            repository.createEntity(reportEntity);
+
+            reportDTO = mapper.reportToReportDTO(reportEntity);
+
+            if (report.getWithMap()) {
+                if (report.getMapConfiguration() == null) {
+                    throw new ReportingServiceException("MAP CONFIGURATION NOT SET.");
+                }
+
+                saveOrUpdateMapConfiguration(reportDTO.getId(), report.getMapConfiguration());
+            }
+
         } catch (Exception e) {
             //throwing unchecked exception because of the Spatial JMS transaction.
             //if Spatial throws an exception, this transaction was not rolled back, unless we throw unchecked exception.
-            throw new RuntimeException("Error during the creation of the report", e);
+            throw new RuntimeException("Error during the creation of the map configuration", e);
         }
+
+        return reportDTO;
     }
 
     @Transactional
@@ -132,8 +143,6 @@ public class ReportServiceBean {
         reportDTO.setFilters(filterDTOs);
         return reportDTO;
     }
-
-
 
     @IAuditInterceptor(auditActionType = AuditActionEnum.DELETE)
     @Transactional
@@ -187,13 +196,11 @@ public class ReportServiceBean {
         return toReportDTOs;
     }
 
-
     @IAuditInterceptor(auditActionType = AuditActionEnum.SHARE)
     @Transactional
     public void share(Long reportId, String username, String scopeName, Boolean isAdmin, VisibilityEnum newVisibility) throws ReportingServiceException {
         repository.changeVisibility(reportId, newVisibility, username, scopeName, isAdmin);
     }
-
 
     @Transactional
     public ReportGetStartAndEndDateRS getReportDates(String now, Long id, String userName, String scopeName) throws ReportingServiceException {
@@ -209,21 +216,6 @@ public class ReportServiceBean {
             }
         }
         return new ReportGetStartAndEndDateRS();
-    }
-
-    private void saveMapConfiguration(long reportId, Boolean withMap, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
-        if (withMap) {
-            try {
-                if (mapConfiguration == null) {
-                    throw new ReportingServiceException("When withMap is set to true you must specify mapConfiguration attributes.");
-                }
-                saveOrUpdateMapConfiguration(reportId, mapConfiguration);
-            } catch (Exception e) {
-                //throwing unchecked exception because of the Spatial JMS transaction.
-                //if Spatial throws an exception, this transaction was not rolled back, unless we throw unchecked exception.
-                throw new RuntimeException("Error during the creation of the map configuration", e);
-            }
-        }
     }
 
     private void saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
