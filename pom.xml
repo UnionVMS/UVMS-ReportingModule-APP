@@ -43,8 +43,6 @@
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
         <usm4uvms.version>3.0.0</usm4uvms.version>
-        <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
-        <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.0</rules.model.version>
 		<reporting.model.version>0.5.6.presweden</reporting.model.version>
         <uvms.test.version>0.0.7</uvms.test.version>

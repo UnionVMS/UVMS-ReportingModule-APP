@@ -20,6 +20,8 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.reporting.model.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -228,7 +230,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         activity.setGears(Arrays.asList("GEAR1"));
         activity.setPorts(Arrays.asList("PORT1"));
         activity.setSpecies(Arrays.asList("SPECIES1"));
-        activity.setVesselIdentifiers(Arrays.asList("VESSELID1"));
+        activity.setVesselIdentifiers(Arrays.asList(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK,"VESSELID1")));
         fishingTripResponse.setFishingActivityLists(Arrays.asList(activity));
         fishingTripResponse.setFishingTripIdLists(Arrays.asList(trip));
         return fishingTripResponse;
