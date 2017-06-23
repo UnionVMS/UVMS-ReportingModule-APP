@@ -8,20 +8,24 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -76,7 +80,12 @@ public class VmsSegmentFilter extends Filter {
 
     @Override
     public List<ListCriteria> movementListCriteria() {
-        return Arrays.asList(VmsSegmentFilterMapper.INSTANCE.categoryToListCriteria(this));
+        ListCriteria listCriteria = VmsSegmentFilterMapper.INSTANCE.categoryToListCriteria(this);
+        List<ListCriteria> result = emptyList();
+        if (listCriteria != null && listCriteria.getValue() != null) {
+            result = singletonList(VmsSegmentFilterMapper.INSTANCE.categoryToListCriteria(this));
+        }
+        return result;
     }
 
     @Override

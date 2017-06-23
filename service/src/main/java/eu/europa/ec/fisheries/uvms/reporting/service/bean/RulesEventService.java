@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
@@ -15,9 +17,6 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 
 import java.util.List;
 
-/**
- * Created by padhyad on 3/23/2016.
- */
 public interface RulesEventService {
 
     List<TicketAndRuleType> GetAlarmsForMovements(List<String> movementId) throws ReportingServiceException;

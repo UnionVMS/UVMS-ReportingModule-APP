@@ -8,13 +8,40 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
+
+import static javax.persistence.CascadeType.ALL;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
 import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
+import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,16 +49,6 @@ import lombok.ToString;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import static javax.persistence.CascadeType.ALL;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 @Entity
 @Table(name = "report")
@@ -59,19 +76,26 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 })
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(callSuper = false, exclude = {"executionLogs", "filters", "audit"})
-@ToString
+@ToString(callSuper = true)
 @Data
 @FilterDef(name = Report.EXECUTED_BY_USER, parameters = @ParamDef(name = "username", type = "string"))
 public class Report extends BaseEntity {
 
     public static final String IS_DELETED = "is_deleted";
-    public static final String VISIBILITY = "visibility";
+    public static final String REPORT_TYPE = "report_type";
     public static final String EXECUTED_BY_USER = "executedByUser";
     public static final String LIST_BY_USERNAME_AND_SCOPE = "Report.listByUsernameAndScope";
     public static final String LIST_TOP_EXECUTED_BY_DATE = "Report.listTopExecutedByDate";
     public static final String LIST_BY_CREATION_DATE = "Report.listByCreationDate";
     public static final String FIND_BY_ID = "Report.findReportByReportId";
 
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="report_seq", sequenceName="report_seq", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="report_seq")
+	private Long id;
+
+	
     @OneToMany(mappedBy = "report", cascade = ALL)
     @org.hibernate.annotations.Filter(name = EXECUTED_BY_USER, condition = "executed_by = :username")
     private Set<ExecutionLog> executionLogs = new HashSet<>();
@@ -80,12 +104,14 @@ public class Report extends BaseEntity {
     private Set<Filter> filters = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = VISIBILITY)
-    @NotNull
-    private VisibilityEnum visibility;
+    private VisibilityEnum visibility = VisibilityEnum.PRIVATE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = REPORT_TYPE)
+    private ReportTypeEnum reportType = ReportTypeEnum.STANDARD;
 
     @Convert(converter = CharBooleanConverter.class)
-    @Column(name = IS_DELETED, nullable = true, length = 1)
+    @Column(name = IS_DELETED, length = 1)
     private Boolean isDeleted;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -99,14 +125,15 @@ public class Report extends BaseEntity {
     private ReportDetails details = new ReportDetails();
 
     @Embedded
-    private Audit audit;
+    private Audit audit = new Audit();
 
     @Builder
-    public Report(Long id, ReportDetails details, String createdBy, Set<Filter> filters,
+    public Report(ReportDetails details, String createdBy, Set<Filter> filters,
                   Set<ExecutionLog> executionLogs, Audit audit) {
         this.details = details;
         this.visibility = VisibilityEnum.PRIVATE;
         this.filters = filters;
+        this.reportType = ReportTypeEnum.STANDARD;
         this.executionLogs = executionLogs;
         this.isDeleted = false;
         this.audit = audit;
@@ -121,19 +148,25 @@ public class Report extends BaseEntity {
         ExecutionLog executionLog;
 
         if (isEmpty(executionLogs)) {
-
             executionLog = ExecutionLog.builder().report(this).executedBy(username).build();
-
             executionLogs.add(executionLog);
 
         } else {
-
             executionLog = executionLogs.iterator().next();
-
             executionLog.setExecutedOn(DateUtils.nowUTC().toDate());
-
         }
+    }
 
+    public boolean isLastPositionSelected() {
+        for (Filter filter : filters) {
+            if (filter instanceof CommonFilter) {
+                PositionSelector positionSelector = ((CommonFilter) filter).getPositionSelector();
+                if (positionSelector != null && Position.positions.equals(positionSelector.getPosition())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void merge(Report incoming) {
@@ -142,15 +175,24 @@ public class Report extends BaseEntity {
         this.deletedOn = incoming.deletedOn;
         this.deletedBy = incoming.deletedBy;
         this.visibility = incoming.visibility;
+        this.reportType = incoming.reportType;
     }
 
     public void mergeDetails(ReportDetails reportDetails) {
         this.details.merge(reportDetails);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @PrePersist
     private void onCreate() {
-        audit = new Audit(DateUtils.nowUTC().toDate());
+        audit.setCreatedOn(DateUtils.nowUTC().toDate());
     }
 
     public Audit getAudit() {
@@ -183,5 +225,13 @@ public class Report extends BaseEntity {
 
     public void setVisibility(VisibilityEnum visibility) {
         this.visibility = visibility;
+    }
+
+    public ReportTypeEnum getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(ReportTypeEnum reportType) {
+        this.reportType = reportType;
     }
 }

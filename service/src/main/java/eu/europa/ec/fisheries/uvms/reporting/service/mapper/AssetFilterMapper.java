@@ -8,20 +8,23 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.uvms.reporting.model.vms.Asset;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import java.util.List;
-import java.util.Set;
 
 @Mapper(uses = ObjectFactory.class)
 public interface AssetFilterMapper {
@@ -41,6 +44,8 @@ public interface AssetFilterMapper {
             @Mapping(constant = "GUID", target = "key"),
     })
     AssetListCriteriaPair assetFilterToAssetListCriteriaPair(AssetFilter assetFilter);
+
+    Set<AssetListCriteriaPair> assetFilterListToAssetListCriteriaPairList(Set<AssetFilter> assetFilter);
 
     @Mappings({
             @Mapping(source = "guid", target = "value"),

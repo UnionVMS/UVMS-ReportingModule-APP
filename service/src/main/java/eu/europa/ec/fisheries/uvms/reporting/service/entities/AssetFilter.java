@@ -8,11 +8,14 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -27,7 +30,7 @@ import static java.util.Arrays.asList;
 @Entity
 @DiscriminatorValue("ASSET")
 @EqualsAndHashCode(callSuper = false, of = {"guid"})
-@ToString
+@ToString(callSuper = true)
 public class AssetFilter extends Filter {
 
     @NotNull
@@ -71,6 +74,7 @@ public class AssetFilter extends Filter {
     public List<ListCriteria> movementListCriteria() {
         return asList(AssetFilterMapper.INSTANCE.assetFilterToListCriteria(this));
     }
+
 
     public String getGuid() {
         return guid;

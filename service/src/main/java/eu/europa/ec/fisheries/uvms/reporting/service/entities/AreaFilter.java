@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
@@ -24,7 +26,7 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.
 @Entity
 @DiscriminatorValue("areas")
 @EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
-@ToString
+@ToString(callSuper = true)
 public class AreaFilter extends Filter {
 
     @Column(name = "area_type")

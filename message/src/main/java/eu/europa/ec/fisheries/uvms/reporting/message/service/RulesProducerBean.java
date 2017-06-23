@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
@@ -17,19 +19,15 @@ import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
 
-/**
- * Created by padhyad on 3/23/2016.
- */
+
 @Stateless
 @Local
 public class RulesProducerBean extends AbstractProducer {
 
-    @Resource(mappedName = MessageConstants.QUEUE_MODULE_RULES)
-    private Destination destination;
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_MODULE_RULES;
+	}	
 
-    @Override
-    protected Destination getDestination() {
-        return destination;
-    }
 }

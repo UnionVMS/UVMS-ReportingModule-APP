@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,9 +21,6 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 
-/**
- * Created by georgige on 10/13/2015.
- */
 @EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
 public class AreaFilterDTO extends FilterDTO {
 

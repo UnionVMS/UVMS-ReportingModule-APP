@@ -1,3 +1,5 @@
 *.iml
 target
 target/*
+container-conf/lib/*
+model/*

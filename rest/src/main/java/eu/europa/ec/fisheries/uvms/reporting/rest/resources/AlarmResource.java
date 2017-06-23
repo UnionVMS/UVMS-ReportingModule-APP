@@ -8,10 +8,12 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.AlarmServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AlarmServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.rules.AlarmMovementList;
 import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +28,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/**
- * Created by padhyad on 3/25/2016.
- */
 @Path("/alarms")
 @Slf4j
 public class AlarmResource extends UnionVMSResource {

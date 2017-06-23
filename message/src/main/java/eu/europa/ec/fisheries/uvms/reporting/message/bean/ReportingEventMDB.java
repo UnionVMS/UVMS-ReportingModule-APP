@@ -8,17 +8,19 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndDateEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.mappper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.reporting.model.mappper.ReportingModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRQ;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleMethod;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleRequest;
+import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.ActivationConfigProperty;
@@ -33,9 +35,6 @@ import javax.jms.TextMessage;
 
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
 
-/**
- * Created by padhyad on 3/18/2016.
- */
 @MessageDriven(mappedName = QUEUE_MODULE_SPATIAL, activationConfig = {
         @ActivationConfigProperty(propertyName = "messagingType", propertyValue = CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = DESTINATION_TYPE_QUEUE),

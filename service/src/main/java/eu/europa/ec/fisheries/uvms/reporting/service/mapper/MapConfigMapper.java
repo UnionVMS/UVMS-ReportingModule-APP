@@ -8,10 +8,12 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.AreaTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.enums.AreaTypeEnum;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

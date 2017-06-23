@@ -8,12 +8,14 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,7 +33,7 @@ public class FilterToDTOVisitorTest {
         VmsTrackFilter filter = VmsTrackFilter.builder()
                 .durationRange(new DurationRange(5F, 500F))
                 .minAvgSpeed(50F).maxAvgSpeed(100F)
-                .timeRange(new TimeRange(10F, 20F))
+                .timeRange(new Range(10F, 20F))
                 .reportId(1L)
                 .build();
 

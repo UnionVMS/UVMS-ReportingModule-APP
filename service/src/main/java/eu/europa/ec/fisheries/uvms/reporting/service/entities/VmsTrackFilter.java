@@ -8,12 +8,17 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -29,11 +34,15 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.
 @Entity
 @DiscriminatorValue("VMSTRACK")
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(callSuper = true)
 public class VmsTrackFilter extends Filter {
 
     @Embedded
-    private TimeRange timeRange;
+    @AttributeOverrides({
+            @AttributeOverride(name="min", column=@Column(name="MIN_TIME")),
+            @AttributeOverride(name="max", column=@Column(name="MAX_TIME"))
+    })
+    private Range timeRange;
 
     @Embedded
     private DurationRange durationRange;
@@ -49,7 +58,7 @@ public class VmsTrackFilter extends Filter {
     }
 
     @Builder
-    public VmsTrackFilter(Long reportId, TimeRange timeRange, DurationRange durationRange, Float minAvgSpeed,
+    public VmsTrackFilter(Long reportId, Range timeRange, DurationRange durationRange, Float minAvgSpeed,
                           Float maxAvgSpeed) {
         super(vmstrack, reportId);
         this.timeRange = timeRange;
@@ -88,11 +97,11 @@ public class VmsTrackFilter extends Filter {
         return rangeCriteria;
     }
 
-    public TimeRange getTimeRange() {
+    public Range getTimeRange() {
         return timeRange;
     }
 
-    public void setTimeRange(TimeRange timeRange) {
+    public void setTimeRange(Range timeRange) {
         this.timeRange = timeRange;
     }
 
@@ -121,12 +130,12 @@ public class VmsTrackFilter extends Filter {
     }
 
     public String convertedMinTime(){
-        Long minTime = timeRange.getMinTime() != null ? timeRange.getMinTime().longValue() : 0;
+        Long minTime = timeRange.getMin() != null ? timeRange.getMin().longValue() : 0;
         return String.valueOf(TimeUnit.MILLISECONDS.convert(minTime, TimeUnit.HOURS));
     }
 
     public String convertedMaxTime(){
-        Long maxTime = timeRange.getMaxTime() != null ? timeRange.getMaxTime().longValue() : Long.MAX_VALUE;
+        Long maxTime = timeRange.getMax() != null ? timeRange.getMax().longValue() : Long.MAX_VALUE;
         return String.valueOf(TimeUnit.MILLISECONDS.convert(maxTime, TimeUnit.HOURS));
     }
 

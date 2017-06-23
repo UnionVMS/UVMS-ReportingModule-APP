@@ -16,8 +16,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class TrackFilterDTO extends FilterDTO {
 
     public static final String TRK_MIN_TIME = "trkMinTime";

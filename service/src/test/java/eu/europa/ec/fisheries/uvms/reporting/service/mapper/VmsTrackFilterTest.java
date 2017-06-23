@@ -8,11 +8,13 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.TimeRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -47,7 +49,7 @@ public class VmsTrackFilterTest {
 
         VmsTrackFilter trackFilter1 = VmsTrackFilter
                 .builder()
-                    .timeRange(new TimeRange(null, null))
+                    .timeRange(new Range(null, null))
                     .minAvgSpeed(null).maxAvgSpeed(null)
                     .durationRange(new DurationRange(null, null))
                 .build();
@@ -56,7 +58,7 @@ public class VmsTrackFilterTest {
 
         VmsTrackFilter trackFilter2 = VmsTrackFilter
                 .builder()
-                .timeRange(new TimeRange(10F, null))
+                .timeRange(new Range(10F, null))
                 .minAvgSpeed(null).maxAvgSpeed(null)
                 .durationRange(new DurationRange(null, null))
                 .build();
@@ -67,7 +69,7 @@ public class VmsTrackFilterTest {
 
         VmsTrackFilter trackFilter3 = VmsTrackFilter
                 .builder()
-                .timeRange(new TimeRange(10F, 100F))
+                .timeRange(new Range(10F, 100F))
                 .minAvgSpeed(null).maxAvgSpeed(null)
                 .durationRange(new DurationRange(null, null))
                 .build();

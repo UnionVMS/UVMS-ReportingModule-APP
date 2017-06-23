@@ -26,4 +26,8 @@ public interface FilterVisitor<T> {
 
     T visitCommonFilter(CommonFilter commonFilter);
 
+    T visitFaFilter(FaFilter faFilter);
+
+    T visitCriteriaFilter(GroupCriteriaFilter criteriaFilter);
+
 }

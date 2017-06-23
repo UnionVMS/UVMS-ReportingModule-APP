@@ -8,26 +8,30 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.uvms.reporting.model.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.security.AuthorizationCheckUtil;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
-import lombok.Builder;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import com.google.common.collect.Sets;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ExecutionLog;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
+import lombok.Builder;
 
 public class ReportMapper {
 
@@ -67,6 +71,7 @@ public class ReportMapper {
         reportDTO.setDeletedOn(report.getDeletedOn());
         reportDTO.setDeletedBy(report.getDeletedBy());
         reportDTO.setVisibility(report.getVisibility());
+        reportDTO.setReportTypeEnum(report.getReportType());
 
         if (filters) {
             reportDTO.setFilters(filterSetToFilterDTOSet(report.getFilters()));
@@ -89,7 +94,7 @@ public class ReportMapper {
         if (dto == null) {
             return null;
         }
-        Report report = factory.createReport();
+        Report report = new Report();
         report.setDetails(new ReportDetails(
                 dto.getDescription(), dto.getName(), dto.getWithMap(), dto.getScopeName(), dto.getCreatedBy())
         );
@@ -99,6 +104,7 @@ public class ReportMapper {
         report.setDeletedOn(dto.getDeletedOn());
         report.setDeletedBy(dto.getDeletedBy());
         report.setVisibility(dto.getVisibility());
+        report.setReportType(dto.getReportTypeEnum());
         return report;
     }
 

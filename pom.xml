@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
     <artifactId>reporting</artifactId>
-    <version>0.5.6-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven projekt-archetype for UnionVms modules</description>
+    <url>http://www.your.site.com/</url>
 
     <properties>
 
         <sonar.exclusions>src/main/webapp/apidocs/**/*</sonar.exclusions>
-
 		<release.branch.name>uvms-1.0.0</release.branch.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -19,38 +20,65 @@
         <javaee.version>7.0</javaee.version>
         <sl4j.version>1.7.12</sl4j.version>
         <logback.version>1.1.2</logback.version>
-        <mapstruct.version>1.0.0.CR2</mapstruct.version>
-        <jackson.version>2.4.1</jackson.version>
+        <mapstruct.version>1.1.0.Final</mapstruct.version>
+        <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
-        <asset.model.version>2.0.6</asset.model.version>
-        <audit.model.version>2.0.0</audit.model.version>
-        <movement.model.version>2.0.6</movement.model.version>
-        <spatial.model.version>0.5.4</spatial.model.version>
+        <asset.model.version>3.0.0</asset.model.version>
+        <audit.model.version>3.0.0</audit.model.version>
+        <movement.model.version>3.0.4</movement.model.version>
+        <spatial.model.version>1.0.3</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
-        <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.10</uvms.commons.version>
+        <uvms.commons.version>2.0.18-SNAPSHOT</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
-        <usm4uvms.version>2.0.16</usm4uvms.version>
+        <usm4uvms.version>2.0.19</usm4uvms.version>
         <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-        <rules.model.version>2.0.0</rules.model.version>
-		<reporting.model.version>0.5.4</reporting.model.version>
-        <uvms.test.version>0.0.3</uvms.test.version>
+        <rules.model.version>3.0.0</rules.model.version>
+		<reporting.model.version>1.0.2</reporting.model.version>
+        <uvms.test.version>0.0.4</uvms.test.version>
+        <activity.model.version>0.5.12-SNAPSHOT</activity.model.version>
+
+        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
+
+    <scm>
+        <connection>${scm.connection}</connection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>focus-releases</id>
+            <name>UnionVms Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>focus-snapshots</id>
+            <name>UnionVms Snapshot Repository</name>
+            <url>http://nexus.focus.fish/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencyManagement>
 
         <dependencies>
 
             <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+                <artifactId>activity-model</artifactId>
+                <version>${activity.model.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model.version}</version>
+                <classifier>date</classifier>
             </dependency>
         
             <dependency>
@@ -63,13 +91,16 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
+				<optional>true</optional>				
             </dependency>
+
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>0.4</version>
                 <!--<scope>test</scope>-->
             </dependency>
+
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geojson</artifactId>
@@ -80,6 +111,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>uvms-commons</artifactId>
                 <version>${uvms.commons.version}</version>
+				<optional>true</optional>
             </dependency>
 
             <dependency>
@@ -104,12 +136,14 @@
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.model.version}</version>
+                <classifier>xmlgregoriancalendar</classifier>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-model</artifactId>
                 <version>${asset.model.version}</version>
+				<classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -209,15 +243,6 @@
                 <version>18.0</version>
             </dependency>
 
-            <!-- TEST -->
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.11</version>
-                <scope>test</scope>
-            </dependency>
-
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>uvms-test</artifactId>
@@ -226,40 +251,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.1.8.Final</version>
-                <scope>test</scope>
-                <type>pom</type>
-            </dependency>
-
-            <!-- Arquillian -->
-            <dependency>
-                <groupId>org.jboss.arquillian.junit</groupId>
-                <artifactId>arquillian-junit-container</artifactId>
-                <version>1.1.8.Final</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.skyscreamer</groupId>
-                <artifactId>jsonassert</artifactId>
-                <version>1.2.3</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>net.javacrumbs.json-unit</groupId>
-                <artifactId>json-unit</artifactId>
-                <version>1.5.2</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>3.0.11.Final</version>
-               	<scope>test</scope>
             </dependency>
             
             <dependency>
@@ -349,24 +343,38 @@
     </repositories>
 
  	
-    <distributionManagement>
-        <repository>
-            <id>digit-releases</id>
-            <name>DG DIGIT Repository</name>
-            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
-        </repository>
-        <snapshotRepository>
-            <id>digit-snapshots</id>
-            <name>DG DIGIT Snapshot Repository</name>
-            <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<profiles>
+        <profile>
+            <id>dg-mare</id>
+            <distributionManagement>
+                <repository>
+                    <id>digit-releases</id>
+                    <name>DG DIGIT Repository</name>
+                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>digit-snapshots</id>
+                    <name>DG DIGIT Snapshot Repository</name>
+                    <url>https://webgate.ec.europa.eu/CITnet/nexus/content/repositories/mare-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
 
-	<scm>
-		 <connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</connection>
-		 <developerConnection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</developerConnection>
-		 <url>https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/</url>
-	</scm>
+            <properties>
+            	<scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</scm.connection>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+
+    </profiles>
 
     <build>
         <pluginManagement>
@@ -387,19 +395,28 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.9</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
+                            <configuration>
+                                <additionalparam>${javadoc.opts}</additionalparam>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
+
             </plugins>
         </pluginManagement>
-
 
         <plugins>
             <plugin>
@@ -412,9 +429,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.sonar-plugins.java</groupId>
-                <artifactId>sonar-java-plugin</artifactId>
-                <version>3.2</version>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.0.1</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -449,6 +466,7 @@
         <module>rest</module>
         <module>service</module>
         <module>message</module>
-        <module>deploy</module>
+        <module>deploy-wildfly</module>
+        <module>deploy-weblogic</module>
     </modules>
 </project>

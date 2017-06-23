@@ -8,14 +8,22 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.common.DateUtils;
+import eu.europa.ec.fisheries.uvms.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.validation.CommonFilterIsValid;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.validation.CommonFilterIsValid;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
@@ -105,6 +113,36 @@ public class CommonFilter extends Filter {
         if (date.getFrom() == null) {
             date.setFrom(DateUtils.dateToString(DateUtils.START_OF_TIME.toDate()));
         }
+    }
+
+    @Override
+    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
+        Selector selector = getPositionSelector().getSelector();
+        Date startDate = null;
+        Date endDate = null;
+        List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss");
+        switch (selector) {
+            case all:
+                startDate = getDateRange().getStartDate();
+                endDate = getDateRange().getEndDate();
+                break;
+            case last:
+                if (getPositionSelector().getPosition().equals(Position.positions)) {
+                    return Collections.emptyList();
+                }
+                Float hours = getPositionSelector().getValue();
+                startDate = DateUtils.nowUTCMinusSeconds(now, hours).toDate();
+                endDate = now.toDate();
+                break;
+        }
+        if (startDate != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_START, dateFormat.format(startDate)));
+        }
+        if (endDate != null) {
+            faFilterTypes.add(new SingleValueTypeFilter(SearchFilter.PERIOD_END, dateFormat.format(endDate)));
+        }
+        return faFilterTypes;
     }
 
     // UT

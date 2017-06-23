@@ -10,41 +10,45 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
+import java.util.Collections;
+import java.util.List;
+
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.domain.BaseEntity;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.joda.time.DateTime;
 
 @Entity
@@ -55,19 +59,23 @@ import org.joda.time.DateTime;
         @NamedQuery(name = Filter.LIST_BY_REPORT_ID, query = "SELECT f FROM Filter f WHERE report.id = :reportId"),
         @NamedQuery(name = Filter.DELETE_BY_ID, query = "DELETE FROM Filter WHERE id = :id")
 })
-@EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "validator", "reportId"})
+@EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "reportId"})
 @AttributeOverride(name = "id", column = @Column(name = "filter_id"))
+@ToString(callSuper = true, exclude = {"report", "type", "reportId"})
 public abstract class Filter extends BaseEntity {
 
     public static final String REPORT_ID = "report_id";
     public static final String LIST_BY_REPORT_ID = "Filter.listByReportId";
     public static final String DELETE_BY_ID = "Filter.deleteById";
 
+	@Id
+	@Column(name = "id")
+	@SequenceGenerator(name="filter_seq", sequenceName="filter_seq", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="filter_seq")
+	private Long id;
+	
     @Transient
     private FilterType type;
-
-    @Transient
-    protected Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @ManyToOne
     @JoinColumn(name = REPORT_ID, nullable = false)
@@ -91,16 +99,24 @@ public abstract class Filter extends BaseEntity {
     public abstract <T> T accept(FilterVisitor<T> visitor);
 
     protected void validate() {
-        Set<ConstraintViolation<Filter>> violations =
-                validator.validate(this);
+        //Set<ConstraintViolation<Filter>> violations =
+        //        validator.validate(this);
 
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(
-                    new HashSet<ConstraintViolation<?>>(violations));
-        }
+        //if (!violations.isEmpty()) {
+        //    throw new ConstraintViolationException(
+        //            new HashSet<ConstraintViolation<?>>(violations));
+        //}
     }
 
     public abstract void merge(Filter filter);
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Report getReport() {
         return report;
@@ -144,6 +160,14 @@ public abstract class Filter extends BaseEntity {
         return new AreaIdentifierType();
     }
 
+    public List<ListValueTypeFilter> getListValueFilters(DateTime now) {
+        return Collections.emptyList();
+    }
+
+    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
+        return Collections.emptyList();
+    }
+
     public static class FilterToDTOVisitor implements FilterVisitor<FilterDTO> {
 
         @Override
@@ -179,6 +203,16 @@ public abstract class Filter extends BaseEntity {
         @Override
         public FilterDTO visitCommonFilter(CommonFilter commonFilter) {
             return CommonFilterMapper.INSTANCE.dateTimeFilterToDateTimeFilterDTO(commonFilter);
+        }
+
+        @Override
+        public FilterDTO visitFaFilter(FaFilter faFilter) {
+            return FaFilterMapper.INSTANCE.faFilterToFaFilterDto(faFilter);
+        }
+
+        @Override
+        public FilterDTO visitCriteriaFilter(GroupCriteriaFilter criteriaFilter) {
+            return GroupCriteriaFilterMapper.INSTANCE.mapCriteriaFilterToCriteriaFilterDTO(criteriaFilter);
         }
     }
 }

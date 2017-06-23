@@ -8,6 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
+
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import javax.annotation.Resource;
@@ -16,10 +18,11 @@ import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractMessageService;
+import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 
 import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
-import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
+import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+import eu.europa.ec.fisheries.uvms.message.MessageConstants;
 
 /**
  * AuditMessageServiceBean responsible to send an receive messages to and from AUDIT module from Reporting
@@ -30,35 +33,14 @@ import static eu.europa.ec.fisheries.uvms.reporting.model.Constants.*;
  */
 @Stateless
 @LocalBean
-public class AuditMessageServiceBean extends AbstractMessageService {
+public class AuditMessageServiceBean extends AbstractProducer {
 
-	@Resource(mappedName = QUEUE_AUDIT_EVENT)
-    private Destination request;
+    public static final String MODULE_NAME = "reporting";
 
-    @Resource(mappedName = QUEUE_AUDIT)
-    private Destination response;
+	public String getDestinationName(){
+		return MessageConstants.QUEUE_AUDIT_EVENT;
+	}	
+	
 
-    @Resource(lookup = CONNECTION_FACTORY)
-    private ConnectionFactory connectionFactory;
-
-    @Override
-    protected ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    @Override
-    protected Destination getEventDestination() {
-        return request;
-    }
-
-    @Override
-    protected Destination getResponseDestination() {
-        return response;
-    }
-
-    @Override
-    protected String getModuleName() {
-        return MODULE_NAME;
-    }
 
 }
