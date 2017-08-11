@@ -2,6 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>fish.focus.uvms.maven</groupId>
+		<artifactId>uvms-pom</artifactId>
+		<version>1.8</version>
+	</parent>
+
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
     <artifactId>reporting</artifactId>
     <version>1.0.4-SNAPSHOT</version>
@@ -22,22 +28,22 @@
         <mapstruct.version>1.1.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
         <logback.core.version>1.1.2</logback.core.version>
-        <asset.model.version>3.0.0</asset.model.version>
-        <audit.model.version>3.0.0</audit.model.version>
-        <movement.model.version>3.0.4</movement.model.version>
+        <asset.model.version>3.0.4</asset.model.version>
+        <audit.model.version>3.0.4</audit.model.version>
+        <movement.model.version>3.0.6</movement.model.version>
         <spatial.model.version>1.0.5</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.21</uvms.commons.version>
+        <uvms.commons.version>2.0.25</uvms.commons.version>
         <geotools.version>14-M1</geotools.version>
         <lombok.version>1.16.4</lombok.version>
         <usm4uvms.version>3.0.6</usm4uvms.version>
-        <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
+        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-        <rules.model.version>3.0.0</rules.model.version>
+        <rules.model.version>3.0.7</rules.model.version>
 		<reporting.model.version>1.0.3</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>0.5.12</activity.model.version>
@@ -135,7 +141,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.model.version}</version>
-                <classifier>xmlgregoriancalendar</classifier>
+                <classifier>date</classifier>
             </dependency>
 
             <dependency>
