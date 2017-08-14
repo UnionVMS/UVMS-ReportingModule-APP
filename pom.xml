@@ -36,11 +36,11 @@
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
-        <hibernate.version>4.3.10.Final</hibernate.version>
-        <uvms.commons.version>2.0.25</uvms.commons.version>
-        <geotools.version>14-M1</geotools.version>
-        <lombok.version>1.16.4</lombok.version>
-        <usm4uvms.version>3.0.6</usm4uvms.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
+        <uvms.commons.version>2.0.27</uvms.commons.version>
+        <geotools.version>14.4</geotools.version>
+        <lombok.version>1.16.18</lombok.version>
+        <usm4uvms.version>3.0.8</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.7</rules.model.version>
@@ -72,6 +72,13 @@
     <dependencyManagement>
 
         <dependencies>
+
+			<dependency>
+				<groupId>fish.focus.uvms.maven</groupId>
+				<artifactId>uvms-pom-monitoring-deps</artifactId>
+				<version>1.8</version>
+				<type>pom</type>
+			</dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -239,13 +246,13 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.4</version>
+                <version>1.16.18</version>
             </dependency>
 
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>18.0</version>
+                <version>20.0</version>
             </dependency>
 
             <dependency>
