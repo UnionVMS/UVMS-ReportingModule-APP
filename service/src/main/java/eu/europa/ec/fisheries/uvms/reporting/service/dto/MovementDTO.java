@@ -34,6 +34,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import static javax.measure.unit.NonSI.*;
 
+import java.util.Date;
+
 public class MovementDTO {
 
     public static final SimpleFeatureType SIMPLE_FEATURE_TYPE = buildFeatureType();
@@ -123,7 +125,7 @@ public class MovementDTO {
         String getConnectId();
         String getStatus();
         Double getCalculatedSpeed();
-        XMLGregorianCalendar getPositionTime();
+        Date getPositionTime();
         Double getReportedSpeed();
         MovementActivityType getActivity();
         Double getReportedCourse();
