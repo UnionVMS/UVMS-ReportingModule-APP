@@ -99,7 +99,6 @@
                             <bundleDir>/</bundleDir>
                         </jarModule>
                     </modules>
-                    <version>7</version>
                 </configuration>
             </plugin>
         </plugins>

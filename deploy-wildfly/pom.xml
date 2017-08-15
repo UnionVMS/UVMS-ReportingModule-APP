@@ -40,7 +40,6 @@
                         </webModule>
                     </modules>
                     <skinnyWars>true</skinnyWars>
-                    <version>7</version>
                 </configuration>
             </plugin>
             <plugin>
