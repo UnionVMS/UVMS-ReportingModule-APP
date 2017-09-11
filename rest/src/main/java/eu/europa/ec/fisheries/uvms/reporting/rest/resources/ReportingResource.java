@@ -219,6 +219,10 @@ public class ReportingResource extends UnionVMSResource {
             return createErrorResponse(errorMsg);
         }
 
+        if(originalReport == null){
+            return createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+        }
+
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport, username);
 
         if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
