@@ -76,7 +76,6 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
-			<classifier>date</classifier>
         </dependency>
 
         <dependency>
@@ -89,7 +88,6 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
             <artifactId>movement-model</artifactId>
-			<classifier>date</classifier>
         </dependency>
 
         <dependency>
