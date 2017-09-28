@@ -228,7 +228,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             for (MovementMapResponseType map : movementMap) {
                 for (MovementType movement : map.getMovements()) {
                     if (movement.getPositionTime() != null) {
-                        Date movementDate = movement.getPositionTime().toGregorianCalendar().getTime();
+                        Date movementDate = movement.getPositionTime();
                         if (movementDate.after(trip.getRelativeFirstFaDateTime()) && movementDate.before(trip.getRelativeLastFaDateTime())) {
                             count++;
                         }
