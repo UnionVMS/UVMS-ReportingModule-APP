@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fish.focus.uvms.maven</groupId>
 		<artifactId>uvms-pom</artifactId>
-		<version>1.8</version>
+		<version>1.11</version>
 	</parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
@@ -23,30 +23,30 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mockito.version>1.9.5</mockito.version>
         <javaee.version>7.0</javaee.version>
-        <sl4j.version>1.7.12</sl4j.version>
-        <logback.version>1.1.2</logback.version>
+        <sl4j.version>1.7.25</sl4j.version>
+        <logback.version>1.2.3</logback.version>
         <mapstruct.version>1.1.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
-        <logback.core.version>1.1.2</logback.core.version>
-        <asset.model.version>3.0.4</asset.model.version>
-        <audit.model.version>3.0.4</audit.model.version>
-        <movement.model.version>3.0.6</movement.model.version>
+        <logback.core.version>1.2.3</logback.core.version>
+        <asset.model.version>4.0.0</asset.model.version>
+        <audit.model.version>4.0.0</audit.model.version>
+        <movement.model.version>4.0.0</movement.model.version>
         <spatial.model.version>1.0.5</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <uvms.commons.version>2.0.27</uvms.commons.version>
+        <uvms.commons.version>2.0.29</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>3.0.8</usm4uvms.version>
+        <usm4uvms.version>3.0.9</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.7</rules.model.version>
 		<reporting.model.version>1.0.3</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activity.model.version>0.5.12</activity.model.version>
+        <activity.model.version>0.5.13</activity.model.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
@@ -76,7 +76,7 @@
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.8</version>
+				<version>1.11</version>
 				<type>pom</type>
 			</dependency>
 
@@ -148,14 +148,12 @@
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
                 <artifactId>asset-model</artifactId>
                 <version>${asset.model.version}</version>
-				<classifier>date</classifier>
             </dependency>
 
             <dependency>
@@ -174,7 +172,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.4</version>
+                <version>3.6</version>
             </dependency>
 
             <dependency>
@@ -198,13 +196,13 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>4.0</version>
+                <version>4.1</version>
             </dependency>
 
             <dependency>
@@ -266,12 +264,24 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>3.0.11.Final</version>
+                <exclusions>
+                	<exclusion>
+                		<groupId>commons-logging</groupId>
+                		<artifactId>commons-logging</artifactId>
+                	</exclusion>
+                </exclusions>
             </dependency>
             
             <dependency>
             	<groupId>org.jboss.resteasy</groupId>
 			    <artifactId>resteasy-jaxb-provider</artifactId>
 			  	<version>3.0.11.Final</version>
+			  	<exclusions>
+			  		<exclusion>
+			  			 <groupId>com.sun.xml.bind</groupId>
+    					 <artifactId>jaxb-impl</artifactId>			  			
+			  		</exclusion>
+			  	</exclusions>
 			</dependency>
 			
 			<dependency>
