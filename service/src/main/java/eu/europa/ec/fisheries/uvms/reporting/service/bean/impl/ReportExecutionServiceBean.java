@@ -309,11 +309,13 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
         if (isAssetsExist && assetMap != null) {
             Collection<Asset> assets = assetMap.values();
-            List<String> assetName = new ArrayList<>();
+            List<String> assetNames = new ArrayList<>();
             for (Asset asset : assets) {
-                assetName.add(asset.getName());
+                assetNames.add(asset.getName());
             }
-            filterTypes.add(new ListValueTypeFilter(SearchFilter.VESSEL_NAME, assetName));
+            if (CollectionUtils.isNotEmpty(assetNames)) {
+                filterTypes.add(new ListValueTypeFilter(SearchFilter.VESSEL_NAME, assetNames));
+            }
         }
 
         return filterTypes;
