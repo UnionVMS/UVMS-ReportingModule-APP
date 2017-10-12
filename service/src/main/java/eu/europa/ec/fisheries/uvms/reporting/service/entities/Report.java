@@ -53,26 +53,33 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "report")
 @NamedQueries({
-        @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
-                "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                        "WHERE (1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
-                        "AND r.isDeleted <> :existent " +
-                        "ORDER BY r.id"),
         @NamedQuery(name = Report.LIST_TOP_EXECUTED_BY_DATE, query =
-                "SELECT DISTINCT r FROM Report r INNER JOIN FETCH r.executionLogs l " +
+                "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
                         "WHERE ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC') " +
                         "AND r.isDeleted <> :existent " +
                         "AND l.executedBy = :username " +
                         "ORDER BY l.executedOn DESC"),
         @NamedQuery(name = Report.LIST_BY_CREATION_DATE, query =
                 "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                        "WHERE ((1=:isAdmin) OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) OR r.visibility = 'PUBLIC')) " +
+                        "WHERE ((1=:isAdmin) " +
+                        "OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) " +
+                        "OR r.visibility = 'PUBLIC')) " +
                         "AND r.isDeleted <> :existent AND l IS NULL " +
                         "ORDER BY r.audit.createdOn DESC"),
         @NamedQuery(name = Report.FIND_BY_ID, query =
                 "SELECT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
-                        "WHERE r.id = :reportID AND r.isDeleted <> 'Y' AND ((1=:isAdmin) OR (r.details.createdBy = :username " +
-                        "OR (r.details.scopeName = :scopeName AND r.visibility = 'SCOPE') OR r.visibility = 'PUBLIC'))")
+                        "WHERE r.id = :reportID " +
+                        "AND r.isDeleted <> 'Y' " +
+                        "AND ((1=:isAdmin) " +
+                        "OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) " +
+                        "OR r.visibility = 'PUBLIC'))"),
+        @NamedQuery(name = Report.LIST_BY_USERNAME_AND_SCOPE, query =
+                "SELECT DISTINCT r FROM Report r LEFT JOIN FETCH r.executionLogs l " +
+                        "WHERE r.isDeleted <> :existent " +
+                        "AND ((1=:isAdmin) " +
+                        "OR ((r.details.scopeName = :scopeName AND (r.details.createdBy = :username OR r.visibility = 'SCOPE')) " +
+                        "OR r.visibility = 'PUBLIC'))" +
+                        "ORDER BY r.id")
 })
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(callSuper = false, exclude = {"executionLogs", "filters", "audit"})

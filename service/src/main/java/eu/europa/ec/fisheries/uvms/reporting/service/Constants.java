@@ -16,6 +16,7 @@ public class Constants {
     public static final String CREATED_BY = "createdBy";
     public static final String ID = "id";
     public static final String WITH_MAP = "withMap";
+    public static final String SCOPE = "scope";
     public static final String IS_DEFAULT = "isDefault";
     public static final String CREATED_ON = "createdOn";
     public static final String VISIBILITY = "visibility";

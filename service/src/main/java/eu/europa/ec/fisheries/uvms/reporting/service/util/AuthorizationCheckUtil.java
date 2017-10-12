@@ -73,7 +73,7 @@ public class AuthorizationCheckUtil {
     public static ReportFeatureEnum getRequiredFeatureToDeleteReport(ReportDTO report, String username) {
         ReportFeatureEnum requiredFeature = null;
 
-        if (!report.getCreatedBy().equals(username)) {
+        if (report != null && !report.getCreatedBy().equals(username)) {
             requiredFeature = ReportFeatureEnum.MANAGE_ALL_REPORTS;
         }
 

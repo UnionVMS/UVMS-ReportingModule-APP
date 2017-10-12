@@ -219,17 +219,21 @@ public class ReportingResource extends UnionVMSResource {
             return createErrorResponse(errorMsg);
         }
 
+        if(originalReport == null){
+            createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+        }
+
         ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport, username);
 
         if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-            createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+            createScNotFoundErrorResponse(ErrorCodes.NOT_AUTHORIZED);
         }
 
         try {
             reportService.delete(id, username, scopeName, isAdmin);
         } catch (Exception exc) {
             log.error("Report deletion failed.", exc);
-            return createErrorResponse(ErrorCodes.DELETE_FAILED);
+            createErrorResponse(ErrorCodes.DELETE_FAILED);
         }
 
         return createSuccessResponse();
