@@ -23,6 +23,7 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.IS_DEFAULT
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.MAP_CONFIGURATION;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.NAME;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.REPORT_TYPE;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SCOPE;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SHAREABLE;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
@@ -238,6 +239,7 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         handleExecutedOnField(reportDTO.getExecutionLog(), jgen);
 
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
+        jgen.writeStringField(SCOPE, reportDTO.getScopeName());
 
         Boolean withMap = reportDTO.getWithMap();
         if (withMap != null) {
