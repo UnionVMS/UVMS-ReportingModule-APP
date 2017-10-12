@@ -40,7 +40,7 @@
         <uvms.commons.version>2.0.29</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>3.0.9</usm4uvms.version>
+        <usm4uvms.version>3.0.10-SNAPSHOT</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.7</rules.model.version>
@@ -103,7 +103,7 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
-				<optional>true</optional>				
+				<optional>true</optional>
             </dependency>
 
             <dependency>
