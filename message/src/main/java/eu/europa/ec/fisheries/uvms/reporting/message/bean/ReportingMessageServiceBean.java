@@ -17,12 +17,14 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
+import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
@@ -44,11 +46,13 @@ public class ReportingMessageServiceBean extends AbstractProducer {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent message) {
-        try {
+		Connection connection = null;
+
+		try {
+			connection = getConnectionFactory().createConnection();
+			final Session session = JMSUtils.connectToQueue(connection);
             log.debug("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getMessage().getJMSMessageID(),
                     message.getMessage().getJMSReplyTo());
-            connectToQueue();
-            Session session = getSession();
             String data = JAXBMarshaller.marshall(message.getFault());
             TextMessage response = session.createTextMessage(data);
             response.setJMSCorrelationID(message.getMessage().getJMSMessageID());
@@ -56,7 +60,7 @@ public class ReportingMessageServiceBean extends AbstractProducer {
         } catch (JMSException | ReportingModelException e) {
             log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace(), e);
         } finally {
-            disconnectQueue();
+        	JMSUtils.disconnectQueue(connection);
         }
     }
 }

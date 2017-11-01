@@ -20,7 +20,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.domain.DateRange;
+import eu.europa.ec.fisheries.uvms.commons.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ActivityServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AssetServiceBean;

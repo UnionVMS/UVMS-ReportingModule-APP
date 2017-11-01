@@ -26,10 +26,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.IAuditInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
@@ -45,7 +46,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
-import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 
 /**
  * Session Bean implementation class ReportBean

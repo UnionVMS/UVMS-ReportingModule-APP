@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import static eu.europa.ec.fisheries.uvms.common.DateUtils.UI_FORMATTER;
+import static eu.europa.ec.fisheries.uvms.commons.date.DateUtils.UI_FORMATTER;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ASSETS;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_BY;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_ON;

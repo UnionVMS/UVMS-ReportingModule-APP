@@ -13,7 +13,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
-import eu.europa.ec.fisheries.uvms.domain.Range;
+import eu.europa.ec.fisheries.uvms.commons.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
 import java.util.ArrayList;
 import java.util.List;

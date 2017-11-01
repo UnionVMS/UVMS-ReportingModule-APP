@@ -12,9 +12,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.utils;
 
+import eu.europa.ec.fisheries.uvms.commons.rest.constants.ErrorCodes;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.interceptor.AroundInvoke;
@@ -22,8 +22,8 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 @Interceptor
- @Slf4j
- public class ReportingExceptionInterceptor extends UnionVMSResource {
+@Slf4j
+public class ReportingExceptionInterceptor extends UnionVMSResource {
 
     @AroundInvoke
     public Object createResponse(final InvocationContext ic) throws Exception {

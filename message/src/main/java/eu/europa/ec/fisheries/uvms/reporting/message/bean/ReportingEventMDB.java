@@ -33,7 +33,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
+import static eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants.*;
 
 @MessageDriven(mappedName = QUEUE_MODULE_SPATIAL, activationConfig = {
         @ActivationConfigProperty(propertyName = "messagingType", propertyValue = CONNECTION_TYPE),
