@@ -43,10 +43,10 @@
         <usm4uvms.version>4.0.0</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-        <rules.model.version>3.0.7</rules.model.version>
+        <rules.model.version>3.0.13</rules.model.version>
 		<reporting.model.version>1.0.3</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activity.model.version>0.5.13</activity.model.version>
+        <activity.model.version>1.0.0</activity.model.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
@@ -90,7 +90,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
                 <artifactId>rules-model</artifactId>
                 <version>${rules.model.version}</version>
-                <classifier>date</classifier>
             </dependency>
         
             <dependency>
