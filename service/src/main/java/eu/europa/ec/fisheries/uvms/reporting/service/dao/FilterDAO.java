@@ -12,16 +12,16 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.service.AbstractDAO;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.DELETE_BY_ID;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter.LIST_BY_REPORT_ID;
-import static eu.europa.ec.fisheries.uvms.service.QueryParameter.with;
+import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
 
 public class FilterDAO extends AbstractDAO<Filter> {
 

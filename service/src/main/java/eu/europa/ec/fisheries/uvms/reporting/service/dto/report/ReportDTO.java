@@ -17,6 +17,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
@@ -24,7 +26,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ReportDeserializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ReportSerializer;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

@@ -11,7 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.rest.serializer.CustomDateSerializer;
+
+import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.Builder;
 
 import java.io.Serializable;
