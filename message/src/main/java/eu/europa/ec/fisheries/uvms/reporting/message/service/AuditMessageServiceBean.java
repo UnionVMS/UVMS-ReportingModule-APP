@@ -18,11 +18,8 @@ import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
-
-import static eu.europa.ec.fisheries.uvms.message.MessageConstants.*;
-import eu.europa.ec.fisheries.uvms.message.JMSUtils;
-import eu.europa.ec.fisheries.uvms.message.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 
 /**
  * AuditMessageServiceBean responsible to send an receive messages to and from AUDIT module from Reporting
