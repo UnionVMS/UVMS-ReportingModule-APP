@@ -12,6 +12,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AssetServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
+import eu.europa.ec.fisheries.uvms.TestToolBox;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AssetModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
@@ -27,6 +29,10 @@ import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
 import javax.jms.Destination;
 import javax.jms.TextMessage;
+
+import static org.mockito.Mockito.mock;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -49,14 +55,19 @@ public class AssetServiceBeanTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void getAssetMapWithAsset(){
 
+    	
+    	
         processor.returns(true).hasAssets();
         processor.returns(new AssetListQuery()).toAssetListQuery();
         assetReceiver.returns(message).getMessage(null, null);
         service.returns(new ArrayList<>()).getAssets(null, null);
-
+        
+        Field declaredField = AbstractConsumer.class.getDeclaredField("destination");
+        TestToolBox.makeModifiable(declaredField);
+        TestToolBox.setValue(assetReceiver.getMock(), declaredField, mock( Destination.class));
+        
         service.getMock().getAssetMap(processor.getMock());
 
         assetSender.assertInvokedInSequence().sendModuleMessage(null, null);
@@ -68,7 +79,6 @@ public class AssetServiceBeanTest extends UnitilsJUnit4 {
 
     @Test
     @SneakyThrows
-    @Ignore
     public void getAssetMapWithAssetsAndAssetGroup(){
 
         processor.returns(true).hasAssets();
@@ -76,6 +86,10 @@ public class AssetServiceBeanTest extends UnitilsJUnit4 {
 
         processor.returns(new AssetListQuery()).toAssetListQuery();
         processor.returns(new HashSet<>()).getAssetGroupList();
+
+        Field declaredField = AbstractConsumer.class.getDeclaredField("destination");
+        TestToolBox.makeModifiable(declaredField);
+        TestToolBox.setValue(assetReceiver.getMock(), declaredField, mock( Destination.class));
 
         assetReceiver.returns(message).getMessage(null, null);
         service.returns(new ArrayList<>()).getAssets(null, null);
