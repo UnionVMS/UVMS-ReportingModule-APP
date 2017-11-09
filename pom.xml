@@ -99,13 +99,6 @@
         	</dependency>  
         
             <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>usm4uvms</artifactId>
-                <version>${usm4uvms.version}</version>
-				<optional>true</optional>
-            </dependency>
-
-            <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>0.4</version>
@@ -170,7 +163,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.6</version>
+                <version>3.7</version>
             </dependency>
 
             <dependency>
@@ -262,6 +255,7 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>3.0.11.Final</version>
+                <scope>test</scope>
                 <exclusions>
                 	<exclusion>
                 		<groupId>commons-logging</groupId>
@@ -286,6 +280,7 @@
 			    <groupId>org.jboss.resteasy</groupId>
 			    <artifactId>jaxrs-api</artifactId>
 			    <version>3.0.11.Final</version>
+			    <scope>test</scope>
 			</dependency>
 
             <dependency>
