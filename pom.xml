@@ -37,10 +37,10 @@
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <uvms.commons.version>3.0.3</uvms.commons.version>
+        <uvms.commons.version>3.0.5</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>4.0.2</usm4uvms.version>
+        <usm4uvms.version>4.0.4</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.13</rules.model.version>
