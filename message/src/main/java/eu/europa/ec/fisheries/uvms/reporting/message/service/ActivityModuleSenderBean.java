@@ -14,13 +14,11 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
-import eu.europa.ec.fisheries.uvms.message.AbstractProducer;
 
-import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.jms.Destination;
-import eu.europa.ec.fisheries.uvms.message.JMSUtils;
+
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 
 @Stateless
 @LocalBean

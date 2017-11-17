@@ -14,20 +14,22 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import java.util.List;
-
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+
+import java.util.List;
 
 public class ActivityDTO {
 
@@ -95,7 +97,7 @@ public class ActivityDTO {
         featureBuilder.set(TRIPID, summary.getTripId());
         featureBuilder.set(FLAG_STATE, summary.getFlagState());
         featureBuilder.set(IS_CORRECTION, summary.isCorrection());
-        featureBuilder.set(ACCEPTED_DATE_TIME, summary.getAcceptedDateTime());
+        featureBuilder.set(ACCEPTED_DATE_TIME, summary.getAcceptedDateTime() != null ? DateFormatUtils.format(summary.getAcceptedDateTime().toGregorianCalendar(), DateUtils.DATE_TIME_UI_FORMAT) : null);
         featureBuilder.set(DATA_SOURCE, summary.getDataSource());
         featureBuilder.set(REPORT_TYPE, summary.getReportType());
         featureBuilder.set(PURPOSE_CODE, summary.getPurposeCode());

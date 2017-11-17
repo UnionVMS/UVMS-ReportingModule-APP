@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.utils;
 
-import eu.europa.ec.fisheries.uvms.CommonConstants;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import javax.servlet.Filter;
@@ -23,6 +22,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import eu.europa.ec.fisheries.uvms.commons.rest.filter.CommonConstants;
 
 @Slf4j
 public class CrossOriginFilter implements Filter {

@@ -42,10 +42,11 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.common.AuditActionEnum;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.interceptors.TracingInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.IAuditInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -76,7 +77,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingTripMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
-import eu.europa.ec.fisheries.uvms.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.SneakyThrows;
@@ -228,7 +228,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             for (MovementMapResponseType map : movementMap) {
                 for (MovementType movement : map.getMovements()) {
                     if (movement.getPositionTime() != null) {
-                        Date movementDate = movement.getPositionTime().toGregorianCalendar().getTime();
+                        Date movementDate = movement.getPositionTime();
                         if (movementDate.after(trip.getRelativeFirstFaDateTime()) && movementDate.before(trip.getRelativeLastFaDateTime())) {
                             count++;
                         }
@@ -309,11 +309,13 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
         if (isAssetsExist && assetMap != null) {
             Collection<Asset> assets = assetMap.values();
-            List<String> assetName = new ArrayList<>();
+            List<String> assetNames = new ArrayList<>();
             for (Asset asset : assets) {
-                assetName.add(asset.getName());
+                assetNames.add(asset.getName());
             }
-            filterTypes.add(new ListValueTypeFilter(SearchFilter.VESSEL_NAME, assetName));
+            if (CollectionUtils.isNotEmpty(assetNames)) {
+                filterTypes.add(new ListValueTypeFilter(SearchFilter.VESSEL_NAME, assetNames));
+            }
         }
 
         return filterTypes;

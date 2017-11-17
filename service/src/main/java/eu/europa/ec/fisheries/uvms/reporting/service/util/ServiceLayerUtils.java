@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class ServiceLayerUtils {
 
-    public static Collection<String> getUserPermittedLayersNames(USMService usmService, String username, String roleName, String scopeName) throws eu.europa.ec.fisheries.uvms.exception.ServiceException {
+    public static Collection<String> getUserPermittedLayersNames(USMService usmService, String username, String roleName, String scopeName) throws eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException {
         //String category, String username, String applicationName, String currentRole, String currentScope
         List<Dataset> permittedServiceLayerDatasets = usmService.getDatasetsPerCategory(USMSpatial.CATEGORY_SERVICE_LAYER, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
 

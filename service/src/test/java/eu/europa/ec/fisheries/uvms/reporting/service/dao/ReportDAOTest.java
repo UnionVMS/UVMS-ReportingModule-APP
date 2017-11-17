@@ -15,6 +15,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 import static com.ninja_squad.dbsetup.Operations.insertInto;
 import static com.ninja_squad.dbsetup.Operations.sequenceOf;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
+import static eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum.PRIVATE;
+import static eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum.STANDARD;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertNull;
@@ -31,7 +33,6 @@ import com.ninja_squad.dbsetup.DbSetupTracker;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.generator.ValueGenerators;
 import com.ninja_squad.dbsetup.operation.Operation;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
@@ -39,7 +40,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
-import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -58,9 +58,17 @@ public class ReportDAOTest extends BaseReportingDAOTest {
                 insertInto("reporting.report")
                         .withGeneratedValue("ID", ValueGenerators.sequence().startingAt(50L).incrementingBy(1))
                         .columns(ReportDetails.CREATED_BY, ReportDetails.NAME, Audit.CREATED_ON, ReportDetails.WITH_MAP, VISIBILITY, "is_deleted", ReportDetails.SCOPE_NAME, Report.REPORT_TYPE)
-                        .values("testUser", "France", java.sql.Date.valueOf("2014-12-12"), '1', VisibilityEnum.PRIVATE, 'N', "testScope", ReportTypeEnum.STANDARD)
-                        .values("testUser", "United States", java.sql.Date.valueOf("2014-12-13"), '1', VisibilityEnum.PRIVATE, 'N', "testScope", ReportTypeEnum.STANDARD)
+                        .values("testUser", "France", java.sql.Date.valueOf("2014-12-12"), '1', PRIVATE, 'N', "testScope", STANDARD)
+                        .values("testUser", "United States", java.sql.Date.valueOf("2014-12-13"), '1', PRIVATE, 'N', "testScope", STANDARD)
+                        .values("rep_power", "United States", java.sql.Date.valueOf("2014-12-13"), '1', PRIVATE, 'N', "EC", STANDARD)
                         .build(),
+
+                insertInto("reporting.execution_log").row()
+                        .column("ID",1L)
+                        .column("EXECUTED_BY", "greg")
+                        .column("EXECUTED_ON", java.sql.Date.valueOf("2014-12-13"))
+                        .column("REPORT_ID", 52L).end().build(),
+
                 insertInto("reporting.filter")
                         .row().column("FILTER_ID", 50L)
                         .column("END_DATE", java.sql.Date.valueOf("2014-12-13"))
@@ -70,9 +78,22 @@ public class ReportDAOTest extends BaseReportingDAOTest {
                         .end()
                         .build());
 
-
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);
+    }
+
+    @Test
+    @SneakyThrows
+    public void shouldNotFindReportWithDifferentScope(){
+        dbSetupTracker.skipNextLaunch();
+        assertNull(dao.findReportByReportId(52L, "rep_power", "DG_MARE", false ));
+    }
+
+    @Test
+    @SneakyThrows
+    public void shouldFindReportByUserNameAndScopeName(){
+        dbSetupTracker.skipNextLaunch();
+        assertNotNull(dao.findReportByReportId(50L, "testUser", "testScope", false));
     }
 
     @Test
@@ -85,15 +106,6 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
     }
 
-    @Test
-    @SneakyThrows
-    public void shouldFindReportByUserNameAndScopeName(){
-
-        dbSetupTracker.skipNextLaunch();
-
-        assertNotNull(dao.findReportByReportId(50L, "testUser", "testScope", false));
-
-    }
 
     @Test
     @SneakyThrows
@@ -101,9 +113,9 @@ public class ReportDAOTest extends BaseReportingDAOTest {
 
         dbSetupTracker.skipNextLaunch();
 
-        dao.softDelete(50L, "testUser", "testScope", false);
+       // dao.softDelete(50L, "testUser", "testScope", false);
 
-        assertNull(dao.findReportByReportId(50L, "testUser", "testScope", false));
+       // assertNull(dao.findReportByReportId(50L, "testUser", "testScope", false));
 
     }
 

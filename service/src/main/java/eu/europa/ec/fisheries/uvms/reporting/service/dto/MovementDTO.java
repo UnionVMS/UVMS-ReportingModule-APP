@@ -18,11 +18,13 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.Setter;
 import lombok.experimental.Delegate;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -30,9 +32,10 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import javax.measure.converter.UnitConverter;
-import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Date;
 
-import static javax.measure.unit.NonSI.*;
+import static javax.measure.unit.NonSI.KNOT;
+import static javax.measure.unit.NonSI.NAUTICAL_MILE;
 
 public class MovementDTO {
 
@@ -93,7 +96,7 @@ public class MovementDTO {
 
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(SIMPLE_FEATURE_TYPE);
         featureBuilder.set(GEOMETRY, GeometryUtil.toGeometry(getWkt()));
-        featureBuilder.set(POSITION_TIME, getPositionTime());
+        featureBuilder.set(POSITION_TIME, getPositionTime() != null ? DateFormatUtils.format(getPositionTime(), DateUtils.DATE_TIME_UI_FORMAT) : null);
         featureBuilder.set(CONNECTION_ID, getConnectId());
         featureBuilder.set(STATUS, getStatus());
         featureBuilder.set(REPORTED_COURSE, getReportedCourse());
@@ -123,7 +126,7 @@ public class MovementDTO {
         String getConnectId();
         String getStatus();
         Double getCalculatedSpeed();
-        XMLGregorianCalendar getPositionTime();
+        Date getPositionTime();
         Double getReportedSpeed();
         MovementActivityType getActivity();
         Double getReportedCourse();

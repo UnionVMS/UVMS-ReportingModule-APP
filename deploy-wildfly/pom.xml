@@ -9,7 +9,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
         <artifactId>reporting</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.14-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -19,7 +19,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
-                <version>2.7</version>
                 <configuration>
                     <modules>
                         <ejbModule>
@@ -59,10 +58,39 @@
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
             <version>${usm4uvms.version}</version>
-        </dependency>
+            <exclusions>
+            	<exclusion>
+            		<groupId>eu.europa.ec.fisheries.uvms</groupId>
+    				<artifactId>uvms-commons</artifactId>
+            	</exclusion>
+				<exclusion>
+					<groupId>org.jboss.resteasy</groupId>
+					<artifactId>resteasy-jaxrs</artifactId>
+				</exclusion>
+				<exclusion>
+				  <groupId>com.fasterxml.jackson.core</groupId>
+  				  <artifactId>jackson-databind</artifactId>				
+				</exclusion>
+				<exclusion>
+				    <groupId>net.sf.ehcache</groupId>
+  					<artifactId>ehcache</artifactId>				
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.ehcache.internal</groupId>
+		    <artifactId>ehcache-core</artifactId>
+            <version>2.10.4</version>
+            <exclusions>
+            	<exclusion>
+            		 <groupId>org.slf4j</groupId>
+    				 <artifactId>slf4j-api</artifactId>
+            	</exclusion>
+            </exclusions>   
+        </dependency>		
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-commons</artifactId>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-message</artifactId>
             <version>${uvms.commons.version}</version>
         </dependency>
         <dependency>

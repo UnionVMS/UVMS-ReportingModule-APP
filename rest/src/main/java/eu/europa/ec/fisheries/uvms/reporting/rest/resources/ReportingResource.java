@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL_PROPERTIES;
@@ -45,10 +44,14 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
-import eu.europa.ec.fisheries.uvms.common.DateUtils;
-import eu.europa.ec.fisheries.uvms.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.FeatureToGeoJsonJacksonMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.rest.constants.ErrorCodes;
+import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
@@ -64,9 +67,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.enums.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.VelocityType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ServiceLayerUtils;
-import eu.europa.ec.fisheries.uvms.rest.FeatureToGeoJsonJacksonMapper;
-import eu.europa.ec.fisheries.uvms.rest.constants.ErrorCodes;
-import eu.europa.ec.fisheries.uvms.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -82,481 +82,503 @@ import org.joda.time.DateTime;
 @NoArgsConstructor
 public class ReportingResource extends UnionVMSResource {
 
-    public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
-    public static final String USM_APPLICATION = "usmApplication";
-
-    @EJB
-    private ReportServiceBean reportService;
-
-    @EJB
-    private ReportExecutionService reportExecutionService;
-
-    @EJB
-    private USMService usmService;
-
-    private String applicationName;
-
-    /**
-     * @responseMessage 200 Success
-     * @responseMessage 500 Error
-     * @summary Gets a list of reports
-     */
-    @GET
-    @Path("/list")
-    @Produces(APPLICATION_JSON)
-    @Interceptors(ReportingExceptionInterceptor.class)
-    public Response listReports(@Context HttpServletRequest request,
-                                @HeaderParam("scopeName") String scopeName,
-                                @HeaderParam("roleName") String roleName,
-                                @DefaultValue("Y") @QueryParam("existent") String existent) throws ServiceException, ReportingServiceException {
-        Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent, null);
-        return createSuccessResponse(reportDTOs);
-    }
-
-
-    @GET
-    @Path("/list/lastexecuted/{numberOfReport}")
-    @Produces(APPLICATION_JSON)
-    @Interceptors(ReportingExceptionInterceptor.class)
-    public Response listLastExecutedReports(@Context HttpServletRequest request,
-                                            @HeaderParam("scopeName") String scopeName,
-                                            @HeaderParam("roleName") String roleName,
-                                            @PathParam("numberOfReport") Integer numberOfReport,
-                                            @DefaultValue("Y") @QueryParam("existent") String existent) throws ServiceException, ReportingServiceException {
-        if (numberOfReport == null || numberOfReport == 0) {
-            return createErrorResponse("Number of last executed report cannot be null or 0");
-        }
-        Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent, numberOfReport);
-        return createSuccessResponse(reportDTOs);
-    }
-
-    private Collection<ReportDTO> listReportByUsernameAndScope(HttpServletRequest request,
-                                                               String scopeName,
-                                                               String roleName,
-                                                               String existent,
-                                                               Integer numberOfReport) throws ServiceException, ReportingServiceException {
-        final String username = request.getRemoteUser();
-        log.debug("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
-        Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
-        String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, getApplicationName(request), roleName, scopeName);
-        Long defaultReportId = StringUtils.isNotBlank(defaultId) ? Long.valueOf(defaultId) : null;
-        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToListReports();
-
-        if (username != null && features != null && (requiredFeature == null || request.isUserInRole(requiredFeature.toString()))) {
-            return reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent), defaultReportId, numberOfReport);
-        } else {
-            throw new ReportingServiceException(ErrorCodes.NOT_AUTHORIZED);
-        }
-    }
-
-
-    /**
-     * lazy loading of the app name from the web.xml
-     *
-     * @param request
-     * @return
-     */
-    private String getApplicationName(HttpServletRequest request) {
-        if (applicationName == null) {
-            applicationName = request.getServletContext().getInitParameter(USM_APPLICATION);
-        }
-        return applicationName;
-    }
-
-    @GET
-    @Path("/{id}")
-    @Produces(APPLICATION_JSON)
-    public Response getReport(@Context HttpServletRequest request,
-                              @PathParam("id") Long id,
-                              @HeaderParam("scopeName") String scopeName,
-                              @HeaderParam("roleName") String roleName) {
-
-        String username = request.getRemoteUser();
-        ReportDTO report;
-
-        try {
-            boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-            Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
-            List<String> permittedServiceLayers = new ArrayList<>(ServiceLayerUtils.getUserPermittedLayersNames(usmService, request.getRemoteUser(), roleName, scopeName));
-            report = reportService.findById(features, id, username, scopeName, isAdmin, permittedServiceLayers);
-        } catch (Exception e) {
-            log.error("Failed to get report.", e);
-            return createErrorResponse();
-        }
-
-        Response restResponse;
-
-        if (report != null) {
-            restResponse = createSuccessResponse(report);
-        } else {
-            restResponse = createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
-        }
-
-        return restResponse;
-    }
-
-    @DELETE
-    @Path("/{id}")
-    @Produces(APPLICATION_JSON)
-    public Response deleteReport(@Context HttpServletRequest request,
-                                 @PathParam("id") Long id,
-                                 @HeaderParam("scopeName") String scopeName,
-                                 @HeaderParam("roleName") String roleName) {
-
-        String username = request.getRemoteUser();
-
-        log.debug("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
-        ReportDTO originalReport;
-        boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-
-        try {
-            Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
-            //for delete operation, we don't really nead the permitted service layers, therefore we pass null
-            originalReport = reportService.findById(features, id, username, scopeName, isAdmin, null); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSON
-        } catch (Exception e) {
-            String errorMsg = "Failed to get report.";
-            log.error(errorMsg, e);
-            return createErrorResponse(errorMsg);
-        }
-
-        ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport, username);
-
-        if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-            createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-        }
-
-        try {
-            reportService.delete(id, username, scopeName, isAdmin);
-        } catch (Exception exc) {
-            log.error("Report deletion failed.", exc);
-            return createErrorResponse(ErrorCodes.DELETE_FAILED);
-        }
-
-        return createSuccessResponse();
-    }
-
-
-    @PUT
-    @Path("/{id}")
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public Response updateReport(@Context HttpServletRequest request,
-                                 ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
-                                 @HeaderParam("scopeName") String scopeName,
-                                 @HeaderParam("roleName") String roleName,
-                                 @PathParam("id") Long id) {
-
-        String username = request.getRemoteUser();
-        log.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
-        Response result;
-
-        try {
-            Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
-            boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-            List<String> permittedServiceLayers = new ArrayList<>(ServiceLayerUtils.getUserPermittedLayersNames(usmService, request.getRemoteUser(), roleName, scopeName));
-            ReportDTO originalReport = reportService.findById(features, report.getId(), username, scopeName, isAdmin, permittedServiceLayers); //we need the original report because of the 'owner/createdBy' attribute, which is not contained in the JSO
-            ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport, username);
-
-            if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-                result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-            } else {
-                ReportDTO update = reportService.update(report, username, originalReport.getWithMap(), originalReport.getMapConfiguration());
-                switch (Projection.valueOf(projection.toUpperCase())) {
-
-                    case DETAILED:
-                        result = createSuccessResponse(update);
-                        break;
-
-                    default:
-                        result = createSuccessResponse(update.getId());
-                }
-            }
-
-        } catch (Exception exc) {
-            log.error("Update failed.", exc);
-            result = createErrorResponse(ErrorCodes.UPDATE_FAILED);
-        }
-        return result;
-    }
-
-    @POST
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public Response createReport(@Context HttpServletRequest request,
-                                 ReportDTO report, @DefaultValue("default") @QueryParam(value = "projection") String projection,
-                                 @HeaderParam("scopeName") String scopeName) {
-        Response result;
-        String username = request.getRemoteUser();
-
-        log.debug("{} is requesting createReport(...), with a ID={}, scopeName: {}, visibility: {}", username, report.getId(), scopeName, report.getVisibility());
-
-        if (StringUtils.isBlank(scopeName)) {
-            result = createErrorResponse(ErrorCodes.USER_SCOPE_MISSING);
-        } else {
-            if (isScopeAllowed(report.getVisibility(), request)) {
-                report.setCreatedBy(username);
-                report.setScopeName(scopeName);
-
-                ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report, username);
-                ReportDTO reportDTO;
-                if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
-                    try {
-                        reportDTO = reportService.create(report, username);
-                        switch (Projection.valueOf(projection.toUpperCase())) {
-
-                            case DETAILED:
-                                result = createSuccessResponse(reportDTO);
-                                break;
-
-                            default:
-                                result = createSuccessResponse(reportDTO.getId());
-                        }
-                    } catch (Exception e) {
-                        log.error("createReport failed.", e);
-                        result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
-                    }
-                } else {
-                    result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-                }
-            } else {
-                result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-            }
-        }
-        return result;
-    }
-
-    private boolean isScopeAllowed(VisibilityEnum visibility, HttpServletRequest request) {
-        boolean isScopeAllowed = false;
-        if (visibility.equals(VisibilityEnum.PRIVATE) || request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString())) {
-            isScopeAllowed = true;
-        } else {
-            switch (visibility) {
-                case SCOPE:
-                    isScopeAllowed = request.isUserInRole(ReportFeatureEnum.SHARE_REPORT_SCOPE.toString());
-                    break;
-                case PUBLIC:
-                    isScopeAllowed = request.isUserInRole(ReportFeatureEnum.SHARE_REPORT_PUBLIC.toString());
-                    break;
-            }
-        }
-        return isScopeAllowed;
-    }
-
-
-    @PUT
-    @Path("/share/{id}/{visibility}")
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public Response shareReport(@Context HttpServletRequest request,
-                                @PathParam("id") Long id,
-                                @PathParam("visibility") String visibility,
-                                @HeaderParam("scopeName") String scopeName,
-                                @HeaderParam("roleName") String roleName) {
-
-        String username = request.getRemoteUser();
-        VisibilityEnum newVisibility = VisibilityEnum.getByName(visibility);
-
-        boolean isAdmin;
-
-        log.debug("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
-
-        ReportFeatureEnum requiredFeature = null;
-
-        switch (newVisibility) {
-            case SCOPE:
-                requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE;
-                break;
-            case PUBLIC:
-                requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
-                break;
-            default: //it is private scope which does not require any feature
-                break;
-        }
-
-        Response restResponse;
-
-        if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-            restResponse = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
-        } else {
-
-            try {
-                Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
-                isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-
-                //it's just a visibility update, therefore the permitted service layers don't matter much and we pass null
-                ReportDTO reportToUpdate = reportService.findById(features, id, username, scopeName, isAdmin, null);
-
-                if (reportToUpdate != null) {
-                    reportToUpdate.setVisibility(newVisibility);
-
-                    reportService.share(id, reportToUpdate.getCreatedBy(), reportToUpdate.getScopeName(), isAdmin, newVisibility);
-
-                    restResponse = createSuccessResponse(AuthorizationCheckUtil.listAllowedVisibilityOptions(reportToUpdate.getCreatedBy(), username, features));
-                } else {
-                    restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
-                }
-            } catch (Exception e) {
-
-                log.error("Sharing report failed.", e);
-
-                return createErrorResponse(e.getMessage());
-
-            }
-        }
-
-        return restResponse;
-    }
-
-
-    @POST
-    @Path("/execute/{id}")
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public Response runReport(@Context HttpServletRequest request,
-                              @PathParam("id") Long id,
-                              @HeaderParam("scopeName") String scopeName,
-                              @HeaderParam("roleName") String roleName,
-                              DisplayFormat format) {
-
-        String username = request.getRemoteUser();
-
-        log.debug("{} is requesting runReport(...), with a ID={}", username, id);
-
-        try {
-            Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
-            DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
-            List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
-            Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
-            Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
-
-            ExecutionResultDTO reportExecutionByReportId =
-                    reportExecutionService.getReportExecutionByReportId(id, username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format);
-
-            ObjectNode rootNode = mapToGeoJson(reportExecutionByReportId);
-            return createSuccessResponse(rootNode);
-
-        } catch (Exception e) {
-            log.error("Report execution failed.", e);
-            return createErrorResponse(e.getMessage());
-        }
-    }
-
-    private ObjectNode mapToGeoJson(ExecutionResultDTO dto) throws IOException {
-
-        ObjectNode rootNode;
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-        rootNode = mapper.createObjectNode();
-        StringWriter stringWriter = new StringWriter();
-
-        GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getMovements(), stringWriter);
-
-        rootNode.set("movements", mapper.readTree(stringWriter.toString()));
-
-        stringWriter.getBuffer().setLength(0);
-        GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getSegments(), stringWriter);
-        rootNode.set("segments", mapper.readTree(stringWriter.toString()));
-
-        rootNode.putPOJO("tracks", dto.getTracks());
-        rootNode.putPOJO("trips", dto.getTrips());
-
-        ObjectNode activityNode = new FeatureToGeoJsonJacksonMapper().convert(dto.getActivities());
-        rootNode.putPOJO("activities", activityNode);
-
-        rootNode.putPOJO("criteria", dto.getFaCatchSummaryDTO());
-
-        return rootNode;
-    }
-
-    @POST
-    @Path("/execute/")
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public Response runReport(@Context HttpServletRequest request, Report report,
-                              @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
-
-        String username = request.getRemoteUser();
-        log.trace("{} is requesting runReport(...), with a report={}", username, report);
-
-        try {
-            Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
-            String speedUnitString = additionalProperties.get(SPEED_UNIT).toString();
-            String distanceUnitString = additionalProperties.get(DISTANCE_UNIT).toString();
-            VelocityType velocityType = VelocityType.valueOf(speedUnitString.toUpperCase());
-            LengthType lengthType = LengthType.valueOf(distanceUnitString.toUpperCase());
-
-            DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
-            List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
-            Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
-
-            ExecutionResultDTO resultDTO = reportExecutionService.getReportExecutionWithoutSave(report, areaRestrictions, username, withActivity, displayFormat);
-            ObjectNode rootNode = mapToGeoJson(resultDTO);
-            return createSuccessResponse(rootNode);
-
-        } catch (Exception e) {
-            log.error("Report execution failed.", e);
-            return createErrorResponse(e.getMessage());
-        }
-    }
-
-    private List<AreaIdentifierType> getRestrictionAreas(String username, String scopeName, String roleName) throws ServiceException {
-        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
-
-        for (Dataset dataset : datasets) {
-            int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
-
-            if (lastIndexDelimiter > -1) {
-                AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
-                //add AREATYPE/AREA_ID into a map
-                AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0, lastIndexDelimiter));
-                String areaId = dataset.getDiscriminator().substring(lastIndexDelimiter + 1);
-
-                if (areaType != null && StringUtils.isNotBlank(areaId)) {
-                    areaIdentifierType.setAreaType(areaType);
-                    areaIdentifierType.setId(areaId);
-                    areaRestrictions.add(areaIdentifierType);
-                }
-            }
-        }
-
-        return areaRestrictions;
-    }
-
-    @POST
-    @Path("/default/{id}")
-    @Produces(APPLICATION_JSON)
-    @Consumes(APPLICATION_JSON)
-    public Response defaultReport(@Context HttpServletRequest request, @PathParam("id") Long id,
-                                  @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
-                                  Map<String, Object> payload) {
-
-        final String username = request.getRemoteUser();
-        final String appName = getApplicationName(request);
-        Boolean override = false;
-
-        if (payload != null) {
-            override = Boolean.valueOf(String.valueOf(payload.get("override")));
-        }
-
-        Response response;
-        try {
-
-            String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, appName, roleName, scopeName);
-
-            if (!StringUtils.isEmpty(defaultId) && !override) {
-                response = createErrorResponse("TRYING TO OVERRIDE ALREADY EXISTING VALUE");
-            } else {
-                usmService.putUserPreference(DEFAULT_REPORT_ID, String.valueOf(id), appName, scopeName, roleName, username);
-                response = createSuccessResponse();
-            }
-
-        } catch (ServiceException e) {
-            log.error("Default report saving failed.", e);
-            response = createErrorResponse(e.getMessage());
-        }
-
-        return response;
-    }
+	public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
+	public static final String USM_APPLICATION = "usmApplication";
+
+	@EJB
+	private ReportServiceBean reportService;
+
+	@EJB
+	private ReportExecutionService reportExecutionService;
+
+	@EJB
+	private USMService usmService;
+
+	private String applicationName;
+
+	/**
+	 * @responseMessage 200 Success
+	 * @responseMessage 500 Error
+	 * @summary Gets a list of reports
+	 */
+	@GET
+	@Path("/list")
+	@Produces(APPLICATION_JSON)
+	@Interceptors(ReportingExceptionInterceptor.class)
+	public Response listReports(@Context HttpServletRequest request, @HeaderParam("scopeName") String scopeName,
+			@HeaderParam("roleName") String roleName, @DefaultValue("Y") @QueryParam("existent") String existent)
+			throws ServiceException, ReportingServiceException {
+		Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent, null);
+		return createSuccessResponse(reportDTOs);
+	}
+
+	@GET
+	@Path("/list/lastexecuted/{numberOfReport}")
+	@Produces(APPLICATION_JSON)
+	@Interceptors(ReportingExceptionInterceptor.class)
+	public Response listLastExecutedReports(@Context HttpServletRequest request,
+			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+			@PathParam("numberOfReport") Integer numberOfReport,
+			@DefaultValue("Y") @QueryParam("existent") String existent)
+			throws ServiceException, ReportingServiceException {
+		if (numberOfReport == null || numberOfReport == 0) {
+			return createErrorResponse("Number of last executed report cannot be null or 0");
+		}
+		Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent,
+				numberOfReport);
+		return createSuccessResponse(reportDTOs);
+	}
+
+	private Collection<ReportDTO> listReportByUsernameAndScope(HttpServletRequest request, String scopeName,
+			String roleName, String existent, Integer numberOfReport)
+			throws ServiceException, ReportingServiceException {
+		final String username = request.getRemoteUser();
+		log.debug("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
+		Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
+		String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, getApplicationName(request),
+				roleName, scopeName);
+		Long defaultReportId = StringUtils.isNotBlank(defaultId) ? Long.valueOf(defaultId) : null;
+		ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToListReports();
+
+		if (username != null && features != null
+				&& (requiredFeature == null || request.isUserInRole(requiredFeature.toString()))) {
+			return reportService.listByUsernameAndScope(features, username, scopeName, "Y".equals(existent),
+					defaultReportId, numberOfReport);
+		} else {
+			throw new ReportingServiceException(ErrorCodes.NOT_AUTHORIZED);
+		}
+	}
+
+	/**
+	 * lazy loading of the app name from the web.xml
+	 *
+	 * @param request
+	 * @return
+	 */
+	private String getApplicationName(HttpServletRequest request) {
+		if (applicationName == null) {
+			applicationName = request.getServletContext().getInitParameter(USM_APPLICATION);
+		}
+		return applicationName;
+	}
+
+	@GET
+	@Path("/{id}")
+	@Produces(APPLICATION_JSON)
+	public Response getReport(@Context HttpServletRequest request, @PathParam("id") Long id,
+			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
+
+		String username = request.getRemoteUser();
+		ReportDTO report;
+
+		try {
+			boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName,
+					scopeName);
+			List<String> permittedServiceLayers = new ArrayList<>(ServiceLayerUtils
+					.getUserPermittedLayersNames(usmService, request.getRemoteUser(), roleName, scopeName));
+			report = reportService.findById(features, id, username, scopeName, isAdmin, permittedServiceLayers);
+		} catch (Exception e) {
+			log.error("Failed to get report.", e);
+			return createErrorResponse();
+		}
+
+		Response restResponse;
+
+		if (report != null) {
+			restResponse = createSuccessResponse(report);
+		} else {
+			restResponse = createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+		}
+
+		return restResponse;
+	}
+
+	@DELETE
+	@Path("/{id}")
+	@Produces(APPLICATION_JSON)
+	public Response deleteReport(@Context HttpServletRequest request, @PathParam("id") Long id,
+			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
+
+		String username = request.getRemoteUser();
+
+		log.debug("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
+		ReportDTO originalReport;
+		boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+
+		try {
+			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName,
+					scopeName);
+			// for delete operation, we don't really nead the permitted service layers,
+			// therefore we pass null
+			originalReport = reportService.findById(features, id, username, scopeName, isAdmin, null); // we need the
+																										// original
+																										// report
+																										// because of
+																										// the
+																										// 'owner/createdBy'
+																										// attribute,
+																										// which is not
+																										// contained in
+																										// the JSON
+		} catch (Exception e) {
+			String errorMsg = "Failed to get report.";
+			log.error(errorMsg, e);
+			return createErrorResponse(errorMsg);
+		}
+
+		if (originalReport == null) {
+			createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+		}
+
+		ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport,
+				username);
+
+		if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+			createScNotFoundErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+		}
+
+		try {
+			reportService.delete(id, username, scopeName, isAdmin);
+		} catch (Exception exc) {
+			log.error("Report deletion failed.", exc);
+			createErrorResponse(ErrorCodes.DELETE_FAILED);
+		}
+
+		return createSuccessResponse();
+	}
+
+	@PUT
+	@Path("/{id}")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response updateReport(@Context HttpServletRequest request, ReportDTO report,
+			@DefaultValue("default") @QueryParam(value = "projection") String projection,
+			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+			@PathParam("id") Long id) {
+
+		String username = request.getRemoteUser();
+		log.info("{} is requesting updateReport(...), with a ID={}", username, report.getId());
+		Response result;
+
+		try {
+			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName,
+					scopeName);
+			boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+			List<String> permittedServiceLayers = new ArrayList<>(ServiceLayerUtils
+					.getUserPermittedLayersNames(usmService, request.getRemoteUser(), roleName, scopeName));
+			ReportDTO originalReport = reportService.findById(features, report.getId(), username, scopeName, isAdmin,
+					permittedServiceLayers); // we need the original report because of the 'owner/createdBy' attribute,
+												// which is not contained in the JSO
+			ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToEditReport(originalReport,
+					username);
+
+			if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+				result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+			} else {
+				ReportDTO update = reportService.update(report, username, originalReport.getWithMap(),
+						originalReport.getMapConfiguration());
+				switch (Projection.valueOf(projection.toUpperCase())) {
+
+				case DETAILED:
+					result = createSuccessResponse(update);
+					break;
+
+				default:
+					result = createSuccessResponse(update.getId());
+				}
+			}
+
+		} catch (Exception exc) {
+			log.error("Update failed.", exc);
+			result = createErrorResponse(ErrorCodes.UPDATE_FAILED);
+		}
+		return result;
+	}
+
+	@POST
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response createReport(@Context HttpServletRequest request, ReportDTO report,
+			@DefaultValue("default") @QueryParam(value = "projection") String projection,
+			@HeaderParam("scopeName") String scopeName) {
+		Response result;
+		String username = request.getRemoteUser();
+
+		log.debug("{} is requesting createReport(...), with a ID={}, scopeName: {}, visibility: {}", username,
+				report.getId(), scopeName, report.getVisibility());
+
+		if (StringUtils.isBlank(scopeName)) {
+			result = createErrorResponse(ErrorCodes.USER_SCOPE_MISSING);
+		} else {
+			if (isScopeAllowed(report.getVisibility(), request)) {
+				report.setCreatedBy(username);
+				report.setScopeName(scopeName);
+
+				ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToCreateReport(report,
+						username);
+				ReportDTO reportDTO;
+				if (requiredFeature == null || request.isUserInRole(requiredFeature.toString())) {
+					try {
+						reportDTO = reportService.create(report, username);
+						switch (Projection.valueOf(projection.toUpperCase())) {
+
+						case DETAILED:
+							result = createSuccessResponse(reportDTO);
+							break;
+
+						default:
+							result = createSuccessResponse(reportDTO.getId());
+						}
+					} catch (Exception e) {
+						log.error("createReport failed.", e);
+						result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
+					}
+				} else {
+					result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+				}
+			} else {
+				result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+			}
+		}
+		return result;
+	}
+
+	private boolean isScopeAllowed(VisibilityEnum visibility, HttpServletRequest request) {
+		boolean isScopeAllowed = false;
+		if (visibility.equals(VisibilityEnum.PRIVATE)
+				|| request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString())) {
+			isScopeAllowed = true;
+		} else {
+			switch (visibility) {
+			case SCOPE:
+				isScopeAllowed = request.isUserInRole(ReportFeatureEnum.SHARE_REPORT_SCOPE.toString());
+				break;
+			case PUBLIC:
+				isScopeAllowed = request.isUserInRole(ReportFeatureEnum.SHARE_REPORT_PUBLIC.toString());
+				break;
+			}
+		}
+		return isScopeAllowed;
+	}
+
+	@PUT
+	@Path("/share/{id}/{visibility}")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response shareReport(@Context HttpServletRequest request, @PathParam("id") Long id,
+			@PathParam("visibility") String visibility, @HeaderParam("scopeName") String scopeName,
+			@HeaderParam("roleName") String roleName) {
+
+		String username = request.getRemoteUser();
+		VisibilityEnum newVisibility = VisibilityEnum.getByName(visibility);
+
+		boolean isAdmin;
+
+		log.debug("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
+
+		ReportFeatureEnum requiredFeature = null;
+
+		switch (newVisibility) {
+		case SCOPE:
+			requiredFeature = ReportFeatureEnum.SHARE_REPORT_SCOPE;
+			break;
+		case PUBLIC:
+			requiredFeature = ReportFeatureEnum.SHARE_REPORT_PUBLIC;
+			break;
+		default: // it is private scope which does not require any feature
+			break;
+		}
+
+		Response restResponse;
+
+		if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
+			restResponse = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+		} else {
+
+			try {
+				Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName,
+						scopeName);
+				isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+
+				// it's just a visibility update, therefore the permitted service layers don't
+				// matter much and we pass null
+				ReportDTO reportToUpdate = reportService.findById(features, id, username, scopeName, isAdmin, null);
+
+				if (reportToUpdate != null) {
+					reportToUpdate.setVisibility(newVisibility);
+
+					reportService.share(id, reportToUpdate.getCreatedBy(), reportToUpdate.getScopeName(), isAdmin,
+							newVisibility);
+
+					restResponse = createSuccessResponse(AuthorizationCheckUtil
+							.listAllowedVisibilityOptions(reportToUpdate.getCreatedBy(), username, features));
+				} else {
+					restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+				}
+			} catch (Exception e) {
+
+				log.error("Sharing report failed.", e);
+
+				return createErrorResponse(e.getMessage());
+
+			}
+		}
+
+		return restResponse;
+	}
+
+	@POST
+	@Path("/execute/{id}")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response runReport(@Context HttpServletRequest request, @PathParam("id") Long id,
+			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+			DisplayFormat format) {
+
+		String username = request.getRemoteUser();
+
+		log.debug("{} is requesting runReport(...), with a ID={}", username, id);
+
+		try {
+			Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+			DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+			List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
+			Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+
+			ExecutionResultDTO reportExecutionByReportId = reportExecutionService.getReportExecutionByReportId(id,
+					username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format);
+
+			ObjectNode rootNode = mapToGeoJson(reportExecutionByReportId);
+			return createSuccessResponse(rootNode);
+
+		} catch (Exception e) {
+			log.error("Report execution failed.", e);
+			return createErrorResponse(e.getMessage());
+		}
+	}
+
+	private ObjectNode mapToGeoJson(ExecutionResultDTO dto) throws IOException {
+
+		ObjectNode rootNode;
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+		rootNode = mapper.createObjectNode();
+		StringWriter stringWriter = new StringWriter();
+
+		GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getMovements(), stringWriter);
+
+		rootNode.set("movements", mapper.readTree(stringWriter.toString()));
+
+		stringWriter.getBuffer().setLength(0);
+		GeometryMapper.INSTANCE.featureCollectionToGeoJson(dto.getSegments(), stringWriter);
+		rootNode.set("segments", mapper.readTree(stringWriter.toString()));
+
+		rootNode.putPOJO("tracks", dto.getTracks());
+		rootNode.putPOJO("trips", dto.getTrips());
+
+		ObjectNode activityNode = new FeatureToGeoJsonJacksonMapper().convert(dto.getActivities());
+		rootNode.putPOJO("activities", activityNode);
+
+		rootNode.putPOJO("criteria", dto.getFaCatchSummaryDTO());
+
+		return rootNode;
+	}
+
+	@POST
+	@Path("/execute/")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response runReport(@Context HttpServletRequest request, Report report,
+			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
+
+		String username = request.getRemoteUser();
+		log.trace("{} is requesting runReport(...), with a report={}", username, report);
+
+		try {
+			Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+			String speedUnitString = additionalProperties.get(SPEED_UNIT).toString();
+			String distanceUnitString = additionalProperties.get(DISTANCE_UNIT).toString();
+			VelocityType velocityType = VelocityType.valueOf(speedUnitString.toUpperCase());
+			LengthType lengthType = LengthType.valueOf(distanceUnitString.toUpperCase());
+
+			DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
+			List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
+			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+
+			ExecutionResultDTO resultDTO = reportExecutionService.getReportExecutionWithoutSave(report,
+					areaRestrictions, username, withActivity, displayFormat);
+			ObjectNode rootNode = mapToGeoJson(resultDTO);
+			return createSuccessResponse(rootNode);
+
+		} catch (Exception e) {
+			log.error("Report execution failed.", e);
+			return createErrorResponse(e.getMessage());
+		}
+	}
+
+	private List<AreaIdentifierType> getRestrictionAreas(String username, String scopeName, String roleName)
+			throws ServiceException {
+		List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username,
+				USMSpatial.APPLICATION_NAME, roleName, scopeName);
+		List<AreaIdentifierType> areaRestrictions = new ArrayList<>(datasets.size());
+
+		for (Dataset dataset : datasets) {
+			int lastIndexDelimiter = dataset.getDiscriminator().lastIndexOf(USMSpatial.DELIMITER);
+
+			if (lastIndexDelimiter > -1) {
+				AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
+				// add AREATYPE/AREA_ID into a map
+				AreaType areaType = AreaType.valueOf(dataset.getDiscriminator().substring(0, lastIndexDelimiter));
+				String areaId = dataset.getDiscriminator().substring(lastIndexDelimiter + 1);
+
+				if (areaType != null && StringUtils.isNotBlank(areaId)) {
+					areaIdentifierType.setAreaType(areaType);
+					areaIdentifierType.setId(areaId);
+					areaRestrictions.add(areaIdentifierType);
+				}
+			}
+		}
+
+		return areaRestrictions;
+	}
+
+	@POST
+	@Path("/default/{id}")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response defaultReport(@Context HttpServletRequest request, @PathParam("id") Long id,
+			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+			Map<String, Object> payload) {
+
+		final String username = request.getRemoteUser();
+		final String appName = getApplicationName(request);
+		Boolean override = false;
+
+		if (payload != null) {
+			override = Boolean.valueOf(String.valueOf(payload.get("override")));
+		}
+
+		Response response;
+		try {
+
+			String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, appName, roleName, scopeName);
+
+			if (!StringUtils.isEmpty(defaultId) && !override) {
+				response = createErrorResponse("TRYING TO OVERRIDE ALREADY EXISTING VALUE");
+			} else {
+				usmService.putUserPreference(DEFAULT_REPORT_ID, String.valueOf(id), appName, scopeName, roleName,
+						username);
+				response = createSuccessResponse();
+			}
+
+		} catch (ServiceException e) {
+			log.error("Default report saving failed.", e);
+			response = createErrorResponse(e.getMessage());
+		}
+
+		return response;
+	}
 }

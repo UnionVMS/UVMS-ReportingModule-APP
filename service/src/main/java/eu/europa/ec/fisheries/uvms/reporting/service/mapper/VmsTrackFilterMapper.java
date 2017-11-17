@@ -13,7 +13,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
-import eu.europa.ec.fisheries.uvms.domain.Range;
+import eu.europa.ec.fisheries.uvms.commons.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsTrack;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DistanceRange;
