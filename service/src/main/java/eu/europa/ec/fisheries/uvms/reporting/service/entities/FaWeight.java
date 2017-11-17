@@ -13,19 +13,21 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Embeddable
-@EqualsAndHashCode
-@ToString
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FaWeight {
 
     @Column(name = "weight_min")
@@ -36,15 +38,6 @@ public class FaWeight {
 
     @Column(name = "weight_unit")
     private String weightUnit;
-
-    public FaWeight() {
-    }
-
-    public FaWeight(Double weightMin, Double weightMax, String weightUnit) {
-        this.weightMin = weightMin;
-        this.weightMax = weightMax;
-        this.weightUnit = weightUnit;
-    }
 
     public List<SingleValueTypeFilter> getFaFilters() {
         List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
@@ -60,27 +53,4 @@ public class FaWeight {
         return faFilterTypes;
     }
 
-    public Double getWeightMin() {
-        return weightMin;
-    }
-
-    public void setWeightMin(Double weightMin) {
-        this.weightMin = weightMin;
-    }
-
-    public Double getWeightMax() {
-        return weightMax;
-    }
-
-    public void setWeightMax(Double weightMax) {
-        this.weightMax = weightMax;
-    }
-
-    public String getWeightUnit() {
-        return weightUnit;
-    }
-
-    public void setWeightUnit(String weightUnit) {
-        this.weightUnit = weightUnit;
-    }
 }

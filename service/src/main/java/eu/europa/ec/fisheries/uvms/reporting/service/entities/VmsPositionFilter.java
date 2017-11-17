@@ -8,7 +8,17 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
+
+import static java.util.Arrays.asList;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
@@ -16,23 +26,20 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
-
-import static java.util.Arrays.asList;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class VmsPositionFilter extends Filter {
 
     @Column(name = "MIN_SPEED")
@@ -50,21 +57,6 @@ public class VmsPositionFilter extends Filter {
     @Convert(converter = ListStringConverter.class)
     @Column(name = "MOV_SOURCES")
     private List<String> movementSources;
-
-    public VmsPositionFilter() {
-        super(FilterType.vmspos);
-    }
-
-    @Builder
-    public VmsPositionFilter(MovementActivityTypeType movementActivity, MovementTypeType movementType,
-                             Float maximumSpeed, Float minimumSpeed, List<String> movementSources) {
-        super(FilterType.vmspos);
-        this.movementActivity = movementActivity;
-        this.movementType = movementType;
-        this.maximumSpeed = maximumSpeed;
-        this.minimumSpeed = minimumSpeed;
-        this.movementSources = movementSources;
-    }
 
     @Override
     public <T> T accept(FilterVisitor<T> visitor) {
@@ -103,43 +95,4 @@ public class VmsPositionFilter extends Filter {
         return asList(VmsPositionFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
 
-    public MovementTypeType getMovementType() {
-        return movementType;
-    }
-
-    public void setMovementType(MovementTypeType movementType) {
-        this.movementType = movementType;
-    }
-
-    public MovementActivityTypeType getMovementActivity() {
-        return movementActivity;
-    }
-
-    public void setMovementActivity(MovementActivityTypeType movementActivity) {
-        this.movementActivity = movementActivity;
-    }
-
-    public Float getMinimumSpeed() {
-        return minimumSpeed;
-    }
-
-    public void setMinimumSpeed(Float minimumSpeed) {
-        this.minimumSpeed = minimumSpeed;
-    }
-
-    public Float getMaximumSpeed() {
-        return maximumSpeed;
-    }
-
-    public void setMaximumSpeed(Float maximumSpeed) {
-        this.maximumSpeed = maximumSpeed;
-    }
-
-    public List<String> getMovementSources() {
-        return movementSources;
-    }
-
-    public void setMovementSources(List<String> movementSources) {
-        this.movementSources = movementSources;
-    }
 }
