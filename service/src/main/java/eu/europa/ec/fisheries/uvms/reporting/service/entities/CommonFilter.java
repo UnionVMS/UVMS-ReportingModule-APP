@@ -12,6 +12,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.common;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -20,21 +31,10 @@ import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.validation.CommonFilterIsValid;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.common;
 
 @Entity
 @DiscriminatorValue("DATETIME")
@@ -58,7 +58,6 @@ public class CommonFilter extends Filter {
         super(common);
         this.dateRange = dateRange;
         this.positionSelector = positionSelector;
-        validate();
     }
 
     @Override

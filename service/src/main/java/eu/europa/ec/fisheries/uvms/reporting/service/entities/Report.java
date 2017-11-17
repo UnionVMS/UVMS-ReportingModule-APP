@@ -45,6 +45,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -84,7 +85,7 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_deleted <> 'Y'")
 @EqualsAndHashCode(callSuper = false, exclude = {"executionLogs", "filters", "audit"})
 @ToString(callSuper = true)
-@Data
+@Data @NoArgsConstructor
 @FilterDef(name = Report.EXECUTED_BY_USER, parameters = @ParamDef(name = "username", type = "string"))
 public class Report extends BaseEntity {
 
@@ -97,12 +98,10 @@ public class Report extends BaseEntity {
     public static final String FIND_BY_ID = "Report.findReportByReportId";
 
 	@Id
-	@Column(name = "id")
 	@SequenceGenerator(name="report_seq", sequenceName="report_seq", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="report_seq")
 	private Long id;
 
-	
     @OneToMany(mappedBy = "report", cascade = ALL)
     @org.hibernate.annotations.Filter(name = EXECUTED_BY_USER, condition = "executed_by = :username")
     private Set<ExecutionLog> executionLogs = new HashSet<>();
@@ -146,10 +145,6 @@ public class Report extends BaseEntity {
         this.audit = audit;
     }
 
-    public Report() {
-
-    }
-
     public void updateExecutionLog(final String username) throws ReportingServiceException {
 
         ExecutionLog executionLog;
@@ -189,56 +184,9 @@ public class Report extends BaseEntity {
         this.details.merge(reportDetails);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @PrePersist
     private void onCreate() {
         audit.setCreatedOn(DateUtils.nowUTC().toDate());
     }
 
-    public Audit getAudit() {
-        return audit;
-    }
-
-    public void setAudit(Audit audit) {
-        this.audit = audit;
-    }
-
-    public Set<Filter> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(Set<Filter> filters) {
-        this.filters = filters;
-    }
-
-    public ReportDetails getDetails() {
-        return details;
-    }
-
-    public void setDetails(ReportDetails details) {
-        this.details = details;
-    }
-
-    public VisibilityEnum getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(VisibilityEnum visibility) {
-        this.visibility = visibility;
-    }
-
-    public ReportTypeEnum getReportType() {
-        return reportType;
-    }
-
-    public void setReportType(ReportTypeEnum reportType) {
-        this.reportType = reportType;
-    }
 }
