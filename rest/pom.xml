@@ -64,6 +64,12 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
             <artifactId>activity-model</artifactId>
+            <exclusions>
+            	<exclusion>
+            	  <groupId>org.mockito</groupId>
+  				  <artifactId>mockito-all</artifactId>
+  				</exclusion>            	
+            </exclusions>
         </dependency>
                         
         <dependency>
