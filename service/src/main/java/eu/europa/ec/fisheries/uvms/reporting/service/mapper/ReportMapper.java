@@ -95,8 +95,7 @@ public class ReportMapper {
             return null;
         }
         Report report = new Report();
-        report.setDetails(new ReportDetails(
-                dto.getDescription(), dto.getName(), dto.getWithMap(), dto.getScopeName(), dto.getCreatedBy())
+        report.setDetails(new ReportDetails(dto.getName(), dto.getDescription(), dto.getWithMap(), dto.getScopeName(), dto.getCreatedBy())
         );
         report.setFilters(filterDTOSetToFilterSet(dto.getFilters(), report));
         report.setExecutionLogs(executionLogDTOToExecutionLogSet(dto.getExecutionLog(), report));
