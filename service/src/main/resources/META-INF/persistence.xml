@@ -7,7 +7,7 @@
     <persistence-unit name="reportingPUposgres" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/uvms_reporting</jta-data-source>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
+            <property name="hibernate.dialect" value="${hibernate.spatial.dialect}"/>
             <property name="show_sql" value="false" />
             <property name="hibernate.default_schema" value="reporting"/>
             <property name="hibernate.id.optimizer.pooled.preferred" value="NONE"/>
