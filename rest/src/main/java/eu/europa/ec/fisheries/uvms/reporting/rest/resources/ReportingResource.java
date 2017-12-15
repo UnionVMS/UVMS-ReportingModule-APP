@@ -56,6 +56,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.LengthType;
@@ -84,6 +85,18 @@ public class ReportingResource extends UnionVMSResource {
 
 	public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
 	public static final String USM_APPLICATION = "usmApplication";
+
+	@HeaderParam("authorization")
+    private String authorization;
+
+    @HeaderParam("scopeName")
+    private String scopeName;
+
+    @HeaderParam("roleName")
+    private String roleName;
+
+    @Context
+    private HttpServletRequest servletRequest;
 
 	@EJB
 	private ReportServiceBean reportService;
@@ -491,13 +504,22 @@ public class ReportingResource extends UnionVMSResource {
 	@Path("/execute/")
 	@Produces(APPLICATION_JSON)
 	@Consumes(APPLICATION_JSON)
-	public Response runReport(@Context HttpServletRequest request, Report report,
-			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
+	public Response runReport(Report report) {
 
-		String username = request.getRemoteUser();
+		String username = servletRequest.getRemoteUser();
 		log.trace("{} is requesting runReport(...), with a report={}", username, report);
 
-		try {
+		int order = 1;
+
+		report.setReportType(report.getReportType().toUpperCase()); // FIXME
+
+        List<CriteriaFilterDTO> criteriaFilter = report.getFilterExpression().getCriteriaFilter();
+
+        for (CriteriaFilterDTO criteriaFilterDTO : criteriaFilter){
+            criteriaFilterDTO.setOrderSequence(order++);
+        }
+
+        try {
 			Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
 			String speedUnitString = additionalProperties.get(SPEED_UNIT).toString();
 			String distanceUnitString = additionalProperties.get(DISTANCE_UNIT).toString();
@@ -506,7 +528,7 @@ public class ReportingResource extends UnionVMSResource {
 
 			DisplayFormat displayFormat = new DisplayFormat(velocityType, lengthType);
 			List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
-			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+			Boolean withActivity = servletRequest.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
 
 			ExecutionResultDTO resultDTO = reportExecutionService.getReportExecutionWithoutSave(report,
 					areaRestrictions, username, withActivity, displayFormat);

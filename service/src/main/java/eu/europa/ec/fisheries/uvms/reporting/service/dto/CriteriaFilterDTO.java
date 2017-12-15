@@ -1,17 +1,18 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
-import java.util.List;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true, of = {"code", "values"})
+@Data
 public class CriteriaFilterDTO extends FilterDTO implements Comparable<CriteriaFilterDTO>{
 
-    @JsonIgnore
     private Integer orderSequence;
 
     private String code;
@@ -33,22 +34,6 @@ public class CriteriaFilterDTO extends FilterDTO implements Comparable<CriteriaF
     @Override
     public Filter convertToFilter() {
         return GroupCriteriaFilterMapper.INSTANCE.mapCriteriaFilterDTOToCriteriaFilter(this);
-    }
-
-    public Integer getOrderSequence() {
-        return orderSequence;
-    }
-
-    public void setOrderSequence(Integer orderSequence) {
-        this.orderSequence = orderSequence;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public List<GroupCriteriaType> getValues() {

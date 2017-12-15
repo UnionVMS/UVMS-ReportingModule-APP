@@ -12,22 +12,25 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 @ToString
+@Data
 public class FilterExpression {
 
     @JsonProperty("common")
@@ -50,7 +53,7 @@ public class FilterExpression {
     private FaFilter faFilter;
 
     @JsonProperty("criteria")
-    private CriteriaFilterDTO criteriaFilter;
+    private List<CriteriaFilterDTO> criteriaFilter;
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -125,12 +128,5 @@ public class FilterExpression {
         this.additionalProperties.put(name, value);
     }
 
-    public CriteriaFilterDTO getCriteriaFilter() {
-        return criteriaFilter;
-    }
-
-    public void setCriteriaFilter(CriteriaFilterDTO criteriaFilter) {
-        this.criteriaFilter = criteriaFilter;
-    }
 
 }

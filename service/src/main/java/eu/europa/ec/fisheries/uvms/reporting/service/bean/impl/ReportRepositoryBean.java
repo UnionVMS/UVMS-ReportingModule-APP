@@ -12,19 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.merger.FilterMerger;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -32,6 +19,20 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
+
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.merger.FilterMerger;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 
 @Stateless
 @Local(ReportRepository.class)
@@ -124,7 +125,7 @@ public class ReportRepositoryBean implements ReportRepository {
     public Report createEntity(Report report) throws ReportingServiceException {
         try {
             return reportDAO.createEntity(report);
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             log.error("createEntity failed", e);
             throw new ReportingServiceException("createEntity failed", e);
         }
