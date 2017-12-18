@@ -12,21 +12,20 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
+import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
-import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 
 @Slf4j
 public class ReportDAO extends AbstractDAO<Report> {
@@ -114,7 +113,7 @@ public class ReportDAO extends AbstractDAO<Report> {
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
             reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).and("isAdmin", isAdmin?1:0).parameters(), 1);
-        } catch (ServiceException exc) {
+        } catch (Exception exc) {
             log.error("findReport failed", exc);
             throw new ReportingServiceException("findReport failed", exc);
         }
@@ -163,7 +162,7 @@ public class ReportDAO extends AbstractDAO<Report> {
             }
 
             return listReports;
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             throw new ReportingServiceException(e.getMessage(), e);
         }
     }

@@ -23,6 +23,8 @@ public interface GroupCriteriaFilterMapper {
 
     GroupCriteriaFilter mapCriteriaFilterDTOToCriteriaFilter(CriteriaFilterDTO dto);
 
+    List<GroupCriteriaFilter> mapCriteriaFilterDTOToCriteriaFilter(List<CriteriaFilterDTO> dto);
+
     @InheritInverseConfiguration
     CriteriaFilterDTO mapCriteriaFilterToCriteriaFilterDTO(GroupCriteriaFilter entity);
 

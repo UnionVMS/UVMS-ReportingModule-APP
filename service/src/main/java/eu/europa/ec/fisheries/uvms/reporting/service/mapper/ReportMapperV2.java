@@ -12,9 +12,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -24,9 +28,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Mapper(imports = {ReportDetails.class, Report.class, DateUtils.class, Audit.class, VisibilityEnum.class}, uses = {ObjectFactory.class})
 public abstract class ReportMapperV2 {
@@ -72,7 +73,7 @@ public abstract class ReportMapperV2 {
         }
 
         if (dto.getFilterExpression().getCriteriaFilter() != null) {
-            filterSet.add(GroupCriteriaFilterMapper.INSTANCE.mapCriteriaFilterDTOToCriteriaFilter(dto.getFilterExpression().getCriteriaFilter()));
+            filterSet.addAll(GroupCriteriaFilterMapper.INSTANCE.mapCriteriaFilterDTOToCriteriaFilter(dto.getFilterExpression().getCriteriaFilter()));
         }
 
         return filterSet;
