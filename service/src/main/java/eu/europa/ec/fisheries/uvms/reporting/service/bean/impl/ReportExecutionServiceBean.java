@@ -42,11 +42,11 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
@@ -81,7 +81,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.joda.time.DateTime;
 
@@ -145,14 +144,11 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             String wkt = getFilterAreaWkt(processor, areaRestrictions);
             boolean hasAssets = processor.hasAssetsOrAssetGroups();
 
-            List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
-            List<ListValueTypeFilter> listValueTypeFilters = null;
-
             MovementData movementData = fetchPositionalData(processor, wkt);
+            List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
+            List<ListValueTypeFilter> listValueTypeFilters = extractListValueFilters(processor, movementData.getAssetMap(), hasAssets);
 
             if (ReportTypeEnum.STANDARD == report.getReportType()) {
-
-                listValueTypeFilters = extractListValueFilters(processor, movementData.getAssetMap(), hasAssets);
 
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
                     FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
@@ -168,7 +164,34 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                     resultDTO.setActivityList(activitySummaryDTOs);
                 }
 
-            } else if (userActivityAllowed && ReportTypeEnum.SUMMARY == report.getReportType()) {
+                DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
+                DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
+                List<TrackDTO> tracks = new ArrayList<>();
+
+                if (isNotEmpty(movementData.getMovementMap())) {
+                    for (MovementMapResponseType map : movementData.getMovementMap()) {
+                        Asset asset = movementData.getAssetMap().get(map.getKey());
+                        if (asset != null) {
+                            for (MovementType movement : map.getMovements()) {
+                                movements.add(new MovementDTO(movement, asset, format).toFeature());
+                            }
+                            for (MovementSegment segment : map.getSegments()) {
+                                segments.add(new SegmentDTO(segment, asset, format).toFeature());
+                            }
+                            for (MovementTrack track : map.getTracks()) {
+                                tracks.add(new TrackDTO(track, asset, format));
+                            }
+                        }
+                    }
+                }
+
+                resultDTO.setTracks(tracks);
+                resultDTO.setMovements(movements);
+                resultDTO.setSegments(segments);
+
+            }
+
+            else if (userActivityAllowed && ReportTypeEnum.SUMMARY == report.getReportType()) {
 
                 List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
                 FACatchSummaryReportResponse faCatchSummaryReport =
@@ -177,40 +200,15 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                 resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
 
-            }
+                DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
 
-            DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
-            DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
-            DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
-            List<TrackDTO> tracks = new ArrayList<>();
-
-            if (movementData != null && CollectionUtils.isNotEmpty(movementData.getMovementMap())) {
-                for (MovementMapResponseType map : movementData.getMovementMap()) {
-                    Asset asset = movementData.getAssetMap().get(map.getKey());
-                    if (asset != null) {
-                        for (MovementType movement : map.getMovements()) {
-                            movements.add(new MovementDTO(movement, asset, format).toFeature());
-                        }
-                        for (MovementSegment segment : map.getSegments()) {
-                            segments.add(new SegmentDTO(segment, asset, format).toFeature());
-                        }
-                        for (MovementTrack track : map.getTracks()) {
-                            tracks.add(new TrackDTO(track, asset, format));
-                        }
+                if (isNotEmpty(resultDTO.getActivityList())) {
+                    for (FishingActivitySummaryDTO summary : resultDTO.getActivityList()) {
+                        activities.add(new ActivityDTO(summary).toFeature());
                     }
                 }
+                resultDTO.setActivities(activities);
             }
-
-            if (CollectionUtils.isNotEmpty(resultDTO.getActivityList())) {
-                for (FishingActivitySummaryDTO summary : resultDTO.getActivityList()) {
-                    activities.add(new ActivityDTO(summary).toFeature());
-                }
-            }
-
-            resultDTO.setActivities(activities);
-            resultDTO.setTracks(tracks);
-            resultDTO.setMovements(movements);
-            resultDTO.setSegments(segments);
 
             return resultDTO;
 
@@ -313,7 +311,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             for (Asset asset : assets) {
                 assetNames.add(asset.getName());
             }
-            if (CollectionUtils.isNotEmpty(assetNames)) {
+            if (isNotEmpty(assetNames)) {
                 filterTypes.add(new ListValueTypeFilter(SearchFilter.VESSEL_NAME, assetNames));
             }
         }
