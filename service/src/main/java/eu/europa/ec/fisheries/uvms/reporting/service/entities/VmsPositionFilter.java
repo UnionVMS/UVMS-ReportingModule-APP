@@ -30,16 +30,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
 @EqualsAndHashCode(callSuper = true)
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
 public class VmsPositionFilter extends Filter {
 
     @Column(name = "MIN_SPEED")
@@ -57,6 +55,10 @@ public class VmsPositionFilter extends Filter {
     @Convert(converter = ListStringConverter.class)
     @Column(name = "MOV_SOURCES")
     private List<String> movementSources;
+
+    public VmsPositionFilter() {
+        super(FilterType.vmspos);
+    }
 
     @Override
     public <T> T accept(FilterVisitor<T> visitor) {
