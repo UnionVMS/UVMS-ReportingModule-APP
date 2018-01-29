@@ -1,0 +1,1039 @@
+{
+  "apiVersion" : "1.0.17-SNAPSHOT",
+  "swaggerVersion" : "1.2",
+  "basePath" : "/reporting/rest",
+  "resourcePath" : "/report",
+  "apis" : [ {
+    "path" : "/report",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "createReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "ReportDTO",
+        "paramType" : "body",
+        "name" : "report",
+        "required" : true
+      }, {
+        "type" : "string",
+        "defaultValue" : "default",
+        "paramType" : "query",
+        "name" : "projection"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/report/default/{id}",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "defaultReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "integer",
+        "format" : "int64",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      }, {
+        "type" : "Map",
+        "paramType" : "body",
+        "name" : "payload",
+        "required" : true
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/report/execute",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "runReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "Report",
+        "paramType" : "body",
+        "name" : "report",
+        "required" : true
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/report/execute/{id}",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "runReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "integer",
+        "format" : "int64",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      }, {
+        "type" : "DisplayFormat",
+        "paramType" : "body",
+        "name" : "format",
+        "required" : true
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/report/list",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "listReports",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      }, {
+        "type" : "string",
+        "defaultValue" : "Y",
+        "paramType" : "query",
+        "name" : "existent"
+      } ],
+      "summary" : "Gets a list of reports",
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "Success"
+      }, {
+        "code" : 500,
+        "message" : "Error"
+      } ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/report/list/lastexecuted/{numberOfReport}",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "listLastExecutedReports",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      }, {
+        "type" : "integer",
+        "format" : "int32",
+        "paramType" : "path",
+        "name" : "numberOfReport",
+        "required" : true
+      }, {
+        "type" : "string",
+        "defaultValue" : "Y",
+        "paramType" : "query",
+        "name" : "existent"
+      } ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/report/share/{id}/{visibility}",
+    "operations" : [ {
+      "method" : "PUT",
+      "nickname" : "shareReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "integer",
+        "format" : "int64",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "visibility",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/report/{id}",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "getReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "integer",
+        "format" : "int64",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      } ],
+      "produces" : [ "application/json" ]
+    }, {
+      "method" : "DELETE",
+      "nickname" : "deleteReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "integer",
+        "format" : "int64",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      } ],
+      "produces" : [ "application/json" ]
+    }, {
+      "method" : "PUT",
+      "nickname" : "updateReport",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "ReportDTO",
+        "paramType" : "body",
+        "name" : "report",
+        "required" : true
+      }, {
+        "type" : "string",
+        "defaultValue" : "default",
+        "paramType" : "query",
+        "name" : "projection"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "scopeName"
+      }, {
+        "type" : "string",
+        "paramType" : "header",
+        "name" : "roleName"
+      }, {
+        "type" : "integer",
+        "format" : "int64",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  } ],
+  "models" : {
+    "VmsPosition" : {
+      "id" : "VmsPosition",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "movMinSpeed" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "movMaxSpeed" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "movType" : {
+          "type" : "string"
+        },
+        "movActivity" : {
+          "type" : "string"
+        },
+        "movsources" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "VisibilityAttributesDto" : {
+      "id" : "VisibilityAttributesDto",
+      "properties" : {
+        "isAttributeVisible" : {
+          "type" : "boolean"
+        },
+        "order" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "values" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "VisibilitySegmentDto" : {
+      "id" : "VisibilitySegmentDto",
+      "properties" : {
+        "popup" : {
+          "type" : "VisibilityAttributesDto"
+        },
+        "labels" : {
+          "type" : "VisibilityAttributesDto"
+        },
+        "table" : {
+          "type" : "VisibilityAttributesDto"
+        }
+      },
+      "required" : [ "table" ]
+    },
+    "VisibilityTracksDto" : {
+      "id" : "VisibilityTracksDto",
+      "properties" : {
+        "table" : {
+          "type" : "VisibilityAttributesDto"
+        }
+      },
+      "required" : [ "table" ]
+    },
+    "AlarmsDto" : {
+      "id" : "AlarmsDto",
+      "properties" : {
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "open" : {
+          "type" : "string"
+        },
+        "closed" : {
+          "type" : "string"
+        },
+        "pending" : {
+          "type" : "string"
+        },
+        "none" : {
+          "type" : "string"
+        }
+      }
+    },
+    "VmsSegment" : {
+      "id" : "VmsSegment",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "segMinSpeed" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "segMaxSpeed" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "segMaxDuration" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "segMinDuration" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "segCategory" : {
+          "type" : "string"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "MapConfiguration" : {
+      "id" : "MapConfiguration",
+      "properties" : {
+        "spatialConnectId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "ReportDTO" : {
+      "id" : "ReportDTO",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "withMap" : {
+          "type" : "boolean"
+        },
+        "scopeName" : {
+          "type" : "string"
+        },
+        "createdBy" : {
+          "type" : "string"
+        },
+        "shareable" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "enum" : [ "PRIVATE", "SCOPE", "PUBLIC" ]
+          }
+        },
+        "editable" : {
+          "type" : "boolean"
+        },
+        "deletable" : {
+          "type" : "boolean"
+        },
+        "audit" : {
+          "type" : "AuditDTO"
+        },
+        "visibility" : {
+          "type" : "string",
+          "enum" : [ "PRIVATE", "SCOPE", "PUBLIC" ]
+        },
+        "isDeleted" : {
+          "type" : "boolean"
+        },
+        "isDefault" : {
+          "type" : "boolean"
+        },
+        "reportTypeEnum" : {
+          "type" : "string",
+          "enum" : [ "STANDARD", "SUMMARY" ]
+        },
+        "deletedOn" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "deletedBy" : {
+          "type" : "string"
+        },
+        "filters" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "FilterDTO"
+          }
+        },
+        "executionLog" : {
+          "type" : "ExecutionLogDTO"
+        },
+        "mapConfiguration" : {
+          "type" : "MapConfigurationDTO"
+        },
+        "deleted" : {
+          "type" : "boolean"
+        },
+        "default" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "LayerSettingsDto" : {
+      "id" : "LayerSettingsDto",
+      "properties" : {
+        "baseLayers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "LayersDto"
+          }
+        },
+        "portLayers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "LayersDto"
+          }
+        },
+        "additionalLayers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "LayersDto"
+          }
+        },
+        "areaLayers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "LayerAreaDto"
+          }
+        }
+      }
+    },
+    "FilterDTO" : {
+      "id" : "FilterDTO",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "string",
+          "enum" : [ "areas", "asset", "vgroup", "common", "vmspos", "vmstrack", "vmsseg", "fa", "criteria" ]
+        }
+      }
+    },
+    "ReferenceDataPropertiesDto" : {
+      "id" : "ReferenceDataPropertiesDto",
+      "properties" : {
+        "selection" : {
+          "type" : "string"
+        },
+        "codes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "DateTime" : {
+      "id" : "DateTime",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "positionSelector" : {
+          "type" : "string"
+        },
+        "positionTypeSelector" : {
+          "type" : "string"
+        },
+        "xValue" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "startDate" : {
+          "type" : "string"
+        },
+        "endDate" : {
+          "type" : "string"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "FaFilter" : {
+      "id" : "FaFilter",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "reportType" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "activityTypes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "masters" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "ports" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "gears" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "species" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "weight" : {
+          "type" : "FaWeight"
+        }
+      }
+    },
+    "MapConfigurationDTO" : {
+      "id" : "MapConfigurationDTO",
+      "properties" : {
+        "spatialConnectId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "mapProjectionId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "displayProjectionId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "coordinatesFormat" : {
+          "type" : "string"
+        },
+        "scaleBarUnits" : {
+          "type" : "string"
+        },
+        "visibilitySettings" : {
+          "type" : "VisibilitySettingsDto"
+        },
+        "styleSettings" : {
+          "type" : "StyleSettingsDto"
+        },
+        "layerSettings" : {
+          "type" : "LayerSettingsDto"
+        },
+        "referenceDataSettings" : {
+          "type" : "Map"
+        }
+      }
+    },
+    "VmsTrack" : {
+      "id" : "VmsTrack",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "trkMaxTime" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "trkMinTime" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "trkMinDuration" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "trkMaxDuration" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "trkMinDistance" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "trkMaxDistance" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "PositionsDto" : {
+      "id" : "PositionsDto",
+      "properties" : {
+        "attribute" : {
+          "type" : "string"
+        },
+        "style" : {
+          "type" : "Map"
+        }
+      },
+      "required" : [ "attribute", "style" ]
+    },
+    "SegmentsDto" : {
+      "id" : "SegmentsDto",
+      "properties" : {
+        "attribute" : {
+          "type" : "string"
+        },
+        "style" : {
+          "type" : "Map"
+        }
+      },
+      "required" : [ "attribute", "style" ]
+    },
+    "LayersDto" : {
+      "id" : "LayersDto",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "serviceLayerId" : {
+          "type" : "string"
+        },
+        "subType" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      }
+    },
+    "Asset" : {
+      "id" : "Asset",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "guid" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "user" : {
+          "type" : "string"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "FilterExpression" : {
+      "id" : "FilterExpression",
+      "properties" : {
+        "common" : {
+          "type" : "DateTime"
+        },
+        "vms" : {
+          "type" : "Vms"
+        },
+        "areas" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "Area"
+          }
+        },
+        "assets" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "Asset"
+          }
+        },
+        "fa" : {
+          "type" : "FaFilter"
+        },
+        "criteria" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "CriteriaFilterDTO"
+          }
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "VisibilitySettingsDto" : {
+      "id" : "VisibilitySettingsDto",
+      "properties" : {
+        "positions" : {
+          "type" : "VisibilityPositionsDto"
+        },
+        "segments" : {
+          "type" : "VisibilitySegmentDto"
+        },
+        "tracks" : {
+          "type" : "VisibilityTracksDto"
+        }
+      },
+      "required" : [ "positions", "segments", "tracks" ]
+    },
+    "AuditDTO" : {
+      "id" : "AuditDTO",
+      "properties" : { }
+    },
+    "Report" : {
+      "id" : "Report",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "desc" : {
+          "type" : "string"
+        },
+        "visibility" : {
+          "type" : "string"
+        },
+        "reportType" : {
+          "type" : "string"
+        },
+        "createdOn" : {
+          "type" : "string"
+        },
+        "executedOn" : {
+          "type" : "Object"
+        },
+        "createdBy" : {
+          "type" : "string"
+        },
+        "withMap" : {
+          "type" : "boolean"
+        },
+        "mapConfiguration" : {
+          "type" : "MapConfiguration"
+        },
+        "filterExpression" : {
+          "type" : "FilterExpression"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "DisplayFormat" : {
+      "id" : "DisplayFormat",
+      "properties" : {
+        "speedUnit" : {
+          "type" : "string",
+          "enum" : [ "KPH", "MPH", "KTS" ]
+        },
+        "distanceUnit" : {
+          "type" : "string",
+          "enum" : [ "MI", "NM", "KM" ]
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "Area" : {
+      "id" : "Area",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "areaType" : {
+          "type" : "string"
+        },
+        "gid" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "FaWeight" : {
+      "id" : "FaWeight",
+      "properties" : {
+        "min" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "max" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "unit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "CriteriaFilterDTO" : {
+      "id" : "CriteriaFilterDTO",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "string",
+          "enum" : [ "areas", "asset", "vgroup", "common", "vmspos", "vmstrack", "vmsseg", "fa", "criteria" ]
+        },
+        "orderSequence" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "code" : {
+          "type" : "string"
+        },
+        "values" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "enum" : [ "TERRITORY", "FAO_AREA", "ICES_STAT_RECTANGLE", "EFFORT_ZONE", "RFMO", "GFCM_GSA", "GFCM_STAT_RECTANGLE", "VESSEL", "FLAG_STATE", "GEAR_TYPE", "SPECIES", "PRESENTATION", "CATCH_TYPE", "SIZE_CLASS", "DATE_DAY", "DATE_MONTH", "DATE_YEAR" ]
+          }
+        }
+      }
+    },
+    "ExecutionLogDTO" : {
+      "id" : "ExecutionLogDTO",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "executedBy" : {
+          "type" : "string"
+        },
+        "executedOn" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    },
+    "LayerAreaDto" : {
+      "id" : "LayerAreaDto",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "serviceLayerId" : {
+          "type" : "string"
+        },
+        "subType" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "areaType" : {
+          "type" : "string",
+          "enum" : [ "sysarea", "userarea", "areagroup" ]
+        },
+        "gid" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "areaName" : {
+          "type" : "string"
+        },
+        "desc" : {
+          "type" : "string"
+        },
+        "areaGroupName" : {
+          "type" : "string"
+        }
+      }
+    },
+    "StyleSettingsDto" : {
+      "id" : "StyleSettingsDto",
+      "properties" : {
+        "positions" : {
+          "type" : "PositionsDto"
+        },
+        "segments" : {
+          "type" : "SegmentsDto"
+        },
+        "alarms" : {
+          "type" : "AlarmsDto"
+        }
+      },
+      "required" : [ "positions", "segments" ]
+    },
+    "Vms" : {
+      "id" : "Vms",
+      "properties" : {
+        "vmsposition" : {
+          "type" : "VmsPosition"
+        },
+        "vmstrack" : {
+          "type" : "VmsTrack"
+        },
+        "vmssegment" : {
+          "type" : "VmsSegment"
+        },
+        "additionalProperty" : {
+          "type" : "void"
+        }
+      }
+    },
+    "VisibilityPositionsDto" : {
+      "id" : "VisibilityPositionsDto",
+      "properties" : {
+        "popup" : {
+          "type" : "VisibilityAttributesDto"
+        },
+        "labels" : {
+          "type" : "VisibilityAttributesDto"
+        },
+        "table" : {
+          "type" : "VisibilityAttributesDto"
+        }
+      },
+      "required" : [ "popup", "labels", "table" ]
+    }
+  }
+}

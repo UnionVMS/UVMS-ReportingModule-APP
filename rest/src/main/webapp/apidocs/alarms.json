@@ -1,0 +1,49 @@
+{
+  "apiVersion" : "1.0.17-SNAPSHOT",
+  "swaggerVersion" : "1.2",
+  "basePath" : "/reporting/rest",
+  "resourcePath" : "/alarms",
+  "apis" : [ {
+    "path" : "/alarms",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "getAlarms",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "AlarmMovementList",
+        "paramType" : "body",
+        "name" : "alarmMovementList",
+        "required" : true
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  } ],
+  "models" : {
+    "AlarmMovementList" : {
+      "id" : "AlarmMovementList",
+      "properties" : {
+        "movements" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "AlarmMovement"
+          }
+        }
+      }
+    },
+    "AlarmMovement" : {
+      "id" : "AlarmMovement",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "x" : {
+          "type" : "string"
+        },
+        "y" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
