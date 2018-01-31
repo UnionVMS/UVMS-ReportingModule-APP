@@ -12,20 +12,26 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.areas;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.areas;
 
 @Entity
 @DiscriminatorValue("areas")
 @EqualsAndHashCode(callSuper = true, of = {"areaType", "areaId"})
+@Data
+@AllArgsConstructor
+@Builder
 @ToString(callSuper = true)
 public class AreaFilter extends Filter {
 
@@ -37,29 +43,6 @@ public class AreaFilter extends Filter {
 
     public AreaFilter() {
         super(areas);
-    }
-
-    @Builder
-    public AreaFilter(Long areaId, String areaType) {
-        super(areas);
-        this.areaId = areaId;
-        this.areaType = areaType;
-    }
-
-    public String getAreaType() {
-        return areaType;
-    }
-
-    public void setAreaType(String areaType) {
-        this.areaType = areaType;
-    }
-
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
     }
 
     @Override

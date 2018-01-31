@@ -57,7 +57,7 @@ public class ReportDAOTest extends BaseReportingDAOTest {
         Operation operation = sequenceOf(DELETE_ALL, INSERT_REFERENCE_DATA,
                 insertInto("reporting.report")
                         .withGeneratedValue("ID", ValueGenerators.sequence().startingAt(50L).incrementingBy(1))
-                        .columns(ReportDetails.CREATED_BY, ReportDetails.NAME, Audit.CREATED_ON, ReportDetails.WITH_MAP, VISIBILITY, "is_deleted", ReportDetails.SCOPE_NAME, Report.REPORT_TYPE)
+                        .columns(ReportDetails.CREATED_BY, ReportDetails.NAME_, Audit.CREATED_ON, ReportDetails.WITH_MAP, VISIBILITY, "is_deleted", ReportDetails.SCOPE_NAME, Report.REPORT_TYPE)
                         .values("testUser", "France", java.sql.Date.valueOf("2014-12-12"), '1', PRIVATE, 'N', "testScope", STANDARD)
                         .values("testUser", "United States", java.sql.Date.valueOf("2014-12-13"), '1', PRIVATE, 'N', "testScope", STANDARD)
                         .values("rep_power", "United States", java.sql.Date.valueOf("2014-12-13"), '1', PRIVATE, 'N', "EC", STANDARD)

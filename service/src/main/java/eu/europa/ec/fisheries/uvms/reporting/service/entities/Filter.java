@@ -47,6 +47,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
@@ -62,6 +63,7 @@ import org.joda.time.DateTime;
 @EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "reportId"})
 @AttributeOverride(name = "id", column = @Column(name = "filter_id"))
 @ToString(callSuper = true, exclude = {"report", "type", "reportId"})
+@Data
 public abstract class Filter extends BaseEntity {
 
     public static final String REPORT_ID = "report_id";
@@ -98,45 +100,7 @@ public abstract class Filter extends BaseEntity {
 
     public abstract <T> T accept(FilterVisitor<T> visitor);
 
-    protected void validate() {
-        //Set<ConstraintViolation<Filter>> violations =
-        //        validator.validate(this);
-
-        //if (!violations.isEmpty()) {
-        //    throw new ConstraintViolationException(
-        //            new HashSet<ConstraintViolation<?>>(violations));
-        //}
-    }
-
     public abstract void merge(Filter filter);
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Report getReport() {
-        return report;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
-    }
-
-    public FilterType getType() {
-        return type;
-    }
-
-    public Long getReportId() {
-        return reportId;
-    }
-
-    public void setReportId(Long reportId) {
-        this.reportId = reportId;
-    }
 
     public abstract Object getUniqKey();
 
