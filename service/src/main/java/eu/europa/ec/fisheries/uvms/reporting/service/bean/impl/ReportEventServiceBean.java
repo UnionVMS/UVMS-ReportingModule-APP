@@ -50,7 +50,7 @@ public class ReportEventServiceBean implements ReportEventService {
         try {
             ReportGetStartAndEndDateRQ request = event.getReportGetStartAndEndDateRQ();
             ReportGetStartAndEndDateRS response = reportService.getReportDates(request.getNow(), request.getId(), request.getUserName(), request.getScopeName());
-            messageProducer.sendModuleResponseMessage(event.getMessage(), ReportingModuleResponseMapper.mapReportGetStartAndEndDateRS(response), messageProducer.getModuleName());
+            messageProducer.sendResponseMessageToSender(event.getMessage(), ReportingModuleResponseMapper.mapReportGetStartAndEndDateRS(response));
         } catch (Exception e) {
             sendError(event, e);
         }
