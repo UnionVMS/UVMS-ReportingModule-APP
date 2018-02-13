@@ -9,15 +9,12 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
-
-import javax.ejb.Local;
-import javax.ejb.Stateless;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
-
+import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 @Stateless
 @Local

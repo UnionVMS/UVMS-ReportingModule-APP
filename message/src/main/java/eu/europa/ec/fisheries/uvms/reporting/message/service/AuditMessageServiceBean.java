@@ -9,35 +9,25 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
-
-import javax.annotation.Resource;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 
 /**
  * AuditMessageServiceBean responsible to send an receive messages to and from AUDIT module from Reporting
  * The implementation of sending message to the queue is handled in generic implementation of AbstractProducer
  * 
- * @see {@link AbstractMessageService}
+ * @see {@link AbstractProducer}
  *
  */
 @Stateless
 @LocalBean
 public class AuditMessageServiceBean extends AbstractProducer {
 
-    public static final String MODULE_NAME = "reporting";
-
 	public String getDestinationName(){
 		return MessageConstants.QUEUE_AUDIT_EVENT;
-	}	
-	
-
-
+	}
 }
