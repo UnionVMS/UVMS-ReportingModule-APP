@@ -127,11 +127,9 @@ public class AlarmHelper {
         AssetListCriteria assetListCriteria = new AssetListCriteria();
         assetListCriteria.getCriterias().addAll(assetListCriteriaList);
         assetListCriteria.setIsDynamic(false);
-
         AssetListPagination assetListPagination = new AssetListPagination();
         assetListPagination.setPage(1);
         assetListPagination.setListSize(assetListCriteriaList.size());
-
         AssetListQuery assetListQuery = new AssetListQuery();
         assetListQuery.setAssetSearchCriteria(assetListCriteria);
         assetListQuery.setPagination(assetListPagination);

@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportEventService;
 import eu.europa.ec.fisheries.uvms.reporting.message.bean.ReportingMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndDateEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
@@ -20,13 +19,13 @@ import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent
 import eu.europa.ec.fisheries.uvms.reporting.model.mappper.ReportingModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRQ;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
-import lombok.extern.slf4j.Slf4j;
-
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportEventService;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @Slf4j
@@ -50,11 +49,10 @@ public class ReportEventServiceBean implements ReportEventService {
         try {
             ReportGetStartAndEndDateRQ request = event.getReportGetStartAndEndDateRQ();
             ReportGetStartAndEndDateRS response = reportService.getReportDates(request.getNow(), request.getId(), request.getUserName(), request.getScopeName());
-            messageProducer.sendModuleResponseMessage(event.getMessage(), ReportingModuleResponseMapper.mapReportGetStartAndEndDateRS(response), messageProducer.getModuleName());
+            messageProducer.sendResponseMessageToSender(event.getMessage(), ReportingModuleResponseMapper.mapReportGetStartAndEndDateRS(response));
         } catch (Exception e) {
             sendError(event, e);
         }
-
     }
 
     private void sendError(ReportingMessageEvent event, Exception e) {

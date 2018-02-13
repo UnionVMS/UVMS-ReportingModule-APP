@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndDateEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
-
 import javax.ejb.Local;
 import javax.enterprise.event.Observes;
 

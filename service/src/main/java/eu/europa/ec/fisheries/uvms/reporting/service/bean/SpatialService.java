@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-
 import java.util.List;
 import java.util.Set;
 

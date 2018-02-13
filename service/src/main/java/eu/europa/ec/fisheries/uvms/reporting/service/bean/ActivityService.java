@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-
 import java.util.List;
 
 public interface ActivityService {

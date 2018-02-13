@@ -12,23 +12,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
+import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
-import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import lombok.extern.slf4j.Slf4j;
 
 @Stateless
@@ -36,31 +31,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReportingMessageServiceBean extends AbstractProducer {
 
-    public String getModuleName() {
-        return "reporting";
+    public String getDestinationName() {
+        return MessageConstants.QUEUE_REPORTING_EVENT;
     }
 
-	public String getDestinationName(){
-		return MessageConstants.QUEUE_REPORTING_EVENT;
-	}			
-
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent message) {
-		Connection connection = null;
-
-		try {
-			connection = getConnectionFactory().createConnection();
-			final Session session = JMSUtils.connectToQueue(connection);
-            log.debug("Sending message back to recipient from SpatialModule with correlationId {} on queue: {}", message.getMessage().getJMSMessageID(),
-                    message.getMessage().getJMSReplyTo());
-            String data = JAXBMarshaller.marshall(message.getFault());
-            TextMessage response = session.createTextMessage(data);
-            response.setJMSCorrelationID(message.getMessage().getJMSMessageID());
-            session.createProducer(message.getMessage().getJMSReplyTo()).send(response);
-        } catch (JMSException | ReportingModelException e) {
+    public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent messageWrap) {
+        try {
+            String data = JAXBMarshaller.marshall(messageWrap.getFault());
+            sendResponseMessageToSender(messageWrap.getMessage(), data);
+        } catch (MessageException | ReportingModelException e) {
             log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace(), e);
-        } finally {
-        	JMSUtils.disconnectQueue(connection);
         }
     }
 }

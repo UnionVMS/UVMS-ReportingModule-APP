@@ -10,10 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -22,6 +18,9 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -97,7 +96,6 @@ public class GeoJsonBuilder {
         featureTypeBuilder.add(AlarmHelper.RULE_NAME, String.class);
         featureTypeBuilder.add(AlarmHelper.RULE_DESC, String.class);
         featureTypeBuilder.add(AlarmHelper.RULE_DEFINITION, String.class);
-
         return featureTypeBuilder.buildFeatureType();
     }
 }

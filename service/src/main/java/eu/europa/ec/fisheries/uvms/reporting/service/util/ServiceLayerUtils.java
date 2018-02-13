@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.util;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;

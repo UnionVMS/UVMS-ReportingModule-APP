@@ -17,19 +17,15 @@ import com.vividsolutions.jts.io.WKTReader;
 public class GeometryUtil {
 
     private GeometryUtil() {
+        super();
     }
 
     public static Geometry toGeometry(final String wkt) throws ParseException {
-
         Geometry geometry = null;
-
         if (wkt != null) {
-
             WKTReader wktReader = new WKTReader();
             geometry = wktReader.read(wkt);
-
         }
-
         return geometry;
     }
 

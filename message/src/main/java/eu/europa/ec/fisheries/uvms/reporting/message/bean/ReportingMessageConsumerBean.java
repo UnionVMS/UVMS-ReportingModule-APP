@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndDateEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
@@ -21,8 +22,6 @@ import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndD
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleMethod;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleRequest;
 import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -32,16 +31,15 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import lombok.extern.slf4j.Slf4j;
 
-import static eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants.*;
-
-@MessageDriven(mappedName = QUEUE_MODULE_SPATIAL, activationConfig = {
-        @ActivationConfigProperty(propertyName = "messagingType", propertyValue = CONNECTION_TYPE),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = DESTINATION_TYPE_QUEUE),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = QUEUE_MODULE_REPORTING_NAME)
+@MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_SPATIAL, activationConfig = {
+        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
+        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
+        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_REPORTING_NAME)
 })
 @Slf4j
-public class ReportingEventMDB implements MessageListener {
+public class ReportingMessageConsumerBean implements MessageListener {
 
     private static int REPORTING_MESSAGE = 1700;
 

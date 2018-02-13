@@ -13,9 +13,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.uvms.init.AbstractModuleInitializerBean;
-
-import javax.ejb.Singleton;
 import java.io.InputStream;
+import javax.ejb.Singleton;
 
 @Singleton
 public class ReportingInitializerBean extends AbstractModuleInitializerBean {
@@ -29,6 +28,4 @@ public class ReportingInitializerBean extends AbstractModuleInitializerBean {
     protected boolean mustRedeploy() {
         return true;
     }
-
-
 }

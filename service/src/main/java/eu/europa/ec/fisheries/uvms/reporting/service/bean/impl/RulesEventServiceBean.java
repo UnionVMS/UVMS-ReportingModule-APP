@@ -14,24 +14,23 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.schema.rules.module.v1.GetTicketsAndRulesByMovementsResponse;
 import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.RulesEventService;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.RulesProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.RulesEventService;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesFaultException;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleResponseMapper;
-import lombok.extern.slf4j.Slf4j;
-
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @Local(RulesEventService.class)
@@ -50,21 +49,11 @@ public class RulesEventServiceBean implements RulesEventService {
             String request = RulesModuleRequestMapper.createGetTicketsAndRulesByMovementsRequest(movementId);
             String correlationId = producer.sendModuleMessage(request, consumer.getDestination());
             Message message = consumer.getMessage(correlationId, TextMessage.class);
-            GetTicketsAndRulesByMovementsResponse response = RulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse(getText(message));
-
-            if (response == null) {
-                return null;
-            }
-            return response.getTicketsAndRules();
+            GetTicketsAndRulesByMovementsResponse response = RulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse((TextMessage) message);
+            return response != null ? response.getTicketsAndRules() : null;
         } catch (MessageException | JMSException | RulesModelMapperException | RulesFaultException e) {
             throw new ReportingServiceException(e);
         }
     }
 
-    private TextMessage getText(Message message) throws JMSException {
-        if (message instanceof TextMessage) {
-            return (TextMessage) message;
-        }
-        return null;
-    }
 }

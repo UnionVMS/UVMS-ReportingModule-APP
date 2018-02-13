@@ -25,27 +25,26 @@ import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateExc
 import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
-
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.validation.constraints.NotNull;
 
 public class ExtMovementMessageMapper {
 
     public static String mapToGetMovementMapByQueryRequest(final MovementQuery query) throws ModelMarshallException {
-        if (query == null){
-           throw new IllegalArgumentException("Movementquery can not be null.");
+        if (query == null) {
+            throw new IllegalArgumentException("Movementquery can not be null.");
         }
         return MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(query);
     }
 
     public static List<MovementMapResponseType> mapToMovementMapResponse(final TextMessage message) throws ModelMapperException, JMSException, MovementFaultException, MovementDuplicateException {
-        if (message == null){
+        if (message == null) {
             throw new IllegalArgumentException("TextMessage can not be null.");
         }
         return MovementModuleResponseMapper.mapToMovementMapResponse(message);
@@ -60,14 +59,14 @@ public class ExtMovementMessageMapper {
     }
 
     public static List<MovementType> mapToMovementListResponse(TextMessage message) throws ModelMapperException, JMSException, MovementFaultException, MovementDuplicateException {
-        if (message == null){
+        if (message == null) {
             throw new IllegalArgumentException("TextMessage can not be null.");
         }
         return MovementModuleResponseMapper.mapToMovementListResponse(message);
     }
 
     public static String mapToGetMovementListByQueryRequest(MovementQuery query) throws ModelMarshallException {
-        if (query == null){
+        if (query == null) {
             throw new IllegalArgumentException("Movementquery can not be null.");
         }
         return MovementModuleRequestMapper.mapToGetMovementListByQueryRequest(query);
@@ -77,7 +76,7 @@ public class ExtMovementMessageMapper {
 
         List<ListCriteria> criteria = new ArrayList<ListCriteria>();
 
-        for(String id: connectIds){
+        for (String id : connectIds) {
             ListCriteria movementType = new ListCriteria();
             movementType.setKey(SearchKey.CONNECT_ID);
             movementType.setValue(id);

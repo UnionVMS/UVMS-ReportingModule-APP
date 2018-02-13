@@ -15,36 +15,12 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DISTANCE_UNIT;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SPEED_UNIT;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.ejb.EJB;
-import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.FeatureToGeoJsonJacksonMapper;
@@ -73,6 +49,29 @@ import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.ejb.EJB;
+import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -83,8 +82,8 @@ import org.joda.time.DateTime;
 @NoArgsConstructor
 public class ReportingResource extends UnionVMSResource {
 
-	public static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
-	public static final String USM_APPLICATION = "usmApplication";
+	private static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
+	private static final String USM_APPLICATION = "usmApplication";
 
 	@HeaderParam("authorization")
     private String authorization;
@@ -129,15 +128,13 @@ public class ReportingResource extends UnionVMSResource {
 	@Path("/list/lastexecuted/{numberOfReport}")
 	@Produces(APPLICATION_JSON)
 	@Interceptors(ReportingExceptionInterceptor.class)
-	public Response listLastExecutedReports(@Context HttpServletRequest request,
-			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
-			@PathParam("numberOfReport") Integer numberOfReport,
+	public Response listLastExecutedReports(@PathParam("numberOfReport") Integer numberOfReport,
 			@DefaultValue("Y") @QueryParam("existent") String existent)
 			throws ServiceException, ReportingServiceException {
 		if (numberOfReport == null || numberOfReport == 0) {
 			return createErrorResponse("Number of last executed report cannot be null or 0");
 		}
-		Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent,
+		Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(servletRequest, scopeName, roleName, existent,
 				numberOfReport);
 		return createSuccessResponse(reportDTOs);
 	}

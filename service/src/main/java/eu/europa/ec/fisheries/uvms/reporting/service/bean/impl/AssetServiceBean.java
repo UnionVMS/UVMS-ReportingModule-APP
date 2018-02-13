@@ -12,27 +12,26 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AssetModuleSenderBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
-import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.jms.TextMessage;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @LocalBean
 @Stateless
@@ -56,7 +55,6 @@ public class AssetServiceBean {
                 List<Asset> assets = getAssets(moduleMessage, response);
                 assetList.addAll(assets);
             }
-
             if (processor.hasAssetGroups()) {
                 String request = ExtAssetMessageMapper.createAssetListModuleRequest(processor.getAssetGroupList());
                 String moduleMessage = assetSender.sendModuleMessage(request, receiver.getDestination());
@@ -64,11 +62,9 @@ public class AssetServiceBean {
                 List<Asset> groupList = getAssets(moduleMessage, response);
                 assetList.addAll(groupList);
             }
-
         } catch (MessageException | AssetModelMapperException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM ASSET", e);
         }
-
         return ExtAssetMessageMapper.getAssetMap(assetList);
     }
 

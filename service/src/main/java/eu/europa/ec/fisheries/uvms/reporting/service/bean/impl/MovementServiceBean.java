@@ -12,19 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
@@ -33,9 +20,19 @@ import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultExcepti
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
+import java.util.List;
+import java.util.Map;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
 import lombok.extern.slf4j.Slf4j;
 
 @Stateless
@@ -50,9 +47,7 @@ public class MovementServiceBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) throws ReportingServiceException {
-
         return ExtMovementMessageMapper.getMovementMap(getMovementMapResponseTypes(processor));
-
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -62,9 +57,7 @@ public class MovementServiceBean {
     }
 
     private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws ReportingServiceException {
-
         try {
-
             String request = ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
             String moduleMessage = movementSender.sendModuleMessage(request, receiver.getDestination());
             TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
@@ -73,7 +66,6 @@ public class MovementServiceBean {
             } else {
                 throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
-
         } catch (ModelMapperException | JMSException | MessageException | MovementFaultException | MovementDuplicateException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT", e);
         }
@@ -81,23 +73,15 @@ public class MovementServiceBean {
 
     private boolean isUserFault(TextMessage message) {
         boolean isErrorResponse = false;
-
         try {
-            UserFault userFault = unmarshallTextMessage(message, UserFault.class);
+            UserFault userFault = JAXBMarshaller.unmarshall(message, UserFault.class);
             log.error("UserFault error JMS message received with text: " + userFault.getFault());
             isErrorResponse = true;
-        } catch (JAXBException | JMSException e) {
+        } catch (ReportingModelException e) {
             //do nothing  since it's not a UserFault
             log.trace("Unexpected exception was thrown.", e);
         }
-
         return isErrorResponse;
     }
 
-    protected <R> R unmarshallTextMessage(final TextMessage textMessage, final Class clazz) throws JAXBException, JMSException {
-        JAXBContext jc = JAXBContext.newInstance(clazz);
-        Unmarshaller unmarshaller = jc.createUnmarshaller();
-        StringReader sr = new StringReader(textMessage.getText());
-        return (R) unmarshaller.unmarshal(sr);
-    }
 }

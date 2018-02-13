@@ -12,14 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import java.util.List;
-
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
@@ -31,6 +23,13 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.merger.FilterMerger;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -43,17 +42,15 @@ public class ReportRepositoryBean implements ReportRepository {
     private FilterDAO filterDAO;
     private ExecutionLogDAO executionLogDAO;
     private FilterMerger filterMerger;
-
     private EntityManager em;
 
-	
     @PersistenceContext(unitName = "reportingPUposgres")
     private EntityManager postgres;
 
     @PersistenceContext(unitName = "reportingPUoracle")
     private EntityManager oracle;
 	
-    public void initEntityManager() {
+    private void initEntityManager() {
         String dbDialect = System.getProperty("db.dialect");
         if ("oracle".equalsIgnoreCase(dbDialect)) {
             em = oracle;
@@ -74,9 +71,7 @@ public class ReportRepositoryBean implements ReportRepository {
     @Override
     @Transactional
     public boolean update(final ReportDTO reportDTO) throws ReportingServiceException {
-
         try {
-
             Report entityById = reportDAO.findEntityById(Report.class, reportDTO.getId());
             entityById.getDetails().setDescription(reportDTO.getDescription());
             entityById.getDetails().setName(reportDTO.getName());

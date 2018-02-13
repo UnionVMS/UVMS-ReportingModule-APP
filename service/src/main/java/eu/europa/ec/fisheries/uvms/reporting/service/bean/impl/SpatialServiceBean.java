@@ -12,11 +12,11 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.LayerSettingsDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReferenceDataPropertiesDto;
@@ -42,14 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.TextMessage;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 
 @Stateless
 @Local(SpatialService.class)
@@ -67,19 +65,16 @@ public class SpatialServiceBean implements SpatialService {
         try {
             List<AreaIdentifierType> scopeAreasList = new ArrayList<>();
             List<AreaIdentifierType> userAreasList = new ArrayList<>();
-
             if (CollectionUtils.isNotEmpty(scopeAreas)) {
                 scopeAreasList.addAll(scopeAreas);
             }
-
             if (CollectionUtils.isNotEmpty(userAreas)) {
                 userAreasList.addAll(userAreas);
             }
-
             String correlationId = spatialProducerBean.sendModuleMessage(SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(scopeAreasList, userAreasList), reportingJMSConsumerBean.getDestination());
-            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             return getFilterAreaResponse(message, correlationId);
-        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+        } catch (SpatialModelMapperException | MessageException e) {
             throw new ReportingServiceException(e);
         }
     }
@@ -89,8 +84,7 @@ public class SpatialServiceBean implements SpatialService {
         try {
             String getMapConfigurationRequest = createGetMapConfigurationRequest(reportId, permittedServiceLayers);
             String correlationId = spatialProducerBean.sendModuleMessage(getMapConfigurationRequest, reportingJMSConsumerBean.getDestination());
-            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
-
+            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialGetMapConfigurationRS getMapConfigurationResponse = createGetMapConfigurationResponse(message, correlationId);
             MapConfigurationDTO mapConfigurationDTO = MapConfigMapper.INSTANCE.mapConfigurationTypeToMapConfigurationDTO(getMapConfigurationResponse.getMapConfiguration());
             VisibilitySettingsDto visibilitySettingsDto = MapConfigMapper.INSTANCE.getVisibilitySettingsDto(getMapConfigurationResponse.getMapConfiguration().getVisibilitySettings());
@@ -102,7 +96,7 @@ public class SpatialServiceBean implements SpatialService {
             mapConfigurationDTO.setLayerSettings(validateLayerSettings(layerSettingsDto));
             mapConfigurationDTO.setReferenceData(referenceData);
             return mapConfigurationDTO;
-        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+        } catch (SpatialModelMapperException | MessageException e) {
             throw new ReportingServiceException(e);
         }
     }
@@ -111,27 +105,20 @@ public class SpatialServiceBean implements SpatialService {
     public boolean saveOrUpdateMapConfiguration(long reportId, MapConfigurationDTO mapConfiguration) throws ReportingServiceException {
         try {
             validate(mapConfiguration);
-
             CoordinatesFormat coordinatesFormat = (mapConfiguration.getCoordinatesFormat() != null) ? CoordinatesFormat.fromValue(mapConfiguration.getCoordinatesFormat()) : null;
             ScaleBarUnits scaleBarUnits = (mapConfiguration.getScaleBarUnits() != null) ? ScaleBarUnits.fromValue(mapConfiguration.getScaleBarUnits()) : null;
             VisibilitySettingsType visibilitySettingsType = MapConfigMapper.INSTANCE.getVisibilitySettingsType(mapConfiguration.getVisibilitySettings());
             StyleSettingsType styleSettingsType = MapConfigMapper.INSTANCE.getStyleSettingsType(mapConfiguration.getStyleSettings());
             LayerSettingsType layerSettingsType = MapConfigMapper.INSTANCE.getLayerSettingsType(mapConfiguration.getLayerSettings());
             List<ReferenceDataType> referenceDataType = MapConfigMapper.INSTANCE.getReferenceDataType(mapConfiguration.getReferenceData());
-
-            String request = getSaveMapConfigurationRequest(reportId,
-                    mapConfiguration.getSpatialConnectId(),
-                    mapConfiguration.getMapProjectionId(),
-                    mapConfiguration.getDisplayProjectionId(),
-                    coordinatesFormat, scaleBarUnits,
-                    styleSettingsType, visibilitySettingsType,
-                    layerSettingsType, referenceDataType);
+            String request = getSaveMapConfigurationRequest(reportId, mapConfiguration.getSpatialConnectId(),
+                    mapConfiguration.getMapProjectionId(), mapConfiguration.getDisplayProjectionId(), coordinatesFormat, scaleBarUnits,
+                    styleSettingsType, visibilitySettingsType, layerSettingsType, referenceDataType);
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
-            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialSaveOrUpdateMapConfigurationRS saveOrUpdateMapConfigurationResponse = getSaveOrUpdateMapConfigurationResponse(message, correlationId);
-
             return saveOrUpdateMapConfigurationResponse != null;
-        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+        } catch (SpatialModelMapperException | MessageException e) {
             throw new ReportingServiceException("ERROR DURING SAVE OR UPDATE MAP CONFIG", e);
         }
     }
@@ -140,14 +127,12 @@ public class SpatialServiceBean implements SpatialService {
     public void deleteMapConfiguration(List<Long> spatialConnectIds) throws ReportingServiceException {
         try {
             validateSpatialConnectIdsList(spatialConnectIds);
-
             String request = getDeleteMapConfigurationRequest(spatialConnectIds);
             String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
-            Message message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialDeleteMapConfigurationRS deleteMapConfigurationResponse = getDeleteMapConfigurationResponse(message, correlationId);
             log.debug("deleteMapConfiguration response received {}", deleteMapConfigurationResponse.getResponse());
-
-        } catch (SpatialModelMapperException | MessageException | JMSException e) {
+        } catch (SpatialModelMapperException | MessageException e) {
             throw new ReportingServiceException("ERROR DURING DELETE MAP CONFIG", e);
         }
     }
@@ -197,27 +182,21 @@ public class SpatialServiceBean implements SpatialService {
                 styleSettingsType, visibilitySettingsType, layerSettingsType, referenceDataType);
     }
 
-    private SpatialSaveOrUpdateMapConfigurationRS getSaveOrUpdateMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
-        return SpatialModuleResponseMapper.mapToSpatialSaveOrUpdateMapConfigurationRS(getText(message), correlationId);
+    private SpatialSaveOrUpdateMapConfigurationRS getSaveOrUpdateMapConfigurationResponse(TextMessage message, String correlationId) throws SpatialModelMapperException {
+        return SpatialModuleResponseMapper.mapToSpatialSaveOrUpdateMapConfigurationRS(message, correlationId);
     }
 
-    private SpatialDeleteMapConfigurationRS getDeleteMapConfigurationResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
-        return SpatialModuleResponseMapper.mapToSpatialDeleteMapConfigurationRS(getText(message), correlationId);
+    private SpatialDeleteMapConfigurationRS getDeleteMapConfigurationResponse(TextMessage message, String correlationId) throws SpatialModelMapperException {
+        return SpatialModuleResponseMapper.mapToSpatialDeleteMapConfigurationRS(message, correlationId);
     }
 
-    private String getFilterAreaResponse(Message message, String correlationId) throws SpatialModelMapperException, JMSException {
-        FilterAreasSpatialRS filterAreaSpatialResponse = SpatialModuleResponseMapper.mapToFilterAreasSpatialRSFromResponse(getText(message), correlationId);
+    private String getFilterAreaResponse(TextMessage message, String correlationId) throws SpatialModelMapperException {
+        FilterAreasSpatialRS filterAreaSpatialResponse = SpatialModuleResponseMapper.mapToFilterAreasSpatialRSFromResponse(message, correlationId);
         return filterAreaSpatialResponse.getGeometry();
     }
 
-    private SpatialGetMapConfigurationRS createGetMapConfigurationResponse(Message message, String correlationId) throws JMSException, SpatialModelMapperException {
-        return SpatialModuleResponseMapper.mapToSpatialGetMapConfigurationRS(getText(message), correlationId);
+    private SpatialGetMapConfigurationRS createGetMapConfigurationResponse(TextMessage message, String correlationId) throws SpatialModelMapperException {
+        return SpatialModuleResponseMapper.mapToSpatialGetMapConfigurationRS(message, correlationId);
     }
 
-    private TextMessage getText(Message message) throws JMSException {
-        if (message instanceof TextMessage) {
-            return (TextMessage) message;
-        }
-        return null;
-    }
 }

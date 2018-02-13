@@ -11,22 +11,18 @@
  *
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
-
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-
-import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 
 @Stateless
 @LocalBean
 public class ActivityModuleSenderBean extends AbstractProducer {
 
-
 	public String getDestinationName(){
-		return "jms/queue/UVMSActivityEvent";
-	}	
-	
+		return MessageConstants.QUEUE_MODULE_ACTIVITY;
+	}
 }

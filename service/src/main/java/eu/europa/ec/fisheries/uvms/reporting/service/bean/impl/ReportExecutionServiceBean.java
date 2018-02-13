@@ -15,19 +15,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
@@ -79,6 +66,18 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -134,22 +133,17 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     @SneakyThrows
-    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed, DisplayFormat format) throws ReportingServiceException {
-
+    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed, DisplayFormat format) {
         try {
-
             Set<Filter> filters = report.getFilters();
             FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
             String wkt = getFilterAreaWkt(processor, areaRestrictions);
             boolean hasAssets = processor.hasAssetsOrAssetGroups();
-
             MovementData movementData = fetchPositionalData(processor, wkt);
             List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
             List<ListValueTypeFilter> listValueTypeFilters = extractListValueFilters(processor, movementData.getAssetMap(), hasAssets);
-
             if (ReportTypeEnum.STANDARD == report.getReportType()) {
-
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
                     FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
                     for (FishingTripIdWithGeometry fishingTripIdWithGeometry : tripResponse.getFishingTripIdLists()) {
@@ -158,16 +152,14 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                         resultDTO.getTrips().add(trip);
                     }
                     List<FishingActivitySummaryDTO> activitySummaryDTOs = new ArrayList<>();
-                    for(FishingActivitySummary summary: tripResponse.getFishingActivityLists()){
+                    for (FishingActivitySummary summary : tripResponse.getFishingActivityLists()) {
                         activitySummaryDTOs.add(FishingActivityMapper.INSTANCE.mapToFishingActivity(summary));
                     }
                     resultDTO.setActivityList(activitySummaryDTOs);
                 }
-
                 DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
                 DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
                 List<TrackDTO> tracks = new ArrayList<>();
-
                 if (isNotEmpty(movementData.getMovementMap())) {
                     for (MovementMapResponseType map : movementData.getMovementMap()) {
                         Asset asset = movementData.getAssetMap().get(map.getKey());
@@ -184,24 +176,15 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                         }
                     }
                 }
-
                 resultDTO.setTracks(tracks);
                 resultDTO.setMovements(movements);
                 resultDTO.setSegments(segments);
-
-            }
-
-            else if (userActivityAllowed && ReportTypeEnum.SUMMARY == report.getReportType()) {
-
+            } else if (userActivityAllowed && ReportTypeEnum.SUMMARY == report.getReportType()) {
                 List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
-                FACatchSummaryReportResponse faCatchSummaryReport =
-                        activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
-
+                FACatchSummaryReportResponse faCatchSummaryReport = activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
                 FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                 resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
-
                 DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
-
                 if (isNotEmpty(resultDTO.getActivityList())) {
                     for (FishingActivitySummaryDTO summary : resultDTO.getActivityList()) {
                         activities.add(new ActivityDTO(summary).toFeature());
@@ -209,9 +192,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 }
                 resultDTO.setActivities(activities);
             }
-
             return resultDTO;
-
         } catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
             log.error(error, e);
@@ -221,7 +202,6 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
     private void updateTripWithVmsPositionCount(TripDTO trip, Collection<MovementMapResponseType> movementMap) {
         Integer count = 0;
-
         if (trip != null && (trip.getRelativeFirstFaDateTime() != null && trip.getRelativeLastFaDateTime() != null)) {
             for (MovementMapResponseType map : movementMap) {
                 for (MovementType movement : map.getMovements()) {
@@ -238,34 +218,22 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     private List<GroupCriteria> extractGroupCriteriaList(Set<Filter> filters) {
-
-        ImmutableList<GroupCriteriaFilter> groupCriteriaFilters = FluentIterable.from(filters)
-                .filter(GroupCriteriaFilter.class)
-                .toSortedList(new GroupCriteriaFilterSequenceComparator());
-
+        ImmutableList<GroupCriteriaFilter> groupCriteriaFilters = FluentIterable.from(filters).filter(GroupCriteriaFilter.class).toSortedList(new GroupCriteriaFilterSequenceComparator());
         List<GroupCriteriaType> types = new ArrayList<>();
-
         for (GroupCriteriaFilter filter : groupCriteriaFilters) {
             types.addAll(filter.getValues());
         }
-
         return GroupCriteriaFilterMapper.INSTANCE.mapGroupCriteriaTypeListToGroupCriteriaList(types);
     }
 
-    @SneakyThrows
     private MovementData fetchPositionalData(FilterProcessor processor, String wkt) throws ReportingServiceException {
-
         MovementData movementData = new MovementData();
-
         try {
-
             Collection<MovementMapResponseType> movementMap;
             Map<String, MovementMapResponseType> responseTypeMap = null;
             Map<String, Asset> assetMap;
-
             processor.addAreaCriteria(wkt);
             log.trace("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
-
             if (processor.hasAssetsOrAssetGroups()) {
                 assetMap = assetModule.getAssetMap(processor);
                 processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
@@ -277,24 +245,20 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
                 assetMap = assetModule.getAssetMap(processor);
             }
-
             movementData.setAssetMap(assetMap);
             movementData.setMovementMap(movementMap);
             movementData.setResponseTypeMap(responseTypeMap);
-
-
         } catch (ReportingServiceException e) {
             String error = "Exception during retrieving filter area";
             log.error(error, e);
             throw new ReportingServiceException(error, e);
         }
-
         return movementData;
     }
 
     private List<SingleValueTypeFilter> extractSingleValueFilters(FilterProcessor processor, String areaWkt) {
-        List<SingleValueTypeFilter> filterTypes = new ArrayList<>();
-        filterTypes.addAll(processor.getSingleValueTypeFilters()); // Add all the Fa filter criteria from the filters
+        // Add all the Fa filter criteria from the filters
+        List<SingleValueTypeFilter> filterTypes = new ArrayList<>(processor.getSingleValueTypeFilters());
         if (areaWkt != null && !areaWkt.isEmpty()) {
             filterTypes.add(new SingleValueTypeFilter(SearchFilter.AREA_GEOM, areaWkt));
         }
@@ -302,9 +266,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     private List<ListValueTypeFilter> extractListValueFilters(FilterProcessor processor, Map<String, Asset> assetMap, Boolean isAssetsExist) throws ReportingServiceException {
-        List<ListValueTypeFilter> filterTypes = new ArrayList<>();
-        filterTypes.addAll(processor.getListValueTypeFilters());
-
+        List<ListValueTypeFilter> filterTypes = new ArrayList<>(processor.getListValueTypeFilters());
         if (isAssetsExist && assetMap != null) {
             Collection<Asset> assets = assetMap.values();
             List<String> assetNames = new ArrayList<>();
@@ -315,7 +277,6 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 filterTypes.add(new ListValueTypeFilter(SearchFilter.VESSEL_NAME, assetNames));
             }
         }
-
         return filterTypes;
     }
 
