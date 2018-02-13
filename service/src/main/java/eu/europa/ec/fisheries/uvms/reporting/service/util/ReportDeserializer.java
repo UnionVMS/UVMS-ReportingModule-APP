@@ -27,13 +27,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.START_DATE
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
 
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -72,6 +65,12 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.IteratorUtils;
 
@@ -80,40 +79,32 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
 
     @Override
     public ReportDTO deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
-
         ReportTypeEnum reportTypeEnum =
                 node.get(REPORT_TYPE) != null ? ReportTypeEnum.getReportTypeEnum(node.get(REPORT_TYPE).textValue()) : ReportTypeEnum.STANDARD;
-
         List<FilterDTO> filterDTOList = new ArrayList<>();
-
         JsonNode reportIdNode = node.get(ID);
         Long reportId = null;
         if (reportIdNode != null) {
             reportId = reportIdNode.longValue();
         }
-
         JsonNode filterNode = node.get(FILTER_EXPRESSION);
-
         if (filterNode != null) {
             addVmsFilters(filterNode.get("vms"), filterDTOList, reportId);
             addAssets(filterNode.get(ASSETS), filterDTOList, reportId);
             addArea(filterNode.get("areas"), filterDTOList, reportId);
             addCommon(filterNode.get("common"), filterDTOList, reportId);
             addFaFilters(filterNode.get("fa"), filterDTOList, reportId);
-            if (ReportTypeEnum.SUMMARY.equals(reportTypeEnum)){
+            if (ReportTypeEnum.SUMMARY.equals(reportTypeEnum)) {
                 addGroupCriteria(filterNode.get("criteria"), filterDTOList, reportId, jsonParser);
             }
         }
-
         boolean withMap = false;
         JsonNode witMapNode = node.get(WITH_MAP);
         if (witMapNode != null) {
             withMap = witMapNode.booleanValue();
         }
-
         VisibilityEnum visibilityEnum = null;
         JsonNode visibilityNode = node.get(VISIBILITY);
         if (visibilityNode != null) {
@@ -122,26 +113,21 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 visibilityEnum = VisibilityEnum.valueOf(s.toUpperCase());
             }
         }
-
         String nameValue = null;
         JsonNode nameNode = node.get(NAME);
         if (nameNode != null) {
             nameValue = nameNode.textValue();
         }
-
         JsonNode createdOnNode = node.get(CREATED_ON);
         String createdOnValue = null;
         if (createdOnNode != null) {
             createdOnValue = createdOnNode.textValue();
         }
-
         JsonNode editableNode = node.get("editable");
         boolean editableValue = false;
         if (createdOnNode != null) {
             editableValue = editableNode.booleanValue();
         }
-
-
         ReportDTO build = ReportDTO.builder()
                 .description(node.get(DESC) != null ? node.get(DESC).textValue() : null)
                 .id(node.get(ID) != null ? node.get(ID).longValue() : null)
@@ -168,13 +154,11 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 Long displayProjectionId = (mapConfigJsonNode.get("displayProjectionId") != null) ? mapConfigJsonNode.get("displayProjectionId").longValue() : null;
                 String coordinatesFormat = (mapConfigJsonNode.get("coordinatesFormat") != null) ? mapConfigJsonNode.get("coordinatesFormat").textValue() : null;
                 String scaleBarUnits = (mapConfigJsonNode.get("scaleBarUnits") != null) ? mapConfigJsonNode.get("scaleBarUnits").textValue() : null;
-
                 ObjectMapper objectMapper = new ObjectMapper();
                 VisibilitySettingsDto visibilitySettingsDto;
                 StyleSettingsDto styleSettingsDto;
                 LayerSettingsDto layerSettingsDto;
                 Map<String, ReferenceDataPropertiesDto> referenceData;
-
                 if (mapConfigJsonNode.get("visibilitySettings") != null) {
                     try {
                         visibilitySettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("visibilitySettings"), VisibilitySettingsDto.class);
@@ -185,7 +169,6 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 } else {
                     visibilitySettingsDto = null;
                 }
-
                 if (mapConfigJsonNode.get("stylesSettings") != null) {
                     try {
                         styleSettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("stylesSettings"), StyleSettingsDto.class);
@@ -196,7 +179,6 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 } else {
                     styleSettingsDto = null;
                 }
-
                 if (mapConfigJsonNode.get("layerSettings") != null) {
                     try {
                         layerSettingsDto = objectMapper.treeToValue(mapConfigJsonNode.get("layerSettings"), LayerSettingsDto.class);
@@ -207,12 +189,11 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 } else {
                     layerSettingsDto = null;
                 }
-
                 if (mapConfigJsonNode.get("referenceDataSettings") != null) {
                     try {
                         Object obj = objectMapper.treeToValue(mapConfigJsonNode.get("referenceDataSettings"), Map.class);
                         String jsonString = objectMapper.writeValueAsString(obj);
-                        referenceData =objectMapper.readValue(jsonString, TypeFactory.defaultInstance().constructMapType(Map.class, String.class, ReferenceDataPropertiesDto.class));
+                        referenceData = objectMapper.readValue(jsonString, TypeFactory.defaultInstance().constructMapType(Map.class, String.class, ReferenceDataPropertiesDto.class));
                     } catch (IOException e) {
                         log.warn("Unable to deserialize referenceDataSettings JSON property", e);
                         referenceData = null;
@@ -220,7 +201,6 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 } else {
                     referenceData = null;
                 }
-
                 return MapConfigurationDTO.MapConfigurationDTOBuilder()
                         .spatialConnectId(spatialConnectId)
                         .mapProjectionId(mapProjectionId)
@@ -239,14 +219,13 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private void addGroupCriteria(JsonNode groupBy, List<FilterDTO> filterDTOList, Long reportId, JsonParser jp) {
-
-        if (groupBy != null){
+        if (groupBy != null) {
             List list = IteratorUtils.toList(groupBy.elements());
-            for (int i = 0; i < list.size(); i++){
-                String code = ((JsonNode)list.get(i)).get("code").asText();
+            for (int i = 0; i < list.size(); i++) {
+                String code = ((JsonNode) list.get(i)).get("code").asText();
                 JsonNode valueNode = ((JsonNode) list.get(i)).get("values");
                 List<GroupCriteriaType> groupCriteriaList = null;
-                if(valueNode != null){
+                if (valueNode != null) {
                     List<String> strings = ((ObjectMapper) jp.getCodec()).convertValue(valueNode, List.class);
                     groupCriteriaList = GroupCriteriaFilterMapper.INSTANCE.mapGroupCriteriaTypeListToStringList(strings);
                 }
@@ -277,7 +256,6 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
 
     private void addCommon(JsonNode common, List<FilterDTO> filterDTOList, Long reportId) {
         if (common != null) {
-
             JsonNode selectorNode = common.get("positionSelector");
             String selectorNodeValue;
             if (selectorNode != null) {
@@ -299,10 +277,8 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
     }
 
     private void handleLast(JsonNode common, List<FilterDTO> filterDTOList, Long reportId, String selectorNode, Selector positionSelector) {
-
         String startDateLast = null;
         String endDateLast = null;
-
         if (common.get(START_DATE) != null) {
             startDateLast = common.get(START_DATE).asText();
         }
@@ -310,7 +286,6 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
             endDateLast = common.get(END_DATE).asText();
         }
         Float value = common.get(PositionSelectorDTO.X_VALUE).floatValue();
-
         CommonFilterDTO dto = CommonFilterDTO.CommonFilterDTOBuilder()
                 .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
                 .reportId(reportId)
@@ -318,9 +293,7 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 .endDate(endDateLast != null ? UI_FORMATTER.parseDateTime(endDateLast).toDate() : null)
                 .build();
         filterDTOList.add(dto);
-
         JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
-
         if (selectorNode != null) {
             dto.setPositionSelector(PositionSelectorDTO.PositionSelectorDTOBuilder()
                     .value(value)
@@ -333,17 +306,14 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
     private void handleAll(JsonNode common, List<FilterDTO> filterDTOList, Long reportId, Selector positionSelector) {
         JsonNode startDateNode = common.get("startDate");
         JsonNode endDateNode = common.get("endDate");
-
         if (startDateNode == null) {
             throw new InvalidParameterException("StartDate is mandatory when selecting ALL");
         }
         if (endDateNode == null) {
             throw new InvalidParameterException("EndDate is mandatory when selecting ALL");
         }
-
         String startDate = startDateNode.asText();
         String endDate = endDateNode.asText();
-
         filterDTOList.add(
                 CommonFilterDTO.CommonFilterDTOBuilder()
                         .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
@@ -411,25 +381,21 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
     private void addAssetFilterDTO(List<FilterDTO> filterDTOList, Long reportId, JsonNode next) {
         AssetFilterDTO asset = new AssetFilterDTO();
         asset.setReportId(reportId);
-
         JsonNode idNode = next.get(FilterDTO.ID);
         if (idNode != null) {
             long id = idNode.longValue();
             asset.setId(id);
         }
-
         JsonNode guidNode = next.get(GUID);
         if (guidNode != null) {
             String guidValue = guidNode.textValue();
             asset.setGuid(guidValue);
         }
-
         JsonNode nameNode = next.get(NAME);
         if (nameNode != null) {
             String nameValue = nameNode.textValue();
             asset.setName(nameValue);
         }
-
         filterDTOList.add(asset);
     }
 
@@ -451,7 +417,6 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                         break;
                     default:
                         throw new InvalidParameterException("Unsupported parameter");
-
                 }
             }
         }
@@ -464,7 +429,6 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 .maximumSpeed(next.get(VmsPositionFilterDTO.MOV_MAX_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MAX_SPEED).floatValue() : null)
                 .minimumSpeed(next.get(VmsPositionFilterDTO.MOV_MIN_SPEED) != null ? next.get(VmsPositionFilterDTO.MOV_MIN_SPEED).floatValue() : null)
                 .build();
-
         if (next.get(VmsPositionFilterDTO.MOV_ACTIVITY) != null) {
             dto.setMovementActivity(MovementActivityTypeType
                     .valueOf(next.get(VmsPositionFilterDTO.MOV_ACTIVITY).textValue()));
@@ -490,12 +454,10 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 .maximumSpeed(next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED) != null ? next.get(VmsSegmentFilterDTO.SEG_MAX_SPEED).floatValue() : null)
                 .minDuration(next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION) != null ? next.get(VmsSegmentFilterDTO.SEG_MIN_DURATION).floatValue() : null)
                 .build();
-
         if (next.get(VmsSegmentFilterDTO.SEG_CATEGORY) != null) {
             segmentFilterDTO.setCategory(SegmentCategoryType
                     .valueOf(next.get(VmsSegmentFilterDTO.SEG_CATEGORY).textValue()));
         }
-
         filterDTOList.add(segmentFilterDTO);
     }
 
@@ -508,27 +470,22 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 .maxDuration(next.get(TrackFilterDTO.TRK_MAX_DURATION) != null ? next.get(TrackFilterDTO.TRK_MAX_DURATION).floatValue() : null)
                 .minTime(next.get(TrackFilterDTO.TRK_MIN_TIME) != null ? next.get(TrackFilterDTO.TRK_MIN_TIME).floatValue() : null)
                 .build();
-
         JsonNode minDistanceNode = next.get("minDistance");
         if (minDistanceNode != null) {
             track.setMinDistance(minDistanceNode.floatValue());
         }
-
         JsonNode maxDistanceNode = next.get("maxDistance");
         if (maxDistanceNode != null) {
             track.setMaxDistance(maxDistanceNode.floatValue());
         }
-
         JsonNode minAvgSpeedNode = next.get("minAvgSpeed");
         if (minAvgSpeedNode != null) {
             track.setMinAvgSpeed(minAvgSpeedNode.floatValue());
         }
-
         JsonNode maxAvgSpeedNode = next.get("maxAvgSpeed");
         if (minAvgSpeedNode != null) {
             track.setMaxAvgSpeed(maxAvgSpeedNode.floatValue());
         }
         filterDTOList.add(track);
-
     }
 }

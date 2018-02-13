@@ -14,23 +14,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
@@ -46,6 +34,17 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
 
 /**
  * Session Bean implementation class ReportBean
@@ -107,15 +106,13 @@ public class ReportServiceBean {
         try {
             ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).filters(true).build();
             Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
-            reportDTO =  mapper.reportToReportDTO(reportByReportId);
+            reportDTO = mapper.reportToReportDTO(reportByReportId);
 
             if (reportDTO != null && reportDTO.getWithMap()) {
                 MapConfigurationDTO mapConfiguratioDTO = spatialModule.getMapConfiguration(id, permittedServiceLayers);
                 reportDTO.setMapConfiguration(mapConfiguratioDTO);
             }
-        }
-
-        catch (Exception e){
+        } catch (Exception e) {
             //throwing unchecked exception because of the Spatial JMS transaction.
             //if Spatial throws an exception, this transaction was not rolled back, unless we throw unchecked exception.
             throw new RuntimeException("Error during reading map configuration in spatial module", e);
@@ -155,40 +152,33 @@ public class ReportServiceBean {
      * a public Reports those are allowed to the logged in User. In case of the user is Admin then
      * All the Reports are accessible.
      * </p>
-     * @param features Usm features
-     * @param username User Name
-     * @param scopeName Scope Name
-     * @param existent Include deleted report if true
+     *
+     * @param features        Usm features
+     * @param username        User Name
+     * @param scopeName       Scope Name
+     * @param existent        Include deleted report if true
      * @param defaultReportId default report Id stored in USM
-     * @param numberOfReport Limit number of report. If null then no limit is set
+     * @param numberOfReport  Limit number of report. If null then no limit is set
      * @return List of Reports User is permited to see
      * @throws ReportingServiceException
      */
     @Transactional
-    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features,
-                                                        final String username,
-                                                        final String scopeName,
-                                                        final Boolean existent,
-                                                        final Long defaultReportId,
-                                                        final Integer numberOfReport) throws ReportingServiceException {
+    public Collection<ReportDTO> listByUsernameAndScope(final Set<String> features, final String username,
+                                                        final String scopeName, final Boolean existent,
+                                                        final Long defaultReportId, final Integer numberOfReport) throws ReportingServiceException {
 
         ReportMapper mapper = ReportMapper.ReportMapperBuilder().features(features).currentUser(username).build();
-
         boolean isAdmin = AuthorizationCheckUtil.isAllowed(ReportFeatureEnum.MANAGE_ALL_REPORTS, features);
-
         List<Report> reports;
         if (numberOfReport != null) {
             reports = repository.listTopExecutedReportByUsernameAndScope(username, scopeName, existent, isAdmin, numberOfReport);
         } else {
             reports = repository.listByUsernameAndScope(username, scopeName, existent, isAdmin);
         }
-
         List<ReportDTO> toReportDTOs = new ArrayList<>();
-
         for (Report report : reports) {
-
             ReportDTO reportDTO = mapper.reportToReportDTO(report);
-            if(reportDTO.getId().equals(defaultReportId)){
+            if (reportDTO.getId().equals(defaultReportId)) {
                 reportDTO.setDefault(true);
             }
             toReportDTOs.add(reportDTO);
@@ -211,7 +201,7 @@ public class ReportServiceBean {
             for (Filter filter : filters) {
                 if (filter instanceof CommonFilter) {
                     ReportDateMapper reportDateMapper = ReportDateMapper.ReportDateMapperBuilder().now(currentDate).build();
-                    return reportDateMapper.getReportDates((CommonFilter)filter);
+                    return reportDateMapper.getReportDates((CommonFilter) filter);
                 }
             }
         }
@@ -226,7 +216,6 @@ public class ReportServiceBean {
     }
 
     private void updateMapConfiguration(long reportId, Boolean newWithMapValue, MapConfigurationDTO newMapConfiguration, boolean oldWithMapValue, MapConfigurationDTO oldMapConfigurationDTO) throws ReportingServiceException {
-
         try {
             if (newWithMapValue) {
                 saveOrUpdateMapConfiguration(reportId, newMapConfiguration);

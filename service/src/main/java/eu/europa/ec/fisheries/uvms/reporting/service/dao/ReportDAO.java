@@ -15,15 +15,14 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
@@ -42,7 +41,6 @@ public class ReportDAO extends AbstractDAO<Report> {
      * @param report
      */
     protected void softDelete(Report report, String username) throws ReportingServiceException {
-
         log.debug("{} is removing ReportEntity instance", username);
         try {
             report.setDeletedBy(username);
@@ -71,7 +69,6 @@ public class ReportDAO extends AbstractDAO<Report> {
         if (persistentInstance == null) {
             throw new ReportingServiceException("Non existing report entity cannot be deleted.");
         }
-
         softDelete(persistentInstance, username);
     }
 
@@ -90,7 +87,6 @@ public class ReportDAO extends AbstractDAO<Report> {
         if (persistentInstance == null) {
             throw new ReportingServiceException("Non existing report entity cannot be deleted.");
         }
-
         try {
             persistentInstance.setVisibility(newVisibility);
             Session session = em.unwrap(Session.class);
@@ -125,19 +121,31 @@ public class ReportDAO extends AbstractDAO<Report> {
 
     public List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent, Boolean isAdmin) throws ReportingServiceException {
         log.debug("Searching for ReportEntity instances with username: {} and scopeName:{}", username, scopeName);
-
         try {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
             List<Report> listReports =
                     findEntityByNamedQuery(Report.class, Report.LIST_BY_USERNAME_AND_SCOPE,
                             with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters());
             log.debug("list successful");
-
-
             return listReports;
         } catch (Exception exc) {
             log.error("list failed", exc);
             throw new ReportingServiceException("list failed", exc);
+        }
+    }
+
+    public List<Report> listTopExecutedReportByUsernameAndScope(String username, String scopeName, Boolean existent, boolean isAdmin, Integer numberOfReport) throws ReportingServiceException {
+
+        try {
+            List<Report> listReports = new ArrayList<>(findEntityByNamedQuery(Report.class, Report.LIST_TOP_EXECUTED_BY_DATE,
+                    with("scopeName", scopeName).and("username", username).and("existent", existent).parameters(), numberOfReport));
+            if (listReports.isEmpty() || (listReports.size() < numberOfReport)) {
+                listReports.addAll(findEntityByNamedQuery(Report.class, Report.LIST_BY_CREATION_DATE,
+                        with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport - listReports.size()));
+            }
+            return listReports;
+        } catch (Exception e) {
+            throw new ReportingServiceException(e.getMessage(), e);
         }
     }
 
@@ -148,22 +156,5 @@ public class ReportDAO extends AbstractDAO<Report> {
 
     private Session getSession() {
         return em.unwrap(Session.class);
-    }
-
-    public List<Report> listTopExecutedReportByUsernameAndScope(String username, String scopeName, Boolean existent, boolean isAdmin, Integer numberOfReport) throws ReportingServiceException {
-
-        try {
-            List<Report> listReports = new ArrayList<>();
-            listReports.addAll(findEntityByNamedQuery(Report.class, Report.LIST_TOP_EXECUTED_BY_DATE,
-                    with("scopeName", scopeName).and("username", username).and("existent", existent).parameters(), numberOfReport));
-            if (listReports.isEmpty() || (listReports.size() < numberOfReport)) {
-                listReports.addAll(findEntityByNamedQuery(Report.class, Report.LIST_BY_CREATION_DATE,
-                        with("scopeName", scopeName).and("username", username).and("existent", existent).and("isAdmin", isAdmin?1:0).parameters(), numberOfReport - listReports.size()));
-            }
-
-            return listReports;
-        } catch (Exception e) {
-            throw new ReportingServiceException(e.getMessage(), e);
-        }
     }
 }

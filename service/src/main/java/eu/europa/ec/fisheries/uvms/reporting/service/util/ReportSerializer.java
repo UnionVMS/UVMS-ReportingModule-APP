@@ -28,13 +28,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SHAREABLE;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
 
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -54,26 +47,26 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import org.joda.time.DateTime;
 
 public class ReportSerializer extends JsonSerializer<ReportDTO> {
 
     @Override
     public void serialize(ReportDTO reportDTO, JsonGenerator jgen, SerializerProvider serializerProvider) throws IOException {
-
         List<FilterDTO> filters = reportDTO.getFilters();
-
         jgen.writeStartObject();
-
         serializeReportFields(reportDTO, jgen);
         serializeAccessFields(reportDTO, jgen);
-
         if (filters != null && !filters.isEmpty()) {
             serializeFilterFields(jgen, filters);
         }
-
         jgen.writeEndObject();
-
     }
 
     private void serializeAccessFields(ReportDTO reportDTO, JsonGenerator jgen) throws IOException {
@@ -91,7 +84,6 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
     private void serializeFilterFields(JsonGenerator jgen, List<FilterDTO> filters) throws IOException {
         jgen.writeFieldName(FILTER_EXPRESSION);
         jgen.writeStartObject();
-
         List<FilterDTO> assetFilterDTOList = new ArrayList<>();
         List<FilterDTO> areaFilterDTOList = new ArrayList<>();
         VmsPositionFilterDTO position = null;
@@ -100,7 +92,6 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         CommonFilterDTO commonFilter = null;
         FaFilterDTO faFilter = null;
         List<FilterDTO> criteriaFilterDTOList = new ArrayList<>();
-
         for (FilterDTO filterDTO : filters) {
             FilterType type = filterDTO.getType();
             switch (type) {
@@ -136,14 +127,12 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
             }
         }
         writeCommonFields(jgen, commonFilter);
-
         jgen.writeFieldName("vms");
         jgen.writeStartObject();
         writeVmsPosition(jgen, position);
         writeVmsTrack(jgen, track);
         writeVmsSegments(jgen, segment);
         jgen.writeEndObject();
-
         writeAreaFilters(jgen, areaFilterDTOList);
         writeAssets(jgen, assetFilterDTOList);
         writeFaFilters(jgen, faFilter);
@@ -161,7 +150,6 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
             faFilterDTO.setSpecies(faFilter.getSpecies());
             faFilterDTO.setFaGears(faFilter.getFaGears());
             faFilterDTO.setFaPorts(faFilter.getFaPorts());
-
             faFilterDTO.setFaWeight(faFilter.getFaWeight() != null ? new FaWeight(faFilter.getFaWeight().getMin(), faFilter.getFaWeight().getMax(), faFilter.getFaWeight().getUnit()) : null);
             jgen.writeFieldName(FilterType.fa.name());
             jgen.writeObject(faFilterDTO);
@@ -234,13 +222,10 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         if (visibility != null) {
             jgen.writeStringField(VISIBILITY, visibility.getName());
         }
-
         handleCreatedOnField(reportDTO.getAudit(), jgen);
         handleExecutedOnField(reportDTO.getExecutionLog(), jgen);
-
         jgen.writeStringField(CREATED_BY, reportDTO.getCreatedBy());
         jgen.writeStringField(SCOPE, reportDTO.getScopeName());
-
         Boolean withMap = reportDTO.getWithMap();
         if (withMap != null) {
             jgen.writeBooleanField(WITH_MAP, withMap);
@@ -251,7 +236,6 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         if (reportTypeEnum != null) {
             jgen.writeStringField(REPORT_TYPE, reportTypeEnum.getType());
         }
-
         writeMapConfigFileds(reportDTO, jgen);
     }
 

@@ -12,6 +12,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
@@ -27,15 +30,11 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.apache.commons.collections.CollectionUtils.isEmpty;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import org.joda.time.DateTime;
 
 public class FilterProcessor {
 
@@ -53,7 +52,6 @@ public class FilterProcessor {
         if (isEmpty(filters)) {
             throw new ProcessorException("");
         }
-
         for (Filter filter : filters) {
             if(filter != null){
                 addCriteria(filter);
@@ -96,7 +94,6 @@ public class FilterProcessor {
 
     public AssetListQuery toAssetListQuery() {
         AssetListQuery query = new AssetListQuery();
-
         if (isNotEmpty(assetListCriteriaPairs)) {
             query.setAssetSearchCriteria(createListCriteria());
             AssetListPagination pagination = new AssetListPagination();
@@ -104,7 +101,6 @@ public class FilterProcessor {
             pagination.setListSize(1000);
             query.setPagination(pagination);
         }
-
         return query;
     }
 
