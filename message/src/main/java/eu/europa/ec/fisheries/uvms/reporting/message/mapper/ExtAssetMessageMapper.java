@@ -12,6 +12,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.mapper;
 
+import javax.jms.TextMessage;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
@@ -20,12 +27,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.jms.TextMessage;
 
 public class ExtAssetMessageMapper {
 
@@ -53,7 +54,7 @@ public class ExtAssetMessageMapper {
         Map<String, Asset> map = new HashMap<>();
 
         for (Asset asset : assetList) {
-            map.put(asset.getAssetId().getGuid(), asset);
+            map.put(asset.getEventHistory().getEventId(), asset);
         }
         return map;
     }

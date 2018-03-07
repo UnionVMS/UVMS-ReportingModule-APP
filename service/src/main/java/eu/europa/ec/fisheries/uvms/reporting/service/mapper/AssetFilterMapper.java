@@ -41,7 +41,7 @@ public interface AssetFilterMapper {
 
     @Mappings({
             @Mapping(source = "guid", target = "value"),
-            @Mapping(constant = "GUID", target = "key"),
+            @Mapping(constant = "HIST_GUID", target = "key"),
     })
     AssetListCriteriaPair assetFilterToAssetListCriteriaPair(AssetFilter assetFilter);
 
