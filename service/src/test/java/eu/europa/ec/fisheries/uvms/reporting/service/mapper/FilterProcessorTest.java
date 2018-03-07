@@ -10,28 +10,28 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
-import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
-import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import lombok.SneakyThrows;
-import org.joda.time.DateTime;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.inject.annotation.TestedObject;
+import static junit.framework.TestCase.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static junit.framework.TestCase.assertEquals;
+import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
+import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
+import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
+import lombok.SneakyThrows;
+import org.joda.time.DateTime;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
+import org.unitils.inject.annotation.TestedObject;
 
 public class FilterProcessorTest extends UnitilsJUnit4 {
 
@@ -61,7 +61,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         listCriteria.addAll(processor.getMovementListCriteria());
 
         processor.getAssetListCriteriaPairs();
-        assertEquals(assetListCriteriaPairList.get(0).getKey(), ConfigSearchField.GUID);
+        assertEquals(assetListCriteriaPairList.get(0).getKey(), ConfigSearchField.HIST_GUID);
         assertEquals(assetListCriteriaPairList.get(0).getValue(), "guid");
 
         assertEquals(listCriteria.get(0).getKey(), SearchKey.CONNECT_ID);

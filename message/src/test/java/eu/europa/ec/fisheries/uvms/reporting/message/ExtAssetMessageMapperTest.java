@@ -10,24 +10,25 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.message;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import junit.framework.Assert;
-import lombok.SneakyThrows;
-import org.junit.Test;
-import org.unitils.UnitilsJUnit4;
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import javax.jms.TextMessage;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Mockito.mock;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetHistoryId;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import junit.framework.Assert;
+import lombok.SneakyThrows;
+import org.junit.Test;
+import org.unitils.UnitilsJUnit4;
 
 public class ExtAssetMessageMapperTest extends UnitilsJUnit4 {
 
@@ -66,7 +67,10 @@ public class ExtAssetMessageMapperTest extends UnitilsJUnit4 {
         Asset asset1 = new Asset();
         AssetId assetId1 = new AssetId();
         assetId1.setGuid("guid1");
-        asset1.setAssetId(assetId1);
+
+        AssetHistoryId assetHistoryId = new AssetHistoryId();
+        assetHistoryId.setEventId("1");
+        asset1.setEventHistory(assetHistoryId);
 
         Set<Asset> set = new HashSet<>();
         set.add(asset1);
