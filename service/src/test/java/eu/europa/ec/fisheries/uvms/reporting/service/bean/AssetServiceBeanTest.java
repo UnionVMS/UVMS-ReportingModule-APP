@@ -10,16 +10,22 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AssetServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
+import static org.mockito.Mockito.mock;
+
+import javax.jms.Destination;
+import javax.jms.TextMessage;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import eu.europa.ec.fisheries.uvms.TestToolBox;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AssetModuleSenderBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AssetServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import lombok.SneakyThrows;
-
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -27,14 +33,6 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
-import javax.jms.Destination;
-import javax.jms.TextMessage;
-
-import static org.mockito.Mockito.mock;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public class AssetServiceBeanTest extends UnitilsJUnit4 {
 
@@ -68,7 +66,7 @@ public class AssetServiceBeanTest extends UnitilsJUnit4 {
         TestToolBox.makeModifiable(declaredField);
         TestToolBox.setValue(assetReceiver.getMock(), declaredField, mock( Destination.class));
         
-        service.getMock().getAssetMap(processor.getMock());
+        service.getMock().getAssetMap(processor.getMock(), true, true);
 
         assetSender.assertInvokedInSequence().sendModuleMessage(null, null);
         assetReceiver.assertInvokedInSequence().getMessage(null, null);
@@ -94,7 +92,7 @@ public class AssetServiceBeanTest extends UnitilsJUnit4 {
         assetReceiver.returns(message).getMessage(null, null);
         service.returns(new ArrayList<>()).getAssets(null, null);
 
-        service.getMock().getAssetMap(processor.getMock());
+        service.getMock().getAssetMap(processor.getMock(), true, true);
 
         assetSender.assertInvokedInSequence().sendModuleMessage(null, null);
         assetReceiver.assertInvokedInSequence().getMessage(null, null);

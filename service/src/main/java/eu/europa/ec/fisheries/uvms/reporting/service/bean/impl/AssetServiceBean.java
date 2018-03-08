@@ -12,6 +12,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.TextMessage;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
@@ -22,16 +33,6 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.jms.TextMessage;
 
 @LocalBean
 @Stateless
@@ -44,7 +45,7 @@ public class AssetServiceBean {
     private ReportingModuleReceiverBean receiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Map<String, Asset> getAssetMap(final FilterProcessor processor) throws ReportingServiceException {
+    public Map<String, Asset> getAssetMap(final FilterProcessor processor, boolean asset, boolean assetGroups) throws ReportingServiceException {
         Set<Asset> assetList = new HashSet<>();
 
         try {

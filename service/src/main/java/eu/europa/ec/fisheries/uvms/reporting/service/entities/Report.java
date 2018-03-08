@@ -33,7 +33,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
@@ -47,6 +49,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.Where;
@@ -143,6 +146,19 @@ public class Report extends BaseEntity {
         this.executionLogs = executionLogs;
         this.isDeleted = false;
         this.audit = audit;
+    }
+
+    public Map<FilterType, Set<Filter>> getFiltersAsMap(){
+        Map<FilterType, Set<Filter>> listMap = new HashMap<>();
+        for (Filter filter: filters){
+            Set<Filter> filters = listMap.get(filter.getType());
+            if (CollectionUtils.isEmpty(filters)){
+                filters = new HashSet<>();
+            }
+            filters.add(filter);
+            listMap.put(filter.getType(), filters);
+        }
+        return listMap;
     }
 
     public void updateExecutionLog(final String username) throws ReportingServiceException {
