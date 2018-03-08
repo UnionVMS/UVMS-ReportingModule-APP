@@ -98,6 +98,7 @@ public abstract class Filter extends BaseEntity {
     protected Filter() {
     }
 
+
     public abstract <T> T accept(FilterVisitor<T> visitor);
 
     public abstract void merge(Filter filter);

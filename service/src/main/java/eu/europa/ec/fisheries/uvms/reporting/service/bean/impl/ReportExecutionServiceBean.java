@@ -15,6 +15,19 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
@@ -53,6 +66,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
@@ -66,20 +80,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.joda.time.DateTime;
 
@@ -136,12 +139,15 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed, DisplayFormat format) {
         try {
             Set<Filter> filters = report.getFilters();
-            FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
+
+            Map<FilterType, Set<Filter>> filterTypeSetMap = report.getFiltersAsMap();
+
+            FilterProcessor processor = new FilterProcessor(filters, dateTime);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
-            String wkt = getFilterAreaWkt(processor, areaRestrictions);
-            boolean hasAssets = processor.hasAssetsOrAssetGroups();
-            MovementData movementData = fetchPositionalData(processor, wkt);
+            String wkt = loadSpatialData(filterTypeSetMap.get(FilterType.areas), areaRestrictions);
+            MovementData movementData = loadAssetAndMovementData(processor, wkt);
             List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
+            boolean hasAssets = processor.hasAssetsOrAssetGroups();
             List<ListValueTypeFilter> listValueTypeFilters = extractListValueFilters(processor, movementData.getAssetMap(), hasAssets);
             if (ReportTypeEnum.STANDARD == report.getReportType()) {
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
@@ -226,16 +232,16 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return GroupCriteriaFilterMapper.INSTANCE.mapGroupCriteriaTypeListToGroupCriteriaList(types);
     }
 
-    private MovementData fetchPositionalData(FilterProcessor processor, String wkt) throws ReportingServiceException {
+    private MovementData loadAssetAndMovementData(FilterProcessor processor, String areaFilterWKT) throws ReportingServiceException {
         MovementData movementData = new MovementData();
         try {
             Collection<MovementMapResponseType> movementMap;
             Map<String, MovementMapResponseType> responseTypeMap = null;
             Map<String, Asset> assetMap;
-            processor.addAreaCriteria(wkt);
+            processor.addAreaCriteria(areaFilterWKT);
             log.trace("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
             if (processor.hasAssetsOrAssetGroups()) {
-                assetMap = assetModule.getAssetMap(processor);
+                assetMap = assetModule.getAssetMap(processor, true, true);
                 processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
                 movementMap = movementModule.getMovement(processor);
             } else {
@@ -243,7 +249,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 Set<String> assetGuids = responseTypeMap.keySet();
                 movementMap = responseTypeMap.values();
                 processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
-                assetMap = assetModule.getAssetMap(processor);
+                assetMap = assetModule.getAssetMap(processor, true, true);
             }
             movementData.setAssetMap(assetMap);
             movementData.setMovementMap(movementMap);
@@ -281,8 +287,16 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
 
-    private String getFilterAreaWkt(FilterProcessor processor, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
-        final Set<AreaIdentifierType> areaIdentifierList = processor.getAreaIdentifierList();
+    private String loadSpatialData(Set<Filter> areaFilters, List<AreaIdentifierType> scopeAreaIdentifierList) throws ReportingServiceException {
+
+        Set<AreaIdentifierType> areaIdentifierList = new HashSet<>();
+
+        if (CollectionUtils.isNotEmpty(areaFilters)){
+            for (Filter areaFilter: areaFilters){
+                areaIdentifierList.add(areaFilter.getAreaIdentifierType());
+            }
+        }
+
         if (isNotEmpty(areaIdentifierList) || isNotEmpty(scopeAreaIdentifierList)) {
             HashSet<AreaIdentifierType> areaIdentifierTypes = null;
             if (isNotEmpty(scopeAreaIdentifierList)) {

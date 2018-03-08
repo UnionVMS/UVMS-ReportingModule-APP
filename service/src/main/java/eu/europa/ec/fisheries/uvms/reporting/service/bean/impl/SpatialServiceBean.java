@@ -12,6 +12,15 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.jms.TextMessage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.SpatialProducerBean;
@@ -38,14 +47,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialGetMapConfigurat
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.SpatialSaveOrUpdateMapConfigurationRS;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.StyleSettingsType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.VisibilitySettingsType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.TextMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -58,21 +59,21 @@ public class SpatialServiceBean implements SpatialService {
     private SpatialProducerBean spatialProducerBean;
 
     @EJB
-    private ReportingModuleReceiverBean reportingJMSConsumerBean;
+    private ReportingModuleReceiverBean reportingConsumerBean;
 
     @Override
-    public String getFilterArea(Set<AreaIdentifierType> scopeAreas, Set<AreaIdentifierType> userAreas) throws ReportingServiceException {
+    public String getFilterArea(Set<AreaIdentifierType> areaIdentifierTypes, Set<AreaIdentifierType> userAreas) throws ReportingServiceException {
         try {
             List<AreaIdentifierType> scopeAreasList = new ArrayList<>();
             List<AreaIdentifierType> userAreasList = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(scopeAreas)) {
-                scopeAreasList.addAll(scopeAreas);
+            if (CollectionUtils.isNotEmpty(areaIdentifierTypes)) {
+                scopeAreasList.addAll(areaIdentifierTypes);
             }
             if (CollectionUtils.isNotEmpty(userAreas)) {
                 userAreasList.addAll(userAreas);
             }
-            String correlationId = spatialProducerBean.sendModuleMessage(SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(scopeAreasList, userAreasList), reportingJMSConsumerBean.getDestination());
-            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            String correlationId = spatialProducerBean.sendModuleMessage(SpatialModuleRequestMapper.mapToFilterAreaSpatialRequest(scopeAreasList, userAreasList), reportingConsumerBean.getDestination());
+            TextMessage message = reportingConsumerBean.getMessage(correlationId, TextMessage.class);
             return getFilterAreaResponse(message, correlationId);
         } catch (SpatialModelMapperException | MessageException e) {
             throw new ReportingServiceException(e);
@@ -83,8 +84,8 @@ public class SpatialServiceBean implements SpatialService {
     public MapConfigurationDTO getMapConfiguration(long reportId, List<String> permittedServiceLayers) throws ReportingServiceException {
         try {
             String getMapConfigurationRequest = createGetMapConfigurationRequest(reportId, permittedServiceLayers);
-            String correlationId = spatialProducerBean.sendModuleMessage(getMapConfigurationRequest, reportingJMSConsumerBean.getDestination());
-            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            String correlationId = spatialProducerBean.sendModuleMessage(getMapConfigurationRequest, reportingConsumerBean.getDestination());
+            TextMessage message = reportingConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialGetMapConfigurationRS getMapConfigurationResponse = createGetMapConfigurationResponse(message, correlationId);
             MapConfigurationDTO mapConfigurationDTO = MapConfigMapper.INSTANCE.mapConfigurationTypeToMapConfigurationDTO(getMapConfigurationResponse.getMapConfiguration());
             VisibilitySettingsDto visibilitySettingsDto = MapConfigMapper.INSTANCE.getVisibilitySettingsDto(getMapConfigurationResponse.getMapConfiguration().getVisibilitySettings());
@@ -114,8 +115,8 @@ public class SpatialServiceBean implements SpatialService {
             String request = getSaveMapConfigurationRequest(reportId, mapConfiguration.getSpatialConnectId(),
                     mapConfiguration.getMapProjectionId(), mapConfiguration.getDisplayProjectionId(), coordinatesFormat, scaleBarUnits,
                     styleSettingsType, visibilitySettingsType, layerSettingsType, referenceDataType);
-            String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
-            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            String correlationId = spatialProducerBean.sendModuleMessage(request, reportingConsumerBean.getDestination());
+            TextMessage message = reportingConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialSaveOrUpdateMapConfigurationRS saveOrUpdateMapConfigurationResponse = getSaveOrUpdateMapConfigurationResponse(message, correlationId);
             return saveOrUpdateMapConfigurationResponse != null;
         } catch (SpatialModelMapperException | MessageException e) {
@@ -128,8 +129,8 @@ public class SpatialServiceBean implements SpatialService {
         try {
             validateSpatialConnectIdsList(spatialConnectIds);
             String request = getDeleteMapConfigurationRequest(spatialConnectIds);
-            String correlationId = spatialProducerBean.sendModuleMessage(request, reportingJMSConsumerBean.getDestination());
-            TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
+            String correlationId = spatialProducerBean.sendModuleMessage(request, reportingConsumerBean.getDestination());
+            TextMessage message = reportingConsumerBean.getMessage(correlationId, TextMessage.class);
             SpatialDeleteMapConfigurationRS deleteMapConfigurationResponse = getDeleteMapConfigurationResponse(message, correlationId);
             log.debug("deleteMapConfiguration response received {}", deleteMapConfigurationResponse.getResponse());
         } catch (SpatialModelMapperException | MessageException e) {

@@ -13,23 +13,23 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joda.time.DateTime;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @DiscriminatorValue("FAFILTER")
@@ -63,7 +63,6 @@ public class FaFilter extends Filter {
 
     @Embedded
     private FaWeight faWeight;
-
 
     public FaFilter() {
         super(FilterType.fa);
