@@ -97,7 +97,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
     @Test
     @SneakyThrows
     public void testExecuteReportWithoutSaveWithFaFilters() {
-        asset.returns(getMockedAssets()).getAssetMap(null);
+        asset.returns(getMockedAssets()).getAssetMap(null, true, true);
         movement.returns(getMockedMovements()).getMovement(null);
         spatialModule.returns("MULTIPOINT(3.5 5.6, 4.8 10.5)").getFilterArea(null, null);
         activity.returns(getMockedFishingTrip()).getFishingTrips(null, null);
@@ -108,7 +108,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         service.getReportExecutionWithoutSave(getReportDto(), Arrays.asList(areaIdentifierType), "TEST", true, null);
 
         spatialModule.assertInvokedInSequence().getFilterArea(null, null);
-        asset.assertInvokedInSequence().getAssetMap(null);
+        asset.assertInvokedInSequence().getAssetMap(null, true, true);
         movement.assertInvokedInSequence().getMovement(null);
         activity.assertInvokedInSequence().getFishingTrips(null, null);
         auditModule.assertInvokedInSequence().sendAuditReport(null, null, null);
@@ -118,7 +118,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
     @Test
     @SneakyThrows
     public void testExecuteReportByReportIdWithFaFilter() {
-        asset.returns(getMockedAssets()).getAssetMap(null);
+        asset.returns(getMockedAssets()).getAssetMap(null, true, true);
         movement.returns(getMockedMovements()).getMovement(null);
         repository.returns(getMockReport()).findReportByReportId(null, "test", null, false);
         spatialModule.returns("MULTIPOINT(3.5 5.6, 4.8 10.5)").getFilterArea(null, null);
@@ -130,7 +130,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         service.getReportExecutionByReportId(1L, "test", "EC", Arrays.asList(areaIdentifierType), DateTime.now(), false, true, null);
 
         spatialModule.assertInvokedInSequence().getFilterArea(null, null);
-        asset.assertInvokedInSequence().getAssetMap(null);
+        asset.assertInvokedInSequence().getAssetMap(null, true, true);
         movement.assertInvokedInSequence().getMovement(null);
         activity.assertInvokedInSequence().getFishingTrips(null, null);
         MockUnitils.assertNoMoreInvocations();
