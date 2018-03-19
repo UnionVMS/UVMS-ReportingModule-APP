@@ -15,6 +15,19 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
@@ -66,20 +79,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.joda.time.DateTime;
 
@@ -146,16 +148,18 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             if (ReportTypeEnum.STANDARD == report.getReportType()) {
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
                     FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
-                    for (FishingTripIdWithGeometry fishingTripIdWithGeometry : tripResponse.getFishingTripIdLists()) {
-                        TripDTO trip = FishingTripMapper.INSTANCE.fishingTripToTripDto(fishingTripIdWithGeometry);
-                        updateTripWithVmsPositionCount(trip, movementData.getMovementMap());
-                        resultDTO.getTrips().add(trip);
+                    if (tripResponse != null && CollectionUtils.isNotEmpty(tripResponse.getFishingTripIdLists())){
+                        for (FishingTripIdWithGeometry fishingTripIdWithGeometry : tripResponse.getFishingTripIdLists()) {
+                            TripDTO trip = FishingTripMapper.INSTANCE.fishingTripToTripDto(fishingTripIdWithGeometry);
+                            updateTripWithVmsPositionCount(trip, movementData.getMovementMap());
+                            resultDTO.getTrips().add(trip);
+                        }
+                        List<FishingActivitySummaryDTO> activitySummaryDTOs = new ArrayList<>();
+                        for (FishingActivitySummary summary : tripResponse.getFishingActivityLists()) {
+                            activitySummaryDTOs.add(FishingActivityMapper.INSTANCE.mapToFishingActivity(summary));
+                        }
+                        resultDTO.setActivityList(activitySummaryDTOs);
                     }
-                    List<FishingActivitySummaryDTO> activitySummaryDTOs = new ArrayList<>();
-                    for (FishingActivitySummary summary : tripResponse.getFishingActivityLists()) {
-                        activitySummaryDTOs.add(FishingActivityMapper.INSTANCE.mapToFishingActivity(summary));
-                    }
-                    resultDTO.setActivityList(activitySummaryDTOs);
                 }
                 DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
                 DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
