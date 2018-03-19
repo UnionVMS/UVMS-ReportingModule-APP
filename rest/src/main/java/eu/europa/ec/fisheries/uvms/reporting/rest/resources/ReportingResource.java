@@ -74,6 +74,7 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
@@ -501,8 +502,10 @@ public class ReportingResource extends UnionVMSResource {
 
         List<CriteriaFilterDTO> criteriaFilter = report.getFilterExpression().getCriteriaFilter();
 
-        for (CriteriaFilterDTO criteriaFilterDTO : criteriaFilter){
-            criteriaFilterDTO.setOrderSequence(order++);
+        if (CollectionUtils.isNotEmpty(criteriaFilter)){
+            for (CriteriaFilterDTO criteriaFilterDTO : criteriaFilter){
+                criteriaFilterDTO.setOrderSequence(order++);
+            }
         }
 
         try {
