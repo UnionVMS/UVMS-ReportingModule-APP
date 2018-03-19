@@ -15,8 +15,31 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DISTANCE_UNIT;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SPEED_UNIT;
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
-
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
+import javax.ejb.EJB;
+import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -49,29 +72,6 @@ import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.ejb.EJB;
-import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -213,49 +213,38 @@ public class ReportingResource extends UnionVMSResource {
 		String username = request.getRemoteUser();
 
 		log.debug("{} is requesting deleteReport(...), with a ID={} and scopeName={}", username, id, scopeName);
-		ReportDTO originalReport;
+		ReportDTO originalReport = null;
 		boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
+		Response response = createSuccessResponse();
 		try {
-			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName,
-					scopeName);
-			// for delete operation, we don't really nead the permitted service layers,
-			// therefore we pass null
-			originalReport = reportService.findById(features, id, username, scopeName, isAdmin, null); // we need the
-																										// original
-																										// report
-																										// because of
-																										// the
-																										// 'owner/createdBy'
-																										// attribute,
-																										// which is not
-																										// contained in
-																										// the JSON
+			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
+			originalReport = reportService.findById(features, id, username, scopeName, isAdmin, null);
 		} catch (Exception e) {
 			String errorMsg = "Failed to get report.";
 			log.error(errorMsg, e);
-			return createErrorResponse(errorMsg);
+			response = createErrorResponse(errorMsg);
 		}
 
 		if (originalReport == null) {
-			createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+            response = createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
 		}
 
 		ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport,
 				username);
 
 		if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-			createScNotFoundErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+			response = createScNotFoundErrorResponse(ErrorCodes.NOT_AUTHORIZED);
 		}
 
 		try {
 			reportService.delete(id, username, scopeName, isAdmin);
 		} catch (Exception exc) {
 			log.error("Report deletion failed.", exc);
-			createErrorResponse(ErrorCodes.DELETE_FAILED);
+			response = createErrorResponse(ErrorCodes.DELETE_FAILED);
 		}
 
-		return createSuccessResponse();
+		return response;
 	}
 
 	@PUT
