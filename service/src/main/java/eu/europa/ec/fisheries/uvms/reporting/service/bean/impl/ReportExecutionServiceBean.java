@@ -15,6 +15,7 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
+import com.vividsolutions.jts.io.ParseException;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -159,6 +160,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                             activitySummaryDTOs.add(FishingActivityMapper.INSTANCE.mapToFishingActivity(summary));
                         }
                         resultDTO.setActivityList(activitySummaryDTOs);
+                        populateActivityesAsDefaultCollections(resultDTO);
                     }
                 }
                 DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
@@ -188,13 +190,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 FACatchSummaryReportResponse faCatchSummaryReport = activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
                 FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                 resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
-                DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
-                if (isNotEmpty(resultDTO.getActivityList())) {
-                    for (FishingActivitySummaryDTO summary : resultDTO.getActivityList()) {
-                        activities.add(new ActivityDTO(summary).toFeature());
-                    }
-                }
-                resultDTO.setActivities(activities);
+                populateActivityesAsDefaultCollections(resultDTO);
             }
             return resultDTO;
         } catch (ProcessorException e) {
@@ -202,6 +198,16 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             log.error(error, e);
             throw new ReportingServiceException(error, e);
         }
+    }
+
+    private void populateActivityesAsDefaultCollections(ExecutionResultDTO resultDTO) throws ParseException {
+        DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
+        if (isNotEmpty(resultDTO.getActivityList())) {
+            for (FishingActivitySummaryDTO summary : resultDTO.getActivityList()) {
+                activities.add(new ActivityDTO(summary).toFeature());
+            }
+        }
+        resultDTO.setActivities(activities);
     }
 
     private void updateTripWithVmsPositionCount(TripDTO trip, Collection<MovementMapResponseType> movementMap) {
