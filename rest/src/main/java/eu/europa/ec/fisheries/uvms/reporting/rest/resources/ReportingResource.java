@@ -576,15 +576,19 @@ public class ReportingResource extends UnionVMSResource {
 		try {
 
 			String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, appName, roleName, scopeName);
-
+			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
 			if (!StringUtils.isEmpty(defaultId) && !override) {
 				response = createErrorResponse("TRYING TO OVERRIDE ALREADY EXISTING VALUE");
 			} else {
-				usmService.putUserPreference(DEFAULT_REPORT_ID, String.valueOf(id), appName, scopeName, roleName,
-						username);
-				response = createSuccessResponse();
+				boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+				ReportDTO byId = reportService.findById(features, id, username, scopeName, isAdmin, null);
+				if (byId == null){
+					response = createErrorResponse("TRYING TO SET UN-EXISTING REPORT AS DEFAULT");
+				} else {
+					usmService.putUserPreference(DEFAULT_REPORT_ID, String.valueOf(id), appName, scopeName, roleName, username);
+					response = createSuccessResponse();
+				}
 			}
-
 		} catch (ServiceException e) {
 			log.error("Default report saving failed.", e);
 			response = createErrorResponse(e.getMessage());
