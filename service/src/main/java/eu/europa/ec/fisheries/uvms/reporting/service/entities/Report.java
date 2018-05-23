@@ -163,7 +163,8 @@ public class Report extends BaseEntity {
         for (Filter filter : filters) {
             if (filter instanceof CommonFilter) {
                 PositionSelector positionSelector = ((CommonFilter) filter).getPositionSelector();
-                if (positionSelector != null && Position.positions.equals(positionSelector.getPosition())) {
+
+                if (positionSelector != null && positionSelector.getSelector() != null && positionSelector.getSelector().equals(Selector.last)) {
                     return true;
                 }
             }

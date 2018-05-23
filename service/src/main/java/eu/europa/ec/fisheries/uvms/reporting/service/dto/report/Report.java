@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfiguration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
@@ -56,6 +57,11 @@ public class Report {
         this.additionalProperties.put(name, value);
     }
 
-
+    public String getReportType() {
+        if (StringUtils.isNotEmpty(reportType)){
+            return StringUtils.upperCase(reportType);
+        }
+        return null;
+    }
 
 }
