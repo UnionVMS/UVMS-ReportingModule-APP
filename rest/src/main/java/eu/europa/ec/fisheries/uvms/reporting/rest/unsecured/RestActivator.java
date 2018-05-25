@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.rest.unsecured;
 
 import javax.ws.rs.ApplicationPath;
@@ -17,14 +16,14 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-@ApplicationPath("/doctor")
+@ApplicationPath("/health")
 public class RestActivator extends Application {
 
     private final Set<Object> singletons = new HashSet<>();
     private final Set<Class<?>> set = new HashSet<>();
 
     public RestActivator() {
-        set.add(DoctorResource.class);
+        set.add(HealthResource.class);
     }
 
     @Override
