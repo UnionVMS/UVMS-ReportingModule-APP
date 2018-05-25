@@ -11,7 +11,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.unsecured;
 
 import javax.ejb.EJB;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -25,10 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Path("/")
-public class DoctorResource {
+public class HealthResource {
 
     private static final String APPLICATION_VERSION = "application.version";
-    private static final String APPLICATION_STATUS = "application.status";
     private static final String APPLICATION_NAME = "application.name";
 
     @EJB
@@ -40,8 +38,7 @@ public class DoctorResource {
         Map<String, Object> properties = new HashMap<>();
         Map<String, Map<String, Object>> metrics = new HashMap<>();
         properties.put(APPLICATION_VERSION, propertiesBean.getProperty(APPLICATION_VERSION));
-        properties.put(APPLICATION_STATUS, HttpServletResponse.SC_ACCEPTED);
         metrics.put(propertiesBean.getProperty(APPLICATION_NAME), properties);
-        return Response.ok(properties).build();
+        return Response.ok(metrics).build();
     }
 }
