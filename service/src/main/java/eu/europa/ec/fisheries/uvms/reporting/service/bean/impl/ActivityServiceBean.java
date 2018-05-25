@@ -14,6 +14,13 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.jms.TextMessage;
+import java.util.List;
+
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMapperException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
@@ -23,17 +30,12 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ActivityModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.jms.TextMessage;
-import java.util.List;
 
 @Stateless
 @Local(ActivityService.class)
@@ -47,6 +49,7 @@ public class ActivityServiceBean implements ActivityService {
     private ReportingModuleReceiverBean reportingModule;
 
     @Override
+    @Interceptors(SimpleTracingInterceptor.class)
     public FishingTripResponse getFishingTrips(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException {
         try {
             String request = ActivityModuleRequestMapper.mapToActivityGetFishingTripRequest(listValueTypeFilters, singleValueTypeFilters);
@@ -62,6 +65,7 @@ public class ActivityServiceBean implements ActivityService {
     }
 
     @Override
+    @Interceptors(SimpleTracingInterceptor.class)
     public FACatchSummaryReportResponse getFaCatchSummaryReport(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters, List<GroupCriteria> groupCriteriaList) throws ReportingServiceException {
 
         FACatchSummaryReportResponse result = null;

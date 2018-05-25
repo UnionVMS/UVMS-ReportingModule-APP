@@ -5,25 +5,6 @@
         <name>Reporting</name>
         <description>Deployment descriptor of module "Reporting" version "@application.version@".</description>
         <parent>Union VMS</parent>
-        <!--<dataset>
-            <name>dataset_name</name>
-            <description>dataset_desc</description>
-            <category>dataset_cat</category>
-            <discriminator>dataset_disc</discriminator>
-        </dataset>
-        ...
-        <feature>
-            <name>feature_name</name>
-            <description>feature_desc</description>
-            <group>modified_group_name</group>
-        </feature>
-        <feature>
-            <name>feature_name2</name>
-            <description>feature_desc2</description>
-            <group>group_name2</group>
-        </feature>
-        ...-->
-
         <feature>
             <name>LIST_REPORTS</name>
             <description>allows user to see Reporting tab and list reports</description>
