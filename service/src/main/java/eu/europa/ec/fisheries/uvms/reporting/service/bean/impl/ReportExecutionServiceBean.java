@@ -15,7 +15,6 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-import com.vividsolutions.jts.io.ParseException;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -31,6 +30,7 @@ import java.util.Set;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -47,6 +47,7 @@ import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.IAuditInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
@@ -200,6 +201,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
     }
 
+    @Interceptors(SimpleTracingInterceptor.class)
     private void populateActivityesAsDefaultCollections(ExecutionResultDTO resultDTO) throws ParseException {
         DefaultFeatureCollection activities = new DefaultFeatureCollection(null, ActivityDTO.ACTIVITY);
         if (isNotEmpty(resultDTO.getActivityList())) {
@@ -210,6 +212,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         resultDTO.setActivities(activities);
     }
 
+    @Interceptors(SimpleTracingInterceptor.class)
     private void updateTripWithVmsPositionCount(TripDTO trip, Collection<MovementMapResponseType> movementMap) {
         Integer count = 0;
         if (trip != null && (trip.getRelativeFirstFaDateTime() != null && trip.getRelativeLastFaDateTime() != null)) {
@@ -236,6 +239,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return GroupCriteriaFilterMapper.INSTANCE.mapGroupCriteriaTypeListToGroupCriteriaList(types);
     }
 
+    @Interceptors(SimpleTracingInterceptor.class)
     private MovementData fetchPositionalData(FilterProcessor processor, String wkt) throws ReportingServiceException {
         MovementData movementData = new MovementData();
         try {
