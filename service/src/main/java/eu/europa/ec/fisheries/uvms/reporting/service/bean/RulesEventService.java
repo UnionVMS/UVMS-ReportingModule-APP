@@ -12,7 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
+import eu.europa.ec.fisheries.schema.movementrules.ticketrule.v1.TicketAndRuleType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import java.util.List;
 

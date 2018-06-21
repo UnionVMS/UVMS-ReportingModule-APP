@@ -21,7 +21,7 @@ import javax.ejb.Stateless;
 public class RulesProducerBean extends AbstractProducer {
 
 	public String getDestinationName(){
-		return MessageConstants.QUEUE_MODULE_RULES;
+		return MessageConstants.QUEUE_MOVEMENTRULES_EVENT;
 	}	
 
 }

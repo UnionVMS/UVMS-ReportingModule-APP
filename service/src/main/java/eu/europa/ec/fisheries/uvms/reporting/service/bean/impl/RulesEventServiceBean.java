@@ -12,17 +12,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.schema.rules.module.v1.GetTicketsAndRulesByMovementsResponse;
-import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
+import eu.europa.ec.fisheries.schema.movementrules.module.v1.GetTicketsAndRulesByMovementsResponse;
+import eu.europa.ec.fisheries.schema.movementrules.ticketrule.v1.TicketAndRuleType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.RulesProducerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.RulesEventService;
-import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesFaultException;
-import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
-import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.movementrules.model.exception.MovementRulesFaultException;
+import eu.europa.ec.fisheries.uvms.movementrules.model.exception.MovementRulesModelMapperException;
+import eu.europa.ec.fisheries.uvms.movementrules.model.mapper.MovementRulesModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.movementrules.model.mapper.MovementRulesModuleResponseMapper;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -46,12 +46,12 @@ public class RulesEventServiceBean implements RulesEventService {
     @Override
     public List<TicketAndRuleType> GetAlarmsForMovements(List<String> movementId) throws ReportingServiceException {
         try {
-            String request = RulesModuleRequestMapper.createGetTicketsAndRulesByMovementsRequest(movementId);
+            String request = MovementRulesModuleRequestMapper.createGetTicketsAndRulesByMovementsRequest(movementId);
             String correlationId = producer.sendModuleMessage(request, consumer.getDestination());
             Message message = consumer.getMessage(correlationId, TextMessage.class);
-            GetTicketsAndRulesByMovementsResponse response = RulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse((TextMessage) message);
+            GetTicketsAndRulesByMovementsResponse response = MovementRulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse((TextMessage) message);
             return response != null ? response.getTicketsAndRules() : null;
-        } catch (MessageException | JMSException | RulesModelMapperException | RulesFaultException e) {
+        } catch (MessageException | JMSException | MovementRulesModelMapperException | MovementRulesFaultException e) {
             throw new ReportingServiceException(e);
         }
     }

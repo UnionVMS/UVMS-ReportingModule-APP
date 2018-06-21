@@ -10,7 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import eu.europa.ec.fisheries.schema.rules.customrule.v1.CustomRuleSegmentType;
+import eu.europa.ec.fisheries.schema.movementrules.customrule.v1.CustomRuleSegmentType;
 
 import java.util.Comparator;
 
