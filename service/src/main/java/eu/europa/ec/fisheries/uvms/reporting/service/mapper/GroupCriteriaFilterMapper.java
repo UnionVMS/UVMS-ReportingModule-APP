@@ -7,13 +7,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ObjectFactory;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.mapstruct.ValueMappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = {ObjectFactory.class})
@@ -46,7 +40,7 @@ public interface GroupCriteriaFilterMapper {
     List<GroupCriteriaType> mapGroupCriteriaListToGroupCriteriaTypeList(List<GroupCriteria> value);
 
     @ValueMappings({
-            //@ValueMapping(source = "AREA",target = "<NULL>")
+            @ValueMapping(source = "DATE",target = "<NULL>")
     })
     GroupCriteriaType mapGroupCriteriaToGroupCriteriaType(GroupCriteria value);
 

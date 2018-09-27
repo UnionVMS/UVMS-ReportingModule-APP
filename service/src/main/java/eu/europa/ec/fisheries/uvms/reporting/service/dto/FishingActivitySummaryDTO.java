@@ -22,6 +22,8 @@ public class FishingActivitySummaryDTO {
 
     private int activityId;
 
+    private int faReportID;
+
     private String activityType;
 
     private String geometry;
@@ -182,5 +184,13 @@ public class FishingActivitySummaryDTO {
 
     public void setVesselIdentifiers(List<VesselIdentifierType> vesselIdentifiers) {
         this.vesselIdentifiers = vesselIdentifiers;
+    }
+
+    public int getFaReportID() {
+        return faReportID;
+    }
+
+    public void setFaReportID(int faReportID) {
+        this.faReportID = faReportID;
     }
 }

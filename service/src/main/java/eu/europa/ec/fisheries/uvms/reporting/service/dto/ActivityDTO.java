@@ -36,6 +36,7 @@ public class ActivityDTO {
     private static final String GEOMETRY = "geometry";
     private static final String ACTIVITY_TYPE = "activityType";
     private static final String ACTIVITY_ID = "activityId";
+    private static final String FA_REPORT_ID = "faReportID";
     private static final String ACCEPTED_DATE_TIME = "acceptedDateTime";
     private static final String DATA_SOURCE = "dataSource";
     private static final String REPORT_TYPE = "reportType";
@@ -64,6 +65,7 @@ public class ActivityDTO {
         sb.add(GEOMETRY, MultiPoint.class);
         sb.add(ACTIVITY_TYPE, String.class);
         sb.add(ACTIVITY_ID, Integer.class);
+        sb.add(FA_REPORT_ID, Integer.class);
         sb.add(VESSEL_GUID, String.class);
         sb.add(TRIPID, String.class);
         sb.add(FLAG_STATE, String.class);
@@ -93,6 +95,7 @@ public class ActivityDTO {
         featureBuilder.set(GEOMETRY, GeometryUtil.toGeometry(summary.getGeometry()));
         featureBuilder.set(ACTIVITY_TYPE, summary.getActivityType());
         featureBuilder.set(ACTIVITY_ID, summary.getActivityId());
+        featureBuilder.set(FA_REPORT_ID, summary.getFaReportID());
         featureBuilder.set(VESSEL_GUID, summary.getVesselGuid());
         featureBuilder.set(TRIPID, summary.getTripId());
         featureBuilder.set(FLAG_STATE, summary.getFlagState());
