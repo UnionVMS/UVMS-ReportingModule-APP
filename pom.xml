@@ -37,16 +37,16 @@
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <uvms.commons.version>3.0.22</uvms.commons.version>
+        <uvms.commons.version>3.0.25</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>4.0.6</usm4uvms.version>
+        <usm4uvms.version>4.0.12</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-        <rules.model.version>3.0.16</rules.model.version>
+        <rules.model.version>3.0.43</rules.model.version>
 		<reporting.model.version>1.0.4</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activity.model.version>1.0.1</activity.model.version>
+        <activity.model.version>1.0.9-SNAPSHOT</activity.model.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
@@ -472,7 +472,6 @@
         <module>rest</module>
         <module>service</module>
         <module>message</module>
-        <module>deploy-wildfly</module>
-        <module>deploy-weblogic</module>
+        <module>module</module>
     </modules>
 </project>
