@@ -46,7 +46,7 @@
         <rules.model.version>3.0.43</rules.model.version>
 		<reporting.model.version>1.0.4</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activity.model.version>1.0.9-SNAPSHOT</activity.model.version>
+        <activity.model.version>1.0.9</activity.model.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
