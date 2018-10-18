@@ -48,7 +48,7 @@
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>1.0.9</activity.model.version>
 
-        <scm.connection>scm:git:https://githcub.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
+        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
 
     <scm>
