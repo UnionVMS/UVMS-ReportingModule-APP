@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.RulesEventService;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ws.rs.client.Client;
@@ -31,6 +32,9 @@ import java.util.List;
 @Slf4j
 public class RulesEventServiceBean implements RulesEventService {
 
+    @Resource(name = "java:global/movement-rules_endpoint")
+    private String movementRulesEndpoint;
+    
     @Override
     public List<TicketAndRuleType> GetAlarmsForMovements(List<String> movementId) {
 
@@ -38,7 +42,7 @@ public class RulesEventServiceBean implements RulesEventService {
         request.getMovementGuids().addAll(movementId);
 
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("localhost:8080/unionvms/movement-rules/rest/internal/");
+        WebTarget target = client.target(movementRulesEndpoint + "/internal");
 
         GetTicketsAndRulesByMovementsResponse response = target
                 .path("tickets-and-rules-by-movement")
