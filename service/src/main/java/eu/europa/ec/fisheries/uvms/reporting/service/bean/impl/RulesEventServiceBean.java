@@ -11,9 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.schema.rules.module.v1.GetTicketsAndRulesByMovementsRequest;
-import eu.europa.ec.fisheries.schema.rules.module.v1.GetTicketsAndRulesByMovementsResponse;
-import eu.europa.ec.fisheries.schema.rules.ticketrule.v1.TicketAndRuleType;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import eu.europa.ec.fisheries.schema.movementrules.module.v1.GetTicketsAndRulesByMovementsRequest;
+import eu.europa.ec.fisheries.schema.movementrules.module.v1.GetTicketsAndRulesByMovementsResponse;
+import eu.europa.ec.fisheries.schema.movementrules.ticketrule.v1.TicketAndRuleType;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.RulesEventService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +29,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
 import java.util.List;
 
 @Stateless
@@ -42,12 +47,36 @@ public class RulesEventServiceBean implements RulesEventService {
         request.getMovementGuids().addAll(movementId);
 
         Client client = ClientBuilder.newClient();
+
+        client.register(new ContextResolver<ObjectMapper>() {
+            @Override
+            public ObjectMapper getContext(Class<?> type) {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                mapper.registerModule(new JaxbAnnotationModule());
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                return mapper;
+            }
+        });
+
         WebTarget target = client.target(movementRulesEndpoint + "/internal");
 
-        GetTicketsAndRulesByMovementsResponse response = target
+        GetTicketsAndRulesByMovementsResponse response = null;
+        String s = "";
+        String s2 = "";
+        try {
+
+        ObjectMapper mapper = new ObjectMapper();
+        s = mapper.writeValueAsString(request);
+
+            s2 = target
                 .path("tickets-and-rules-by-movement")
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(request), GetTicketsAndRulesByMovementsResponse.class);
+                .post(Entity.json(s), String.class);
+        }catch (Exception e){
+            System.out.println("Rest not");
+            throw new RuntimeException(e);
+        }
 
         return response != null ? response.getTicketsAndRules() : null;
     }
