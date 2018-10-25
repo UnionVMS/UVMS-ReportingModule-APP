@@ -61,22 +61,10 @@ public class RulesEventServiceBean implements RulesEventService {
 
         WebTarget target = client.target(movementRulesEndpoint + "/internal");
 
-        GetTicketsAndRulesByMovementsResponse response = null;
-        String s = "";
-        String s2 = "";
-        try {
-
-        ObjectMapper mapper = new ObjectMapper();
-        s = mapper.writeValueAsString(request);
-
-            s2 = target
+        GetTicketsAndRulesByMovementsResponse response = target
                 .path("tickets-and-rules-by-movement")
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(s), String.class);
-        }catch (Exception e){
-            System.out.println("Rest not");
-            throw new RuntimeException(e);
-        }
+                .post(Entity.json(request), GetTicketsAndRulesByMovementsResponse.class);
 
         return response != null ? response.getTicketsAndRules() : null;
     }
