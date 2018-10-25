@@ -31,10 +31,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
-            <artifactId>rules-model</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
@@ -293,6 +289,21 @@
             <artifactId>DbSetup</artifactId>
             <version>1.6.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.9.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>2.9.4</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.movement-rules</groupId>
+            <artifactId>movement-rules-model</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
     </dependencies>
