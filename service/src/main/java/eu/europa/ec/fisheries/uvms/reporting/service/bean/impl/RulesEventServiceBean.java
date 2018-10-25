@@ -21,6 +21,8 @@ import eu.europa.ec.fisheries.schema.movementrules.ticketrule.v1.TicketAndRuleTy
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.RulesEventService;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -39,25 +41,34 @@ public class RulesEventServiceBean implements RulesEventService {
 
     @Resource(name = "java:global/movement-rules_endpoint")
     private String movementRulesEndpoint;
-    
-    @Override
-    public List<TicketAndRuleType> GetAlarmsForMovements(List<String> movementId) {
 
-        GetTicketsAndRulesByMovementsRequest request = new GetTicketsAndRulesByMovementsRequest();
-        request.getMovementGuids().addAll(movementId);
+    private Client client;
 
-        Client client = ClientBuilder.newClient();
+    @PostConstruct
+    public void init() {
+        client = ClientBuilder.newClient();
 
         client.register(new ContextResolver<ObjectMapper>() {
             @Override
             public ObjectMapper getContext(Class<?> type) {
                 ObjectMapper mapper = new ObjectMapper();
-                mapper.registerModule(new JavaTimeModule());
                 mapper.registerModule(new JaxbAnnotationModule());
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 return mapper;
             }
         });
+    }
+
+    @PreDestroy
+    public void destroy() {
+        client.close();
+    }
+
+    @Override
+    public List<TicketAndRuleType> GetAlarmsForMovements(List<String> movementId) {
+
+        GetTicketsAndRulesByMovementsRequest request = new GetTicketsAndRulesByMovementsRequest();
+        request.getMovementGuids().addAll(movementId);
 
         WebTarget target = client.target(movementRulesEndpoint + "/internal");
 
