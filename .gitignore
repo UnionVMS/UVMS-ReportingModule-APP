@@ -5,3 +5,4 @@ container-conf/lib/*
 model/*
 /rest/src/main/webapp/apidocs
 .idea
+service/src/main/resources/logging.properties
