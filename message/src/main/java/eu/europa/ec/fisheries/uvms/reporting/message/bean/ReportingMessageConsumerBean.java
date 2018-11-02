@@ -52,7 +52,6 @@ public class ReportingMessageConsumerBean implements MessageListener {
     private Event<ReportingMessageEvent> reportingErrorEvent;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
         try {

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fish.focus.uvms.maven</groupId>
 		<artifactId>uvms-pom</artifactId>
-		<version>1.18</version>
+		<version>1.21</version>
 	</parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
@@ -37,10 +37,10 @@
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <uvms.commons.version>3.0.25</uvms.commons.version>
+        <uvms.commons.version>3.0.29</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>4.0.12</usm4uvms.version>
+        <usm4uvms.version>4.0.13-SNAPSHOT</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.43</rules.model.version>
@@ -76,7 +76,7 @@
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.18</version>
+				<version>1.21</version>
 				<type>pom</type>
 			</dependency>
 
