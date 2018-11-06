@@ -56,11 +56,11 @@
 				</exclusion>
 				<exclusion>
 				  <groupId>com.fasterxml.jackson.core</groupId>
-  				  <artifactId>jackson-databind</artifactId>				
+  				  <artifactId>jackson-databind</artifactId>
 				</exclusion>
 				<exclusion>
 				    <groupId>net.sf.ehcache</groupId>
-  					<artifactId>ehcache</artifactId>				
+  					<artifactId>ehcache</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
