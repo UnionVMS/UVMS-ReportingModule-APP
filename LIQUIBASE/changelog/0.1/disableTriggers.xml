@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	<changeSet author="dubduan" id="14354321-1" dbms="oracle">
+        <sql>
+			ALTER TRIGGER TRG_EXECUTION_LOG DISABLE;
+			ALTER TRIGGER TRG_FILTER DISABLE;
+			ALTER TRIGGER TRG_REPORT DISABLE;			
+        </sql>	
+    </changeSet>
+	
+	<changeSet author="dubduan" id="143522323-1" dbms="postgresql">
+        <sql>
+			ALTER TABLE report DISABLE TRIGGER trg_report;
+			ALTER TABLE filter DISABLE TRIGGER trg_filter;
+			ALTER TABLE execution_log DISABLE TRIGGER trg_execution_log;
+        </sql>	
+    </changeSet>	
+	
+</databaseChangeLog>
