@@ -13,8 +13,8 @@
             <property name="hibernate.id.optimizer.pooled.preferred" value="NONE"/>
             <property name="format_sql" value="false" />
 			<property name="use_sql_comments" value="true" />
-            <property name="hibernate.physical_naming_strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
-            <property name="hibernate.implicit_naming_strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"/>
+<!--            <property name="hibernate.physical_naming_strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
+            <property name="hibernate.implicit_naming_strategy" value="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"/>-->
         </properties>
 
     </persistence-unit>
