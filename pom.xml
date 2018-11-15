@@ -40,7 +40,7 @@
         <uvms.commons.version>3.0.29</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>4.0.14-WILDFLY14-JEE8</usm4uvms.version>
+        <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.43</rules.model.version>
