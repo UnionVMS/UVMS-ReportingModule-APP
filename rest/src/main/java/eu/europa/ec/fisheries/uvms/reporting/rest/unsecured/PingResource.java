@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Path("/")
-public class HealthResource {
+public class PingResource {
 
     private static final String APPLICATION_VERSION = "application.version";
     private static final String APPLICATION_NAME = "application.name";
@@ -34,7 +34,7 @@ public class HealthResource {
 
     @GET
     @Produces(value = { MediaType.APPLICATION_JSON })
-    public Response getDoctor() {
+    public Response getPing() {
         Map<String, Object> properties = new HashMap<>();
         Map<String, Map<String, Object>> metrics = new HashMap<>();
         properties.put(APPLICATION_VERSION, propertiesBean.getProperty(APPLICATION_VERSION));

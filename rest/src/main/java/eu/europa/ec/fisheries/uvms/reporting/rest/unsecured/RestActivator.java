@@ -23,7 +23,7 @@ public class RestActivator extends Application {
     private final Set<Class<?>> set = new HashSet<>();
 
     public RestActivator() {
-        set.add(HealthResource.class);
+        set.add(PingResource.class);
     }
 
     @Override

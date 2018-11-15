@@ -47,6 +47,7 @@
 		<reporting.model.version>1.0.4</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>1.0.9</activity.model.version>
+        <uvms.config.version>4.0.1</uvms.config.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
@@ -204,6 +205,18 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                <artifactId>uvms-config</artifactId>
+                <version>${uvms.config.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                        <artifactId>uvms-commons</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
