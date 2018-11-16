@@ -168,7 +168,7 @@
                             <images>
                                 <image>
                                     <alias>postgres</alias>
-                                    <name>uvms/postgres-base:3.14.0</name>
+                                    <name>uvms/postgres-base:3.16.0</name>
                                     <run>
                                         <net>bridge</net>
                                         <namingStrategy>none</namingStrategy>
@@ -213,7 +213,7 @@
                     <plugin>
                         <groupId>org.liquibase</groupId>
                         <artifactId>liquibase-maven-plugin</artifactId>
-                        <version>3.4.2</version>
+                        <version>3.5.2</version>
                         <configuration>
                             <url>${db.docker.url}</url>
                             <migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
@@ -267,12 +267,13 @@
     </profiles>
 
     <build>
+
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>3.4.2</version>
+                    <version>3.5.2</version>
                     <configuration>
                         <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                         <changeLogFile>${db.changeLogFile}</changeLogFile>
@@ -320,7 +321,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>${commons-io.version}</version>
+                <version>2.6</version>
                 <goals>
                     <goal>deploy-file</goal>
                 </goals>
