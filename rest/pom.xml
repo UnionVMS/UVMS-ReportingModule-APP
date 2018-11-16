@@ -261,6 +261,9 @@
     <profiles>
         <profile>
             <id>generate-rest-doc</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
