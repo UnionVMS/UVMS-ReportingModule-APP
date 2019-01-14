@@ -36,7 +36,7 @@
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
-        <hibernate.version>4.3.11.Final</hibernate.version>
+        <hibernate.version>5.1.9.Final</hibernate.version>
 
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
@@ -49,9 +49,9 @@
         <activity.model.version>1.0.9</activity.model.version>
 
         <!-- UVMS Libraries -->
-        <uvms.commons.version>3.0.29</uvms.commons.version>
+        <uvms.commons.version>3.0.31-W14J8</uvms.commons.version>
         <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
-        <uvms.config.version>4.0.2-W14-J8</uvms.config.version>
+        <uvms.config.version>4.0.3-W14J8</uvms.config.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>

@@ -6,7 +6,7 @@
     <persistence-unit name="reportingPU" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/uvms_reporting</jta-data-source>
          <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
             <property name="show_sql" value="true" />
             
 			<property name="format_sql" value="true" />
