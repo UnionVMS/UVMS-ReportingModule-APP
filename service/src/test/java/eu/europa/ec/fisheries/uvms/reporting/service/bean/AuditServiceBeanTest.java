@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import static org.junit.Assert.assertNull;
 
+import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditResponseConsumerBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AuditServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
 import org.junit.Before;
@@ -30,6 +31,9 @@ public class AuditServiceBeanTest {
 	
 	@Mock
     AuditMessageServiceBean auditProducerBean;
+
+	@Mock
+	AuditResponseConsumerBean auditConsumerBean;
 	
 	@InjectMocks
     AuditServiceBean auditServiceBean;

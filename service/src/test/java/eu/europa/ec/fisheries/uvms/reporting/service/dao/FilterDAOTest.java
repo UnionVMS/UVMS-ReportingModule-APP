@@ -52,36 +52,27 @@ public class FilterDAOTest extends BaseReportingDAOTest {
                                 .columns("filter_id", "end_date", "start_date", Filter.REPORT_ID, "filter_type")
                                 .values(1L, java.sql.Date.valueOf("2014-12-13"), java.sql.Date.valueOf("2015-12-13"), 1L, "DATETIME")
                                 .build());
-
-
         DbSetup dbSetup = new DbSetup(new DataSourceDestination(ds), operation);
         dbSetupTracker.launchIfNecessary(dbSetup);
+
     }
 
     @Test
     @SneakyThrows
     public void shouldReturnOneFilter(){
-
         dbSetupTracker.skipNextLaunch();
-
         List<Filter> filters = dao.listByReportId(1L);
-
         assertEquals(1, filters.size());
     }
 
     @Test
     @SneakyThrows
     public void shouldDeleteFilter(){
-
         em.getTransaction().begin();
-
         dao.deleteBy(1L);
-
         em.flush();
         em.getTransaction().commit();
-
         List<Filter> filters = dao.listByReportId(1L);
-
         assertEquals(0, filters.size());
     }
 

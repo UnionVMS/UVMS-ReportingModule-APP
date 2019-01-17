@@ -162,7 +162,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         report.setAdditionalProperty("additionalProperties", additionalProp);
 
         FilterExpression filterExpression = new FilterExpression();
-        filterExpression.setAreas(Arrays.asList(new Area(1L, "EEZ", "EEZ", 1L)));
+        filterExpression.setAreas(Arrays.asList(new Area(1L, "areas", "EEZ", 1L)));
 
         filterExpression.setAssets(Arrays.asList(new eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset(1L, "asset", "1", "EEZ", "TEST")));
 
