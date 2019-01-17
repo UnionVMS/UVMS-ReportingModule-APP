@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditResponseConsumerBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingServiceConstants;
@@ -34,32 +35,20 @@ import lombok.extern.slf4j.Slf4j;
 @Local(value = AuditService.class)
 @Slf4j
 public class AuditServiceBean implements AuditService {
-
-    private Destination auditResponse;
 	
 	@EJB
-	private transient AuditMessageServiceBean auditProducerBean;
+	private AuditMessageServiceBean auditProducerBean;
 
+	@EJB
+    private AuditResponseConsumerBean auditResponseConsumer;
 
-	@PostConstruct
-    public void init() {
-        InitialContext ctx;
-        try {
-            ctx = new InitialContext();
-        } catch (Exception e) {
-            log.error("Failed to get InitialContext", e);
-            throw new RuntimeException(e);
-        }
-        auditResponse = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_AUDIT);
-    }	
-	
 	@Override
 	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
         log.debug("Audit report request received for type = {} ", auditActionEnum.getAuditType());
         try {
 			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
             log.trace("Sending JMS message to Audit {} ", msgToSend);
-            auditProducerBean.sendModuleMessage(msgToSend, auditResponse);
+            auditProducerBean.sendModuleMessage(msgToSend, auditResponseConsumer.getDestination());
         } catch (MessageException e) {
             log.error("Exception in Sending Message to Audit Queue", e);
             throw new ReportingServiceException(e);
