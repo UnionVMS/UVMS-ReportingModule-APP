@@ -49,7 +49,7 @@
         <activity.model.version>1.0.9</activity.model.version>
 
         <!-- UVMS Libraries -->
-        <uvms.commons.version>3.0.31-W14J8</uvms.commons.version>
+        <uvms.commons.version>3.3-W14J8</uvms.commons.version>
         <usm4uvms.version>4.0.14-W14-J8</usm4uvms.version>
         <uvms.config.version>4.0.3-W14J8</uvms.config.version>
 
