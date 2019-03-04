@@ -279,7 +279,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         return filterTypes;
     }
 
-    private List<ListValueTypeFilter> extractListValueFilters(FilterProcessor processor, Map<String, Asset> assetMap, Boolean isAssetsExist) throws ReportingServiceException {
+    private List<ListValueTypeFilter> extractListValueFilters(FilterProcessor processor, Map<String, Asset> assetMap, Boolean isAssetsExist) {
         List<ListValueTypeFilter> filterTypes = new ArrayList<>(processor.getListValueTypeFilters());
         if (isAssetsExist && assetMap != null) {
             Collection<Asset> assets = assetMap.values();
