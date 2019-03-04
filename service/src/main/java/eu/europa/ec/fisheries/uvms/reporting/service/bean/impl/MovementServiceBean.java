@@ -9,83 +9,43 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
+
+import eu.europa.ec.fisheries.schema.movement.module.v1.GetMovementMapByQueryResponse;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.MovementClient;
+import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import java.util.List;
 import java.util.Map;
-
-import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
-import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
-import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @Slf4j
 public class MovementServiceBean {
 
     @EJB
-    private MovementModuleSenderBean movementSender;
+    private MovementClient movementClient;
 
-    @EJB
-    private ReportingModuleReceiverBean receiver;
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Interceptors(SimpleTracingInterceptor.class)
-    public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) throws ReportingServiceException {
+    public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) {
         return ExtMovementMessageMapper.getMovementMap(getMovementMapResponseTypes(processor));
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public List<MovementMapResponseType> getMovement(FilterProcessor processor) throws ReportingServiceException {
+    public List<MovementMapResponseType> getMovement(FilterProcessor processor) {
         log.trace("getMovement({})", processor.toString());
         return getMovementMapResponseTypes(processor);
     }
 
-    private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws ReportingServiceException {
-        try {
-            String request = ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
-            String moduleMessage = movementSender.sendModuleMessage(request, receiver.getDestination());
-            TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
-            if (response != null && !isUserFault(response)) {
-                return ExtMovementMessageMapper.mapToMovementMapResponse(response);
-            } else {
-                throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT");
-            }
-        } catch (ModelMapperException | JMSException | MessageException | MovementFaultException | MovementDuplicateException e) {
-            throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT", e);
-        }
+    private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) {
+        MovementQuery movementQuery = processor.toMovementQuery();
+        GetMovementMapByQueryResponse movementMapResponseTypes = movementClient.getMovementMapResponseTypes(movementQuery);
+        return movementMapResponseTypes.getMovementMap();
     }
-
-    private boolean isUserFault(TextMessage message) {
-        boolean isErrorResponse = false;
-        try {
-            UserFault userFault = JAXBMarshaller.unmarshall(message, UserFault.class);
-            log.error("UserFault error JMS message received with text: " + userFault.getFault());
-            isErrorResponse = true;
-        } catch (ReportingModelException e) {
-            //do nothing  since it's not a UserFault
-            log.trace("Unexpected exception was thrown.", e);
-        }
-        return isErrorResponse;
-    }
-
 }
