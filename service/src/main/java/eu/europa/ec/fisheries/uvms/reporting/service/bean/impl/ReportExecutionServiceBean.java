@@ -11,23 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL_PROPERTIES;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.vividsolutions.jts.io.ParseException;
@@ -35,14 +18,7 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
@@ -52,32 +28,15 @@ import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingIntercepto
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FishingActivitySummaryDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementData;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.*;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FACatchSummaryMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingActivityMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FishingTripMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapperV2;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -86,6 +45,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.joda.time.DateTime;
+
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL_PROPERTIES;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(value = ReportExecutionService.class)
@@ -240,33 +210,27 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     @Interceptors(SimpleTracingInterceptor.class)
-    private MovementData fetchPositionalData(FilterProcessor processor, String wkt) throws ReportingServiceException {
+    private MovementData fetchPositionalData(FilterProcessor processor, String wkt) {
         MovementData movementData = new MovementData();
-        try {
-            Collection<MovementMapResponseType> movementMap;
-            Map<String, MovementMapResponseType> responseTypeMap = null;
-            Map<String, Asset> assetMap;
-            processor.addAreaCriteria(wkt);
-            log.trace("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
-            if (processor.hasAssetsOrAssetGroups()) {
-                assetMap = assetModule.getAssetMap(processor);
-                processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
-                movementMap = movementModule.getMovement(processor);
-            } else {
-                responseTypeMap = movementModule.getMovementMap(processor);
-                Set<String> assetGuids = responseTypeMap.keySet();
-                movementMap = responseTypeMap.values();
-                processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
-                assetMap = assetModule.getAssetMap(processor);
-            }
-            movementData.setAssetMap(assetMap);
-            movementData.setMovementMap(movementMap);
-            movementData.setResponseTypeMap(responseTypeMap);
-        } catch (ReportingServiceException e) {
-            String error = "Exception during retrieving filter area";
-            log.error(error, e);
-            throw new ReportingServiceException(error, e);
+        Collection<MovementMapResponseType> movementMap;
+        Map<String, MovementMapResponseType> responseTypeMap = null;
+        Map<String, Asset> assetMap;
+        processor.addAreaCriteria(wkt);
+        log.trace("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
+        if (processor.hasAssetsOrAssetGroups()) {
+            assetMap = assetModule.getAssetMap(processor);
+            processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
+            movementMap = movementModule.getMovement(processor);
+        } else {
+            responseTypeMap = movementModule.getMovementMap(processor);
+            Set<String> assetGuids = responseTypeMap.keySet();
+            movementMap = responseTypeMap.values();
+            processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
+            assetMap = assetModule.getAssetMap(processor);
         }
+        movementData.setAssetMap(assetMap);
+        movementData.setMovementMap(movementMap);
+        movementData.setResponseTypeMap(responseTypeMap);
         return movementData;
     }
 

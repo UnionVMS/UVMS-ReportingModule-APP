@@ -13,7 +13,6 @@
     <version>1.1.7-UVMS-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Maven projekt-archetype for UnionVms modules</description>
-    <url>http://www.your.site.com/</url>
 
     <properties>
 
@@ -29,6 +28,7 @@
         <jackson.version>2.9.6</jackson.version>
         <logback.core.version>1.2.3</logback.core.version>
         <asset.model.version>4.0.17</asset.model.version>
+        <asset.client.version>6.0.37-SNAPSHOT</asset.client.version>
         <audit.model.version>4.0.5</audit.model.version>
         <movement.model.version>4.0.8</movement.model.version>
         <spatial.model.version>1.0.7</spatial.model.version>
@@ -327,6 +327,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-client</artifactId>
+            <version>${asset.client.version}</version>
         </dependency>
 
     </dependencies>
