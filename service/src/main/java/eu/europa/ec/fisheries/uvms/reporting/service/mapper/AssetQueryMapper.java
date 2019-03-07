@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.AssetType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
@@ -13,9 +12,9 @@ import java.util.*;
 
 public class AssetQueryMapper {
 
-
     public static AssetQuery assetListQueryToAssetQuery(AssetListQuery assetListQuery) {
         AssetQuery query = new AssetQuery();
+        instantiateAllCollections(query);
 
         List<AssetListCriteriaPair> criteriaPairs = assetListQuery.getAssetSearchCriteria().getCriterias();
 
@@ -24,60 +23,56 @@ public class AssetQueryMapper {
 
             switch (key) {
                 case FLAG_STATE:
-                    query.setFlagState(Collections.singletonList(criteria.getValue()));
+                    query.getFlagState().add(criteria.getValue());
                     break;
                 case EXTERNAL_MARKING:
-                    query.setExternalMarking(Collections.singletonList(criteria.getValue()));
+                    query.getExternalMarking().add(criteria.getValue());
                     break;
                 case NAME:
-                    query.setName(Collections.singletonList(criteria.getValue()));
+                    query.getName().add(criteria.getValue());
                     break;
                 case IRCS:
-                    query.setIrcs(Collections.singletonList(criteria.getValue()));
+                    query.getIrcs().add(criteria.getValue());
                     break;
                 case CFR:
-                    query.setCfr(Collections.singletonList(criteria.getValue()));
+                    query.getCfr().add(criteria.getValue());
                     break;
                 case MMSI:
-                    query.setMmsi(Collections.singletonList(criteria.getValue()));
+                    query.getMmsi().add(criteria.getValue());
                     break;
-                case GUID: {
+                case GUID:
                     UUID uuid = UUID.fromString(criteria.getValue());
-                    List<UUID> idList = Collections.singletonList(uuid);
-                    query.setId(idList);
+                    query.getId().add(uuid);
                     break;
-                }
-                case HIST_GUID: {
-                    UUID uuid = UUID.fromString(criteria.getValue());
-                    List<UUID> historyIdList = Collections.singletonList(uuid);
-                    query.setHistoryId(historyIdList);
+                case HIST_GUID:
+                    UUID historyId = UUID.fromString(criteria.getValue());
+                    query.getHistoryId().add(historyId);
                     break;
-                }
                 case DATE:
                     query.setDate(Instant.parse(criteria.getValue()));
                     break;
                 case ICCAT:
-                    query.setIccat(Collections.singletonList(criteria.getValue()));
+                    query.getIccat().add(criteria.getValue());
                     break;
                 case UVI:
-                    query.setUvi(Collections.singletonList(criteria.getValue()));
+                    query.getUvi().add(criteria.getValue());
                     break;
                 case GFCM:
-                    query.setGfcm(Collections.singletonList(criteria.getValue()));
+                    query.getGfcm().add(criteria.getValue());
                     break;
                 case HOMEPORT:
-                    query.setPortOfRegistration(Collections.singletonList(criteria.getValue()));
+                    query.getPortOfRegistration().add(criteria.getValue());
                     break;
                 case ASSET_TYPE: // No counterpart in AssetQuery
                     break;
                 case LICENSE_TYPE:
-                    query.setLicenseType(Collections.singletonList(criteria.getValue()));
+                    query.getLicenseType().add(criteria.getValue());
                     break;
                 case PRODUCER_NAME:
-                    query.setProducerName(Collections.singletonList(criteria.getValue()));
+                    query.getProducerName().add(criteria.getValue());
                     break;
                 case IMO:
-                    query.setImo(Collections.singletonList(criteria.getValue()));
+                    query.getImo().add(criteria.getValue());
                     break;
                 case GEAR_TYPE:
                     query.setGearType(criteria.getValue());
@@ -94,6 +89,9 @@ public class AssetQueryMapper {
                 case MAX_POWER:
                     query.setMaxPower(Double.valueOf(criteria.getValue()));
                     break;
+                default:
+                    throw new RuntimeException("Unknown ConfigSearchField. " +
+                            "Key = [" + key + "] Value: [" + criteria.getValue() + "]");
             }
         }
         return query;
@@ -131,7 +129,8 @@ public class AssetQueryMapper {
             if(dto.getLicenceType() != null) asset.setLicenseType(dto.getLicenceType());
             if(dto.getPortOfRegistration() != null) asset.setHomePort(dto.getPortOfRegistration());
             if(dto.getLengthOverAll() != null) asset.setLengthOverAll(BigDecimal.valueOf(dto.getLengthOverAll()));
-            if(dto.getLengthBetweenPerpendiculars() != null) asset.setLengthBetweenPerpendiculars(BigDecimal.valueOf(dto.getLengthBetweenPerpendiculars()));
+            if(dto.getLengthBetweenPerpendiculars() != null)
+                asset.setLengthBetweenPerpendiculars(BigDecimal.valueOf(dto.getLengthBetweenPerpendiculars()));
             if(dto.getGrossTonnage() != null) asset.setGrossTonnage(BigDecimal.valueOf(dto.getGrossTonnage()));
             if(dto.getGrossTonnageUnit() != null) asset.setGrossTonnageUnit(dto.getGrossTonnageUnit());
             if(dto.getOtherTonnage() != null) asset.setOtherGrossTonnage(BigDecimal.valueOf(dto.getOtherTonnage()));
@@ -172,5 +171,23 @@ public class AssetQueryMapper {
             map.put(asset.getEventHistory().getEventId(), asset);
         }
         return map;
+    }
+
+    private static void instantiateAllCollections(AssetQuery query) {
+        query.setId(new ArrayList<>());
+        query.setHistoryId(new ArrayList<>());
+        query.setCfr(new ArrayList<>());
+        query.setIrcs(new ArrayList<>());
+        query.setMmsi(new ArrayList<>());
+        query.setImo(new ArrayList<>());
+        query.setIccat(new ArrayList<>());
+        query.setUvi(new ArrayList<>());
+        query.setGfcm(new ArrayList<>());
+        query.setName(new ArrayList<>());
+        query.setFlagState(new ArrayList<>());
+        query.setExternalMarking(new ArrayList<>());
+        query.setPortOfRegistration(new ArrayList<>());
+        query.setLicenseType(new ArrayList<>());
+        query.setProducerName(new ArrayList<>());
     }
 }
