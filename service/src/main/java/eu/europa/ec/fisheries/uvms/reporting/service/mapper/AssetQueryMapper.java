@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.AssetType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
@@ -12,7 +11,6 @@ import java.time.Instant;
 import java.util.*;
 
 public class AssetQueryMapper {
-
 
     public static AssetQuery assetListQueryToAssetQuery(AssetListQuery assetListQuery) {
         AssetQuery query = new AssetQuery();
@@ -41,18 +39,16 @@ public class AssetQueryMapper {
                 case MMSI:
                     query.setMmsi(Collections.singletonList(criteria.getValue()));
                     break;
-                case GUID: {
+                case GUID:
                     UUID uuid = UUID.fromString(criteria.getValue());
                     List<UUID> idList = Collections.singletonList(uuid);
                     query.setId(idList);
                     break;
-                }
-                case HIST_GUID: {
-                    UUID uuid = UUID.fromString(criteria.getValue());
-                    List<UUID> historyIdList = Collections.singletonList(uuid);
+                case HIST_GUID:
+                    UUID historyIds = UUID.fromString(criteria.getValue());
+                    List<UUID> historyIdList = Collections.singletonList(historyIds);
                     query.setHistoryId(historyIdList);
                     break;
-                }
                 case DATE:
                     query.setDate(Instant.parse(criteria.getValue()));
                     break;
@@ -94,6 +90,8 @@ public class AssetQueryMapper {
                 case MAX_POWER:
                     query.setMaxPower(Double.valueOf(criteria.getValue()));
                     break;
+                default:
+                    throw new RuntimeException("Unknown ConfigSearchField. Key = [" + key + "] Value: [" + criteria.getValue() + "]");
             }
         }
         return query;
@@ -131,7 +129,8 @@ public class AssetQueryMapper {
             if(dto.getLicenceType() != null) asset.setLicenseType(dto.getLicenceType());
             if(dto.getPortOfRegistration() != null) asset.setHomePort(dto.getPortOfRegistration());
             if(dto.getLengthOverAll() != null) asset.setLengthOverAll(BigDecimal.valueOf(dto.getLengthOverAll()));
-            if(dto.getLengthBetweenPerpendiculars() != null) asset.setLengthBetweenPerpendiculars(BigDecimal.valueOf(dto.getLengthBetweenPerpendiculars()));
+            if(dto.getLengthBetweenPerpendiculars() != null)
+                asset.setLengthBetweenPerpendiculars(BigDecimal.valueOf(dto.getLengthBetweenPerpendiculars()));
             if(dto.getGrossTonnage() != null) asset.setGrossTonnage(BigDecimal.valueOf(dto.getGrossTonnage()));
             if(dto.getGrossTonnageUnit() != null) asset.setGrossTonnageUnit(dto.getGrossTonnageUnit());
             if(dto.getOtherTonnage() != null) asset.setOtherGrossTonnage(BigDecimal.valueOf(dto.getOtherTonnage()));

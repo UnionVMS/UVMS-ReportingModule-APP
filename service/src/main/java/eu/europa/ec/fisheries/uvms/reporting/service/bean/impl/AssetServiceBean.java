@@ -11,12 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
-import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.AssetClient;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
@@ -27,7 +25,6 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
-import javax.jms.TextMessage;
 import java.util.*;
 
 @LocalBean
@@ -51,10 +48,11 @@ public class AssetServiceBean {
             assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
             assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
         }
-        if (processor.hasAssetGroups()) {
 
+        if (processor.hasAssetGroups()) {
             Set<AssetGroup> assetGroups = processor.getAssetGroupList();
             List<UUID> idList = AssetQueryMapper.getGroupListIds(assetGroups);
+
             List<AssetDTO> assetDTOList = assetClient.getAssetsByGroupIds(idList);
             assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
             assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
@@ -67,10 +65,4 @@ public class AssetServiceBean {
         List<AssetDTO> list = assetClient.getAssetList(query);
         return AssetQueryMapper.dtoListToAssetList(list);
     }
-
-    // UT
-    public List<Asset> getAssets(String moduleMessage, TextMessage response) throws AssetModelMapperException {
-        return ExtAssetMessageMapper.mapToAssetListFromResponse(response, moduleMessage);
-    }
-
 }
