@@ -14,6 +14,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Arrays;
@@ -55,16 +56,9 @@ public class AssetClient {
     }
 
     public List<AssetDTO> getAssetsByGroupIds(List<UUID> idList) {
-        String response = webTarget
+        return webTarget
                 .path("group/asset")
-                .queryParam("ids", idList)
                 .request(MediaType.APPLICATION_JSON)
-                .get(String.class);
-        try {
-            return Arrays.asList(mapper.readValue(response, AssetDTO[].class));
-        } catch (IOException e) {
-            log.error("Error when retrieving List<AssetDTO>.", e);
-            throw new RuntimeException(e);
-        }
+                .post(Entity.json(idList), new GenericType<List<AssetDTO>>(){});
     }
 }
