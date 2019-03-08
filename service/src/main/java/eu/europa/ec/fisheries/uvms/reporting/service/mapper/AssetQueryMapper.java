@@ -14,7 +14,6 @@ public class AssetQueryMapper {
 
     public static AssetQuery assetListQueryToAssetQuery(AssetListQuery assetListQuery) {
         AssetQuery query = new AssetQuery();
-        instantiateAllCollections(query);
 
         List<AssetListCriteriaPair> criteriaPairs = assetListQuery.getAssetSearchCriteria().getCriterias();
 
@@ -23,28 +22,44 @@ public class AssetQueryMapper {
 
             switch (key) {
                 case FLAG_STATE:
+                    if(query.getFlagState() == null)
+                        query.setFlagState(new ArrayList<>());
                     query.getFlagState().add(criteria.getValue());
                     break;
                 case EXTERNAL_MARKING:
+                    if(query.getExternalMarking() == null)
+                        query.setExternalMarking(new ArrayList<>());
                     query.getExternalMarking().add(criteria.getValue());
                     break;
                 case NAME:
+                    if(query.getName() == null)
+                        query.setName(new ArrayList<>());
                     query.getName().add(criteria.getValue());
                     break;
                 case IRCS:
+                    if(query.getIrcs() == null)
+                        query.setIrcs(new ArrayList<>());
                     query.getIrcs().add(criteria.getValue());
                     break;
                 case CFR:
+                    if(query.getCfr() == null)
+                        query.setCfr(new ArrayList<>());
                     query.getCfr().add(criteria.getValue());
                     break;
                 case MMSI:
+                    if(query.getMmsi() == null)
+                        query.setMmsi(new ArrayList<>());
                     query.getMmsi().add(criteria.getValue());
                     break;
                 case GUID:
+                    if(query.getId() == null)
+                        query.setId(new ArrayList<>());
                     UUID uuid = UUID.fromString(criteria.getValue());
                     query.getId().add(uuid);
                     break;
                 case HIST_GUID:
+                    if(query.getHistoryId() == null)
+                        query.setHistoryId(new ArrayList<>());
                     UUID historyId = UUID.fromString(criteria.getValue());
                     query.getHistoryId().add(historyId);
                     break;
@@ -52,26 +67,40 @@ public class AssetQueryMapper {
                     query.setDate(Instant.parse(criteria.getValue()));
                     break;
                 case ICCAT:
+                    if(query.getIccat() == null)
+                        query.setIccat(new ArrayList<>());
                     query.getIccat().add(criteria.getValue());
                     break;
                 case UVI:
+                    if(query.getUvi() == null)
+                        query.setUvi(new ArrayList<>());
                     query.getUvi().add(criteria.getValue());
                     break;
                 case GFCM:
+                    if(query.getGfcm() == null)
+                        query.setGfcm(new ArrayList<>());
                     query.getGfcm().add(criteria.getValue());
                     break;
                 case HOMEPORT:
+                    if(query.getPortOfRegistration() == null)
+                        query.setPortOfRegistration(new ArrayList<>());
                     query.getPortOfRegistration().add(criteria.getValue());
                     break;
                 case ASSET_TYPE: // No counterpart in AssetQuery
                     break;
                 case LICENSE_TYPE:
+                    if(query.getLicenseType() == null)
+                        query.setLicenseType(new ArrayList<>());
                     query.getLicenseType().add(criteria.getValue());
                     break;
                 case PRODUCER_NAME:
+                    if(query.getProducerName() == null)
+                        query.setProducerName(new ArrayList<>());
                     query.getProducerName().add(criteria.getValue());
                     break;
                 case IMO:
+                    if(query.getImo() == null)
+                        query.setImo(new ArrayList<>());
                     query.getImo().add(criteria.getValue());
                     break;
                 case GEAR_TYPE:
@@ -171,23 +200,5 @@ public class AssetQueryMapper {
             map.put(asset.getEventHistory().getEventId(), asset);
         }
         return map;
-    }
-
-    private static void instantiateAllCollections(AssetQuery query) {
-        query.setId(new ArrayList<>());
-        query.setHistoryId(new ArrayList<>());
-        query.setCfr(new ArrayList<>());
-        query.setIrcs(new ArrayList<>());
-        query.setMmsi(new ArrayList<>());
-        query.setImo(new ArrayList<>());
-        query.setIccat(new ArrayList<>());
-        query.setUvi(new ArrayList<>());
-        query.setGfcm(new ArrayList<>());
-        query.setName(new ArrayList<>());
-        query.setFlagState(new ArrayList<>());
-        query.setExternalMarking(new ArrayList<>());
-        query.setPortOfRegistration(new ArrayList<>());
-        query.setLicenseType(new ArrayList<>());
-        query.setProducerName(new ArrayList<>());
     }
 }

@@ -14,7 +14,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Arrays;
@@ -41,8 +40,7 @@ public class AssetClient {
 
     public List<AssetDTO> getAssetList(AssetQuery query) {
         String response = webTarget
-                .path("internal/")
-                .path("query")
+                .path("/internal/query")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(query), String.class);
 
@@ -56,9 +54,16 @@ public class AssetClient {
     }
 
     public List<AssetDTO> getAssetsByGroupIds(List<UUID> idList) {
-        return webTarget
-                .path("group/asset")
+        String response = webTarget
+                .path("/internal/group/asset")
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(idList), new GenericType<List<AssetDTO>>(){});
+                .post(Entity.json(idList), String.class);
+
+        try {
+            return Arrays.asList(mapper.readValue(response, AssetDTO[].class));
+        } catch (IOException e) {
+            log.error("Error when retrieving List<AssetDTO>.", e);
+            throw new RuntimeException(e);
+        }
     }
 }
