@@ -184,12 +184,7 @@ public class AssetQueryMapper {
     public static List<UUID> getGroupListIds(Set<AssetGroup> assetGroupList) {
         List<UUID> uuidList = new ArrayList<>();
         for(AssetGroup ag : assetGroupList) {
-            List<AssetGroupSearchField> searchFields = ag.getSearchFields();
-            for(AssetGroupSearchField field : searchFields) {
-                if(field.getKey().equals(ConfigSearchField.GUID)) {
-                    uuidList.add(UUID.fromString(field.getValue()));
-                }
-            }
+            uuidList.add(UUID.fromString(ag.getGuid()));
         }
         return uuidList;
     }
