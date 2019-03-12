@@ -76,7 +76,7 @@ public class AlarmServiceBean {
         return geoJsonBuilder.toJson();
     }
 
-    private List<Asset> getAssets(List<TicketAndRuleType> ticketAndRules) throws ReportingServiceException {
+    private List<Asset> getAssets(List<TicketAndRuleType> ticketAndRules) {
         return assetService.getAssets(AlarmHelper.getAssetListQuery(ticketAndRules));
     }
 
