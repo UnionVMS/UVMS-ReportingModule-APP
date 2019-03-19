@@ -8,16 +8,23 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+package eu.europa.ec.fisheries.uvms.reporting.message.exception;
 
+/**
+ * Created by padhyad on 3/18/2016.
+ */
+public class ReportingModelException extends Exception {
+    private static final long serialVersionUID = 7582161942682172612L;
 
-package eu.europa.ec.fisheries.uvms.reporting.service.bean;
+    public ReportingModelException(String message) {
+        super(message);
+    }
 
-import eu.europa.ec.fisheries.schema.movementrules.ticketrule.v1.TicketAndRuleType;
-import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
+    public ReportingModelException(Throwable cause) {
+        super(cause);
+    }
 
-import java.util.List;
-
-public interface RulesEventService {
-
-    List<TicketAndRuleType> GetAlarmsForMovements(List<String> movementId) throws ReportingServiceException;
+    public ReportingModelException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

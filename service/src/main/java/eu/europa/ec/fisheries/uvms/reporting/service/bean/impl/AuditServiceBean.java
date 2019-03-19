@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
@@ -18,8 +17,8 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingServiceConstants;
 import javax.annotation.PostConstruct;

@@ -31,9 +31,9 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ActivityModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
 import lombok.extern.slf4j.Slf4j;
 

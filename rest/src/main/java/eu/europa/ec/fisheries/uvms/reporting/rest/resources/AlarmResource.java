@@ -9,11 +9,10 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AlarmServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.rules.AlarmMovementList;
 import javax.ejb.EJB;

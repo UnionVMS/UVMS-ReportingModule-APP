@@ -9,16 +9,15 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.uvms.reporting.message.bean.ReportingMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndDateEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
-import eu.europa.ec.fisheries.uvms.reporting.model.mappper.ReportingModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRQ;
-import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ReportingModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.model.ReportGetStartAndEndDateRQ;
+import eu.europa.ec.fisheries.uvms.reporting.message.model.ReportGetStartAndEndDateRS;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportEventService;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

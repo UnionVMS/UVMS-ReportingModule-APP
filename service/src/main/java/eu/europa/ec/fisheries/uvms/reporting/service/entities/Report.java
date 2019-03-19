@@ -38,7 +38,7 @@ import java.util.Set;
 
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.domain.BaseEntity;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.CharBooleanConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;

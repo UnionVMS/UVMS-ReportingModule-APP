@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.service.AssetClient;
+import eu.europa.ec.fisheries.uvms.reporting.service.AssetClientBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
@@ -32,7 +32,7 @@ import java.util.*;
 public class AssetServiceBean {
 
     @EJB
-    private AssetClient assetClient;
+    private AssetClientBean assetClient;
 
     @Interceptors(SimpleTracingInterceptor.class)
     public Map<String, Asset> getAssetMap(final FilterProcessor processor) {

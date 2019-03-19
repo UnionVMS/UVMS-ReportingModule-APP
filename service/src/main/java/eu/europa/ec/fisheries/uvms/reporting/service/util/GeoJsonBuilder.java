@@ -17,10 +17,11 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
+
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;

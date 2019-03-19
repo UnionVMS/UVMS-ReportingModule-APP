@@ -9,12 +9,11 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.rest.utils;
 
 import eu.europa.ec.fisheries.uvms.commons.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.interceptor.AroundInvoke;
@@ -26,7 +25,7 @@ import javax.interceptor.InvocationContext;
 public class ReportingExceptionInterceptor extends UnionVMSResource {
 
     @AroundInvoke
-    public Object createResponse(final InvocationContext ic) throws Exception {
+    public Object createResponse(final InvocationContext ic) {
         log.info("ExceptionInterceptor received");
         try {
             return ic.proceed();
@@ -36,10 +35,10 @@ public class ReportingExceptionInterceptor extends UnionVMSResource {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             if (e.getCause() instanceof ReportingServiceException) {
-                return createErrorResponse(((ReportingServiceException)e.getCause()).getMessage());
+                return createErrorResponse(e.getCause().getMessage());
             }
             if (e.getCause() instanceof RuntimeException) {
-                return createErrorResponse(((RuntimeException)e.getCause()).getMessage());
+                return createErrorResponse(e.getCause().getMessage());
             }
             return createErrorResponse(ErrorCodes.INTERNAL_SERVER_ERROR);
         }

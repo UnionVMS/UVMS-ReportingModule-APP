@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import javax.jms.TextMessage;
@@ -21,7 +20,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.domain.DateRange;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ActivityServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AssetServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.MovementServiceBean;

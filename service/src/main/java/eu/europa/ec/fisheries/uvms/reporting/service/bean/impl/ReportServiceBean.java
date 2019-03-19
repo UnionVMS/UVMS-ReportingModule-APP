@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -19,8 +18,8 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.IAuditInterceptor;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRS;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.message.model.ReportGetStartAndEndDateRS;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;

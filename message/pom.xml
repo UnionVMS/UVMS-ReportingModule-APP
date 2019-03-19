@@ -52,11 +52,6 @@
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-message</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>reporting-model</artifactId>
-        </dependency>
         
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>

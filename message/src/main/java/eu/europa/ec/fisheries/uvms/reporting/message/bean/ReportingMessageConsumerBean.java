@@ -9,19 +9,20 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.GetReportStartAndEndDateEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.mappper.ReportingModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportGetStartAndEndDateRQ;
-import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleMethod;
-import eu.europa.ec.fisheries.uvms.reporting.model.schemas.ReportingModuleRequest;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingModelException;
+import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ReportingModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.reporting.message.model.ReportGetStartAndEndDateRQ;
+import eu.europa.ec.fisheries.uvms.reporting.message.model.ReportingModuleMethod;
+import eu.europa.ec.fisheries.uvms.reporting.message.model.ReportingModuleRequest;
+import eu.europa.ec.fisheries.uvms.reporting.message.util.JAXBMarshaller;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.TransactionAttribute;
@@ -31,7 +32,6 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import lombok.extern.slf4j.Slf4j;
 
 @MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_SPATIAL, activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReportingMessageConsumerBean implements MessageListener {
 
-    private static int REPORTING_MESSAGE = 1700;
+    private static final int REPORTING_MESSAGE = 1700;
 
     @Inject
     @GetReportStartAndEndDateEvent

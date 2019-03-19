@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import static org.junit.Assert.assertNull;
 
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AuditServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
 import org.junit.Before;
@@ -23,7 +24,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuditServiceBeanTest {
@@ -48,7 +48,5 @@ public class AuditServiceBeanTest {
 		} catch (ReportingServiceException e) {
 			assertNull(e);
 		}
-		
 	}
-
 }

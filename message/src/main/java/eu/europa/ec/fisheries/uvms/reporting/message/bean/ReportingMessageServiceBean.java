@@ -9,7 +9,6 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
@@ -17,14 +16,15 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingModelException;
+import eu.europa.ec.fisheries.uvms.reporting.message.util.JAXBMarshaller;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
-import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @LocalBean

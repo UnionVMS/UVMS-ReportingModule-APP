@@ -51,7 +51,7 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.rest.constants.ErrorCodes;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.message.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportServiceBean;
@@ -141,8 +141,7 @@ public class ReportingResource extends UnionVMSResource {
 	}
 
 	private Collection<ReportDTO> listReportByUsernameAndScope(HttpServletRequest request, String scopeName,
-			String roleName, String existent, Integer numberOfReport)
-			throws ServiceException, ReportingServiceException {
+			String roleName, String existent, Integer numberOfReport) throws ServiceException, ReportingServiceException {
 		final String username = request.getRemoteUser();
 		log.debug("{} is requesting listReports(...), with a scopeName={}", username, scopeName);
 		Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
