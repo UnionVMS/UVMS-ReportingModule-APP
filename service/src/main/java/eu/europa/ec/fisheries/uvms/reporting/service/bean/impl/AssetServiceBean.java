@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.service.AssetClient;
+import eu.europa.ec.fisheries.uvms.reporting.service.AssetRestClient;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
@@ -32,7 +32,7 @@ import java.util.*;
 public class AssetServiceBean {
 
     @EJB
-    private AssetClient assetClient;
+    private AssetRestClient assetRestClient;
 
     @Interceptors(SimpleTracingInterceptor.class)
     public Map<String, Asset> getAssetMap(final FilterProcessor processor) {
@@ -44,7 +44,7 @@ public class AssetServiceBean {
             AssetListQuery assetListQuery = processor.toAssetListQuery();
             AssetQuery query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
 
-            List<AssetDTO> assetDTOList = assetClient.getAssetList(query);
+            List<AssetDTO> assetDTOList = assetRestClient.getAssetList(query);
             assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
             assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
         }
@@ -53,7 +53,7 @@ public class AssetServiceBean {
             Set<AssetGroup> assetGroups = processor.getAssetGroupList();
             List<UUID> idList = AssetQueryMapper.getGroupListIds(assetGroups);
 
-            List<AssetDTO> assetDTOList = assetClient.getAssetsByGroupIds(idList);
+            List<AssetDTO> assetDTOList = assetRestClient.getAssetsByGroupIds(idList);
             assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
             assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
         }
@@ -62,7 +62,7 @@ public class AssetServiceBean {
 
     public List<Asset> getAssets(AssetListQuery assetListQuery) {
         AssetQuery query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
-        List<AssetDTO> list = assetClient.getAssetList(query);
+        List<AssetDTO> list = assetRestClient.getAssetList(query);
         return AssetQueryMapper.dtoListToAssetList(list);
     }
 }
