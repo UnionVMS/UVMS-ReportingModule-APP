@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Stateless
 @Slf4j
-public class AssetClient {
+public class AssetRestClient {
 
     private WebTarget webTarget;
     private ObjectMapper mapper = new ObjectMapper()
