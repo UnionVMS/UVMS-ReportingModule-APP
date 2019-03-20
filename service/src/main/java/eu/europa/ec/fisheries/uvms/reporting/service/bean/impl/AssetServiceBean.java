@@ -12,29 +12,45 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetListResponse;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
-import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
-import eu.europa.ec.fisheries.uvms.reporting.service.AssetClient;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-
-import javax.ejb.EJB;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.interceptor.Interceptors;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.*;
 
 @LocalBean
 @Stateless
 public class AssetServiceBean {
 
-    @EJB
-    private AssetClient assetClient;
+    private WebTarget webTarget;
+    private ObjectMapper mapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .findAndRegisterModules();
 
-    @Interceptors(SimpleTracingInterceptor.class)
+    @Resource(name = "java:global/asset_endpoint")
+    private String assetUrl;
+
+    @PostConstruct
+    private void setUpClient() {
+        Client client = ClientBuilder.newClient();
+        webTarget = client.target(assetUrl);
+    }
+
     public Map<String, Asset> getAssetMap(final FilterProcessor processor) {
 
         Map<String, Asset> assetMap = new HashMap<>();
@@ -44,7 +60,7 @@ public class AssetServiceBean {
             AssetListQuery assetListQuery = processor.toAssetListQuery();
             AssetQuery query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
 
-            List<AssetDTO> assetDTOList = assetClient.getAssetList(query);
+            List<AssetDTO> assetDTOList = getAssetList(query);
             assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
             assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
         }
@@ -53,7 +69,7 @@ public class AssetServiceBean {
             Set<AssetGroup> assetGroups = processor.getAssetGroupList();
             List<UUID> idList = AssetQueryMapper.getGroupListIds(assetGroups);
 
-            List<AssetDTO> assetDTOList = assetClient.getAssetsByGroupIds(idList);
+            List<AssetDTO> assetDTOList = getAssetsByGroupIds(idList);
             assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
             assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
         }
@@ -62,7 +78,34 @@ public class AssetServiceBean {
 
     public List<Asset> getAssets(AssetListQuery assetListQuery) {
         AssetQuery query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
-        List<AssetDTO> list = assetClient.getAssetList(query);
+        List<AssetDTO> list = getAssetList(query);
         return AssetQueryMapper.dtoListToAssetList(list);
+    }
+
+    private List<AssetDTO> getAssetList(AssetQuery query) {
+        String response = webTarget
+                .path("/internal/query")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(query), String.class);
+
+        try {
+            AssetListResponse assetListResponse = mapper.readValue(response, AssetListResponse.class);
+            return assetListResponse.getAssetList();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error when retrieving GetMovementMapByQueryResponse.", e);
+        }
+    }
+
+    private List<AssetDTO> getAssetsByGroupIds(List<UUID> idList) {
+        String response = webTarget
+                .path("/internal/group/asset")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(idList), String.class);
+
+        try {
+            return Arrays.asList(mapper.readValue(response, AssetDTO[].class));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error when retrieving List<AssetDTO>.", e);
+        }
     }
 }
