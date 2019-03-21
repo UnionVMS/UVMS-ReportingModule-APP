@@ -10,8 +10,8 @@
         <version>1.1.9-UVMS-SNAPSHOT</version>
     </parent>
 
-    <artifactId>model</artifactId>
     <name>${project.parent.artifactId}-model</name>
+    <artifactId>reporting-model</artifactId>
     <packaging>ejb</packaging>
 
     <properties>

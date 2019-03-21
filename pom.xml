@@ -136,13 +136,13 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>service</artifactId>
+                <artifactId>${project.artifactId}-service</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>message</artifactId>
+                <artifactId>${project.artifactId}-message</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
 
