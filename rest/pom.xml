@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>rest</artifactId>
-    <name>${project.parent.artifactId}-rest</name>
-    <packaging>war</packaging>
 
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
         <artifactId>reporting</artifactId>
         <version>1.1.9-UVMS-SNAPSHOT</version>
     </parent>
+
+    <artifactId>${project.parent.artifactId}-rest</artifactId>
+    <name>${project.parent.artifactId}-rest</name>
+    <packaging>war</packaging>
 
     <dependencies>
 
@@ -26,25 +27,6 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
-            <version>${usm4uvms.version}</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>eu.europa.ec.fisheries.uvms</groupId>
-    				<artifactId>uvms-commons</artifactId>
-            	</exclusion>
-				<exclusion>
-					<groupId>org.jboss.resteasy</groupId>
-					<artifactId>resteasy-jaxrs</artifactId>
-				</exclusion>
-				<exclusion>
-				  <groupId>com.fasterxml.jackson.core</groupId>
-  				  <artifactId>jackson-databind</artifactId>				
-				</exclusion>
-				<exclusion>
-				    <groupId>net.sf.ehcache</groupId>
-  					<artifactId>ehcache</artifactId>				
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>net.sf.ehcache.internal</groupId>
@@ -123,14 +105,14 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>reporting-model</artifactId>
-            <scope>provided</scope>
+            <artifactId>${project.parent.artifactId}-model</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>service</artifactId>
-            <scope>provided</scope>
+            <artifactId>${project.parent.artifactId}-service</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -229,7 +211,8 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>message</artifactId>
+            <artifactId>${project.parent.artifactId}-message</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

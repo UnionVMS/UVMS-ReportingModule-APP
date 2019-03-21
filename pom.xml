@@ -43,7 +43,6 @@
         <usm4uvms.version>4.0.12</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-		<reporting.model.version>1.0.4</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>1.0.9</activity.model.version>
 
@@ -80,6 +79,30 @@
 			</dependency>
 
             <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                <artifactId>usm4uvms</artifactId>
+                <version>${usm4uvms.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                        <artifactId>uvms-commons</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.resteasy</groupId>
+                        <artifactId>resteasy-jaxrs</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.sf.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
                 <artifactId>activity-model</artifactId>
                 <version>${activity.model.version}</version>
@@ -113,19 +136,13 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>service</artifactId>
+                <artifactId>${project.artifactId}-service</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>reporting-model</artifactId>
-                <version>${reporting.model.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>message</artifactId>
+                <artifactId>${project.artifactId}-message</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
 
@@ -469,6 +486,7 @@
     </build>
 
     <modules>
+        <module>model</module>
         <module>rest</module>
         <module>service</module>
         <module>message</module>
