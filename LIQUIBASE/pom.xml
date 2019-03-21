@@ -71,7 +71,17 @@
                 <db.defaultSchema>reporting</db.defaultSchema>
                 <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
                 <db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+                <driver.groupId>org.postgresql</driver.groupId>
+                <driver.artifactId>postgresql</driver.artifactId>
+                <driver.version>9.4-1201-jdbc41</driver.version>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>${driver.groupId}</groupId>
+                    <artifactId>${driver.artifactId}</artifactId>
+                    <version>${driver.version}</version>
+                </dependency>
+            </dependencies>
         </profile>
         
         <profile>
@@ -83,6 +93,64 @@
             	<db.contexts>prod,test</db.contexts>
             	<db.dropFirst>true</db.dropFirst>
             	<db.verbose>true</db.verbose>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>publish-sql</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.5.3</version>
+                        <configuration>
+                            <url>${db.docker.url}</url>
+                            <migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
+                            <outputFileEncoding>UTF-8</outputFileEncoding>
+                            <changeLogFile>${db.changeLogFile}</changeLogFile>
+                            <driver>${db.driver}</driver>
+                            <username>${db.user}</username>
+                            <password>${db.passwd}</password>
+                            <defaultSchemaName>${db.defaultSchema}</defaultSchemaName>
+                            <outputChangeLogFile>${db.outputFile}</outputChangeLogFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>update-schema-sql</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>updateSQL</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/full-update.sql</file>
+                                            <type>sql</type>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <db.docker.url>offline:postgresql?changeLogFile=target/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
             </properties>
         </profile>
 
