@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+    <changeSet author="emrinalgr" id="bd0d4195-95e2-49b5-8a97-09d361760c2f">
+
+        <addColumn schemaName="reporting" tableName="filter">
+            <column name="order_seq" type="INT"/>
+            <column name="cri_type" type="TEXT"/>
+            <column name="cri_value" type="TEXT"/>
+       </addColumn>
+
+    </changeSet>
+    
+</databaseChangeLog>

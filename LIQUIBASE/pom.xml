@@ -1,0 +1,190 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
+        <artifactId>reporting</artifactId>
+        <version>1.1.9-UVMS-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>${project.parent.artifactId}-liquibase</artifactId>
+    <name>${project.parent.artifactId}-liquibase</name>
+    <packaging>war</packaging>
+
+    <properties>
+        <liquibase.core.version>3.5.1</liquibase.core.version>
+        <postgresql.version>9.4-1201-jdbc41</postgresql.version>
+        <ojdbc6.version>11.2.0.3</ojdbc6.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>${ojdbc6.version}</version>
+        </dependency>
+
+    </dependencies>
+	
+
+    <profiles>
+
+        <profile>
+            <id>oracle</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <db.driver>oracle.jdbc.driver.OracleDriver</db.driver>
+                <db.url>jdbc:oracle:thin:@10.10.10.9:1521:db12102</db.url>
+                <db.user>REPORTING</db.user>
+                <db.passwd>REPORTING</db.passwd>
+                <db.defaultSchema>REPORTING</db.defaultSchema>
+                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
+                <db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>postgres</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.url>jdbc:postgresql://localhost:5432/db71u</db.url>
+                <db.user>reporting</db.user>
+                <db.passwd>reporting</db.passwd>
+                <db.defaultSchema>reporting</db.defaultSchema>
+                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
+                <db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+                <driver.groupId>org.postgresql</driver.groupId>
+                <driver.artifactId>postgresql</driver.artifactId>
+                <driver.version>9.4-1201-jdbc41</driver.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>${driver.groupId}</groupId>
+                    <artifactId>${driver.artifactId}</artifactId>
+                    <version>${driver.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        
+        <profile>
+            <id>test</id>
+             <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+            	<db.contexts>prod,test</db.contexts>
+            	<db.dropFirst>true</db.dropFirst>
+            	<db.verbose>true</db.verbose>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>publish-sql</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.5.3</version>
+                        <configuration>
+                            <url>${db.docker.url}</url>
+                            <migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
+                            <outputFileEncoding>UTF-8</outputFileEncoding>
+                            <changeLogFile>${db.changeLogFile}</changeLogFile>
+                            <driver>${db.driver}</driver>
+                            <username>${db.user}</username>
+                            <password>${db.passwd}</password>
+                            <defaultSchemaName>${db.defaultSchema}</defaultSchemaName>
+                            <outputChangeLogFile>${db.outputFile}</outputChangeLogFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>update-schema-sql</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>updateSQL</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/full-update.sql</file>
+                                            <type>sql</type>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <db.docker.url>offline:postgresql?changeLogFile=target/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>exec</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <configuration>
+                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                            <changeLogFile>${db.changeLogFile}</changeLogFile>
+                            <driver>${db.driver}</driver>
+                            <url>${db.url}</url>
+                            <username>${db.user}</username>
+                            <password>${db.passwd}</password>
+                            <defaultSchemaName>${db.defaultSchema}</defaultSchemaName>
+                            <outputChangeLogFile>${db.outputFile}</outputChangeLogFile>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>update-schema</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>update</goal>
+                                    <goal>tag</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

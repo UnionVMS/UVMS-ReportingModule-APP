@@ -1,0 +1,19 @@
+## To clean and install database locally on postgres you can run:
+mvn clean liquibase:update -Ppostgres,exec
+
+## To clean and RE-install database locally on postgres you can run:
+mvn clean liquibase:update -Ppostgres,exec
+
+## Check status
+mvn clean liquibase:status -Ppostgres,exec
+
+
+mvn liquibase:generateChangeLog -Dliquibase.diffTypes=data diffChangeLog -Ppostgres,exec
+
+
+mvn clean liquibase:dropAll -Ppostgres,exec
+
+
+##to include the test data
+
+mvn clean liquibase:update -Plocal,test,exec

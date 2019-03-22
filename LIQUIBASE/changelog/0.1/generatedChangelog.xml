@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+
+    <changeSet author="emrinalgr" id="1439890745706-51">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="execution_log_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="emrinalgr" id="1439890745706-52">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="report_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="emrinalgr" id="1439890745706-53">
+        <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"
+                        sequenceName="filter_seq" startValue="1"/>
+    </changeSet>
+
+    <changeSet author="rinaldgr (generated)" id="1443778291188-4">
+        <createTable tableName="execution_log">
+            <column name="id" type="BIGINT" >
+                <constraints primaryKey="true" primaryKeyName="execution_log_pkey"/>
+            </column>
+            <column name="executed_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="executed_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+	
+	
+	
+    <changeSet author="rinaldgr (generated)" id="1443778291188-5">
+        <createTable tableName="filter">
+            <column name="filter_type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filter_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="filter_pkey"/>
+            </column>
+            <column name="guid" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="end_date" type="TIMESTAMP"/>
+            <column name="position" type="VARCHAR(255)"/>
+            <column name="selector" type="VARCHAR(255)"/>
+            <column name="value" type="FLOAT"/>
+            <column name="start_date" type="TIMESTAMP"/>
+            <column name="max_speed" type="FLOAT"/>
+            <column name="min_speed" type="FLOAT"/>
+            <column name="mov_type" type="VARCHAR(30)"/>
+            <column name="mov_activity" type="VARCHAR(30)"/>
+            <column name="mov_sources" type="VARCHAR(255)"/>
+            <column name="max_time" type="FLOAT"/>
+            <column name="min_time" type="FLOAT"/>
+            <column name="min_duration" type="FLOAT"/>
+            <column name="max_duration" type="FLOAT"/>
+			<column name="min_avg_speed" type="FLOAT"/>
+			<column name="max_avg_speed" type="FLOAT"/>
+			<column name="min_distance" type="FLOAT"/>
+			<column name="max_distance" type="FLOAT"/>
+			<column name="seg_category" type="VARCHAR(255)"/>
+            <column name="report_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+			<column name="area_type" type="VARCHAR(255)"/>
+            <column name="area_id" type="BIGINT"/>
+            <column name="report_types" type="CLOB"/>
+            <column name="activity_types" type="CLOB"/>
+            <column name="masters" type="CLOB"/>
+            <column name="species" type="CLOB"/>
+            <column name="ports" type="CLOB"/>
+            <column name="gears" type="CLOB"/>
+            <column name="weight_min" type="FLOAT"/>
+            <column name="weight_max" type="FLOAT"/>
+            <column name="weight_unit" type="VARCHAR(255)"/>
+
+        </createTable>
+    </changeSet>
+
+
+	
+    <changeSet author="rinaldgr (generated)" id="1443778291184-6">
+        <createTable tableName="report">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="report_pkey"/>
+            </column>
+            <column name="created_on" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="deleted_on" type="TIMESTAMP"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="is_deleted" type="VARCHAR(1)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="with_map" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+             <column name="scope_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="visibility" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+	
+
+	
+    <changeSet author="rinaldgr (generated)" id="1443778291188-7">
+        <addUniqueConstraint columnNames="report_id, executed_by" constraintName="uk_6cydkqytehkrquueneylekysg" tableName="execution_log"/>
+    </changeSet>
+    <changeSet author="rinaldgr (generated)" id="1443778291188-8">
+        <addForeignKeyConstraint baseColumnNames="report_id" baseTableName="filter" constraintName="fk_d1tg8005cg8eogehynb9v1w18" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="report"/>
+    </changeSet>
+    <changeSet author="rinaldgr (generated)" id="1443778291188-9">
+        <addForeignKeyConstraint baseColumnNames="report_id" baseTableName="execution_log" constraintName="fk_k4epdh9wpjr4fao3qh6ap0hpt" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="report"/>
+    </changeSet>
+
+    <changeSet author="dubduan" id="16834688168717" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="execution_log_seq"
+                tableName="execution_log"/>
+    </changeSet>
+
+    <changeSet author="dubduan" id="12884688168711" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="filter_id"
+                defaultValueSequenceNext="filter_seq"
+                tableName="filter"/>
+    </changeSet>
+
+    <changeSet author="dubduan" id="12882228169711" dbms="postgresql">
+        <addDefaultValue
+                columnDataType="BIGINT"
+                columnName="id"
+                defaultValueSequenceNext="report_seq"
+                tableName="report"/>
+    </changeSet>
+	
+	
+	<changeSet author="dubduan" id="14291890711706-31" dbms="oracle">
+	
+        <createProcedure>
+            CREATE OR REPLACE TRIGGER trg_filter
+            BEFORE INSERT
+            ON filter
+            FOR EACH ROW
+            DECLARE
+            BEGIN
+            SELECT filter_seq.NEXTVAL INTO :NEW.FILTER_ID FROM DUAL;
+            END trg_filter;
+        </createProcedure>			
+    </changeSet>
+	
+	
+	<changeSet author="dubduan" id="14291800791706-31" dbms="oracle">
+	
+        <createProcedure>
+            CREATE OR REPLACE TRIGGER trg_report
+            BEFORE INSERT
+            ON report
+            FOR EACH ROW
+            DECLARE
+            BEGIN
+            SELECT report_seq.NEXTVAL INTO :NEW.ID FROM DUAL;
+            END trg_report;
+        </createProcedure>			
+    </changeSet>	
+	
+	<changeSet author="dubduan" id="14231802791906-31" dbms="oracle">
+	
+        <createProcedure>
+            CREATE OR REPLACE TRIGGER trg_execution_log
+            BEFORE INSERT
+            ON execution_log
+            FOR EACH ROW
+            DECLARE
+            BEGIN
+            SELECT execution_log_seq.NEXTVAL INTO :NEW.ID FROM DUAL;
+            END trg_execution_log;
+        </createProcedure>			
+    </changeSet>	
+	
+	
+	<changeSet author="dubduan" id="1429112312d-31" dbms="postgresql">
+	
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION inc_filter_sq()
+            RETURNS "trigger" AS
+            $BODY$
+            BEGIN
+            New.id:=nextval('reporting.filter_seq');
+            Return NEW;
+            END;
+            $BODY$
+            LANGUAGE 'plpgsql' VOLATILE;
+
+
+            CREATE TRIGGER trg_filter
+            before insert on reporting.filter
+            for each row EXECUTE procedure inc_filter_sq()
+						
+<!--			CREATE TRIGGER trg_filter
+			before insert on filter
+			for each row
+			when(new.FILTER_ID is null)
+			begin
+				select filter_seq.nextval into :new.FILTER_ID from dual;
+			end;-->
+			
+        </createProcedure>			
+    </changeSet>
+	
+	
+	<changeSet author="dubduan" id="1rfe310791706-31" dbms="postgresql">
+	
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION inc_report_sq()
+            RETURNS "trigger" AS
+            $BODY$
+            BEGIN
+            New.id:=nextval('reporting.report_seq');
+            Return NEW;
+            END;
+            $BODY$
+            LANGUAGE 'plpgsql' VOLATILE;
+
+
+            CREATE TRIGGER trg_report
+            before insert on reporting.report
+            for each row EXECUTE procedure inc_report_sq()
+		
+		
+<!--			CREATE TRIGGER trg_report
+			before insert on report
+			for each row
+			when(new.ID is null)
+			begin
+				select report_seq.nextval into :new.ID from dual;
+			end;-->
+				
+        </createProcedure>			
+    </changeSet>	
+	
+	<changeSet author="dubduan" id="142318dfd1906-31" dbms="postgresql">
+	
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION inc_execution_log_sq()
+            RETURNS "trigger" AS
+            $BODY$
+            BEGIN
+            New.id:=nextval('reporting.execution_log_seq');
+            Return NEW;
+            END;
+            $BODY$
+            LANGUAGE 'plpgsql' VOLATILE;
+
+
+            CREATE TRIGGER trg_execution_log
+            before insert on reporting.execution_log
+            for each row EXECUTE procedure inc_execution_log_sq()
+
+<!--			CREATE TRIGGER trg_execution_log
+			before insert on execution_log
+			for each row
+			when(new.ID is null)
+			begin
+				select execution_log_seq.nextval into :new.ID from dual;
+			end;	-->
+        </createProcedure>			
+    </changeSet>	
+	
+	
+	
+</databaseChangeLog>
