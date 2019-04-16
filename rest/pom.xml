@@ -5,7 +5,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
         <artifactId>reporting</artifactId>
-        <version>1.1.10-UVMS</version>
+        <version>1.1.11-UVMS-SNAPSHOT</version>
     </parent>
 
     <artifactId>${project.parent.artifactId}-rest</artifactId>
