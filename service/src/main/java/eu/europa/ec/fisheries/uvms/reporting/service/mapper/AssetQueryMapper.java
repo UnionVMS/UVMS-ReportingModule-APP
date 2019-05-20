@@ -192,7 +192,7 @@ public class AssetQueryMapper {
     public static Map<String, Asset> assetListToAssetMap(List<Asset> assetList) {
         Map<String, Asset> map = new HashMap<>();
         for (Asset asset : assetList) {
-            map.put(asset.getEventHistory().getEventId(), asset);
+            map.put(asset.getAssetId().getGuid(), asset);
         }
         return map;
     }
