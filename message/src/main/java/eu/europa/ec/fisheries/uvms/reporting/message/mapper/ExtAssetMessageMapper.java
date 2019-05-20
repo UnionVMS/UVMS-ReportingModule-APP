@@ -63,7 +63,7 @@ public class ExtAssetMessageMapper {
         List<AssetListCriteriaPair> pairList = new ArrayList<>();
         for (String guid : guids) {
             AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-            criteriaPair.setKey(ConfigSearchField.HIST_GUID);
+            criteriaPair.setKey(ConfigSearchField.GUID);
             criteriaPair.setValue(guid);
             pairList.add(criteriaPair);
         }
