@@ -11,36 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL_PROPERTIES;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DISTANCE_UNIT;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SPEED_UNIT;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import javax.ejb.EJB;
-import javax.interceptor.Interceptors;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -49,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.FeatureToGeoJsonJacksonMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.rest.constants.ErrorCodes;
-import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
@@ -75,19 +44,32 @@ import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
-@Path("/report")
+import javax.ejb.EJB;
+import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.*;
+
 @Slf4j
+@Path("/report")
 @NoArgsConstructor
-public class ReportingResource extends UnionVMSResource {
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class ReportingResource {
 
 	private static final String DEFAULT_REPORT_ID = "DEFAULT_REPORT_ID";
 	private static final String USM_APPLICATION = "usmApplication";
-
-	@HeaderParam("authorization")
-    private String authorization;
 
     @HeaderParam("scopeName")
     private String scopeName;
@@ -109,35 +91,28 @@ public class ReportingResource extends UnionVMSResource {
 
 	private String applicationName;
 
-	/**
-	 * @responseMessage 200 Success
-	 * @responseMessage 500 Error
-	 * @summary Gets a list of reports
-	 */
 	@GET
 	@Path("/list")
-	@Produces(APPLICATION_JSON)
 	@Interceptors(ReportingExceptionInterceptor.class)
 	public Response listReports(@Context HttpServletRequest request, @HeaderParam("scopeName") String scopeName,
 			@HeaderParam("roleName") String roleName, @DefaultValue("Y") @QueryParam("existent") String existent)
 			throws ServiceException, ReportingServiceException {
 		Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(request, scopeName, roleName, existent, null);
-		return createSuccessResponse(reportDTOs);
+		return Response.ok(reportDTOs).build();
 	}
 
 	@GET
 	@Path("/list/lastexecuted/{numberOfReport}")
-	@Produces(APPLICATION_JSON)
 	@Interceptors(ReportingExceptionInterceptor.class)
 	public Response listLastExecutedReports(@PathParam("numberOfReport") Integer numberOfReport,
 			@DefaultValue("Y") @QueryParam("existent") String existent)
 			throws ServiceException, ReportingServiceException {
 		if (numberOfReport == null || numberOfReport == 0) {
-			return createErrorResponse("Number of last executed report cannot be null or 0");
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Number of last executed report cannot be null or 0").build();
 		}
 		Collection<ReportDTO> reportDTOs = listReportByUsernameAndScope(servletRequest, scopeName, roleName, existent,
 				numberOfReport);
-		return createSuccessResponse(reportDTOs);
+		return Response.ok(reportDTOs).build();
 	}
 
 	private Collection<ReportDTO> listReportByUsernameAndScope(HttpServletRequest request, String scopeName,
@@ -160,12 +135,7 @@ public class ReportingResource extends UnionVMSResource {
 		}
 	}
 
-	/**
-	 * lazy loading of the app name from the web.xml
-	 *
-	 * @param request
-	 * @return
-	 */
+	// lazy loading of the app name from the web.xml
 	private String getApplicationName(HttpServletRequest request) {
 		if (applicationName == null) {
 			applicationName = request.getServletContext().getInitParameter(USM_APPLICATION);
@@ -175,7 +145,6 @@ public class ReportingResource extends UnionVMSResource {
 
 	@GET
 	@Path("/{id}")
-	@Produces(APPLICATION_JSON)
 	public Response getReport(@Context HttpServletRequest request, @PathParam("id") Long id,
 			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
 
@@ -191,23 +160,18 @@ public class ReportingResource extends UnionVMSResource {
 			report = reportService.findById(features, id, username, scopeName, isAdmin, permittedServiceLayers);
 		} catch (Exception e) {
 			log.error("Failed to get report.", e);
-			return createErrorResponse();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
 		}
-
-		Response restResponse;
 
 		if (report != null) {
-			restResponse = createSuccessResponse(report);
+			return Response.ok(report).build();
 		} else {
-			restResponse = createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+			return Response.status(Response.Status.NOT_FOUND).build();
 		}
-
-		return restResponse;
 	}
 
 	@DELETE
 	@Path("/{id}")
-	@Produces(APPLICATION_JSON)
 	public Response deleteReport(@Context HttpServletRequest request, @PathParam("id") Long id,
 			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName) {
 
@@ -217,32 +181,32 @@ public class ReportingResource extends UnionVMSResource {
 		ReportDTO originalReport = null;
 		boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
-		Response response = createSuccessResponse();
+		Response response = Response.ok().build();
 		try {
 			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
 			originalReport = reportService.findById(features, id, username, scopeName, isAdmin, null);
 		} catch (Exception e) {
 			String errorMsg = "Failed to get report.";
 			log.error(errorMsg, e);
-			response = createErrorResponse(errorMsg);
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
 		}
 
 		if (originalReport == null) {
-            response = createScNotFoundErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+            response = Response.status(Response.Status.NOT_FOUND).build();
 		}
 
 		ReportFeatureEnum requiredFeature = AuthorizationCheckUtil.getRequiredFeatureToDeleteReport(originalReport,
 				username);
 
 		if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-			response = createScNotFoundErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+			response = Response.status(Response.Status.UNAUTHORIZED).entity(ErrorCodes.NOT_AUTHORIZED).build();
 		}
 
 		try {
 			reportService.delete(id, username, scopeName, isAdmin);
 		} catch (Exception exc) {
 			log.error("Report deletion failed.", exc);
-			response = createErrorResponse(ErrorCodes.DELETE_FAILED);
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ErrorCodes.DELETE_FAILED).build();
 		}
 
 		return response;
@@ -250,8 +214,6 @@ public class ReportingResource extends UnionVMSResource {
 
 	@PUT
 	@Path("/{id}")
-	@Produces(APPLICATION_JSON)
-	@Consumes(APPLICATION_JSON)
 	public Response updateReport(@Context HttpServletRequest request, ReportDTO report,
 			@DefaultValue("default") @QueryParam(value = "projection") String projection,
 			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
@@ -274,31 +236,29 @@ public class ReportingResource extends UnionVMSResource {
 					username);
 
 			if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-				result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+				result = Response.status(Response.Status.UNAUTHORIZED).entity(ErrorCodes.NOT_AUTHORIZED).build();
 			} else {
 				ReportDTO update = reportService.update(report, username, originalReport.getWithMap(),
 						originalReport.getMapConfiguration());
 				switch (Projection.valueOf(projection.toUpperCase())) {
 
 				case DETAILED:
-					result = createSuccessResponse(update);
+					result = Response.ok(update).build();
 					break;
 
 				default:
-					result = createSuccessResponse(update.getId());
+					result = Response.ok(update.getId()).build();
 				}
 			}
 
 		} catch (Exception exc) {
 			log.error("Update failed.", exc);
-			result = createErrorResponse(ErrorCodes.UPDATE_FAILED);
+			result = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ErrorCodes.UPDATE_FAILED).build();
 		}
 		return result;
 	}
 
 	@POST
-	@Produces(APPLICATION_JSON)
-	@Consumes(APPLICATION_JSON)
 	public Response createReport(@Context HttpServletRequest request, ReportDTO report,
 			@DefaultValue("default") @QueryParam(value = "projection") String projection,
 			@HeaderParam("scopeName") String scopeName) {
@@ -309,7 +269,7 @@ public class ReportingResource extends UnionVMSResource {
 				report.getId(), scopeName, report.getVisibility());
 
 		if (StringUtils.isBlank(scopeName)) {
-			result = createErrorResponse(ErrorCodes.USER_SCOPE_MISSING);
+			result = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ErrorCodes.USER_SCOPE_MISSING).build();
 		} else {
 			if (isScopeAllowed(report.getVisibility(), request)) {
 				report.setCreatedBy(username);
@@ -324,21 +284,21 @@ public class ReportingResource extends UnionVMSResource {
 						switch (Projection.valueOf(projection.toUpperCase())) {
 
 						case DETAILED:
-							result = createSuccessResponse(reportDTO);
+							result = Response.ok(reportDTO).build();
 							break;
 
 						default:
-							result = createSuccessResponse(reportDTO.getId());
+							result = Response.ok(reportDTO.getId()).build();
 						}
 					} catch (Exception e) {
 						log.error("createReport failed.", e);
-						result = createErrorResponse(ErrorCodes.CREATE_ENTITY_ERROR);
+						result = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ErrorCodes.CREATE_ENTITY_ERROR).build();
 					}
 				} else {
-					result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+					result = Response.status(Response.Status.UNAUTHORIZED).entity(ErrorCodes.NOT_AUTHORIZED).build();
 				}
 			} else {
-				result = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+				result = Response.status(Response.Status.UNAUTHORIZED).entity(ErrorCodes.NOT_AUTHORIZED).build();
 			}
 		}
 		return result;
@@ -364,16 +324,12 @@ public class ReportingResource extends UnionVMSResource {
 
 	@PUT
 	@Path("/share/{id}/{visibility}")
-	@Produces(APPLICATION_JSON)
-	@Consumes(APPLICATION_JSON)
 	public Response shareReport(@Context HttpServletRequest request, @PathParam("id") Long id,
 			@PathParam("visibility") String visibility, @HeaderParam("scopeName") String scopeName,
 			@HeaderParam("roleName") String roleName) {
 
 		String username = request.getRemoteUser();
 		VisibilityEnum newVisibility = VisibilityEnum.getByName(visibility);
-
-		boolean isAdmin;
 
 		log.debug("{} is requesting shareReport(...), with a ID={} with isShared={}", username, id, visibility);
 
@@ -393,45 +349,36 @@ public class ReportingResource extends UnionVMSResource {
 		Response restResponse;
 
 		if (requiredFeature != null && !request.isUserInRole(requiredFeature.toString())) {
-			restResponse = createErrorResponse(ErrorCodes.NOT_AUTHORIZED);
+			restResponse = Response.status(Response.Status.UNAUTHORIZED).entity(ErrorCodes.NOT_AUTHORIZED).build();
 		} else {
-
 			try {
 				Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName,
 						scopeName);
-				isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+				boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 
-				// it's just a visibility update, therefore the permitted service layers don't
-				// matter much and we pass null
+				// it's just a visibility update, therefore the permitted service layers don't matter much and we pass null
 				ReportDTO reportToUpdate = reportService.findById(features, id, username, scopeName, isAdmin, null);
 
 				if (reportToUpdate != null) {
 					reportToUpdate.setVisibility(newVisibility);
 
-					reportService.share(id, reportToUpdate.getCreatedBy(), reportToUpdate.getScopeName(), isAdmin,
-							newVisibility);
-
-					restResponse = createSuccessResponse(AuthorizationCheckUtil
-							.listAllowedVisibilityOptions(reportToUpdate.getCreatedBy(), username, features));
+					reportService.share(id, reportToUpdate.getCreatedBy(), reportToUpdate.getScopeName(), isAdmin, newVisibility);
+					List<VisibilityEnum> visibilityEnums =
+							AuthorizationCheckUtil.listAllowedVisibilityOptions(reportToUpdate.getCreatedBy(), username, features);
+					restResponse = Response.ok(visibilityEnums).build();
 				} else {
-					restResponse = createErrorResponse(ErrorCodes.ENTRY_NOT_FOUND);
+					restResponse = Response.status(Response.Status.UNAUTHORIZED).entity(ErrorCodes.ENTRY_NOT_FOUND).build();
 				}
 			} catch (Exception e) {
-
 				log.error("Sharing report failed.", e);
-
-				return createErrorResponse(e.getMessage());
-
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
 			}
 		}
-
 		return restResponse;
 	}
 
 	@POST
 	@Path("/execute/{id}")
-	@Produces(APPLICATION_JSON)
-	@Consumes(APPLICATION_JSON)
 	public Response runReport(@Context HttpServletRequest request, @PathParam("id") Long id,
 			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
 			DisplayFormat format) {
@@ -451,11 +398,11 @@ public class ReportingResource extends UnionVMSResource {
 					username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format);
 
 			ObjectNode rootNode = mapToGeoJson(reportExecutionByReportId);
-			return createSuccessResponse(rootNode);
+			return Response.ok(rootNode).build();
 
 		} catch (Exception e) {
 			log.error("Report execution failed.", e);
-			return createErrorResponse(e.getMessage());
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
 		}
 	}
 
@@ -489,8 +436,6 @@ public class ReportingResource extends UnionVMSResource {
 
 	@POST
 	@Path("/execute/")
-	@Produces(APPLICATION_JSON)
-	@Consumes(APPLICATION_JSON)
 	public Response runReport(Report report) {
 
 		String username = servletRequest.getRemoteUser();
@@ -522,11 +467,11 @@ public class ReportingResource extends UnionVMSResource {
 			ExecutionResultDTO resultDTO = reportExecutionService.getReportExecutionWithoutSave(report,
 					areaRestrictions, username, withActivity, displayFormat);
 			ObjectNode rootNode = mapToGeoJson(resultDTO);
-			return createSuccessResponse(rootNode);
+			return Response.ok(rootNode).build();
 
 		} catch (Exception e) {
 			log.error("Report execution failed.", e);
-			return createErrorResponse(e.getMessage());
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
 		}
 	}
 
@@ -552,48 +497,44 @@ public class ReportingResource extends UnionVMSResource {
 				}
 			}
 		}
-
 		return areaRestrictions;
 	}
 
 	@POST
 	@Path("/default/{id}")
-	@Produces(APPLICATION_JSON)
-	@Consumes(APPLICATION_JSON)
 	public Response defaultReport(@Context HttpServletRequest request, @PathParam("id") Long id,
 			@HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
 			Map<String, Object> payload) {
 
 		final String username = request.getRemoteUser();
 		final String appName = getApplicationName(request);
-		Boolean override = false;
+		boolean override = false;
 
 		if (payload != null) {
-			override = Boolean.valueOf(String.valueOf(payload.get("override")));
+			override = Boolean.parseBoolean(String.valueOf(payload.get("override")));
 		}
 
 		Response response;
-		try {
 
+		try {
 			String defaultId = usmService.getUserPreference(DEFAULT_REPORT_ID, username, appName, roleName, scopeName);
 			Set<String> features = usmService.getUserFeatures(username, getApplicationName(request), roleName, scopeName);
 			if (!StringUtils.isEmpty(defaultId) && !override) {
-				response = createErrorResponse("TRYING TO OVERRIDE ALREADY EXISTING VALUE");
+				response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("TRYING TO OVERRIDE ALREADY EXISTING VALUE").build();
 			} else {
 				boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 				ReportDTO byId = reportService.findById(features, id, username, scopeName, isAdmin, null);
 				if (byId == null){
-					response = createErrorResponse("TRYING TO SET UN-EXISTING REPORT AS DEFAULT");
+					response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("TRYING TO SET UN-EXISTING REPORT AS DEFAULT").build();
 				} else {
 					usmService.putUserPreference(DEFAULT_REPORT_ID, String.valueOf(id), appName, scopeName, roleName, username);
-					response = createSuccessResponse();
+					response = Response.ok().build();
 				}
 			}
 		} catch (ServiceException e) {
 			log.error("Default report saving failed.", e);
-			response = createErrorResponse(e.getMessage());
+			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
 		}
-
 		return response;
 	}
 }
