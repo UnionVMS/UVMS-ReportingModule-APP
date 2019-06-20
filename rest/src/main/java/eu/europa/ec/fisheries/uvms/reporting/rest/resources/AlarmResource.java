@@ -9,13 +9,15 @@ details. You should have received a copy of the GNU General Public License along
 
  */
 
-
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AlarmServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.rules.AlarmMovementList;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.exception.ExceptionUtils;
+
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -25,11 +27,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import lombok.extern.slf4j.Slf4j;
 
 @Path("/alarms")
 @Slf4j
-public class AlarmResource extends UnionVMSResource {
+public class AlarmResource {
 
     @EJB
     private AlarmServiceBean alarmService;
@@ -39,10 +40,11 @@ public class AlarmResource extends UnionVMSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getAlarms(AlarmMovementList alarmMovementList, @Context HttpServletRequest request) {
         try {
-            return createSuccessResponse(alarmService.getAlarmsForMovements(alarmMovementList, request.getRemoteUser()));
+            ObjectNode alarms = alarmService.getAlarmsForMovements(alarmMovementList, request.getRemoteUser());
+            return Response.ok(alarms).build();
         } catch (ReportingServiceException e) {
             log.error("Unable to get alarms.", e);
-            return createErrorResponse(e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
         }
     }
 }
