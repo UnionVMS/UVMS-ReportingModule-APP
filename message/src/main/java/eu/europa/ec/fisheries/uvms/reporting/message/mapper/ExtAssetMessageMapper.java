@@ -18,8 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
+import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
@@ -33,14 +32,14 @@ public class ExtAssetMessageMapper {
     private ExtAssetMessageMapper() {
     }
 
-    public static String mapToGetAssetListByQueryRequest(final AssetListQuery query) throws AssetModelMapperException {
+    public static String mapToGetAssetListByQueryRequest(final AssetListQuery query) throws AssetException {
         if (query == null) {
             throw new IllegalArgumentException("AssetListQuery can not be null.");
         }
         return AssetModuleRequestMapper.createAssetListModuleRequest(query);
     }
 
-    public static List<Asset> mapToAssetListFromResponse(final TextMessage textMessage, final String correlationId) throws AssetModelMapperException {
+    public static List<Asset> mapToAssetListFromResponse(final TextMessage textMessage, final String correlationId) throws AssetException {
         if (textMessage == null) {
             throw new IllegalArgumentException("TextMessage can not be null.");
         }
@@ -70,14 +69,14 @@ public class ExtAssetMessageMapper {
         return pairList;
     }
 
-    public static String createAssetListModuleRequest(AssetListQuery query) throws AssetModelMapperException {
+    public static String createAssetListModuleRequest(AssetListQuery query) throws AssetException {
         if (query == null) {
             throw new IllegalArgumentException("AssetListQuery can not be null.");
         }
         return AssetModuleRequestMapper.createAssetListModuleRequest(query);
     }
 
-    public static String createAssetListModuleRequest(Set<AssetGroup> assetGroup) throws AssetModelMapperException {
+    public static String createAssetListModuleRequest(Set<AssetGroup> assetGroup) throws AssetException {
         if (assetGroup == null) {
             throw new IllegalArgumentException("List<AssetGroup> can not be null.");
         }

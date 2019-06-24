@@ -12,8 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.bean;
 
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
@@ -21,9 +19,9 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelExcep
 import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
+import javax.jms.Destination;
+import javax.jms.JMSException;
 import lombok.extern.slf4j.Slf4j;
 
 @Stateless
@@ -31,16 +29,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReportingMessageServiceBean extends AbstractProducer {
 
-    public String getDestinationName() {
-        return MessageConstants.QUEUE_REPORTING_EVENT;
+    @Override
+    public Destination getDestination() {
+        return null;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent messageWrap) {
         try {
             String data = JAXBMarshaller.marshall(messageWrap.getFault());
             sendResponseMessageToSender(messageWrap.getMessage(), data);
-        } catch (MessageException | ReportingModelException e) {
+        } catch (JMSException | ReportingModelException e) {
             log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace(), e);
         }
     }

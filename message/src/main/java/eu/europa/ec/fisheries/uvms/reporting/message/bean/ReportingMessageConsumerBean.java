@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReportingMessageConsumerBean implements MessageListener {
 
-    private static int REPORTING_MESSAGE = 1700;
+    private static final int REPORTING_MESSAGE = 1700;
 
     @Inject
     @GetReportStartAndEndDateEvent
@@ -52,7 +52,6 @@ public class ReportingMessageConsumerBean implements MessageListener {
     private Event<ReportingMessageEvent> reportingErrorEvent;
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
         try {

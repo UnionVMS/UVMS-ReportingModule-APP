@@ -14,14 +14,29 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Queue;
 
 @Stateless
 @Local
 public class SpatialProducerBean extends AbstractProducer {
 
-	public String getDestinationName(){
-		return MessageConstants.QUEUE_MODULE_SPATIAL;
-	}
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_MODULE_SPATIAL)
+    private Queue destination;
+
+    @Override
+    public Destination getDestination() {
+        return destination;
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public String sendSynchronousModuleMessage(String message, Destination replyToQueue) throws JMSException {
+        return sendModuleMessage(message, replyToQueue);
+    }
 }

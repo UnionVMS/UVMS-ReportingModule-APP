@@ -63,9 +63,9 @@ public class AssetQueryMapper {
                     UUID historyId = UUID.fromString(criteria.getValue());
                     query.getHistoryId().add(historyId);
                     break;
-                case DATE:
-                    query.setDate(Instant.parse(criteria.getValue()));
-                    break;
+//                case DATE:
+//                    query.setDate(Instant.parse(criteria.getValue()));
+//                    break;
                 case ICCAT:
                     if(query.getIccat() == null)
                         query.setIccat(new ArrayList<>());
