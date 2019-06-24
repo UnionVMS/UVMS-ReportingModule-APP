@@ -14,20 +14,15 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
 import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingServiceConstants;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.jms.Destination;
-import javax.naming.InitialContext;
+import javax.jms.JMSException;
 import lombok.extern.slf4j.Slf4j;
 
 @Stateless
@@ -35,32 +30,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuditServiceBean implements AuditService {
 
-    private Destination auditResponse;
-	
 	@EJB
 	private transient AuditMessageServiceBean auditProducerBean;
 
-
-	@PostConstruct
-    public void init() {
-        InitialContext ctx;
-        try {
-            ctx = new InitialContext();
-        } catch (Exception e) {
-            log.error("Failed to get InitialContext", e);
-            throw new RuntimeException(e);
-        }
-        auditResponse = JMSUtils.lookupQueue(ctx, MessageConstants.QUEUE_AUDIT);
-    }	
-	
 	@Override
 	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
         log.debug("Audit report request received for type = {} ", auditActionEnum.getAuditType());
         try {
 			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
             log.trace("Sending JMS message to Audit {} ", msgToSend);
-            auditProducerBean.sendModuleMessage(msgToSend, auditResponse);
-        } catch (MessageException e) {
+            auditProducerBean.sendModuleMessage(msgToSend, null);
+        } catch (JMSException e) {
             log.error("Exception in Sending Message to Audit Queue", e);
             throw new ReportingServiceException(e);
 		} catch (AuditModelMarshallException e) {

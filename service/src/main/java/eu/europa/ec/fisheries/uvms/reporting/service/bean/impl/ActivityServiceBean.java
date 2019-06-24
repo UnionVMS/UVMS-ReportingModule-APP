@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.util.List;
 
@@ -29,7 +30,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ActivityModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
@@ -53,12 +53,12 @@ public class ActivityServiceBean implements ActivityService {
     public FishingTripResponse getFishingTrips(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException {
         try {
             String request = ActivityModuleRequestMapper.mapToActivityGetFishingTripRequest(listValueTypeFilters, singleValueTypeFilters);
-            String correlationId = activityModule.sendModuleMessage(request, reportingModule.getDestination());
+            String correlationId = activityModule.sendSynchronousModuleMessage(request, reportingModule.getDestination());
             TextMessage response = reportingModule.getMessage(correlationId, TextMessage.class);
             if (response != null) {
                 return ActivityModuleResponseMapper.mapToActivityFishingTripFromResponse(response, correlationId);
             }
-        } catch (MessageException | ActivityModelMapperException e) {
+        } catch (JMSException | ActivityModelMapperException e) {
             throw new ReportingServiceException(e.getMessage(), e);
         }
         return null;
@@ -71,12 +71,12 @@ public class ActivityServiceBean implements ActivityService {
         FACatchSummaryReportResponse result = null;
         try {
             String request = ActivityModuleRequestMapper.mapToFaCatchSummaryReportRequestRequest(listValueTypeFilters, singleValueTypeFilters, groupCriteriaList);
-            String correlationId = activityModule.sendModuleMessage(request, reportingModule.getDestination());
+            String correlationId = activityModule.sendSynchronousModuleMessage(request, reportingModule.getDestination());
             TextMessage response = reportingModule.getMessage(correlationId, TextMessage.class);
             if (response != null) {
                 result = ActivityModuleResponseMapper.mapToFaCatchSummaryResponseFromResponse(response, correlationId);
             }
-        } catch (MessageException | ActivityModelMapperException e) {
+        } catch (JMSException | ActivityModelMapperException e) {
             throw new ReportingServiceException(e.getMessage(), e);
         }
         return result;

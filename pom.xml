@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fish.focus.uvms.maven</groupId>
 		<artifactId>uvms-pom</artifactId>
-		<version>1.18</version>
+		<version>1.24</version>
 	</parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
@@ -27,20 +27,20 @@
         <mapstruct.version>1.1.0.Final</mapstruct.version>
         <jackson.version>2.9.6</jackson.version>
         <logback.core.version>1.2.3</logback.core.version>
-        <asset.model.version>4.0.17</asset.model.version>
-        <asset.client.version>6.0.37</asset.client.version>
-        <audit.model.version>4.0.5</audit.model.version>
-        <movement.model.version>4.0.8</movement.model.version>
-        <spatial.model.version>1.0.7</spatial.model.version>
+        <asset.model.version>6.0.55</asset.model.version>
+        <asset.client.version>6.0.55</asset.client.version>
+        <audit.model.version>4.0.16</audit.model.version>
+        <movement.model.version>5.2.14-UVMS</movement.model.version>
+        <spatial.model.version>1.0.12</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
         <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
         <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <uvms.commons.version>3.0.25</uvms.commons.version>
+        <uvms.commons.version>4.0.0</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>4.0.16</usm4uvms.version>
+        <usm4uvms.version>4.0.19</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <uvms.test.version>0.0.4</uvms.test.version>
@@ -74,7 +74,7 @@
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.18</version>
+				<version>1.24</version>
 				<type>pom</type>
 			</dependency>
 

@@ -13,14 +13,21 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
+import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
 @Stateless
 @Local
 public class ReportingModuleReceiverBean extends AbstractConsumer {
 
-	public String getDestinationName(){
-		return MessageConstants.QUEUE_REPORTING;
-	}
+    @Resource(mappedName = "java:/" + MessageConstants.QUEUE_REPORTING)
+    private Queue destination;
+
+    @Override
+    public Destination getDestination() {
+        return destination;
+    }
 }
