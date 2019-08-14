@@ -5,15 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetListResponse;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.rest.security.InternalRestTokenHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,6 +26,9 @@ import java.util.UUID;
 @Stateless
 @Slf4j
 public class AssetRestClient {
+
+    @Inject
+    private InternalRestTokenHandler tokenHandler;
 
     private WebTarget webTarget;
     private ObjectMapper mapper = new ObjectMapper()
@@ -42,6 +48,7 @@ public class AssetRestClient {
         String response = webTarget
                 .path("/internal/query")
                 .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, tokenHandler.createAndFetchToken("user"))
                 .post(Entity.json(query), String.class);
 
         try {
@@ -57,6 +64,7 @@ public class AssetRestClient {
         String response = webTarget
                 .path("/internal/group/asset")
                 .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, tokenHandler.createAndFetchToken("user"))
                 .post(Entity.json(idList), String.class);
 
         try {
