@@ -4,7 +4,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
         <artifactId>reporting</artifactId>
-        <version>1.1.14-UVMS-SNAPSHOT</version>
+        <version>1.1.14-UVMS</version>
     </parent>
 
     <artifactId>${project.parent.artifactId}-liquibase</artifactId>
