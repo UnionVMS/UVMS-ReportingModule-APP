@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.schema.movementrules.module.v1.GetTicketsAndRulesB
 import eu.europa.ec.fisheries.schema.movementrules.module.v1.GetTicketsAndRulesByMovementsResponse;
 import eu.europa.ec.fisheries.schema.movementrules.ticketrule.v1.TicketAndRuleType;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.RulesEventService;
+import eu.europa.ec.fisheries.uvms.rest.security.InternalRestTokenHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
@@ -26,10 +27,12 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ContextResolver;
 import java.util.List;
@@ -43,6 +46,9 @@ public class RulesEventServiceBean implements RulesEventService {
     private String movementRulesEndpoint;
 
     private Client client;
+
+    @Inject
+    private InternalRestTokenHandler tokenHandler;
 
     @PostConstruct
     public void init() {
@@ -75,6 +81,7 @@ public class RulesEventServiceBean implements RulesEventService {
         GetTicketsAndRulesByMovementsResponse response = target
                 .path("tickets-and-rules-by-movement")
                 .request(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, tokenHandler.createAndFetchToken("user"))
                 .post(Entity.json(request), GetTicketsAndRulesByMovementsResponse.class);
 
         return response != null ? response.getTicketsAndRules() : null;
