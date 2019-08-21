@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @Slf4j
 public class AssetRestClient {
 
-    @Inject
+    @EJB
     private InternalRestTokenHandler tokenHandler;
 
     private WebTarget webTarget;
