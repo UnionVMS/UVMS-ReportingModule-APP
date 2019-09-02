@@ -12,17 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.common;
-
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
@@ -34,7 +23,19 @@ import eu.europa.ec.fisheries.uvms.reporting.service.util.validation.CommonFilte
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.joda.time.DateTime;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.common;
 
 @Entity
 @DiscriminatorValue("DATETIME")
@@ -89,15 +90,15 @@ public class CommonFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
+    public List<RangeCriteria> movementRangeCriteria(Instant now) {
         List<RangeCriteria> rangeCriteria = new ArrayList<>();
         RangeCriteria date = CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(this);
         setDefaultValues(date, now);
 
         if (Position.hours.equals(positionSelector.getPosition())) {
             Float hours = positionSelector.getValue();
-            Date to = DateUtils.nowUTCMinusSeconds(now, hours).toDate();
-            rangeCriteria.add(CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(to, now.toDate()));
+            Date from = Date.from(now.minus( (long)(hours * 3600f), ChronoUnit.SECONDS));
+            rangeCriteria.add(CommonFilterMapper.INSTANCE.dateRangeToRangeCriteria(from, Date.from(now)));
         } else {
             rangeCriteria.add(date);
         }
@@ -105,17 +106,17 @@ public class CommonFilter extends Filter {
         return rangeCriteria;
     }
 
-    private void setDefaultValues(final RangeCriteria date, DateTime now) {
+    private void setDefaultValues(final RangeCriteria date, Instant now) {
         if (date.getTo() == null) {
-            date.setTo(DateUtils.dateToString(now.toDate()));
+            date.setTo(DateUtils.dateToString(now));
         }
         if (date.getFrom() == null) {
-            date.setFrom(DateUtils.dateToString(DateUtils.START_OF_TIME.toDate()));
+            date.setFrom(DateUtils.dateToString(Instant.EPOCH));
         }
     }
 
     @Override
-    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
+    public List<SingleValueTypeFilter> getSingleValueFilters(Instant now) {
         Selector selector = getPositionSelector().getSelector();
         Date startDate = null;
         Date endDate = null;
@@ -131,8 +132,8 @@ public class CommonFilter extends Filter {
                     return Collections.emptyList();
                 }
                 Float hours = getPositionSelector().getValue();
-                startDate = DateUtils.nowUTCMinusSeconds(now, hours).toDate();
-                endDate = now.toDate();
+                startDate = Date.from(DateUtils.nowUTCMinusSeconds(now, hours));
+                endDate = Date.from(now);
                 break;
         }
         if (startDate != null) {
@@ -145,7 +146,7 @@ public class CommonFilter extends Filter {
     }
 
     // UT
-    protected DateTime nowUTC() {
+    protected Instant nowUTC() {
         return DateUtils.nowUTC();
     }
 

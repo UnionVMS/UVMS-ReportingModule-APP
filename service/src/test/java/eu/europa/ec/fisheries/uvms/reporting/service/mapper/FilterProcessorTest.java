@@ -10,13 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import static junit.framework.TestCase.assertEquals;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
@@ -28,10 +21,17 @@ import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.TestedObject;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static junit.framework.TestCase.assertEquals;
 
 public class FilterProcessorTest extends UnitilsJUnit4 {
 
@@ -47,7 +47,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
         AssetFilter assetFilter = AssetFilter.builder().guid("guid").build();
         filterList.add(assetFilter);
 
-        processor = new FilterProcessor(filterList, new DateTime());
+        processor = new FilterProcessor(filterList, Instant.now());
 
         assertEquals(1, processor.getAssetListCriteriaPairs().size());
         assertEquals(0, processor.getRangeCriteria().size());
@@ -81,7 +81,7 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         filterList.add(assetGroupFilter);
 
-        processor = new FilterProcessor(filterList, new DateTime());
+        processor = new FilterProcessor(filterList, Instant.now());
 
         List<AssetGroup> assetGroupList = new ArrayList<>();
         assetGroupList.addAll(processor.getAssetGroupList());
@@ -101,13 +101,13 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
     @SneakyThrows
     public void shouldThrowExceptionWhenEmptyFilterList() {
         Set<Filter> filterList = new HashSet<>();
-        processor = new FilterProcessor(filterList, new DateTime());
+        processor = new FilterProcessor(filterList, Instant.now());
     }
 
     @Test(expected = ProcessorException.class)
     @SneakyThrows
     public void testSanityFilterSetNull() {
-        processor = new FilterProcessor(null, new DateTime());
+        processor = new FilterProcessor(null, Instant.now());
     }
 
 }

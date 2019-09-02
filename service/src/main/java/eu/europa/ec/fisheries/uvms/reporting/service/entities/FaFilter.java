@@ -18,16 +18,12 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.joda.time.DateTime;
 
+import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +89,7 @@ public class FaFilter extends Filter {
     }
 
     @Override
-    public List<ListValueTypeFilter> getListValueFilters(DateTime now) {
+    public List<ListValueTypeFilter> getListValueFilters(Instant now) {
         List<ListValueTypeFilter> faFilterTypes = new ArrayList<>();
         if (reportTypes != null && !reportTypes.isEmpty()) {
             faFilterTypes.add(new ListValueTypeFilter(SearchFilter.REPORT_TYPE, reportTypes));
@@ -120,7 +116,7 @@ public class FaFilter extends Filter {
         return faFilterTypes;
     }
 
-    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
+    public List<SingleValueTypeFilter> getSingleValueFilters(Instant now) {
         List<SingleValueTypeFilter> faFilterTypes = new ArrayList<>();
         if (faWeight != null) {
             faFilterTypes.addAll(faWeight.getFaFilters());

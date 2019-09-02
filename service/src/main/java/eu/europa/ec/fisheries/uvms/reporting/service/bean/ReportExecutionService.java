@@ -17,12 +17,13 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+
+import java.time.Instant;
 import java.util.List;
-import org.joda.time.DateTime;
 
 public interface ReportExecutionService {
 
-    ExecutionResultDTO getReportExecutionByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat format) throws ReportingServiceException;
+    ExecutionResultDTO getReportExecutionByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, Instant now, Boolean isAdmin, Boolean withActivity, DisplayFormat format) throws ReportingServiceException;
 
     ExecutionResultDTO getReportExecutionWithoutSave(Report report, List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity, DisplayFormat format) throws ReportingServiceException;
 

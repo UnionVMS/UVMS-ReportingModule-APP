@@ -23,7 +23,7 @@ public class ReportMapperV2Test {
     @Test
     public void testReportDtoToReport() throws IOException {
 
-        String json = "{\n" + "    \"name\": \"test\",\n" + "    \"desc\": null,\n" + "    \"reportType\": \"standard\",\n" + "    \"withMap\": true,\n" + "    \"visibility\": \"private\",\n" + "    \"filterExpression\": {\n" + "        \"common\": {\n" + "            \"startDate\": \"2017-05-01T13:55:38\",\n" + "            \"endDate\": \"2017-08-02T13:55:38\",\n" + "            \"positionTypeSelector\": \"positions\",\n" + "            \"positionSelector\": \"all\"\n" + "        },\n" + "        \"areas\": []\n" + "    },\n" + "    \"mapConfiguration\": {},\n" + "    \"additionalProperties\": {\n" + "        \"speedUnit\": \"kts\",\n" + "        \"distanceUnit\": \"nm\",\n" + "        \"timestamp\": \"2018-05-23T18:21:52\"\n" + "    }\n" + "}";
+        String json = "{\n" + "    \"name\": \"test\",\n" + "    \"desc\": null,\n" + "    \"reportType\": \"standard\",\n" + "    \"withMap\": true,\n" + "    \"visibility\": \"private\",\n" + "    \"filterExpression\": {\n" + "        \"common\": {\n" + "            \"startDate\": \"2017-05-01 13:55:38 +0000\",\n" + "            \"endDate\": \"2017-08-02 13:55:38 +0000\",\n" + "            \"positionTypeSelector\": \"positions\",\n" + "            \"positionSelector\": \"all\"\n" + "        },\n" + "        \"areas\": []\n" + "    },\n" + "    \"mapConfiguration\": {},\n" + "    \"additionalProperties\": {\n" + "        \"speedUnit\": \"kts\",\n" + "        \"distanceUnit\": \"nm\",\n" + "        \"timestamp\": \"2018-05-23 18:21:52 +0000\"\n" + "    }\n" + "}";
         ObjectMapper mapper = new ObjectMapper();
         Report report = mapper.readValue(json, Report.class);
 

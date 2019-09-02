@@ -12,10 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
@@ -29,14 +25,19 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(imports = {ReportDetails.class, Report.class, DateUtils.class, Audit.class, VisibilityEnum.class}, uses = {ObjectFactory.class})
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Date;  //This really needs to be here bc of the generated code. DO NOT REMOVE UNTIL YOU HAVE FIXED THE GENERATED CODE
+
+@Mapper(imports = {ReportDetails.class, Report.class, DateUtils.class, Audit.class, VisibilityEnum.class, Date.class}, uses = {ObjectFactory.class})
 public abstract class ReportMapperV2 {
 
     public static final ReportMapperV2 INSTANCE = Mappers.getMapper(ReportMapperV2.class);
 
     @Mappings({
             @Mapping(target = "visibility", expression = "java(VisibilityEnum.getByName(dto.getVisibility()))"),
-            @Mapping(target = "audit", expression = "java(new Audit(dto.getCreatedOn() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getCreatedOn()).toDate() : null))"),
+            @Mapping(target = "audit", expression = "java(new Audit(dto.getCreatedOn() != null ? Date.from(DateUtils.stringToDate(dto.getCreatedOn())) : null))"),
             @Mapping(target = "details", expression = "java(new ReportDetails(dto.getDesc(), dto.getName(), dto.isWithMap(), null, dto.getCreatedBy()))"),
             @Mapping(target = "filters", expression = "java(mapFilters(dto))"),
     })

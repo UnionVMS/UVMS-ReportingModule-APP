@@ -12,18 +12,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.uvms.audit.model.exception.AuditModelMarshallException;
-import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogMapper;
+import eu.europa.ec.fisheries.uvms.audit.model.mapper.AuditLogModelMapper;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.AuditMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingServiceConstants;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.JMSException;
-import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @Local(value = AuditService.class)
@@ -37,14 +37,11 @@ public class AuditServiceBean implements AuditService {
 	public void sendAuditReport(final AuditActionEnum auditActionEnum, final String objectId, final String userName) throws ReportingServiceException {
         log.debug("Audit report request received for type = {} ", auditActionEnum.getAuditType());
         try {
-			String msgToSend = AuditLogMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
+			String msgToSend = AuditLogModelMapper.mapToAuditLog(ReportingServiceConstants.REPORTING_MODULE, auditActionEnum.getAuditType(), objectId, userName);
             log.trace("Sending JMS message to Audit {} ", msgToSend);
             auditProducerBean.sendModuleMessage(msgToSend, null);
         } catch (JMSException e) {
             log.error("Exception in Sending Message to Audit Queue", e);
-            throw new ReportingServiceException(e);
-		} catch (AuditModelMarshallException e) {
-            log.error("Audit model marshal exception", e);
             throw new ReportingServiceException(e);
 		}
 	}

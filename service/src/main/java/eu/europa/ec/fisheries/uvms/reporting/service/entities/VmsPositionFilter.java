@@ -11,15 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import static java.util.Arrays.asList;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
@@ -30,7 +21,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.joda.time.DateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 @Entity
 @DiscriminatorValue("VMSPOS")
@@ -93,7 +93,7 @@ public class VmsPositionFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
+    public List<RangeCriteria> movementRangeCriteria(Instant now) {
         return asList(VmsPositionFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));
     }
 

@@ -11,17 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
@@ -29,7 +18,18 @@ import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapp
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.joda.time.DateTime;
+
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 @Entity
 @DiscriminatorValue("VMSSEG")
@@ -89,7 +89,7 @@ public class VmsSegmentFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
+    public List<RangeCriteria> movementRangeCriteria(Instant now) {
         List<RangeCriteria> criteria = new ArrayList<>();
         if (minimumSpeed != null && maximumSpeed != null) {
             criteria.add(VmsSegmentFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));

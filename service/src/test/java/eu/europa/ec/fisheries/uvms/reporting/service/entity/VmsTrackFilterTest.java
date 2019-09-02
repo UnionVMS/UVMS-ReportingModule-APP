@@ -34,6 +34,6 @@ public class VmsTrackFilterTest extends UnitilsJUnit4 {
 
         filter.merge(incoming);
 
-        assertEquals(incoming, filter);
+        assertEquals(incoming.toString(), filter.toString());
     }
 }

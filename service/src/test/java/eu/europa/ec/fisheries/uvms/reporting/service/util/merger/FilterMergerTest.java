@@ -10,52 +10,35 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util.merger;
 
-import static com.ninja_squad.dbsetup.Operations.insertInto;
-import static com.ninja_squad.dbsetup.Operations.sequenceOf;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.unitils.mock.MockUnitils.assertNoMoreInvocations;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.ninja_squad.dbsetup.DbSetup;
-import com.ninja_squad.dbsetup.DbSetupTracker;
-import com.ninja_squad.dbsetup.destination.DataSourceDestination;
-import com.ninja_squad.dbsetup.operation.Operation;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.BaseReportingDAOTest;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Audit;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
-import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import lombok.SneakyThrows;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.unitils.mock.MockUnitils.assertNoMoreInvocations;
+
 @Ignore("FIXME")
 public class FilterMergerTest extends BaseReportingDAOTest {
 
-    protected DbSetupTracker dbSetupTracker = new DbSetupTracker();
+    //protected DbSetupTracker dbSetupTracker = new DbSetupTracker();
     private FilterDAO filterDAO = new FilterDAO(em);
     @TestedObject
     private FilterMerger merger = new FilterMerger(em);
@@ -73,7 +56,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     private CommonFilterDTO common;
     private AreaFilterDTO area;
 
-    @Before
+    /*@Before
     public void before(){
 
         Operation operation =
@@ -116,7 +99,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
         //v.build();
 
         //varea = AreaFilterDTO.AreaFilterDTOBuilder().areaId(20L).areaType("EEZ").build();
-    }
+    }*/
 
     @After
     public void test(){
@@ -161,7 +144,7 @@ public class FilterMergerTest extends BaseReportingDAOTest {
     @SneakyThrows
     public void testMergeAssetFilterUntouched(){
 
-        dbSetupTracker.skipNextLaunch();
+        //dbSetupTracker.skipNextLaunch();
 
         Collection<FilterDTO> collection =  new ArrayList<>();
 

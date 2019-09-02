@@ -12,9 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import static org.apache.commons.collections.CollectionUtils.isEmpty;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementQuery;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
@@ -30,11 +27,15 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.joda.time.DateTime;
+
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 public class FilterProcessor {
 
@@ -45,9 +46,9 @@ public class FilterProcessor {
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<>();
     private final List<SingleValueTypeFilter> singleValueTypeFilters = new ArrayList<>();
     private final List<ListValueTypeFilter> listValueTypeFilters = new ArrayList<>();
-    private DateTime now;
+    private Instant now;
 
-    public FilterProcessor(Set<Filter> filters, DateTime now) throws ProcessorException {
+    public FilterProcessor(Set<Filter> filters, Instant now) throws ProcessorException {
         this.now = now;
         if (isEmpty(filters)) {
             throw new ProcessorException("");
@@ -151,11 +152,11 @@ public class FilterProcessor {
         return listValueTypeFilters;
     }
 
-    public DateTime getNow() {
+    public Instant getNow() {
         return now;
     }
 
-    public void setNow(DateTime now) {
+    public void setNow(Instant now) {
         this.now = now;
     }
 

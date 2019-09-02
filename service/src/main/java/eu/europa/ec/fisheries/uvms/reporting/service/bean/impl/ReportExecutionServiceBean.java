@@ -44,13 +44,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.feature.DefaultFeatureCollection;
-import org.joda.time.DateTime;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ADDITIONAL_PROPERTIES;
@@ -84,7 +84,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
     @Interceptors(TracingInterceptor.class)
-    public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat) throws ReportingServiceException {
+    public ExecutionResultDTO getReportExecutionByReportId(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final Instant now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat) throws ReportingServiceException {
         Report reportByReportId = repository.findReportByReportId(id, username, scopeName, isAdmin);
         if (reportByReportId == null) {
             final String error = "No report found with id " + id;
@@ -99,7 +99,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Override
     public ExecutionResultDTO getReportExecutionWithoutSave(final eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report, final List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity, DisplayFormat displayFormat) throws ReportingServiceException {
         Map additionalProperties = (Map) report.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
-        DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+        Instant dateTime = DateUtils.stringToDate((String) additionalProperties.get(TIMESTAMP));
         Report toReport = ReportMapperV2.INSTANCE.reportDtoToReport(report);
         ExecutionResultDTO resultDTO = executeReport(toReport, dateTime, areaRestrictions, withActivity, displayFormat);
         auditService.sendAuditReport(AuditActionEnum.EXECUTE, report.getName(), userName);
@@ -107,7 +107,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     @SneakyThrows
-    private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed, DisplayFormat format) {
+    private ExecutionResultDTO executeReport(Report report, Instant dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed, DisplayFormat format) {
         try {
             Set<Filter> filters = report.getFilters();
             FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);

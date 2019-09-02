@@ -9,15 +9,20 @@
     </parent>
 
     <name>${project.parent.artifactId}-message</name>
-    <artifactId>${project.parent.artifactId}-message</artifactId>
+    <artifactId>reporting-message</artifactId>
     <packaging>ejb</packaging>
     
     <dependencies>
 
         <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-test-deps</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-core</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
 
@@ -31,14 +36,14 @@
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-inject</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-mock</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
 
@@ -60,7 +65,7 @@
         </dependency>
         
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
             <artifactId>spatial-model</artifactId>
         </dependency>        
 
@@ -70,25 +75,19 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
             <artifactId>movement-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
     </dependencies>

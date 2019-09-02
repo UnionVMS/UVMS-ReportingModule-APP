@@ -10,50 +10,24 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import static eu.europa.ec.fisheries.uvms.commons.date.DateUtils.UI_FORMATTER;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ASSETS;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_BY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_ON;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DELETABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DESC;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.EDITABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.FILTER_EXPRESSION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.IS_DEFAULT;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.MAP_CONFIGURATION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.NAME;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.REPORT_TYPE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SCOPE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SHAREABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
+
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import org.joda.time.DateTime;
+
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.*;
 
 public class ReportSerializer extends JsonSerializer<ReportDTO> {
 
@@ -204,7 +178,7 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         if (executionLog != null) {
             Date executedOn = executionLog.getExecutedOn();
             if (executedOn != null) {
-                js.writeStringField(ExecutionLogDTO.EXECUTED_ON, UI_FORMATTER.print(new DateTime(executedOn)));
+                js.writeStringField(ExecutionLogDTO.EXECUTED_ON, DateUtils.parseUTCDateToString(executedOn.toInstant()));
             }
         } else {
             js.writeStringField(ExecutionLogDTO.EXECUTED_ON, null); // TODO check if this else is required
@@ -300,11 +274,11 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
             Date startDate = commonFilter.getStartDate();
             Date endDate = commonFilter.getEndDate();
             if (startDate != null) {
-                jgen.writeStringField(CommonFilterDTO.START_DATE, UI_FORMATTER.print(new DateTime(startDate)));
+                jgen.writeStringField(CommonFilterDTO.START_DATE, DateUtils.dateToString(startDate.toInstant()));
 
             }
             if (endDate != null) {
-                jgen.writeStringField(CommonFilterDTO.END_DATE, UI_FORMATTER.print(new DateTime(endDate)));
+                jgen.writeStringField(CommonFilterDTO.END_DATE, DateUtils.dateToString(endDate.toInstant()));
             }
 
             jgen.writeEndObject();

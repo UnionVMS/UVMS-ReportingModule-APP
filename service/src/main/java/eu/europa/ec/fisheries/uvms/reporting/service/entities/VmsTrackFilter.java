@@ -15,18 +15,14 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.commons.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.joda.time.DateTime;
+
+import javax.persistence.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.vmstrack;
@@ -83,7 +79,7 @@ public class VmsTrackFilter extends Filter {
     }
 
     @Override
-    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
+    public List<RangeCriteria> movementRangeCriteria(Instant now) {
         List<RangeCriteria> rangeCriteria = new ArrayList<>();
         if (minAvgSpeed != null || maxAvgSpeed != null) {
             rangeCriteria.add(VmsTrackFilterMapper.INSTANCE.speedRangeToRangeCriteria(this));

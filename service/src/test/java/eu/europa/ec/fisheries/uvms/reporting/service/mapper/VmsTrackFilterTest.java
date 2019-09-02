@@ -41,7 +41,7 @@ public class VmsTrackFilterTest {
     public void shouldConvertToEntity(VmsTrackFilter expectedResult, TrackFilterDTO dto){
 
         VmsTrackFilter trackFilter = VmsTrackFilterMapper.INSTANCE.trackFilterDTOToTrackFilter(dto);
-        assertEquals(expectedResult, trackFilter);
+        assertEquals(expectedResult.toString(), trackFilter.toString());
 
     }
 

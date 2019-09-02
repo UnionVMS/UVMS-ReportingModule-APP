@@ -11,12 +11,12 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.ToString;
+
+import java.util.Date;
 
 @ToString
 public class AuditDTO {
@@ -26,19 +26,19 @@ public class AuditDTO {
 
     public AuditDTO(String createdOnValue) {
         if (createdOnValue != null) {
-            createdOn = DateUtils.UI_FORMATTER.parseDateTime(createdOnValue).toDate();
+            createdOn = Date.from(DateUtils.stringToDate(createdOnValue));
         } else {
-            createdOn = DateUtils.nowUTC().toDate();
+            createdOn = new Date();
         }
     }
 
     public AuditDTO(){
-        createdOn = DateUtils.getNowDateUTC();
+        createdOn = new Date();
     }
 
     @JsonProperty("createdOn")
     public String getCreatedOn() {
-        return DateUtils.UI_FORMATTER.print(new org.joda.time.DateTime(createdOn));
+        return DateUtils.dateToString(createdOn.toInstant());
     }
 
     public void setCreatedOn(Date createdOn) {
