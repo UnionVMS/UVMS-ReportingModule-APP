@@ -10,7 +10,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
     <artifactId>reporting</artifactId>
-    <version>1.1.18-UVMS-SNAPSHOT</version>
+    <version>1.1.18-UVMS</version>
     <packaging>pom</packaging>
     <description>Maven projekt-archetype for UnionVms modules</description>
 
@@ -44,7 +44,7 @@
 
     <scm>
         <connection>${scm.connection}</connection>
-        <tag>HEAD</tag>
+        <tag>reporting-1.1.18-UVMS</tag>
     </scm>
 
     <distributionManagement>
