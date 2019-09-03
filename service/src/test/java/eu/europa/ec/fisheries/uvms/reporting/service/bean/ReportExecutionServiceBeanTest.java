@@ -12,12 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import javax.jms.TextMessage;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.domain.DateRange;
@@ -26,19 +20,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ActivityServiceBe
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.AssetServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.MovementServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportExecutionServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.SneakyThrows;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -46,6 +31,13 @@ import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
 import org.unitils.mock.PartialMock;
+
+import javax.jms.TextMessage;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
 
@@ -134,7 +126,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getReportExecutionByReportId(null, "test", null, null, DateTime.now(), false, true, null);
+        service.getReportExecutionByReportId(null, "test", null, null, Instant.now(), false, true, null);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -161,7 +153,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         asset.returns(ImmutableMap.<String, Asset>builder().build()).getAssetMap(null);
         activity.returns(response.getMock()).getFishingTrips(null, null);
         repository.returns(report.getMock()).findReportByReportId(null, "test", null, false);
-        service.getReportExecutionByReportId(null, "test", null, null, DateTime.now(), false, true, null);
+        service.getReportExecutionByReportId(null, "test", null, null, Instant.now(), false, true, null);
 
         movement.assertInvokedInSequence().getMovementMap(null);
         asset.assertInvokedInSequence().getAssetMap(null);

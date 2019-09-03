@@ -10,47 +10,24 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.commons.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AreaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetGroupFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.CommonFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.FaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsPositionFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsSegmentFilterMapper;
-import eu.europa.ec.fisheries.uvms.reporting.service.mapper.VmsTrackFilterMapper;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.joda.time.DateTime;
+
+import javax.persistence.*;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "filter")
@@ -62,7 +39,7 @@ import org.joda.time.DateTime;
 })
 @EqualsAndHashCode(callSuper = true, exclude = {"report", "type", "reportId"})
 @AttributeOverride(name = "id", column = @Column(name = "filter_id"))
-@ToString(callSuper = true, exclude = {"report", "type", "reportId"})
+@ToString(callSuper = false, exclude = {"report", "type", "reportId"})
 @Data
 public abstract class Filter extends BaseEntity {
 
@@ -116,7 +93,7 @@ public abstract class Filter extends BaseEntity {
         return Collections.emptyList();
     }
 
-    public List<RangeCriteria> movementRangeCriteria(DateTime now) {
+    public List<RangeCriteria> movementRangeCriteria(Instant now) {
         return Collections.emptyList();
     }
 
@@ -124,11 +101,11 @@ public abstract class Filter extends BaseEntity {
         return new AreaIdentifierType();
     }
 
-    public List<ListValueTypeFilter> getListValueFilters(DateTime now) {
+    public List<ListValueTypeFilter> getListValueFilters(Instant now) {
         return Collections.emptyList();
     }
 
-    public List<SingleValueTypeFilter> getSingleValueFilters(DateTime now) {
+    public List<SingleValueTypeFilter> getSingleValueFilters(Instant now) {
         return Collections.emptyList();
     }
 

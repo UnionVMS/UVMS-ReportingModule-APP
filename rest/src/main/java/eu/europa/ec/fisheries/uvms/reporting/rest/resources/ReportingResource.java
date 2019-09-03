@@ -46,7 +46,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 
 import javax.ejb.EJB;
 import javax.interceptor.Interceptors;
@@ -57,6 +56,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.Instant;
 import java.util.*;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.*;
@@ -389,7 +389,7 @@ public class ReportingResource {
 
 		try {
 			Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
-			DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+			Instant dateTime = DateUtils.stringToDate((String) additionalProperties.get(TIMESTAMP));
 			List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
 			Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
 			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());

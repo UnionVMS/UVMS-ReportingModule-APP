@@ -12,8 +12,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
-import org.joda.time.DateTime;
 import org.junit.Test;
+
+import java.util.Date;
 
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO.CommonFilterDTOBuilder;
 import static eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO.PositionSelectorDTOBuilder;
@@ -25,15 +26,15 @@ public class CommonFilterDTOTest {
     public void testEquals(){
 
         CommonFilterDTO build = CommonFilterDTOBuilder()
-                .endDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
-                .startDate(new DateTime(2005, 3, 26, 12, 1, 1, 1).toDate())
+                .endDate(new Date(2004, 3, 26, 12, 1, 1))
+                .startDate(new Date(2005, 3, 26, 12, 1, 1))
                 .reportId(45L)
                 .positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
                 .build();
 
         CommonFilterDTO build2 = CommonFilterDTOBuilder()
-                .endDate(new DateTime(2004, 3, 26, 12, 1, 1, 1).toDate())
-                .startDate(new DateTime(2005, 3, 26, 12, 1, 1, 1).toDate())
+                .endDate(new Date(2004, 3, 26, 12, 1, 1))
+                .startDate(new Date(2005, 3, 26, 12, 1, 1))
                 .reportId(38L)
                 .positionSelector(PositionSelectorDTOBuilder().selector(Selector.all).build())
                 .build();

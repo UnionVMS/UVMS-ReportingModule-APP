@@ -12,19 +12,20 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
-import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
-import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
-
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
 
 @Slf4j
 public class ReportDAO extends AbstractDAO<Report> {
@@ -44,7 +45,7 @@ public class ReportDAO extends AbstractDAO<Report> {
         log.debug("{} is removing ReportEntity instance", username);
         try {
             report.setDeletedBy(username);
-            report.setDeletedOn(DateUtils.nowUTC().toDate());
+            report.setDeletedOn(new Date());
             report.setIsDeleted(true);
             Session session = em.unwrap(Session.class);
             session.update(report);

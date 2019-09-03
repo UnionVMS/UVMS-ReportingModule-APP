@@ -12,8 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
@@ -34,17 +32,16 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportDateMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
+import java.util.*;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Session Bean implementation class ReportBean
@@ -194,7 +191,7 @@ public class ReportServiceBean {
 
     @Transactional
     public ReportGetStartAndEndDateRS getReportDates(String now, Long id, String userName, String scopeName) throws ReportingServiceException {
-        Date currentDate = DateUtils.UI_FORMATTER.parseDateTime(now).toDate();
+        Date currentDate = Date.from(DateUtils.stringToDate(now));
         Report report = repository.findReportByReportId(id, userName, scopeName, false);
         if (report != null) {
             Set<Filter> filters = report.getFilters();

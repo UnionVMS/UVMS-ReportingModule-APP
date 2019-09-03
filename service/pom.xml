@@ -9,16 +9,31 @@
     </parent>
 
     <name>${project.parent.artifactId}-service</name>
-    <artifactId>${project.parent.artifactId}-service</artifactId>
+    <artifactId>reporting-service</artifactId>
     <packaging>ejb</packaging>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
         <dependency>
 			<groupId>fish.focus.uvms.maven</groupId>
 			<artifactId>uvms-pom-monitoring-deps</artifactId>
 			<type>pom</type>
 		</dependency>
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-logging-deps</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-test-deps</artifactId>
+            <type>pom</type>
+        </dependency>
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -44,7 +59,7 @@
 		<dependency>
 		    <groupId>net.sf.ehcache.internal</groupId>
 		    <artifactId>ehcache-core</artifactId>
-            <version>2.10.4</version>
+            <version>2.10.6</version>
             <exclusions>
             	<exclusion>
             		 <groupId>org.slf4j</groupId>
@@ -54,7 +69,7 @@
         </dependency>		
 
     	<dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
             <artifactId>spatial-model</artifactId>
         </dependency>
 
@@ -69,10 +84,6 @@
             <version>${geotools.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -180,28 +191,28 @@
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-core</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-inject</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-mock</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-easymock</artifactId>
-            <version>3.4.2</version>
+            <version>3.4.6</version>
             <scope>test</scope>
         </dependency>
 
@@ -223,36 +234,12 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
+            <version>6.0.17.Final</version>
         </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms</groupId>
-            <artifactId>uvms-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
-
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
-			<scope>test</scope>
-		</dependency>
 
         <dependency>
             <groupId>pl.pragmatists</groupId>
             <artifactId>JUnitParams</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.182</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -261,27 +248,20 @@
             <version>${hibernate.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.ninja-squad</groupId>
-            <artifactId>DbSetup</artifactId>
-            <version>1.6.0</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.9.6</version>
+            <version>2.9.9</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>2.9.4</version>
+            <version>2.9.9</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.movement-rules</groupId>
             <artifactId>movement-rules-model</artifactId>
-            <version>1.0.1</version>
+            <version>2.1.22</version>
         </dependency>
     </dependencies>
 

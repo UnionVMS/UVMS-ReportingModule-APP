@@ -27,7 +27,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import java.util.Date;
 
-@Mapper(uses = {ObjectFactory.class, PositionSelectorMapper.class}, imports = {DateUtils.class, Selector.class, Position.class, DateRange.class, PositionSelector.class})
+@Mapper(uses = {ObjectFactory.class, PositionSelectorMapper.class}, imports = {DateUtils.class, Selector.class, Position.class, DateRange.class, PositionSelector.class, Date.class})
 public interface CommonFilterMapper {
 
     CommonFilterMapper INSTANCE = Mappers.getMapper(CommonFilterMapper.class);
@@ -44,8 +44,8 @@ public interface CommonFilterMapper {
     CommonFilter dateTimeFilterDTOToDateTimeFilter(CommonFilterDTO dto);
 
     @Mappings({
-            @Mapping(target = "dateRange", expression = "java(new DateRange(dto.getStartDate() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getStartDate()).toDate() : null, " +
-                    "dto.getEndDate() != null ? DateUtils.UI_FORMATTER.parseDateTime(dto.getEndDate()).toDate() : null))"),
+            @Mapping(target = "dateRange", expression = "java(new DateRange(dto.getStartDate() != null ? Date.from(DateUtils.stringToDate(dto.getStartDate())) : null, " +
+                    "dto.getEndDate() != null ? Date.from(DateUtils.stringToDate(dto.getEndDate())) : null))"),
             @Mapping(target = "positionSelector", expression = "java(new PositionSelector(dto.getXValue() != null ? Float.valueOf(dto.getXValue()) : null, Enum.valueOf( Selector.class, dto.getPositionSelector()) , Position.getByName(dto.getPositionTypeSelector())))")
     })
     CommonFilter commonToCommonFilter(DateTime dto);

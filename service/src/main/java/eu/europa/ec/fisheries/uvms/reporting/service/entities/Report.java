@@ -155,7 +155,7 @@ public class Report extends BaseEntity {
 
         } else {
             executionLog = executionLogs.iterator().next();
-            executionLog.setExecutedOn(DateUtils.nowUTC().toDate());
+            executionLog.setExecutedOn(new Date());
         }
     }
 
@@ -187,7 +187,7 @@ public class Report extends BaseEntity {
 
     @PrePersist
     private void onCreate() {
-        audit.setCreatedOn(DateUtils.nowUTC().toDate());
+        audit.setCreatedOn(new Date());
     }
 
 }

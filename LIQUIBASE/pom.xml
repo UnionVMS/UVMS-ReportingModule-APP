@@ -7,7 +7,7 @@
         <version>1.1.18-UVMS-SNAPSHOT</version>
     </parent>
 
-    <artifactId>${project.parent.artifactId}-liquibase</artifactId>
+    <artifactId>reporting-liquibase</artifactId>
     <name>${project.parent.artifactId}-liquibase</name>
     <packaging>war</packaging>
 

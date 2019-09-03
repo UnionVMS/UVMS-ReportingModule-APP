@@ -22,16 +22,18 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+
 import static junitparams.JUnitParamsRunner.$;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class CommonFilterTest {
@@ -42,7 +44,7 @@ public class CommonFilterTest {
     @Parameters(method = "rangeCriteria")
     public void shouldReturnRangeCriteria(CommonFilter filter, RangeCriteria rangeCriteria){
 
-        Iterator<RangeCriteria> iterator = filter.movementRangeCriteria(new DateTime(DateUtils.stringToDate(now))).iterator();
+        Iterator<RangeCriteria> iterator = filter.movementRangeCriteria( DateUtils.stringToDate(now)).iterator();
 
         if (iterator.hasNext()) {
             assertEquals(rangeCriteria, iterator.next());
@@ -79,8 +81,8 @@ public class CommonFilterTest {
         String fromMinus24Hours = "2013-02-27 12:24:56 +0100";
 
         CommonFilter filter1 = new CommonFilter(){
-            protected DateTime nowUTC() {
-                return new DateTime(DateUtils.stringToDate(now));
+            protected Instant nowUTC() {
+                return DateUtils.stringToDate(now);
             }
         };
 
@@ -98,7 +100,7 @@ public class CommonFilterTest {
         CommonFilter filter2 = CommonFilter.builder()
                 .positionSelector(PositionSelector.builder()
                         .selector(Selector.all).build())
-                .dateRange(new DateRange(DateUtils.stringToDate(now), DateUtils.stringToDate(to)))
+                .dateRange(new DateRange(Date.from(DateUtils.stringToDate(now)), Date.from(DateUtils.stringToDate(to))))
                 .build();
 
         RangeCriteria expectedCriteria2 = new RangeCriteria();
@@ -111,8 +113,8 @@ public class CommonFilterTest {
 
         CommonFilter filter3 = new CommonFilter(){
             @Override
-            protected DateTime nowUTC() {
-                return new DateTime(DateUtils.stringToDate(now));
+            protected Instant nowUTC() {
+                return DateUtils.stringToDate(now);
             }
         };
 
@@ -121,8 +123,8 @@ public class CommonFilterTest {
 
         RangeCriteria expectedCriteria3 = new RangeCriteria();
         expectedCriteria3.setKey(RangeKeyType.DATE);
-        expectedCriteria3.setFrom("0001-01-03 01:00:00 +0100");
-        expectedCriteria3.setTo(now);
+        expectedCriteria3.setFrom("1970-01-01 00:00:00 +0000");
+        expectedCriteria3.setTo(DateUtils.dateToString(DateUtils.stringToDate(now)));
 
         return $(
                 $(filter1, expectedCriteria),
@@ -155,16 +157,16 @@ public class CommonFilterTest {
 
         filter.merge(incoming);
 
-        assertEquals(filter, incoming);
+        assertEquals(filter.toString(),incoming.toString());
 
     }
 
     private void setDefaultValues(final RangeCriteria date) {
         if (date.getTo() == null) {
-            date.setFrom(DateUtils.dateToString(DateUtils.nowUTC().toDate())); // FIXME use offset
+            date.setFrom(DateUtils.dateToString(DateUtils.nowUTC())); // FIXME use offset
         }
         if (date.getFrom() == null) {
-            date.setFrom(DateUtils.dateToString(new Date(Long.MIN_VALUE)));
+            date.setFrom(DateUtils.dateToString(Instant.EPOCH));
         }
     }
 

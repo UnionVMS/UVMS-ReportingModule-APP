@@ -18,9 +18,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Position;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import lombok.Builder;
-import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class ReportDateMapper {
@@ -41,9 +42,9 @@ public class ReportDateMapper {
             endDate = filter.getDateRange().getEndDate();
         } else if (filter.getPositionSelector().getSelector().equals(Selector.last)) {
             if (filter.getPositionSelector().getPosition().equals(Position.hours)) {
-                DateTime dateTime = new DateTime(now);
-                dateTime = dateTime.minusHours(filter.getPositionSelector().getValue().intValue());
-                startDate = dateTime.toDate();
+                Instant dateTime = now.toInstant();
+                dateTime = dateTime.minus(filter.getPositionSelector().getValue().intValue(), ChronoUnit.HOURS);
+                startDate = Date.from(dateTime);
                 endDate = now;
             } else if (filter.getPositionSelector().getPosition().equals(Position.positions)) {
                 startDate = filter.getDateRange().getStartDate();

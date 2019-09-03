@@ -11,22 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
-import static eu.europa.ec.fisheries.uvms.commons.date.DateUtils.UI_FORMATTER;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ASSETS;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_BY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_ON;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DESC;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.END_DATE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.FILTER_EXPRESSION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.GUID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.MAP_CONFIGURATION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.NAME;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.REPORT_TYPE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.START_DATE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -38,25 +22,8 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AreaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AssetGroupFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CommonFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FaWeight;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.LayerSettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.MapConfigurationDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.PositionSelectorDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ReferenceDataPropertiesDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.StyleSettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VisibilitySettingsDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsPositionFilterDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.VmsSegmentFilterDTO;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
@@ -65,14 +32,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.GroupCriteriaFilterMapper;
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.IteratorUtils;
+
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.*;
 
 @Slf4j
 public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
@@ -289,8 +256,8 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
         CommonFilterDTO dto = CommonFilterDTO.CommonFilterDTOBuilder()
                 .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
                 .reportId(reportId)
-                .startDate(startDateLast != null ? UI_FORMATTER.parseDateTime(startDateLast).toDate() : null)
-                .endDate(endDateLast != null ? UI_FORMATTER.parseDateTime(endDateLast).toDate() : null)
+                .startDate(startDateLast != null ? Date.from(DateUtils.stringToDate(startDateLast)) : null)
+                .endDate(endDateLast != null ? Date.from(DateUtils.stringToDate(endDateLast)) : null)
                 .build();
         filterDTOList.add(dto);
         JsonNode selectorType = common.get(PositionSelectorDTO.POSITION_TYPE_SELECTOR);
@@ -318,8 +285,8 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
                 CommonFilterDTO.CommonFilterDTOBuilder()
                         .id(common.get(FilterDTO.ID) != null ? common.get(FilterDTO.ID).longValue() : null)
                         .reportId(reportId)
-                        .endDate(UI_FORMATTER.parseDateTime(endDate).toDate())
-                        .startDate(UI_FORMATTER.parseDateTime(startDate).toDate())
+                        .endDate(Date.from(DateUtils.stringToDate(endDate)))
+                        .startDate(Date.from(DateUtils.stringToDate(startDate)))
                         .positionSelector(
                                 PositionSelectorDTO.PositionSelectorDTOBuilder().selector(positionSelector).build()
                         )

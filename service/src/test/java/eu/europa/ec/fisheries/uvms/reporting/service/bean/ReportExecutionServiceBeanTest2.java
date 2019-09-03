@@ -13,30 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.domain.DateRange;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ActivityServiceBean;
@@ -46,16 +27,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportExecutionSe
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterExpression;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaWeight;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.PositionSelector;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportDetails;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaType;
@@ -63,13 +35,20 @@ import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetIdType;
 import lombok.SneakyThrows;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
 import org.unitils.inject.annotation.TestedObject;
 import org.unitils.mock.Mock;
 import org.unitils.mock.MockUnitils;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.*;
 
 public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
 
@@ -127,7 +106,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         AreaIdentifierType areaIdentifierType = new AreaIdentifierType();
         areaIdentifierType.setAreaType(AreaType.EEZ);
         areaIdentifierType.setId("1");
-        service.getReportExecutionByReportId(1L, "test", "EC", Arrays.asList(areaIdentifierType), DateTime.now(), false, true, null);
+        service.getReportExecutionByReportId(1L, "test", "EC", Arrays.asList(areaIdentifierType), Instant.now(), false, true, null);
 
         spatialModule.assertInvokedInSequence().getFilterArea(null, null);
         asset.assertInvokedInSequence().getAssetMap(null);
@@ -145,7 +124,7 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
     private eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report getReportDto() {
         eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report report = new eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report();
         report.setCreatedBy("test");
-        report.setCreatedOn("2016-12-07T14:57:42");
+        report.setCreatedOn("2016-12-07 14:57:42 +0000");
         report.setDesc("This is test report");
         report.setId(1L);
         report.setWithMap(false);
@@ -153,12 +132,12 @@ public class ReportExecutionServiceBeanTest2 extends UnitilsJUnit4 {
         report.setName("Test report");
         report.setAdditionalProperty("speedUnit", "kts");
         report.setAdditionalProperty("distanceUnit", "nm");
-        report.setAdditionalProperty("timestamp", "2016-12-07T14:57:42");
+        report.setAdditionalProperty("timestamp", "2016-12-07 14:57:42 +0000");
 
         Map<String, Object> additionalProp = new HashMap<>();
         additionalProp.put("speedUnit", "kts");
         additionalProp.put("distanceUnit", "nm");
-        additionalProp.put("timestamp", "2016-12-07T14:57:42");
+        additionalProp.put("timestamp", "2016-12-07 14:57:42 +0000");
         report.setAdditionalProperty("additionalProperties", additionalProp);
 
         FilterExpression filterExpression = new FilterExpression();

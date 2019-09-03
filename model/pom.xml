@@ -13,15 +13,6 @@
     <packaging>ejb</packaging>
 
     <properties>
-        <javaee.version>7.0</javaee.version>
-        <junit.version>4.11</junit.version>
-        <mockito.version>1.10.19</mockito.version>
-        <jaxb2.version>0.9.5</jaxb2.version>
-        <mapstruct.version>1.1.0.Final</mapstruct.version>
-        <sl4j.version>1.7.25</sl4j.version>
-        <logback.version>1.2.3</logback.version>
-        <logback.core.version>1.2.3</logback.core.version>
-        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
     </properties>
 
     <profiles>
