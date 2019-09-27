@@ -25,9 +25,8 @@ import java.util.Map;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
+import eu.europa.ec.fisheries.uvms.config.model.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementModelException;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
@@ -70,7 +69,7 @@ public class MovementServiceBean {
             } else {
                 throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
-        } catch (ModelMapperException | JMSException | MessageException | MovementFaultException | MovementDuplicateException e) {
+        } catch (JMSException | ModelMapperException | MovementModelException | MessageException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT", e);
         }
     }
