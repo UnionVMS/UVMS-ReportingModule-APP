@@ -11,6 +11,9 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.reporting.rest.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -24,17 +27,16 @@ import java.util.regex.Pattern;
 @WebFilter(asyncSupported = true, urlPatterns = {"/*"})
 public class RequestFilter implements Filter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RequestFilter.class);
+
     /**
      * {@code corsOriginRegex} is valid for given host names/IPs and any range of sub domains.
      *
-     * localhost:28080
-     * localhost:8080
-     * 127.0.0.1:28080
-     * 127.0.0.1:8080
-     * 192.168.***.***:28080
-     * 192.168.***.***:8080
-     * *.hav.havochvatten.se:8080
-     * *.hav.havochvatten.se:28080
+     * localhost:[2]8080
+     * 127.0.0.1:[2]8080
+     * 192.168.***.***:[2]8080
+     * liaswf05[t,u,d]:[2]8080
+     * havochvatten.se:[2]8080
      */
     @Resource(lookup = "java:global/cors_allowed_host_regex")
     private String corsOriginRegex;
@@ -59,6 +61,11 @@ public class RequestFilter implements Filter {
         response.setHeader(Constant.ACCESS_CONTROL_ALLOW_METHODS, Constant.ACCESS_CONTROL_ALLOWED_METHODS);
         response.setHeader(Constant.ACCESS_CONTROL_ALLOW_HEADERS, Constant.ACCESS_CONTROL_ALLOW_HEADERS_ALL);
 
+        if (httpServletRequest.getMethod().equals("OPTIONS")) {
+            response.setStatus(200);
+            return;
+        }
+
         chain.doFilter(request, res);
     }
 
@@ -70,5 +77,6 @@ public class RequestFilter implements Filter {
 
     @Override
     public void destroy() {
+        LOG.info("RequestFilter shutting down!");
     }
 }
