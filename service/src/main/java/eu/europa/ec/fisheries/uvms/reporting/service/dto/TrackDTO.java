@@ -23,13 +23,13 @@ import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.Setter;
 
-import javax.measure.converter.UnitConverter;
+import javax.measure.UnitConverter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.measure.unit.NonSI.KNOT;
-import static javax.measure.unit.NonSI.NAUTICAL_MILE;
+import static systems.uom.common.USCustomary.KNOT;
+import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 
 public class TrackDTO {
 

@@ -10,12 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import static javax.measure.unit.NonSI.MILE;
-import static javax.measure.unit.NonSI.NAUTICAL_MILE;
-import static javax.measure.unit.SI.KILOMETER;
+import static systems.uom.common.USCustomary.MILE;
+import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
-import javax.measure.converter.UnitConverter;
+import si.uom.SI;
+import tec.uom.se.unit.MetricPrefix;
+import javax.measure.UnitConverter;
 
 public enum LengthType {
 
@@ -42,7 +43,7 @@ public enum LengthType {
         switch (this){
 
             case KM:
-                unitConverter = NAUTICAL_MILE.getConverterTo(KILOMETER);
+                unitConverter = NAUTICAL_MILE.getConverterTo(MetricPrefix.KILO(SI.METRE));
                 break;
 
             case MI:

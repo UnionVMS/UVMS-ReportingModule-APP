@@ -31,11 +31,11 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import javax.measure.converter.UnitConverter;
+import javax.measure.UnitConverter;
 import java.util.Date;
 
-import static javax.measure.unit.NonSI.KNOT;
-import static javax.measure.unit.NonSI.NAUTICAL_MILE;
+import static systems.uom.common.USCustomary.KNOT;
+import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 
 public class MovementDTO {
 

@@ -12,8 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import static javax.measure.unit.NonSI.KNOT;
-import static javax.measure.unit.NonSI.NAUTICAL_MILE;
+import static systems.uom.common.USCustomary.KNOT;
+import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
@@ -29,7 +29,7 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import javax.measure.converter.UnitConverter;
+import javax.measure.UnitConverter;
 
 public class SegmentDTO {
 

@@ -12,10 +12,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.enums;
 
-import static javax.measure.unit.NonSI.*;
+import static si.uom.NonSI.*;
+import static systems.uom.common.USCustomary.KNOT;
+import static systems.uom.common.USCustomary.MILE_PER_HOUR;
+import static tec.uom.se.unit.Units.KILOMETRE_PER_HOUR;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
-import javax.measure.converter.UnitConverter;
+import javax.measure.UnitConverter;
 
 public enum VelocityType {
 
@@ -42,11 +45,11 @@ public enum VelocityType {
         switch (this){
 
             case KPH:
-                unitConverter = KNOT.getConverterTo(KILOMETERS_PER_HOUR);
+                unitConverter = KNOT.getConverterTo(KILOMETRE_PER_HOUR);
                 break;
 
             case MPH:
-                unitConverter = KNOT.getConverterTo(MILES_PER_HOUR);
+                unitConverter = KNOT.getConverterTo(MILE_PER_HOUR);
                 break;
 
             case KTS:
