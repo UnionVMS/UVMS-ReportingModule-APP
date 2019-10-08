@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>fish.focus.uvms.maven</groupId>
-		<artifactId>uvms-pom</artifactId>
-		<version>1.21</version>
-	</parent>
+    <parent>
+        <groupId>fish.focus.uvms.maven</groupId>
+        <artifactId>uvms-pom</artifactId>
+        <version>1.21</version>
+    </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
     <artifactId>reporting</artifactId>
@@ -18,7 +18,7 @@
     <properties>
 
         <sonar.exclusions>src/main/webapp/apidocs/**/*</sonar.exclusions>
-		<release.branch.name>uvms-1.0.0</release.branch.name>
+        <release.branch.name>uvms-1.0.0</release.branch.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mockito.version>1.9.5</mockito.version>
@@ -44,7 +44,7 @@
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.43</rules.model.version>
-		<reporting.model.version>1.0.4</reporting.model.version>
+        <reporting.model.version>1.0.4</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>1.0.9</activity.model.version>
 
@@ -78,12 +78,12 @@
 
         <dependencies>
 
-			<dependency>
-				<groupId>fish.focus.uvms.maven</groupId>
-				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>1.21</version>
-				<type>pom</type>
-			</dependency>
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-monitoring-deps</artifactId>
+                <version>1.21</version>
+                <type>pom</type>
+            </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -98,10 +98,10 @@
             </dependency>
         
             <dependency>
-            	<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
-            	<artifactId>spatial-model</artifactId>
-            	<version>${spatial.model.version}</version>
-        	</dependency>  
+                <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
+                <artifactId>spatial-model</artifactId>
+                <version>${spatial.model.version}</version>
+            </dependency>  
         
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
@@ -117,8 +117,8 @@
             </dependency>
 
             <dependency>
-	            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-	            <artifactId>uvms-commons-message</artifactId>
+                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                <artifactId>uvms-commons-message</artifactId>
                 <version>${uvms.commons.version}</version>
             </dependency>
 
@@ -171,21 +171,21 @@
                 <version>3.7</version>
             </dependency>
 
-			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-databind</artifactId>
-			    <version>2.7.9.1</version>
-			</dependency>
-			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-annotations</artifactId>
-			    <version>2.7.0</version>
-			</dependency>
-			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-core</artifactId>
-			    <version>2.7.9</version>
-			</dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.7.9.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.7.9</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.mapstruct</groupId>
@@ -284,31 +284,31 @@
                 <version>3.0.11.Final</version>
                 <scope>test</scope>
                 <exclusions>
-                	<exclusion>
-                		<groupId>commons-logging</groupId>
-                		<artifactId>commons-logging</artifactId>
-                	</exclusion>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             
             <dependency>
-            	<groupId>org.jboss.resteasy</groupId>
-			    <artifactId>resteasy-jaxb-provider</artifactId>
-			  	<version>3.0.11.Final</version>
-			  	<exclusions>
-			  		<exclusion>
-			  			 <groupId>com.sun.xml.bind</groupId>
-    					 <artifactId>jaxb-impl</artifactId>			  			
-			  		</exclusion>
-			  	</exclusions>
-			</dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxb-provider</artifactId>
+                <version>3.0.11.Final</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-impl</artifactId>			  			
+                    </exclusion>
+                </exclusions>
+            </dependency>
 			
-			<dependency>
-			    <groupId>org.jboss.resteasy</groupId>
-			    <artifactId>jaxrs-api</artifactId>
-			    <version>3.0.11.Final</version>
-			    <scope>test</scope>
-			</dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>jaxrs-api</artifactId>
+                <version>3.0.11.Final</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>pl.pragmatists</groupId>
@@ -371,7 +371,7 @@
     </repositories>
 
  	
-	<profiles>
+    <profiles>
         <profile>
             <id>dg-mare</id>
             <distributionManagement>
@@ -388,7 +388,7 @@
             </distributionManagement>
 
             <properties>
-            	<scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</scm.connection>
+                <scm.connection>scm:git:https://emserveje@webgate.ec.europa.eu/CITnet/stash/scm/unionvms/uvms-reportingmodule-app.git</scm.connection>
             </properties>
         </profile>
 
@@ -435,6 +435,28 @@
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>wildfly-local</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>2.0.1.Final</version>
+                     
+                        <configuration>
+                            <filename>${project.build.finalName}.${project.packaging}</filename>
+                            <targetDir>${targetDir}</targetDir>
+                            <hostname>${hostname}</hostname>
+                            <port>${port}</port>
+                            <username>${wildfly-username}</username>
+                            <password>${wildfly-password}</password>
+                            <force>true</force>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -507,11 +529,11 @@
                     <aggregate>true</aggregate>
                 </configuration>
             </plugin>
-			 <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven.release.plugin.version}</version>
-               <dependencies>
+                <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
                         <artifactId>maven-scm-provider-gitexe</artifactId>
