@@ -15,8 +15,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 import static systems.uom.common.USCustomary.KNOT;
 import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.io.ParseException;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.io.ParseException;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
