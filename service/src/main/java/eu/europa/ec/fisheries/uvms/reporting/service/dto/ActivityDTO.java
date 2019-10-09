@@ -14,8 +14,8 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.io.ParseException;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.io.ParseException;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;

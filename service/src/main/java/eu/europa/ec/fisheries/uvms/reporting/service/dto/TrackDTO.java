@@ -12,24 +12,24 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.operation.distance.DistanceOp;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.operation.distance.DistanceOp;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.Setter;
 
-import javax.measure.converter.UnitConverter;
+import javax.measure.UnitConverter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.measure.unit.NonSI.KNOT;
-import static javax.measure.unit.NonSI.NAUTICAL_MILE;
+import static systems.uom.common.USCustomary.KNOT;
+import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 
 public class TrackDTO {
 

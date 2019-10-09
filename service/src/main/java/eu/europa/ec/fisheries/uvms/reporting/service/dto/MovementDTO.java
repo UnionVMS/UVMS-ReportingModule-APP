@@ -12,8 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
@@ -31,11 +31,11 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import javax.measure.converter.UnitConverter;
+import javax.measure.UnitConverter;
 import java.util.Date;
 
-import static javax.measure.unit.NonSI.KNOT;
-import static javax.measure.unit.NonSI.NAUTICAL_MILE;
+import static systems.uom.common.USCustomary.KNOT;
+import static systems.uom.common.USCustomary.NAUTICAL_MILE;
 
 public class MovementDTO {
 
