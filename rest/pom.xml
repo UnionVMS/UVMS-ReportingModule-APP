@@ -28,17 +28,7 @@
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
 		</dependency>
-		<dependency>
-		    <groupId>net.sf.ehcache.internal</groupId>
-		    <artifactId>ehcache-core</artifactId>
-            <version>2.10.6</version>
-            <exclusions>
-            	<exclusion>
-            		 <groupId>org.slf4j</groupId>
-    				 <artifactId>slf4j-api</artifactId>
-            	</exclusion>
-            </exclusions>   
-        </dependency>		
+	
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
             <artifactId>spatial-model</artifactId>
@@ -53,42 +43,7 @@
   				</exclusion>            	
             </exclusions>
         </dependency>
-                        
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-message</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-date</artifactId>
-            <version>${uvms.commons.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-service</artifactId>
-            <version>${uvms.commons.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-domain</artifactId>
-            <version>${uvms.commons.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-dao</artifactId>
-            <version>${uvms.commons.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-geometry</artifactId>
-            <version>${uvms.commons.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-rest</artifactId>
@@ -96,33 +51,10 @@
             <scope>provided</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>${project.parent.artifactId}-service</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
         </dependency>
 
         <dependency>
@@ -140,11 +72,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <dependency>
@@ -187,21 +114,6 @@
             <artifactId>assertj-core</artifactId>
             <version>3.13.2</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxb-provider</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>jaxrs-api</artifactId>
         </dependency>
 
         <dependency>
