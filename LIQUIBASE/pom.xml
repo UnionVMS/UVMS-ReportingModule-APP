@@ -52,8 +52,8 @@
                 <db.user>REPORTING</db.user>
                 <db.passwd>REPORTING</db.passwd>
                 <db.defaultSchema>REPORTING</db.defaultSchema>
-                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
-                <db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+                <db.changeLogFile>${project.basedir}/changelog/db-changelog-master.xml</db.changeLogFile>
+                <db.outputFile>${project.basedir}/changelog/generatedChangelog.xml</db.outputFile>
                 <driver.groupId>com.oracle</driver.groupId>
                 <driver.artifactId>ojdbc7</driver.artifactId>
                 <driver.version>12.1.0.2.0</driver.version>
@@ -77,8 +77,8 @@
                 <db.user>reporting</db.user>
                 <db.passwd>reporting</db.passwd>
                 <db.defaultSchema>reporting</db.defaultSchema>
-                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
-                <db.outputFile>changelog/generatedChangelog.xml</db.outputFile>
+                <db.changeLogFile>${project.basedir}/changelog/db-changelog-master.xml</db.changeLogFile>
+                <db.outputFile>${project.basedir}/changelog/generatedChangelog.xml</db.outputFile>
                 <driver.groupId>org.postgresql</driver.groupId>
                 <driver.artifactId>postgresql</driver.artifactId>
                 <driver.version>42.2.1.jre7</driver.version>
@@ -174,8 +174,8 @@
                 </plugins>
             </build>
             <properties>
-                <db.changeLogFile>changelog/db-changelog-master.xml</db.changeLogFile>
-                <db.docker.url>offline:postgresql?changeLogFile=target/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
+
+                <db.docker.url>offline:postgresql?changeLogFile=${project.build.directory}/databasechangelog.csv&amp;outputLiquibaseSql=true</db.docker.url>
             </properties>
         </profile>
     </profiles>
