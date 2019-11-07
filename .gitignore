@@ -5,3 +5,7 @@ container-conf/lib/*
 model/*
 /rest/src/main/webapp/apidocs
 .flattened-pom.xml
+.project
+.classpath
+.settings/
+pom.xml.versionsBackup
