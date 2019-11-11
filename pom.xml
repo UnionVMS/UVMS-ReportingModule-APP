@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fish.focus.uvms.maven</groupId>
 		<artifactId>uvms-pom</artifactId>
-		<version>2.2</version>
+		<version>2.4</version>
 	</parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
@@ -36,6 +36,7 @@
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <activity.model.version>1.0.10</activity.model.version>
+        <fish.focus.parent.version>2.4</fish.focus.parent.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
@@ -65,37 +66,43 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.18</version>
+                <version>1.18.10</version>
             </dependency>
 
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-monitoring-deps</artifactId>
-				<version>2.2</version>
+				<version>${fish.focus.parent.version}</version>
 				<type>pom</type>
 			</dependency>
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-gis-deps</artifactId>
-                <version>2.2</version>
+                <version>${fish.focus.parent.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-test-deps</artifactId>
-                <version>2.2</version>
+                <version>${fish.focus.parent.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-arquillian-deps</artifactId>
-                <version>2.2</version>
+                <version>${fish.focus.parent.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-logging-deps</artifactId>
-                <version>2.2</version>
+                <version>${fish.focus.parent.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-java11-deps</artifactId>
+                <version>${fish.focus.parent.version}</version>
                 <type>pom</type>
             </dependency>
 
@@ -332,10 +339,10 @@
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>2.9</version>
                 </plugin>
-                <plugin>
+                <!--plugin>         This has been disabled due to a compatibility issues between various versions of open jdk and the javadoc plugin. For more info, see: https://issues.apache.org/jira/browse/MJAVADOC-615
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.1.1</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -343,11 +350,12 @@
                                 <goal>jar</goal>
                             </goals>
                             <configuration>
-                                <additionalparam>${javadoc.opts}</additionalparam>
+                                <source>8</source>
+                                <additionalOptions>${javadoc.opts}</additionalOptions>
                             </configuration>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin-->
             </plugins>
         </pluginManagement>
 
