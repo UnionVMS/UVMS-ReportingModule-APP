@@ -24,7 +24,7 @@
         <jackson.version>2.9.9</jackson.version>
         <asset.version>6.0.65</asset.version>
         <audit.model.version>4.1.4</audit.model.version>
-        <movement.model.version>5.2.23-UVMS</movement.model.version>
+        <movement.model.version>5.2.35-UVMS</movement.model.version>
         <spatial.model.version>2.0.5-UVMS</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
