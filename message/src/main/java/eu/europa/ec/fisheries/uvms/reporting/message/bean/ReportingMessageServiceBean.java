@@ -16,32 +16,27 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
 import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.reporting.message.event.ReportingMessageEvent;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
-import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
-import lombok.extern.slf4j.Slf4j;
 
 @Stateless
 @LocalBean
-@Slf4j
 public class ReportingMessageServiceBean extends AbstractProducer {
 
     public String getDestinationName() {
         return MessageConstants.QUEUE_REPORTING_EVENT;
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent messageWrap) {
-        try {
-            String data = JAXBMarshaller.marshall(messageWrap.getFault());
-            sendResponseMessageToSender(messageWrap.getMessage(), data);
-        } catch (MessageException | ReportingModelException e) {
-            log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace(), e);
-        }
-    }
+//    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+//    public void sendModuleErrorResponseMessage(@Observes @ReportingMessageErrorEvent ReportingMessageEvent messageWrap) {
+//        try {
+//            String data = JAXBMarshaller.marshall(messageWrap.getFault());
+//            sendResponseMessageToSender(messageWrap.getMessage(), data);
+//        } catch (MessageException | ReportingModelException e) {
+//            log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace(), e);
+//        }
+//    }
 }

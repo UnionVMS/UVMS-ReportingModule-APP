@@ -30,7 +30,7 @@
         <logback.core.version>1.2.3</logback.core.version>
         <asset.model.version>4.0.10</asset.model.version>
         <audit.model.version>4.0.5</audit.model.version>
-        <movement.model.version>4.0.8</movement.model.version>
+        <movement.service.version>5.2.36-UVMS</movement.service.version>
         <spatial.model.version>1.0.7</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
@@ -48,6 +48,7 @@
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>1.0.9</activity.model.version>
         <uvms.config.version>4.0.1</uvms.config.version>
+        <jts.version>1.16.1</jts.version>
 
         <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
     </properties>
@@ -73,6 +74,11 @@
     <dependencyManagement>
 
         <dependencies>
+            <dependency>
+                <groupId>org.locationtech.jts</groupId>
+                <artifactId>jts-core</artifactId>
+                <version>${jts.version}</version>
+            </dependency>
 
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
@@ -138,8 +144,8 @@
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-                <artifactId>movement-model</artifactId>
-                <version>${movement.model.version}</version>
+                <artifactId>movement-service</artifactId>
+                <version>${movement.service.version}</version>
             </dependency>
 
             <dependency>

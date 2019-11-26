@@ -13,81 +13,14 @@
     </parent>
     
     <dependencies>
-
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-core</artifactId>
-            <version>3.4.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-            <version>1.6</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-inject</artifactId>
-            <version>3.4.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-mock</artifactId>
-            <version>3.4.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-			<groupId>fish.focus.uvms.maven</groupId>
-			<artifactId>uvms-pom-monitoring-deps</artifactId>
-			<type>pom</type>
-		</dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-message</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>reporting-model</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
-            <artifactId>spatial-model</artifactId>
-        </dependency>        
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-model</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-            <artifactId>movement-model</artifactId>
+            <artifactId>movement-service</artifactId>
         </dependency>
 
         <dependency>
@@ -121,50 +54,7 @@
 	<profiles>
 		<!-- Run the test only : mvn clean jmeter:jmeter -P jmeter-test -->
 		<!-- Run with analysis report : mvn clean verify -P jmeter-test -->
-		<profile>
-			<id>jmeter-test</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.lazerycode.jmeter</groupId>
-						<artifactId>jmeter-maven-plugin</artifactId>
-						<version>1.9.1</version>
-						<executions>
-							<execution>
-								<id>jmeter-test</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>jmeter</goal>
-								</goals>
-							</execution>
-						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>org.apache.activemq</groupId>
-								<artifactId>activemq-all</artifactId>
-								<version>5.12.1</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-					<plugin>
-						<groupId>com.lazerycode.jmeter</groupId>
-						<artifactId>jmeter-analysis-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>analyze</goal>
-								</goals>
-								<configuration>
-									<source>${project.build.directory}/**/*.jtl</source>
-									<targetDirectory>${project.build.directory}/jmeter/analysis</targetDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+
 	</profiles>
     
 </project>
