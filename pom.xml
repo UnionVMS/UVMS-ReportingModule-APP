@@ -49,12 +49,11 @@
         <activity.model.version>1.0.9</activity.model.version>
         <uvms.config.version>4.0.1</uvms.config.version>
         <jts.version>1.16.1</jts.version>
-
-        <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</scm.connection>
+        <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
     </properties>
 
     <scm>
-        <connection>${scm.connection}</connection>
+        <connection>scm:git:https://github.com/UnionVMS/UVMS-ReportingModule-APP.git</connection>
         <tag>HEAD</tag>
     </scm>
 
@@ -528,5 +527,6 @@
         <module>service</module>
         <module>message</module>
         <module>module</module>
+        <module>LIQUIBASE</module>
     </modules>
 </project>

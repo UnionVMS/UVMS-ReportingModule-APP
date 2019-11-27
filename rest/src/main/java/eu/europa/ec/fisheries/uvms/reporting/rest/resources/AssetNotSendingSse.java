@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingEvent;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.VesselNotSendingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +36,13 @@ public class AssetNotSendingSse {
         this.sseBroadcaster = sse.newBroadcaster();
     }
 
-    public void updatedAsset(@Observes(during = TransactionPhase.AFTER_SUCCESS) @VesselNotSendingEvent AssetNotSendingEvent event) {
+    public void updatedAsset(@Observes(during = TransactionPhase.AFTER_SUCCESS) @VesselNotSendingEvent Incident event) {
         try {
             OutboundSseEvent sseEvent = eventBuilder
                     .name("Asset Not Sending Event")
                     .id("" + System.currentTimeMillis())
                     .mediaType(MediaType.APPLICATION_JSON_PATCH_JSON_TYPE)
-                    .data(AssetNotSendingEvent.class, event)
+                    .data(Incident.class, event)
                     //.reconnectDelay(3000) //this one is optional and governs how long the client should wait b4 attempting to reconnect to this server
                     .comment("Updated Asset")
                     .build();

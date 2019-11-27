@@ -12,8 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetNotSendingEventBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingAudit;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingEvent;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -32,14 +32,14 @@ public class AssetNotSendingResource {
 
     @GET
     public Response getAssetNotSendingEvents() {
-        List<AssetNotSendingEvent> notSendingList = assetNotSendingEventBean.getAssetNotSendingList();
+        List<Incident> notSendingList = assetNotSendingEventBean.getAssetNotSendingList();
         return Response.ok(notSendingList).build();
     }
 
     @GET
     @Path("assetNotSendingEventChanges/{eventId}")
     public Response getAssetNotSendingEventChanges(@PathParam("eventId") UUID eventId) {
-        List<AssetNotSendingAudit> eventChanges = assetNotSendingEventBean.getAssetNotSendingEventChanges(eventId);
+        List<IncidentLog> eventChanges = assetNotSendingEventBean.getAssetNotSendingEventChanges(eventId);
         return Response.ok(eventChanges).build();
     }
 }

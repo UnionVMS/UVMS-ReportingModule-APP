@@ -4,3 +4,4 @@ target/*
 container-conf/lib/*
 model/*
 /rest/src/main/webapp/apidocs
+.idea/

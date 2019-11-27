@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.domain;
+package eu.europa.ec.fisheries.uvms.reporting.service.domain.enums;
 
 public enum  StatusEnum {
     POLLED,

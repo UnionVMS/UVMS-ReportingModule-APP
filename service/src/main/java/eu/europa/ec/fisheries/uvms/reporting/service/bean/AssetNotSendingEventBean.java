@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingAudit;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingEvent;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.VesselNotSendingEvent;
 
 import javax.ejb.Stateless;
@@ -16,10 +16,10 @@ public class AssetNotSendingEventBean {
 
     @Inject
     @VesselNotSendingEvent
-    private Event<AssetNotSendingEvent> assetNotSendingEventEvent;
+    private Event<Incident> assetNotSendingEventEvent;
 
 
-    public List<AssetNotSendingEvent> getAssetNotSendingList() {
+    public List<Incident> getAssetNotSendingList() {
         // todo: get all assets not sending
 
         // todo: get micro movements
@@ -29,7 +29,7 @@ public class AssetNotSendingEventBean {
         return new ArrayList<>();
     }
 
-    public List<AssetNotSendingAudit> getAssetNotSendingEventChanges(UUID eventId) {
+    public List<IncidentLog> getAssetNotSendingEventChanges(UUID eventId) {
         // todo: get change audit list for a given event id
         return new ArrayList<>();
     }
