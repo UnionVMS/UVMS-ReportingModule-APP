@@ -12,18 +12,17 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetNotSendingEventBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingAudit;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingEvent;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.UUID;
 
-@Path("/asset-not-sending")
+@Path("assetNotSendingEvents")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AssetNotSendingResource {
@@ -33,7 +32,14 @@ public class AssetNotSendingResource {
 
     @GET
     public Response getAssetNotSendingEvents() {
-        assetNotSendingEventBean.getAssetNotSendingList();
-        return Response.ok("").build();
+        List<AssetNotSendingEvent> notSendingList = assetNotSendingEventBean.getAssetNotSendingList();
+        return Response.ok(notSendingList).build();
+    }
+
+    @GET
+    @Path("assetNotSendingEventChanges/{eventId}")
+    public Response getAssetNotSendingEventChanges(@PathParam("eventId") UUID eventId) {
+        List<AssetNotSendingAudit> eventChanges = assetNotSendingEventBean.getAssetNotSendingEventChanges(eventId);
+        return Response.ok(eventChanges).build();
     }
 }
