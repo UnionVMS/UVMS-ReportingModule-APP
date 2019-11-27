@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 
 import eu.europa.ec.fisheries.uvms.movement.service.dto.MicroMovement;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
 import javax.persistence.*;
@@ -43,7 +43,7 @@ public class Incident {
 
     @Column(name = "incident_type")
     @Enumerated(value = EnumType.STRING)
-    private IncidentEnum incidentType;
+    private IncidentTypeEnum incidentType;
 
     @Transient
     private MicroMovement microMovement;
@@ -148,11 +148,11 @@ public class Incident {
         this.status = status;
     }
 
-    public IncidentEnum getIncidentType() {
+    public IncidentTypeEnum getIncidentType() {
         return incidentType;
     }
 
-    public void setIncidentType(IncidentEnum incidentType) {
+    public void setIncidentType(IncidentTypeEnum incidentType) {
         this.incidentType = incidentType;
     }
 }

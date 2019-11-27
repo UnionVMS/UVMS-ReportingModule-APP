@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class IncidentLog {
 
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
-    private EventEnum eventType;
+    private EventTypeEnum eventType;
 
     public UUID getId() {
         return id;
@@ -48,11 +48,11 @@ public class IncidentLog {
         this.message = message;
     }
 
-    public EventEnum getEventType() {
+    public EventTypeEnum getEventType() {
         return eventType;
     }
 
-    public void setEventType(EventEnum eventType) {
+    public void setEventType(EventTypeEnum eventType) {
         this.eventType = eventType;
     }
 }

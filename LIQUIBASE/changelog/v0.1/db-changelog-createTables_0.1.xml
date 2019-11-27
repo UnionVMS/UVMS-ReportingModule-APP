@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd"
-                   logicalFilePath="changelog/db-changelog-master.xml">
+                   logicalFilePath="changelog/db-changelog-createTables_0.1.xml">
 
-    <changeSet author="kasim" id="reporting-version-1.0">
-        <tagDatabase tag="reporting-version-1.0"/>
-    </changeSet>
-
-    <include file="v1.0\db-changelog-createTables_0.1.xml" relativeToChangelogFile="true"/>
+    <include file="\schema\tables\incident.xml"/>
+    <include file="\schema\tables\incident_log.xml"/>
 
 </databaseChangeLog>
