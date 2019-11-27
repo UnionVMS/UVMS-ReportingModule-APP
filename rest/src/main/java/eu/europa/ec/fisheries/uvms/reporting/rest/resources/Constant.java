@@ -11,15 +11,12 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-public class Constant {
+class Constant {
+    static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
 
-    public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
-    public static final String ACCESS_CONTROL_ALLOW_METHODS_ALL = "*";
+    static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+    static final String ACCESS_CONTROL_ALLOWED_METHODS = "GET, POST, DELETE, PUT, OPTIONS";
 
-    public static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
-    public static final String ACCESS_CONTROL_ALLOWED_METHODS = "GET, POST, DELETE, PUT, OPTIONS";
-
-    public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-    public static final String ACCESS_CONTROL_ALLOW_HEADERS_ALL = "Content-Type, X-Requested-With, Authorization, Cache-Control";
-
+    static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
+    static final String ACCESS_CONTROL_ALLOW_HEADERS_ALL = "Content-Type, X-Requested-With, Authorization, Cache-Control";
 }

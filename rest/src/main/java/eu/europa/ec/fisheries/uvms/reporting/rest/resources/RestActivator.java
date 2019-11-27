@@ -17,9 +17,6 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @ApplicationPath("/rest")
 public class RestActivator extends Application {
 
@@ -27,7 +24,7 @@ public class RestActivator extends Application {
     private final Set<Class<?>> set = new HashSet<>();
 
     public RestActivator() {
-        set.add(AssetNotSendingResource.class);
+        set.add(IncidentResource.class);
     }
 
     @Override

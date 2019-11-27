@@ -22,15 +22,16 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.UUID;
 
-@Path("assetNotSendingEvents")
+@Path("incident")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class AssetNotSendingResource {
+public class IncidentResource {
 
     @Inject
     private AssetNotSendingEventBean assetNotSendingEventBean;
 
     @GET
+    @Path("assetNotSendingEvents")
     public Response getAssetNotSendingEvents() {
         List<Incident> notSendingList = assetNotSendingEventBean.getAssetNotSendingList();
         return Response.ok(notSendingList).build();
