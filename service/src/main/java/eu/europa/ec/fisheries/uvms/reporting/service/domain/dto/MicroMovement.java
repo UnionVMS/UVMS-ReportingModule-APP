@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.domain;
+package eu.europa.ec.fisheries.uvms.reporting.service.domain.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

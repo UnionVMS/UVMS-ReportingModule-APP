@@ -1,6 +1,6 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.domain;
+package eu.europa.ec.fisheries.uvms.reporting.service.domain.enums;
 
-public enum EventTypeEnum {
+public enum EventEnum {
 
     CALLED_NO_RESPONSE("Båt har blivit uppringt, skäppare svarar inte"),
     ASSET_NOT_SENDING(""),
@@ -8,7 +8,7 @@ public enum EventTypeEnum {
 
     private String message;
 
-    private EventTypeEnum(String message) {
+    private EventEnum(String message) {
         this.message = message;
     }
 

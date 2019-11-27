@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd"
+                   logicalFilePath="changelog/v1.0/inserCustomCodes.xml">
+
+    <changeSet author="kasim" id="Incident Log">
+        <createTable tableName="incident_log">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="ans_event_pk"/>
+            </column>
+            <column name="event_id" type="BIGINT" />
+            <column name="message" type="VARCHAR(255)"/>
+            <column name="event_type" type="VARCHAR(60)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,14 +1,17 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.domain;
+package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
+
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventEnum;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ans_audit")
-public class AssetNotSendingAudit {
+@Table(name = "incident_log")
+public class IncidentLog {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", name = "id")
     private UUID id;
 
     @Column(name = "event_id")
@@ -19,12 +22,7 @@ public class AssetNotSendingAudit {
 
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
-    private EventTypeEnum eventType;
-
-    @PrePersist
-    public void prePersist() {
-        id = UUID.randomUUID();
-    }
+    private EventEnum eventType;
 
     public UUID getId() {
         return id;
@@ -50,11 +48,11 @@ public class AssetNotSendingAudit {
         this.message = message;
     }
 
-    public EventTypeEnum getEventType() {
+    public EventEnum getEventType() {
         return eventType;
     }
 
-    public void setEventType(EventTypeEnum eventType) {
+    public void setEventType(EventEnum eventType) {
         this.eventType = eventType;
     }
 }

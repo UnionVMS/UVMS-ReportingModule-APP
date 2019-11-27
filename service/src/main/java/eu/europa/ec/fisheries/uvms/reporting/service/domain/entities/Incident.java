@@ -1,22 +1,25 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.domain;
+package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 
 import eu.europa.ec.fisheries.uvms.movement.service.dto.MicroMovement;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ans_event")
-public class AssetNotSendingEvent {
+@Table(name = "incident")
+public class Incident {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", name = "id")
     private UUID id;
 
     @Column(name = "asset_id")
     private UUID assetId;
 
-    @Column(name = "mobileterminal_id")
+    @Column(name = "mobterm_id")
     private UUID mobileTerminalId;
 
     @Column(name = "asset_name")
@@ -38,17 +41,16 @@ public class AssetNotSendingEvent {
     @Enumerated(value = EnumType.STRING)
     private StatusEnum status;
 
+    @Column(name = "incident_type")
+    @Enumerated(value = EnumType.STRING)
+    private IncidentEnum incidentType;
+
     @Transient
     private MicroMovement microMovement;
 
     @PrePersist
-    public void prePersist() {
-        id = UUID.randomUUID();
-        setLatLong();
-    }
-
     @PreUpdate
-    public void preUpdate() {
+    public void preUpsert() {
         setLatLong();
     }
 
@@ -144,5 +146,13 @@ public class AssetNotSendingEvent {
 
     public void setStatus(StatusEnum status) {
         this.status = status;
+    }
+
+    public IncidentEnum getIncidentType() {
+        return incidentType;
+    }
+
+    public void setIncidentType(IncidentEnum incidentType) {
+        this.incidentType = incidentType;
     }
 }
