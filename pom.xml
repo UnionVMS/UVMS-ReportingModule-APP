@@ -72,7 +72,6 @@
     </distributionManagement>
 
     <dependencyManagement>
-
         <dependencies>
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
@@ -331,9 +330,9 @@
     <dependencies>
 
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee.version}</version>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>8.0.0</version>
             <scope>provided</scope>
         </dependency>
 
