@@ -9,6 +9,6 @@
         <tagDatabase tag="reporting-version-1.0"/>
     </changeSet>
 
-    <include file="v1.0\db-changelog-createTables_0.1.xml" relativeToChangelogFile="true"/>
+    <include file="v0.1\db-changelog-createTables_0.1.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

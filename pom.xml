@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fish.focus.uvms.maven</groupId>
 		<artifactId>uvms-pom</artifactId>
-		<version>1.18</version>
+		<version>2.4</version>
 	</parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.reporting</groupId>
@@ -16,6 +16,10 @@
     <url>http://www.your.site.com/</url>
 
     <properties>
+
+        <liquibase.core.version>3.5.1</liquibase.core.version>
+        <postgresql.version>9.4-1201-jdbc41</postgresql.version>
+        <ojdbc6.version>11.2.0.4</ojdbc6.version>
 
         <sonar.exclusions>src/main/webapp/apidocs/**/*</sonar.exclusions>
 		<release.branch.name>uvms-1.0.0</release.branch.name>
@@ -50,6 +54,8 @@
         <uvms.config.version>4.0.1</uvms.config.version>
         <jts.version>1.16.1</jts.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
+        <docker.liquibase.db.user>reporting</docker.liquibase.db.user>
+        <docker.liquibase.db.passwd>reporting</docker.liquibase.db.passwd>
     </properties>
 
     <scm>
@@ -72,6 +78,25 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${ojdbc6.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
