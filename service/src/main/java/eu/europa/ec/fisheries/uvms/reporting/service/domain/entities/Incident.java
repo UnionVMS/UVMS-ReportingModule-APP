@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -53,6 +54,10 @@ public class Incident {
     @Column(name = "incident_type")
     @Enumerated(value = EnumType.STRING)
     private IncidentTypeEnum incidentType;
+
+    @NotNull
+    @Column(name = "create_date")
+    private Instant createDate;
 
     public UUID getId() {
         return id;
@@ -132,5 +137,13 @@ public class Incident {
 
     public void setIncidentType(IncidentTypeEnum incidentType) {
         this.incidentType = incidentType;
+    }
+
+    public Instant getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Instant createDate) {
+        this.createDate = createDate;
     }
 }

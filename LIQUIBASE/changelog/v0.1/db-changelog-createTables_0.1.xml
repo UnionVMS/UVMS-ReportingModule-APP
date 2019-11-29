@@ -20,6 +20,7 @@
             <column name="altitude" type="FLOAT8"/>
             <column name="status" type="VARCHAR(60)"/>
             <column name="incident_type" type="VARCHAR(60)"/>
+            <column name="create_date" type="TIMESTAMP WITH TIME ZONE"/>
         </createTable>
 
         <createTable tableName="incident_log">
@@ -29,6 +30,7 @@
             <column name="event_id" type="BIGINT" />
             <column name="message" type="VARCHAR(255)"/>
             <column name="event_type" type="VARCHAR(60)"/>
+            <column name="create_date" type="TIMESTAMP WITH TIME ZONE"/>
         </createTable>
     </changeSet>
 

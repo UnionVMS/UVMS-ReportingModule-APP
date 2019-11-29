@@ -3,6 +3,8 @@ package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +25,10 @@ public class IncidentLog {
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
     private EventTypeEnum eventType;
+
+    @NotNull
+    @Column(name = "create_date")
+    private Instant createDate;
 
     public UUID getId() {
         return id;
@@ -54,5 +60,13 @@ public class IncidentLog {
 
     public void setEventType(EventTypeEnum eventType) {
         this.eventType = eventType;
+    }
+
+    public Instant getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Instant createDate) {
+        this.createDate = createDate;
     }
 }
