@@ -42,7 +42,7 @@ public class Incident {
 
     @NotNull
     @Column(name = "altitude")
-    private double altitude;
+    private double altitude = 0;
 
     @NotNull
     @Column(name = "status")
