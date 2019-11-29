@@ -27,6 +27,10 @@ public class Incident {
     private UUID mobileTerminalId;
 
     @NotNull
+    @Column(name = "ticket_id")
+    private UUID ticketId;
+
+    @NotNull
     @Column(name = "asset_name")
     private String assetName;
 
@@ -124,6 +128,14 @@ public class Incident {
         this.mobileTerminalId = mobileTerminalId;
     }
 
+    public UUID getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(UUID ticketId) {
+        this.ticketId = ticketId;
+    }
+
     public StatusEnum getStatus() {
         return status;
     }
@@ -156,6 +168,7 @@ public class Incident {
         return Objects.equals(id, that.id) &&
                 Objects.equals(assetId, that.assetId) &&
                 Objects.equals(mobileTerminalId, that.mobileTerminalId) &&
+                Objects.equals(ticketId, that.ticketId) &&
                 Objects.equals(assetName, that.assetName) &&
                 Objects.equals(longitude, that.longitude) &&
                 Objects.equals(latitude, that.latitude) &&

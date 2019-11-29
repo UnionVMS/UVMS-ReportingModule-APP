@@ -13,6 +13,7 @@
             </column>
             <column name="asset_id" type="BIGINT" />
             <column name="mobterm_id" type="BIGINT"/>
+            <column name="ticket_id" type="BIGINT"/>
             <column name="asset_name" type="VARCHAR(60)"/>
             <column name="ircs" type="VARCHAR(60)"/>
             <column name="longitude" type="FLOAT8"/>
