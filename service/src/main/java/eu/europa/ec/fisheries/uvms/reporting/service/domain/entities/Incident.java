@@ -1,10 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 
-import eu.europa.ec.fisheries.uvms.movement.service.dto.MicroMovement;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
@@ -16,57 +16,43 @@ public class Incident {
     @Column(columnDefinition = "uuid", name = "id")
     private UUID id;
 
+    @NotNull
     @Column(name = "asset_id")
     private UUID assetId;
 
+    @NotNull
     @Column(name = "mobterm_id")
     private UUID mobileTerminalId;
 
+    @NotNull
     @Column(name = "asset_name")
     private String assetName;
 
+    @NotNull
     @Column(name = "ircs")
     private String ircs;
 
+    @NotNull
     @Column(name = "longitude")
     private double longitude;
 
+    @NotNull
     @Column(name = "latitude")
     private double latitude;
 
+    @NotNull
     @Column(name = "altitude")
     private double altitude;
 
+    @NotNull
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private StatusEnum status;
 
+    @NotNull
     @Column(name = "incident_type")
     @Enumerated(value = EnumType.STRING)
     private IncidentTypeEnum incidentType;
-
-    @Transient
-    private MicroMovement microMovement;
-
-    @PrePersist
-    @PreUpdate
-    public void preUpsert() {
-        setLatLong();
-    }
-
-    private void setLatLong() {
-        if (microMovement != null && microMovement.getLocation() != null) {
-            if (microMovement.getLocation().getLongitude() != null) {
-                this.longitude = microMovement.getLocation().getLongitude();
-            }
-            if (microMovement.getLocation().getLatitude() != null) {
-                this.latitude = microMovement.getLocation().getLatitude();
-            }
-            if (microMovement.getLocation().getAltitude() != null) {
-                this.altitude = microMovement.getLocation().getLatitude();
-            }
-        }
-    }
 
     public UUID getId() {
         return id;
@@ -98,14 +84,6 @@ public class Incident {
 
     public void setIrcs(String ircs) {
         this.ircs = ircs;
-    }
-
-    public MicroMovement getMicroMovement() {
-        return microMovement;
-    }
-
-    public void setMicroMovement(MicroMovement microMovement) {
-        this.microMovement = microMovement;
     }
 
     public double getLongitude() {
