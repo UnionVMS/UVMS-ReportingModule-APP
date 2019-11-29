@@ -6,6 +6,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -145,5 +146,27 @@ public class Incident {
 
     public void setCreateDate(Instant createDate) {
         this.createDate = createDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Incident that = (Incident) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(assetId, that.assetId) &&
+                Objects.equals(mobileTerminalId, that.mobileTerminalId) &&
+                Objects.equals(assetName, that.assetName) &&
+                Objects.equals(longitude, that.longitude) &&
+                Objects.equals(latitude, that.latitude) &&
+                Objects.equals(status, that.status) &&
+                Objects.equals(incidentType, that.incidentType) &&
+                Objects.equals(createDate, that.createDate) &&
+                Objects.equals(altitude, that.altitude);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -68,5 +69,22 @@ public class IncidentLog {
 
     public void setCreateDate(Instant createDate) {
         this.createDate = createDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IncidentLog that = (IncidentLog) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(eventId, that.eventId) &&
+                Objects.equals(message, that.message) &&
+                Objects.equals(eventType, that.eventType) &&
+                Objects.equals(createDate, that.createDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
