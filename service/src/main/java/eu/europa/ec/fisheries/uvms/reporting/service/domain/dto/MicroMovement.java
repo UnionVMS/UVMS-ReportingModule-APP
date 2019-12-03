@@ -19,8 +19,8 @@ public class MicroMovement implements Serializable {
     private MovementPoint location;
     private Double heading;
     private String guid;
-    @JsonSerialize(using = InstantSerializer.class)
-    @JsonDeserialize(using = MovementInstantDeserializer.class)
+//    @JsonSerialize(using = InstantSerializer.class)
+//    @JsonDeserialize(using = MovementInstantDeserializer.class)
     private Instant timestamp;
     private Double speed;
     private MovementSourceType source;
