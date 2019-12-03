@@ -13,15 +13,27 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+
+import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
 @Stateless
 @Local
 public class RulesProducerBean extends AbstractProducer {
 
+	@Resource(mappedName =  "java:/" + MessageConstants.QUEUE_RULES)
+	private Queue destination;
+
 	public String getDestinationName(){
 		return MessageConstants.QUEUE_MODULE_RULES;
-	}	
+	}
+
+	@Override
+	public Destination getDestination() {
+		return destination;
+	}
 
 }

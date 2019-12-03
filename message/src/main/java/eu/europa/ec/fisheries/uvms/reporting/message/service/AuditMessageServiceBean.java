@@ -13,21 +13,26 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
-/**
- * AuditMessageServiceBean responsible to send an receive messages to and from AUDIT module from Reporting
- * The implementation of sending message to the queue is handled in generic implementation of AbstractProducer
- * 
- * @see {@link AbstractProducer}
- *
- */
 @Stateless
 @LocalBean
 public class AuditMessageServiceBean extends AbstractProducer {
 
+	@Resource(mappedName =  "java:/" + MessageConstants.QUEUE_AUDIT)
+	private Queue destination;
+
 	public String getDestinationName(){
 		return MessageConstants.QUEUE_AUDIT_EVENT;
+	}
+
+	@Override
+	public Destination getDestination() {
+		return destination;
 	}
 }

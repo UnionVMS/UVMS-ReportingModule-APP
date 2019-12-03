@@ -14,14 +14,26 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
+
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jms.Destination;
+import javax.jms.Queue;
 
 @Stateless
 @LocalBean
 public class MovementModuleSenderBean extends AbstractProducer {
 
+	@Resource(mappedName =  "java:/" + MessageConstants.QUEUE_MOVEMENT)
+	private Queue destination;
+
 	public String getDestinationName(){
 		return MessageConstants.QUEUE_MODULE_MOVEMENT;
+	}
+
+	@Override
+	public Destination getDestination() {
+		return destination;
 	}
 }
