@@ -1,15 +1,13 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.message;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.AssetNotSending;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.AssetNotSendingUpdate;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.TicketDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -22,12 +20,7 @@ import javax.jms.TextMessage;
 public class IncidentConsumer implements MessageListener {
 
     @Inject
-    @AssetNotSending
-    private Event<TicketDto> assetNotSendingEvent;
-
-    @Inject
-    @AssetNotSendingUpdate
-    private Event<TicketDto> assetNotSendingUpdateEvent;
+    private IncidentServiceBean incidentServiceBean;
 
     private static final Logger LOG = LoggerFactory.getLogger(IncidentConsumer.class);
 
@@ -37,22 +30,17 @@ public class IncidentConsumer implements MessageListener {
             TextMessage tm = (TextMessage) message;
             TicketDto ticket = tm.getBody(TicketDto.class);
 
-            String eventType = getEventType(message);
+            String eventType = message.getStringProperty("eventType");
             switch (eventType) {
                 case "AssetNotSending":
-                    assetNotSendingEvent.fire(ticket);
+                    incidentServiceBean.createAssetNotSendingIncident(ticket);
                     break;
                 case "AssetNotSendingUpdate":
-                    assetNotSendingUpdateEvent.fire(ticket);
+                    incidentServiceBean.updateAssetNotSendingIncident(ticket);
                     break;
             }
         } catch (JMSException e) {
             LOG.error("Error while reading from Incident Queue and converting message to POJO.");
         }
     }
-
-    private String getEventType(Message message) throws JMSException {
-        return message.getStringProperty("eventType");
-    }
-
 }

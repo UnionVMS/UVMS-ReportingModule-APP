@@ -1,8 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,11 +3,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentLogDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentLogEvent;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
 
 import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.time.Instant;
 import java.util.List;
@@ -23,12 +21,13 @@ public class IncidentLogServiceBean {
         return incidentLogDao.findAllByIncidentId(eventId);
     }
 
-    public void createAssetNotSendingIncident(@Observes @IncidentLogEvent Incident incident) {
+    public void createAssetIncidentLog(Incident incident, IncidentTypeEnum type) {
         IncidentLog log = new IncidentLog();
         log.setCreateDate(Instant.now());
         log.setIncidentId(incident.getId());
-        log.setEventType(EventTypeEnum.ASSET_NOT_SENDING);
-        log.setMessage("New Asset Not Sending event created");
+        log.setEventType(type);
+        log.setMessage(type.getMessage());
         incidentLogDao.save(log);
     }
+
 }
