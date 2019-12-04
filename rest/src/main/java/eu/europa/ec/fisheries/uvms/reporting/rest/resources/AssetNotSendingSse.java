@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.VesselNotSendingEvent;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public class AssetNotSendingSse {
         this.sseBroadcaster = sse.newBroadcaster();
     }
 
-    public void updatedAsset(@Observes(during = TransactionPhase.AFTER_SUCCESS) @VesselNotSendingEvent Incident event) {
+    public void updatedAsset(@Observes(during = TransactionPhase.AFTER_SUCCESS) @AssetNotSendingUpdate Incident event) {
         try {
             OutboundSseEvent sseEvent = eventBuilder
                     .name("Asset Not Sending Event")

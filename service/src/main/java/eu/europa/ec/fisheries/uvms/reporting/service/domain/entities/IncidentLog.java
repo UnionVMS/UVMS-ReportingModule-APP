@@ -10,7 +10,12 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "incident_log")
+@NamedQueries({
+        @NamedQuery(name = IncidentLog.FIND_ALL_BY_INCIDENT_ID, query = "SELECT i FROM IncidentLog i WHERE i.eventId = :eventId"),
+})
 public class IncidentLog {
+
+    public static final String FIND_ALL_BY_INCIDENT_ID = "IncidentLog.findByIncidentId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

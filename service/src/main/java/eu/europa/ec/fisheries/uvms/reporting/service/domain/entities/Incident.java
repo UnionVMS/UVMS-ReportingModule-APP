@@ -11,7 +11,12 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "incident")
+@NamedQueries({
+        @NamedQuery(name = Incident.FIND_BY_INCIDENT_TYPE, query = "SELECT i FROM Incident i WHERE i.incidentType = :incidentType"),
+})
 public class Incident {
+
+    public static final String FIND_BY_INCIDENT_TYPE = "Incident.findByIncidentType";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
