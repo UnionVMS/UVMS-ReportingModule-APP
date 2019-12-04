@@ -34,7 +34,7 @@
         <logback.core.version>1.2.3</logback.core.version>
         <asset.model.version>4.0.10</asset.model.version>
         <audit.model.version>4.0.5</audit.model.version>
-        <movement.service.version>5.2.36-UVMS</movement.service.version>
+        <movement.service.version>5.2.38-UVMS</movement.service.version>
         <spatial.model.version>1.0.7</spatial.model.version>
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
@@ -168,6 +168,12 @@
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-service</artifactId>
+                <version>${movement.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+                <artifactId>movement-client</artifactId>
                 <version>${movement.service.version}</version>
             </dependency>
 

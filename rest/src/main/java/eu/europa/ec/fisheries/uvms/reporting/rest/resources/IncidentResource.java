@@ -11,9 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetNotSendingEventBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentLogServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -27,20 +31,31 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 public class IncidentResource {
 
+    private static final Logger LOG = LoggerFactory.getLogger(IncidentResource.class);
+
     @Inject
-    private AssetNotSendingEventBean assetNotSendingEventBean;
+    private IncidentServiceBean incidentServiceBean;
+
+    @Inject
+    private IncidentLogServiceBean incidentLogServiceBean;
 
     @GET
     @Path("assetNotSendingEvents")
     public Response getAssetNotSendingEvents() {
-        List<Incident> notSendingList = assetNotSendingEventBean.getAssetNotSendingList();
-        return Response.ok(notSendingList).build();
+        try {
+            List<Incident> notSendingList = incidentServiceBean.getAssetNotSendingList();
+            return Response.ok(notSendingList).build();
+        } catch (Exception e) {
+            LOG.error("Error while fetching AssetNotSending List", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(ExceptionUtils.getRootCause(e)).build();
+        }
     }
 
     @GET
     @Path("assetNotSendingEventChanges/{eventId}")
     public Response getAssetNotSendingEventChanges(@PathParam("eventId") UUID eventId) {
-        List<IncidentLog> eventChanges = assetNotSendingEventBean.getAssetNotSendingEventChanges(eventId);
+        List<IncidentLog> eventChanges = incidentLogServiceBean.getAssetNotSendingEventChanges(eventId);
         return Response.ok(eventChanges).build();
     }
 }
