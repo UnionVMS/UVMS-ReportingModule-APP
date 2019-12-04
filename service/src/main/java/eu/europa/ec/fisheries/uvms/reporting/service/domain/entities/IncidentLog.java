@@ -11,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "incident_log")
 @NamedQueries({
-        @NamedQuery(name = IncidentLog.FIND_ALL_BY_INCIDENT_ID, query = "SELECT i FROM IncidentLog i WHERE i.eventId = :eventId"),
+        @NamedQuery(name = IncidentLog.FIND_ALL_BY_INCIDENT_ID, query = "SELECT i FROM IncidentLog i WHERE i.incidentId = :eventId"),
 })
 public class IncidentLog {
 
@@ -22,12 +22,15 @@ public class IncidentLog {
     @Column(columnDefinition = "uuid", name = "id")
     private UUID id;
 
-    @Column(name = "event_id")
-    private UUID eventId;
+    @NotNull
+    @Column(name = "incident_id")
+    private long incidentId;
 
+    @NotNull
     @Column(name = "message")
     private String message;
 
+    @NotNull
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
     private EventTypeEnum eventType;
@@ -44,12 +47,12 @@ public class IncidentLog {
         this.id = id;
     }
 
-    public UUID getEventId() {
-        return eventId;
+    public long getIncidentId() {
+        return incidentId;
     }
 
-    public void setEventId(UUID eventId) {
-        this.eventId = eventId;
+    public void setIncidentId(long incidentId) {
+        this.incidentId = incidentId;
     }
 
     public String getMessage() {
@@ -82,7 +85,7 @@ public class IncidentLog {
         if (o == null || getClass() != o.getClass()) return false;
         IncidentLog that = (IncidentLog) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(eventId, that.eventId) &&
+                Objects.equals(incidentId, that.incidentId) &&
                 Objects.equals(message, that.message) &&
                 Objects.equals(eventType, that.eventType) &&
                 Objects.equals(createDate, that.createDate);
