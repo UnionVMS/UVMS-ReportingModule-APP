@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.service.domain;
+package eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
