@@ -13,10 +13,12 @@ import java.util.UUID;
 @Table(name = "incident")
 @NamedQueries({
         @NamedQuery(name = Incident.FIND_BY_INCIDENT_TYPE, query = "SELECT i FROM Incident i WHERE i.incidentType = :incidentType"),
+        @NamedQuery(name = Incident.FIND_BY_TICKET_ID, query = "SELECT i FROM Incident i WHERE i.ticketId = :ticketId")
 })
 public class Incident {
 
     public static final String FIND_BY_INCIDENT_TYPE = "Incident.findByIncidentType";
+    public static final String FIND_BY_TICKET_ID = "Incident.findByTicketId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

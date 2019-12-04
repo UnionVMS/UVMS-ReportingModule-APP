@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingUpdate;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.AssetNotSendingUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

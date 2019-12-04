@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.message;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSending;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.AssetNotSendingUpdate;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.AssetNotSending;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.AssetNotSendingUpdate;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.TicketDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

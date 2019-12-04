@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.UUID;
 
 @Stateless
 public class IncidentDao {
@@ -32,4 +33,13 @@ public class IncidentDao {
         return query.getResultList();
     }
 
+    public Incident findByTicketId(UUID ticketId) {
+        TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_TICKET_ID, Incident.class);
+        query.setParameter("ticketId", ticketId);
+        return query.getSingleResult();
+    }
+
+    public Incident update(Incident entity) {
+         return em.merge(entity);
+    }
 }
