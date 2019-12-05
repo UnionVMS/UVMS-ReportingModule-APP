@@ -23,7 +23,7 @@ import javax.ws.rs.sse.SseEventSink;
 
 @ApplicationScoped
 @Path("sse")
-@RequiresFeature(UnionVMSFeature.viewAlarmRules)
+@RequiresFeature(UnionVMSFeature.viewAlarmsOpenTickets)
 public class AssetNotSendingSse {
 
     private final static Logger LOG = LoggerFactory.getLogger(AssetNotSendingSse.class);

@@ -15,6 +15,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentLogServiceBean
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
+import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
+import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,7 @@ public class IncidentResource {
 
     @GET
     @Path("assetNotSendingEvents")
+    @RequiresFeature(UnionVMSFeature.viewAlarmsOpenTickets)
     public Response getAssetNotSendingEvents() {
         try {
             List<Incident> notSendingList = incidentServiceBean.getAssetNotSendingList();
@@ -54,6 +57,7 @@ public class IncidentResource {
 
     @GET
     @Path("assetNotSendingEventChanges/{eventId}")
+    @RequiresFeature(UnionVMSFeature.viewAlarmsOpenTickets)
     public Response getAssetNotSendingEventChanges(@PathParam("eventId") UUID eventId) {
         List<IncidentLog> eventChanges = incidentLogServiceBean.getAssetNotSendingEventChanges(eventId);
         return Response.ok(eventChanges).build();
