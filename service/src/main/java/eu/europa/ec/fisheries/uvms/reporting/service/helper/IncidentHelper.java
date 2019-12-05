@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.helper;
 
+import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketStatusType;
 import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
@@ -37,5 +38,21 @@ public class IncidentHelper {
         incident.setAssetId(asset.getId());
         incident.setAssetName(asset.getName());
         incident.setIrcs(asset.getIrcs());
+    }
+
+    public void updateAssetNotSendingIncident(TicketType ticket, Incident incident) {
+        TicketStatusType type = ticket.getStatus();
+        switch (type) {
+            case PENDING:
+                incident.setStatus(StatusEnum.POLL_PENDING);
+                break;
+            case CLOSED:
+                incident.setStatus(StatusEnum.RESOLVED);
+                break;
+            case OPEN:
+                break;
+            case NONE:
+                break;
+        }
     }
 }

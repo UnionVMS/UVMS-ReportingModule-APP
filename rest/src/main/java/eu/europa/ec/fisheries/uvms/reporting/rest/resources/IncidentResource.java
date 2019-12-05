@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentLogServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.StatusDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
 import eu.europa.ec.fisheries.uvms.rest.security.RequiresFeature;
@@ -61,6 +62,19 @@ public class IncidentResource {
         try {
             List<IncidentLog> eventChanges = incidentLogServiceBean.getAssetNotSendingEventChanges(incidentId);
             return Response.ok(eventChanges).build();
+        } catch (Exception e) {
+            LOG.error("Error while fetching AssetNotSending List", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
+        }
+    }
+
+    @POST
+    @Path("assetNotSending/{incidentId}/status")
+    @RequiresFeature(UnionVMSFeature.manageAlarmsOpenTickets)
+    public Response updateAssetNotSendingStatus(@PathParam("incidentId") long incidentId, StatusDto status) {
+        try {
+            incidentServiceBean.updateIncidentStatus(incidentId, status);
+            return Response.ok().build();
         } catch (Exception e) {
             LOG.error("Error while fetching AssetNotSending List", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();

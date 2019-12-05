@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -34,7 +34,7 @@ public class IncidentLog {
     @NotNull
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
-    private IncidentTypeEnum eventType;
+    private EventTypeEnum eventType;
 
     @NotNull
     @Column(name = "create_date")
@@ -72,11 +72,11 @@ public class IncidentLog {
         this.message = message;
     }
 
-    public IncidentTypeEnum getEventType() {
+    public EventTypeEnum getEventType() {
         return eventType;
     }
 
-    public void setEventType(IncidentTypeEnum eventType) {
+    public void setEventType(EventTypeEnum eventType) {
         this.eventType = eventType;
     }
 

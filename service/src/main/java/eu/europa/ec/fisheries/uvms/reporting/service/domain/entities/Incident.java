@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
 import javax.persistence.*;
@@ -12,12 +11,12 @@ import java.util.UUID;
 @Entity
 @Table(name = "incident")
 @NamedQueries({
-        @NamedQuery(name = Incident.FIND_BY_INCIDENT_TYPE, query = "SELECT i FROM Incident i WHERE i.incidentType = :incidentType"),
+        @NamedQuery(name = Incident.FIND_BY_STATUS, query = "SELECT i FROM Incident i WHERE i.status = :status"),
         @NamedQuery(name = Incident.FIND_BY_TICKET_ID, query = "SELECT i FROM Incident i WHERE i.ticketId = :ticketId")
 })
 public class Incident {
 
-    public static final String FIND_BY_INCIDENT_TYPE = "Incident.findByIncidentType";
+    public static final String FIND_BY_STATUS = "Incident.findByStatus";
     public static final String FIND_BY_TICKET_ID = "Incident.findByTicketId";
 
     @Id
@@ -61,11 +60,6 @@ public class Incident {
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private StatusEnum status;
-
-    @NotNull
-    @Column(name = "incident_type")
-    @Enumerated(value = EnumType.STRING)
-    private IncidentTypeEnum incidentType;
 
     @NotNull
     @Column(name = "create_date")
@@ -154,14 +148,6 @@ public class Incident {
         this.status = status;
     }
 
-    public IncidentTypeEnum getIncidentType() {
-        return incidentType;
-    }
-
-    public void setIncidentType(IncidentTypeEnum incidentType) {
-        this.incidentType = incidentType;
-    }
-
     public Instant getCreateDate() {
         return createDate;
     }
@@ -191,7 +177,6 @@ public class Incident {
                 Objects.equals(longitude, that.longitude) &&
                 Objects.equals(latitude, that.latitude) &&
                 Objects.equals(status, that.status) &&
-                Objects.equals(incidentType, that.incidentType) &&
                 Objects.equals(createDate, that.createDate) &&
                 Objects.equals(updateDate, that.updateDate) &&
                 Objects.equals(altitude, that.altitude);

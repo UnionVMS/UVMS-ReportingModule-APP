@@ -1,12 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.schema.movement.v1.MovementSourceType;
 import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.movement.client.MovementRestClient;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentDao;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.StatusDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentCreate;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentUpdate;
@@ -46,7 +46,7 @@ public class IncidentServiceBean {
     private IncidentDao incidentDao;
 
     public List<Incident> getAssetNotSendingList() {
-        List<Incident> assetNotSendingList = incidentDao.findAllAssetNotSending(IncidentTypeEnum.ASSET_NOT_SENDING);
+        List<Incident> assetNotSendingList = incidentDao.findAllAssetNotSending(StatusEnum.ASSET_NOT_SENDING);
         return assetNotSendingList.stream()
                 .filter(isOpenOrClosedIn12Hours).collect(Collectors.toList());
     }
@@ -56,30 +56,31 @@ public class IncidentServiceBean {
                             .minus(12, ChronoUnit.HOURS)
                             .isAfter(incident.getCreateDate())));
 
-    public void createAssetNotSendingIncident(TicketType ticket) {
+    public void createIncident(TicketType ticket) {
         MicroMovement movement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
         Incident incident = incidentHelper.constructIncident(ticket, movement);
         incidentDao.save(incident);
         createdIncident.fire(incident);
     }
 
-    public void updateAssetNotSendingIncident(TicketType ticket) {
-        Incident entity = incidentDao.findByTicketId(UUID.fromString(ticket.getGuid()));
-        MicroMovement microMovement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
+    public void updateIncident(TicketType ticket) {
+        Incident persisted = incidentDao.findByTicketId(UUID.fromString(ticket.getGuid()));
+        // MicroMovement microMovement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
 
-        IncidentTypeEnum type;
+        String ruleName = ticket.getRuleName();
 
-        if(microMovement.getSource().equals(MovementSourceType.MANUAL)) {
-            type = IncidentTypeEnum.MANUEL_POSITION;
-        } else {
-            type = IncidentTypeEnum.SYSTEM;
+        if ("Asset not sending".equals(ruleName)) {
+            incidentHelper.updateAssetNotSendingIncident(ticket, persisted);
+            Incident updated = incidentDao.update(persisted);
+            updatedIncident.fire(updated);
+            incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);
         }
+    }
 
-        entity.setStatus(StatusEnum.valueOf(ticket.getStatus().name()));
-        Incident updated = incidentDao.update(entity);
-        updatedIncident.fire(entity);
-
-        incidentLogServiceBean.createAssetIncidentLog(updated, type, microMovement, entity.getAssetId());
-
+    public void updateIncidentStatus(long incidentId, StatusDto statusDto) throws Exception {
+        Incident persisted = incidentDao.findById(incidentId);
+        persisted.setStatus(StatusEnum.valueOf(statusDto.getStatus()));
+        Incident updated = incidentDao.update(persisted);
+        incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);
     }
 }

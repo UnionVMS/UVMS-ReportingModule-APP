@@ -3,7 +3,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.message;
 import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.TicketDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +33,10 @@ public class IncidentConsumer implements MessageListener {
             String eventType = message.getStringProperty("eventName");
             switch (eventType) {
                 case "Incident":
-                    incidentServiceBean.createAssetNotSendingIncident(ticket);
+                    incidentServiceBean.createIncident(ticket);
                     break;
                 case "IncidentUpdate":
-                    incidentServiceBean.updateAssetNotSendingIncident(ticket);
+                    incidentServiceBean.updateIncident(ticket);
                     break;
             }
         } catch (JMSException e) {

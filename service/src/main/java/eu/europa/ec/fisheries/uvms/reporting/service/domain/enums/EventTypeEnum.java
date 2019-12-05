@@ -1,16 +1,12 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.enums;
 
-public enum IncidentTypeEnum {
-
-    CALLED_NO_RESPONSE("CALLED_NO_RESPONSE"),
-    ASSET_NOT_SENDING("ASSET_NOT_SENDING"),
-    ASSET_SENDING_AGAIN("ASSET_SENDING_AGAIN"),
+public enum EventTypeEnum {
     MANUEL_POSITION("MANUEL_POSITION"),
-    SYSTEM("SYSTEM");
+    INCIDENT_STATUS("INCIDENT_STATUS");
 
     private String message;
 
-    IncidentTypeEnum(String message) {
+    EventTypeEnum(String message) {
         this.message = message;
     }
 

@@ -1,12 +1,13 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.Instant;
@@ -27,10 +28,17 @@ public class IncidentDao {
         LOG.info("New Incident created with ID: " + entity.getId());
         return entity;
     }
+    public Incident findById(long id) {
+        Incident incident = this.em.find(Incident.class, id);
+        if (incident == null) {
+            throw new EntityNotFoundException("Can't find Incident for Id: " + id);
+        }
+        return incident;
+    }
 
-    public List<Incident> findAllAssetNotSending(IncidentTypeEnum typeEnum) {
-        TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_INCIDENT_TYPE, Incident.class);
-        query.setParameter("incidentType", typeEnum.name());
+    public List<Incident> findAllAssetNotSending(StatusEnum statusEnum) {
+        TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_STATUS, Incident.class);
+        query.setParameter("status", statusEnum.name());
         return query.getResultList();
     }
 

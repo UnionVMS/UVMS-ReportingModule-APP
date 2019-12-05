@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
-import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovementExtended;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentLogDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,21 +39,24 @@ public class IncidentLogServiceBean {
         return incidentLogDao.findAllByIncidentId(incidentId);
     }
 
-    public void createAssetIncidentLog(Incident incident, IncidentTypeEnum type, MicroMovement microMovement, UUID assetId) {
-//        try {
+    public void createIncidentLogForStatus(Incident persisted, Incident updated, EventTypeEnum type) {
+        try {
+            StatusEnum previous = persisted.getStatus();
+            StatusEnum current = updated.getStatus();
+
+            String jsonPrevious = om.writeValueAsString(previous);
+            String jsonCurrent = om.writeValueAsString(current);
+
             IncidentLog log = new IncidentLog();
             log.setCreateDate(Instant.now());
-            log.setIncidentId(incident.getId());
+            log.setIncidentId(persisted.getId());
             log.setEventType(type);
+            log.setPreviousValue(jsonPrevious);
+            log.setCurrentValue(jsonCurrent);
             log.setMessage(type.getMessage());
-//            MicroMovementExtended extended = new MicroMovementExtended();
-//            extended.setMicroMove(microMovement);
-//            extended.setAsset(assetId.toString());
-//            String actualPosition = om.writeValueAsString(extended);
             incidentLogDao.save(log);
-//        } catch (JsonProcessingException e) {
-//           LOG.error("Error when creating MicroMovementExtended JSON object: " + e.getMessage(), e);
-//        }
+        } catch (JsonProcessingException e) {
+            LOG.error("Error when creating MicroMovementExtended JSON object: " + e.getMessage(), e);
+        }
     }
-
 }
