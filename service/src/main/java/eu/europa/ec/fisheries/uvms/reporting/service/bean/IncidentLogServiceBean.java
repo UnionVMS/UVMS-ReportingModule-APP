@@ -17,8 +17,8 @@ public class IncidentLogServiceBean {
     @Inject
     private IncidentLogDao incidentLogDao;
 
-    public List<IncidentLog> getAssetNotSendingEventChanges(UUID eventId) {
-        return incidentLogDao.findAllByIncidentId(eventId);
+    public List<IncidentLog> getAssetNotSendingEventChanges(UUID incidentId) {
+        return incidentLogDao.findAllByIncidentId(incidentId);
     }
 
     public void createAssetIncidentLog(Incident incident, IncidentTypeEnum type) {

@@ -11,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "incident_log")
 @NamedQueries({
-        @NamedQuery(name = IncidentLog.FIND_ALL_BY_INCIDENT_ID, query = "SELECT i FROM IncidentLog i WHERE i.incidentId = :eventId"),
+        @NamedQuery(name = IncidentLog.FIND_ALL_BY_INCIDENT_ID, query = "SELECT i FROM IncidentLog i WHERE i.incidentId = :incidentId"),
 })
 public class IncidentLog {
 

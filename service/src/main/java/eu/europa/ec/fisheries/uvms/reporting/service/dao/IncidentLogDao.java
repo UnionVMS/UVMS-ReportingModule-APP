@@ -25,9 +25,9 @@ public class IncidentLogDao {
         LOG.info("New Incident Log created with ID: " + entity.getId());
     }
 
-    public List<IncidentLog> findAllByIncidentId(UUID eventId) {
+    public List<IncidentLog> findAllByIncidentId(UUID incidentId) {
         TypedQuery<IncidentLog> query = em.createNamedQuery(IncidentLog.FIND_ALL_BY_INCIDENT_ID, IncidentLog.class);
-        query.setParameter("eventId", eventId);
+        query.setParameter("incidentId", incidentId);
         return query.getResultList();
     }
 }
