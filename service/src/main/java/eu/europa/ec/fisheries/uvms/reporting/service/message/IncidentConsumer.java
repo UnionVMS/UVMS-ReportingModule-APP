@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.message;
 
+import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.TicketDto;
@@ -28,14 +29,14 @@ public class IncidentConsumer implements MessageListener {
     public void onMessage(Message message) {
         try {
             TextMessage tm = (TextMessage) message;
-            TicketDto ticket = tm.getBody(TicketDto.class);
+            TicketType ticket = tm.getBody(TicketType.class);
 
-            String eventType = message.getStringProperty("eventType");
+            String eventType = message.getStringProperty("eventName");
             switch (eventType) {
-                case "AssetNotSending":
+                case "Incident":
                     incidentServiceBean.createAssetNotSendingIncident(ticket);
                     break;
-                case "AssetNotSendingUpdate":
+                case "IncidentUpdate":
                     incidentServiceBean.updateAssetNotSendingIncident(ticket);
                     break;
             }

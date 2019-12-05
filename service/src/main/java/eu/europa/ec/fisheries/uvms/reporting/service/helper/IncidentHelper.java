@@ -1,10 +1,10 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.helper;
 
+import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetIdentifier;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.TicketDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
@@ -19,16 +19,16 @@ public class IncidentHelper {
     @EJB
     private AssetClient assetClient;
 
-    public Incident constructIncident(TicketDto ticket, MicroMovement movement) {
+    public Incident constructIncident(TicketType ticket, MicroMovement movement) {
         Incident incident = new Incident();
-        incident.setMobileTerminalId(UUID.fromString(ticket.getMobTermId()));
+        incident.setMobileTerminalId(UUID.fromString(ticket.getMobileTerminalGuid()));
         incident.setCreateDate(Instant.now());
-        incident.setStatus(StatusEnum.valueOf(ticket.getStatus()));
-        incident.setTicketId(UUID.fromString(ticket.getTicketId()));
+        incident.setStatus(StatusEnum.valueOf(ticket.getStatus().name()));
+        incident.setTicketId(UUID.fromString(ticket.getGuid()));
         incident.setLatitude(movement.getLocation().getLatitude());
         incident.setLongitude(movement.getLocation().getLongitude());
         incident.setAltitude(movement.getLocation().getAltitude());
-        setAssetValues(incident, ticket.getAssetId());
+        setAssetValues(incident, ticket.getAssetGuid());
         return incident;
     }
 

@@ -4,11 +4,25 @@ import java.io.Serializable;
 
 public class TicketDto implements Serializable {
 
+    private enum TicketType {
+        ASSET_NOT_SENDING,
+        ASSET_SENDING_NORMAL
+    }
+
+    private TicketType type;
     private String ticketId;
     private String assetId;
     private String mobTermId;
     private String movementId;
     private String status;
+
+    public TicketType getType() {
+        return type;
+    }
+
+    public void setType(TicketType type) {
+        this.type = type;
+    }
 
     public String getTicketId() {
         return ticketId;

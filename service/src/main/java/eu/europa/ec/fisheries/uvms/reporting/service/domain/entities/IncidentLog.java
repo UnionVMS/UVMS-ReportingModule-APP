@@ -28,6 +28,7 @@ public class IncidentLog {
 
     @NotNull
     @Column(name = "message")
+    @Lob
     private String message;
 
     @NotNull
@@ -38,6 +39,14 @@ public class IncidentLog {
     @NotNull
     @Column(name = "create_date")
     private Instant createDate;
+
+    @Lob
+    @Column(name = "previous_value")
+    private String previousValue;
+
+    @Lob
+    @Column(name = "current_value")
+    private String currentValue;
 
     public UUID getId() {
         return id;
@@ -79,6 +88,22 @@ public class IncidentLog {
         this.createDate = createDate;
     }
 
+    public String getPreviousValue() {
+        return previousValue;
+    }
+
+    public void setPreviousValue(String previousValue) {
+        this.previousValue = previousValue;
+    }
+
+    public String getCurrentValue() {
+        return currentValue;
+    }
+
+    public void setCurrentValue(String currentValue) {
+        this.currentValue = currentValue;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,6 +112,8 @@ public class IncidentLog {
         return Objects.equals(id, that.id) &&
                 Objects.equals(incidentId, that.incidentId) &&
                 Objects.equals(message, that.message) &&
+                Objects.equals(previousValue, that.previousValue) &&
+                Objects.equals(currentValue, that.currentValue) &&
                 Objects.equals(eventType, that.eventType) &&
                 Objects.equals(createDate, that.createDate);
     }

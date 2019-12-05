@@ -30,8 +30,10 @@
                 <constraints primaryKey="true" primaryKeyName="incident_log_pk"/>
             </column>
             <column name="incident_id" type="BIGINT" />
-            <column name="message" type="VARCHAR(255)"/>
+            <column name="message" type="TEXT"/>
             <column name="event_type" type="VARCHAR(60)"/>
+            <column name="previous_value" type="TEXT"/>
+            <column name="current_value" type="TEXT"/>
             <column name="create_date" type="TIMESTAMP WITH TIME ZONE"/>
         </createTable>
     </changeSet>
