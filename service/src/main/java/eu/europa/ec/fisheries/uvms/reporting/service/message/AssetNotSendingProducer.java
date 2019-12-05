@@ -1,4 +1,4 @@
-package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
+package eu.europa.ec.fisheries.uvms.reporting.service.message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,8 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.AssetNotSending;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.AssetNotSendingUpdate;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentLogEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,20 +38,20 @@ public class AssetNotSendingProducer {
     }
 
 
-    public void incidentCreated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @AssetNotSending Incident incident) {
+    public void incidentCreated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentLogEvent Incident incident) {
         try {
-            sendEvent(incident, "IncidentWrite");
+            sendEvent(incident, "Incident");
         } catch (Exception e){
-            LOG.error("Error while broadcasting SSE: ", e);
+            LOG.error("Error while posting incident to queue: ", e);
             throw new RuntimeException(e);
         }
     }
 
-    public void incidentUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @AssetNotSendingUpdate Incident incident) {
+    public void incidentUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentLogEvent Incident incident) {
         try {
             sendEvent(incident, "IncidentUpdate");
         } catch (Exception e){
-            LOG.error("Error while broadcasting SSE: ", e);
+            LOG.error("Error while posting incident to queue: ", e);
             throw new RuntimeException(e);
         }
     }
