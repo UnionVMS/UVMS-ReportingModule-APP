@@ -42,7 +42,7 @@ public class IncidentResource {
     private IncidentLogServiceBean incidentLogServiceBean;
 
     @GET
-    @Path("assetNotSendingEvents")
+    @Path("assetNotSending")
     @RequiresFeature(UnionVMSFeature.viewAlarmsOpenTickets)
     public Response getAssetNotSendingEvents() {
         try {
@@ -50,16 +50,20 @@ public class IncidentResource {
             return Response.ok(notSendingList).build();
         } catch (Exception e) {
             LOG.error("Error while fetching AssetNotSending List", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(ExceptionUtils.getRootCause(e)).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
         }
     }
 
     @GET
-    @Path("assetNotSendingEventChanges/{incidentId}")
+    @Path("assetNotSendingChanges/{incidentId}")
     @RequiresFeature(UnionVMSFeature.viewAlarmsOpenTickets)
     public Response getAssetNotSendingEventChanges(@PathParam("incidentId") UUID incidentId) {
-        List<IncidentLog> eventChanges = incidentLogServiceBean.getAssetNotSendingEventChanges(incidentId);
-        return Response.ok(eventChanges).build();
+        try {
+            List<IncidentLog> eventChanges = incidentLogServiceBean.getAssetNotSendingEventChanges(incidentId);
+            return Response.ok(eventChanges).build();
+        } catch (Exception e) {
+            LOG.error("Error while fetching AssetNotSending List", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
+        }
     }
 }
