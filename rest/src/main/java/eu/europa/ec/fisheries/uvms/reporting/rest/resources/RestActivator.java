@@ -25,7 +25,6 @@ public class RestActivator extends Application {
 
     public RestActivator() {
         set.add(IncidentResource.class);
-        set.add(AssetNotSendingSse.class);
     }
 
     @Override
