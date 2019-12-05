@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentLogEvent;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentCreate;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class AssetNotSendingProducer {
     }
 
 
-    public void incidentCreated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentLogEvent Incident incident) {
+    public void incidentCreated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentCreate Incident incident) {
         try {
             sendEvent(incident, "Incident");
         } catch (Exception e){
@@ -47,7 +48,7 @@ public class AssetNotSendingProducer {
         }
     }
 
-    public void incidentUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentLogEvent Incident incident) {
+    public void incidentUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentUpdate Incident incident) {
         try {
             sendEvent(incident, "IncidentUpdate");
         } catch (Exception e){

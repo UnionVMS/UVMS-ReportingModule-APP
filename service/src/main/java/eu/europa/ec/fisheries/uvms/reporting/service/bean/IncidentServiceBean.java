@@ -8,10 +8,13 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.IncidentTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentCreate;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentUpdate;
 import eu.europa.ec.fisheries.uvms.reporting.service.helper.IncidentHelper;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -32,6 +35,14 @@ public class IncidentServiceBean {
     private MovementRestClient movementClient;
 
     @Inject
+    @IncidentCreate
+    private Event<Incident> createdIncident;
+
+    @Inject
+    @IncidentUpdate
+    private Event<Incident> updatedIncident;
+
+    @Inject
     private IncidentDao incidentDao;
 
     public List<Incident> getAssetNotSendingList() {
@@ -49,6 +60,7 @@ public class IncidentServiceBean {
         MicroMovement movement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
         Incident incident = incidentHelper.constructIncident(ticket, movement);
         incidentDao.save(incident);
+        createdIncident.fire(incident);
     }
 
     public void updateAssetNotSendingIncident(TicketType ticket) {
@@ -65,7 +77,9 @@ public class IncidentServiceBean {
 
         entity.setStatus(StatusEnum.valueOf(ticket.getStatus().name()));
         Incident updated = incidentDao.update(entity);
+        updatedIncident.fire(entity);
 
         incidentLogServiceBean.createAssetIncidentLog(updated, type, microMovement, entity.getAssetId());
+
     }
 }
