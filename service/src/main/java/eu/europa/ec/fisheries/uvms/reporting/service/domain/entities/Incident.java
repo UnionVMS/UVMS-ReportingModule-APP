@@ -71,6 +71,9 @@ public class Incident {
     @Column(name = "create_date")
     private Instant createDate;
 
+    @Column(name = "update_date")
+    private Instant updateDate;
+
     public long getId() {
         return id;
     }
@@ -167,6 +170,14 @@ public class Incident {
         this.createDate = createDate;
     }
 
+    public Instant getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Instant updateDate) {
+        this.updateDate = updateDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -182,6 +193,7 @@ public class Incident {
                 Objects.equals(status, that.status) &&
                 Objects.equals(incidentType, that.incidentType) &&
                 Objects.equals(createDate, that.createDate) &&
+                Objects.equals(updateDate, that.updateDate) &&
                 Objects.equals(altitude, that.altitude);
     }
 

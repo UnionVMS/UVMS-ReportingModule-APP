@@ -12,9 +12,14 @@ import eu.europa.ec.fisheries.uvms.reporting.service.helper.IncidentHelper;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Stateless
 public class IncidentServiceBean {
@@ -33,9 +38,14 @@ public class IncidentServiceBean {
 
     public List<Incident> getAssetNotSendingList() {
         List<Incident> assetNotSendingList = incidentDao.findAllAssetNotSending(IncidentTypeEnum.ASSET_NOT_SENDING);
-        if(assetNotSendingList == null) return new ArrayList<>();
-        return assetNotSendingList;
+        return assetNotSendingList.stream()
+                .filter(isOpenOrClosedIn12Hours).collect(Collectors.toList());
     }
+
+    private Predicate<Incident> isOpenOrClosedIn12Hours = (incident -> incident.getUpdateDate() == null ||
+            (incident.getUpdateDate() != null && incident.getUpdateDate()
+                            .minus(12, ChronoUnit.HOURS)
+                            .isAfter(incident.getCreateDate())));
 
     public void createAssetNotSendingIncident(TicketDto ticket) {
         MicroMovement movement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementId()));
