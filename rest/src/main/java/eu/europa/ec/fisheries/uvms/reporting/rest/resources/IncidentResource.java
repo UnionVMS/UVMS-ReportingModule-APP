@@ -73,8 +73,8 @@ public class IncidentResource {
     @RequiresFeature(UnionVMSFeature.manageAlarmsOpenTickets)
     public Response updateAssetNotSendingStatus(@PathParam("incidentId") long incidentId, StatusDto status) {
         try {
-            incidentServiceBean.updateIncidentStatus(incidentId, status);
-            return Response.ok().build();
+            Incident updated = incidentServiceBean.updateIncidentStatus(incidentId, status);
+            return Response.ok(updated).build();
         } catch (Exception e) {
             LOG.error("Error while fetching AssetNotSending List", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();

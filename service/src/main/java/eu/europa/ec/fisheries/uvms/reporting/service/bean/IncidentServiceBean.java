@@ -77,10 +77,11 @@ public class IncidentServiceBean {
         }
     }
 
-    public void updateIncidentStatus(long incidentId, StatusDto statusDto) throws Exception {
+    public Incident updateIncidentStatus(long incidentId, StatusDto statusDto) throws Exception {
         Incident persisted = incidentDao.findById(incidentId);
         persisted.setStatus(StatusEnum.valueOf(statusDto.getStatus()));
         Incident updated = incidentDao.update(persisted);
         incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);
+        return updated;
     }
 }
