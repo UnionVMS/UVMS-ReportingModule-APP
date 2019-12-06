@@ -35,7 +35,7 @@ public class IncidentLogServiceBean {
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    public List<IncidentLog> getAssetNotSendingEventChanges(UUID incidentId) {
+    public List<IncidentLog> getAssetNotSendingEventChanges(long incidentId) {
         return incidentLogDao.findAllByIncidentId(incidentId);
     }
 

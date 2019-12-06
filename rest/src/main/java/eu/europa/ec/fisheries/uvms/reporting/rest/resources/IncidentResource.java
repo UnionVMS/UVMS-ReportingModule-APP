@@ -58,7 +58,7 @@ public class IncidentResource {
     @GET
     @Path("assetNotSendingChanges/{incidentId}")
     @RequiresFeature(UnionVMSFeature.viewAlarmsOpenTickets)
-    public Response getAssetNotSendingEventChanges(@PathParam("incidentId") UUID incidentId) {
+    public Response getAssetNotSendingEventChanges(@PathParam("incidentId") long incidentId) {
         try {
             List<IncidentLog> eventChanges = incidentLogServiceBean.getAssetNotSendingEventChanges(incidentId);
             return Response.ok(eventChanges).build();
