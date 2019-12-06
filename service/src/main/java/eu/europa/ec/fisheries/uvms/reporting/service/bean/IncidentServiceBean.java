@@ -70,7 +70,7 @@ public class IncidentServiceBean {
         String ruleName = ticket.getRuleName();
 
         if ("Asset not sending".equals(ruleName)) {
-            incidentHelper.updateAssetNotSendingIncident(ticket, persisted);
+            incidentHelper.updateAssetNotSendingStatus(ticket, persisted);
             Incident updated = incidentDao.update(persisted);
             updatedIncident.fire(updated);
             incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);

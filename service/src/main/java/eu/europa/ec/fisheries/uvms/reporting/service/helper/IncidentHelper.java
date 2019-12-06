@@ -42,7 +42,7 @@ public class IncidentHelper {
         incident.setIrcs(asset.getIrcs());
     }
 
-    public void updateAssetNotSending(TicketType ticket, Incident incident) {
+    public void updateAssetNotSendingStatus(TicketType ticket, Incident incident) {
         TicketStatusType type = ticket.getStatus();
         switch (type) {
             case PENDING:
