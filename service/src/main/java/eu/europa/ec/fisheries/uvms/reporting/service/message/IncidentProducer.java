@@ -19,9 +19,9 @@ import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.jms.*;
 
-public class AssetNotSendingProducer {
+public class IncidentProducer {
 
-    private final static Logger LOG = LoggerFactory.getLogger(AssetNotSendingProducer.class);
+    private final static Logger LOG = LoggerFactory.getLogger(IncidentProducer.class);
 
     @Resource(mappedName = "java:/" + MessageConstants.EVENT_STREAM_TOPIC)
     private Destination destination;
