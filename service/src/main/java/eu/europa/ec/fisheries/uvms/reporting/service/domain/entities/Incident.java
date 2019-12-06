@@ -44,17 +44,14 @@ public class Incident {
     @Column(name = "ircs")
     private String ircs;
 
-    @NotNull
     @Column(name = "longitude")
     private double longitude;
 
-    @NotNull
     @Column(name = "latitude")
     private double latitude;
 
-    @NotNull
     @Column(name = "altitude")
-    private double altitude = 0;
+    private double altitude;
 
     @NotNull
     @Column(name = "status")

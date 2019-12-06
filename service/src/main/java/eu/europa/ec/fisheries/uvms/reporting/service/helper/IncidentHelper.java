@@ -26,9 +26,11 @@ public class IncidentHelper {
         incident.setCreateDate(Instant.now());
         incident.setStatus(StatusEnum.valueOf(ticket.getStatus().name()));
         incident.setTicketId(UUID.fromString(ticket.getGuid()));
-        incident.setLatitude(movement.getLocation().getLatitude());
-        incident.setLongitude(movement.getLocation().getLongitude());
-        incident.setAltitude(movement.getLocation().getAltitude());
+        if(movement != null) {
+            incident.setLatitude(movement.getLocation().getLatitude());
+            incident.setLongitude(movement.getLocation().getLongitude());
+            incident.setAltitude(movement.getLocation().getAltitude());
+        }
         setAssetValues(incident, ticket.getAssetGuid());
         return incident;
     }
@@ -40,7 +42,7 @@ public class IncidentHelper {
         incident.setIrcs(asset.getIrcs());
     }
 
-    public void updateAssetNotSendingIncident(TicketType ticket, Incident incident) {
+    public void updateAssetNotSending(TicketType ticket, Incident incident) {
         TicketStatusType type = ticket.getStatus();
         switch (type) {
             case PENDING:
