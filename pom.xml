@@ -44,14 +44,14 @@
         <uvms.commons.version>4.0.12</uvms.commons.version>
         <geotools.version>14.4</geotools.version>
         <lombok.version>1.16.18</lombok.version>
-        <usm4uvms.version>4.0.12</usm4uvms.version>
+        <usm4uvms.version>4.0.23</usm4uvms.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
         <rules.model.version>3.0.43</rules.model.version>
 		<reporting.model.version>1.0.4</reporting.model.version>
         <uvms.test.version>0.0.4</uvms.test.version>
         <activity.model.version>1.0.9</activity.model.version>
-        <uvms.config.version>4.0.1</uvms.config.version>
+        <uvms.config.version>4.0.5</uvms.config.version>
         <jts.version>1.16.1</jts.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>reporting</docker.liquibase.db.user>

@@ -4,14 +4,14 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
-    <persistence-unit name="reportingConfig" transaction-type="JTA">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>jdbc/uvms_config</jta-data-source>
-        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-        </properties>
-    </persistence-unit>
+<!--    <persistence-unit name="reportingConfig" transaction-type="JTA">-->
+<!--        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>-->
+<!--        <jta-data-source>jdbc/uvms_config</jta-data-source>-->
+<!--        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>-->
+<!--        <properties>-->
+<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>-->
+<!--        </properties>-->
+<!--    </persistence-unit>-->
 
     <persistence-unit name="reportingPUposgres" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/uvms_reporting</jta-data-source>
@@ -23,21 +23,6 @@
             <property name="format_sql" value="false" />
 			<property name="use_sql_comments" value="true" />
         </properties>
-
     </persistence-unit>
-
-	
-    <persistence-unit name="reportingPUoracle" transaction-type="JTA">
-<!--	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-	<jta-data-source>jdbc/uvms_reporting</jta-data-source>
-	<properties>
-		<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect" />
-		<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.WeblogicJtaPlatform"/>
-		<property name="hibernate.query.substitutions" value="true 1, false 0" />			
-		<property name="hibernate.default_schema" value="reporting"/>
-		<property name="hibernate.hbm2ddl.auto" value="none"/>
-		<property name="hibernate.show_sql" value="true"/>
-	</properties>-->
-	</persistence-unit>
 	
 	</persistence>
