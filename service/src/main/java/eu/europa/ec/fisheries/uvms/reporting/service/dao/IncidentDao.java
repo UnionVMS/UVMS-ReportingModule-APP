@@ -38,7 +38,7 @@ public class IncidentDao {
 
     public List<Incident> findAllAssetNotSending(StatusEnum statusEnum) {
         TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_STATUS, Incident.class);
-        query.setParameter("status", statusEnum.name());
+        query.setParameter("status", statusEnum);
         return query.getResultList();
     }
 

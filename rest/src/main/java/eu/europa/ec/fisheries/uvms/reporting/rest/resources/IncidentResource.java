@@ -22,6 +22,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +33,7 @@ import java.util.UUID;
 @Path("incident")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Stateless
 public class IncidentResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(IncidentResource.class);
@@ -48,6 +50,7 @@ public class IncidentResource {
     public Response getAssetNotSendingEvents() {
         try {
             List<Incident> notSendingList = incidentServiceBean.getAssetNotSendingList();
+            LOG.info("Request GET. assetNotSending()");
             return Response.ok(notSendingList).build();
         } catch (Exception e) {
             LOG.error("Error while fetching AssetNotSending List", e);

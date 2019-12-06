@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>LIQUIBASE</artifactId>
+    <artifactId>reporting-liquibase</artifactId>
     <name>liquibase</name>
     <packaging>pom</packaging>
 
@@ -143,12 +143,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>2.4.1</version>
                 <configuration>
-                    <descriptors>
-                        <descriptor>assembly.xml</descriptor>
-                    </descriptors>
-                    <finalName>${project.artifactId}</finalName>
+                    <descriptor>assembly.xml</descriptor>
+                    <finalName>${artifactId}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
 
                 </configuration>
@@ -180,7 +178,7 @@
                 <configuration>
                     <packaging>zip</packaging>
                     <generatePom>true</generatePom>
-                    <artifactId>${project.artifactId}</artifactId>
+                    <artifactId>${artifactId}</artifactId>
                     <groupId>${project.groupId}</groupId>
                     <version>${project.version}</version>
                     <file>target/liquibase.zip</file>
