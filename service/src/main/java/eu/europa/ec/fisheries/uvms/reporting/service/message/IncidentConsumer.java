@@ -14,9 +14,14 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-@MessageDriven(activationConfig = {
-        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "java:/" + MessageConstants.QUEUE_INCIDENT),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")})
+@MessageDriven(mappedName = MessageConstants.QUEUE_INCIDENT, activationConfig = {
+        @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "IncidentEvent"),
+        @ActivationConfigProperty(propertyName = "destinationJndiName", propertyValue = MessageConstants.QUEUE_INCIDENT),
+        @ActivationConfigProperty(propertyName = "connectionFactoryJndiName", propertyValue = MessageConstants.CONNECTION_FACTORY)
+})
+
 public class IncidentConsumer implements MessageListener {
 
     @Inject
@@ -27,6 +32,7 @@ public class IncidentConsumer implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
+            LOG.info("MESSAGE FROM MOVEMENT RULES: " + message.getStringProperty("eventName"));
             TextMessage tm = (TextMessage) message;
             TicketType ticket = tm.getBody(TicketType.class);
 
@@ -40,7 +46,7 @@ public class IncidentConsumer implements MessageListener {
                     break;
             }
         } catch (JMSException e) {
-            LOG.error("Error while reading from Incident Queue and converting message to POJO.");
+            LOG.info("Error while reading from Incident Queue and converting message to POJO.");
         }
     }
 }
