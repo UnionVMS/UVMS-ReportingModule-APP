@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
+import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovementExtended;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentLogDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
@@ -39,7 +41,7 @@ public class IncidentLogServiceBean {
         return incidentLogDao.findAllByIncidentId(incidentId);
     }
 
-    public void createIncidentLogForStatus(Incident persisted, Incident updated, EventTypeEnum type) {
+    public void createIncidentLogForStatus(Incident persisted, Incident updated) {
         try {
             StatusEnum previous = persisted.getStatus();
             StatusEnum current = updated.getStatus();
@@ -50,10 +52,10 @@ public class IncidentLogServiceBean {
             IncidentLog log = new IncidentLog();
             log.setCreateDate(Instant.now());
             log.setIncidentId(persisted.getId());
-            log.setEventType(type);
+            log.setEventType(EventTypeEnum.INCIDENT_STATUS);
             log.setPreviousValue(jsonPrevious);
             log.setCurrentValue(jsonCurrent);
-            log.setMessage(type.getMessage());
+            log.setMessage(EventTypeEnum.INCIDENT_STATUS.getMessage());
             incidentLogDao.save(log);
         } catch (JsonProcessingException e) {
             LOG.error("Error when creating MicroMovementExtended JSON object: " + e.getMessage(), e);

@@ -6,7 +6,6 @@ import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.StatusDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.EventTypeEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentCreate;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentUpdate;
@@ -65,7 +64,7 @@ public class IncidentServiceBean {
 
     public void updateIncident(TicketType ticket) {
         Incident persisted = incidentDao.findByTicketId(UUID.fromString(ticket.getGuid()));
-        // MicroMovement microMovement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
+        MicroMovement microMovement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
 
         String ruleName = ticket.getRuleName();
 
@@ -73,7 +72,7 @@ public class IncidentServiceBean {
             incidentHelper.updateAssetNotSendingStatus(ticket, persisted);
             Incident updated = incidentDao.update(persisted);
             updatedIncident.fire(updated);
-            incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);
+            incidentLogServiceBean.createIncidentLogForStatus(persisted, updated);
         }
     }
 
@@ -81,7 +80,7 @@ public class IncidentServiceBean {
         Incident persisted = incidentDao.findById(incidentId);
         persisted.setStatus(StatusEnum.valueOf(statusDto.getStatus()));
         Incident updated = incidentDao.update(persisted);
-        incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);
+        incidentLogServiceBean.createIncidentLogForStatus(persisted, updated);
         return updated;
     }
 }
