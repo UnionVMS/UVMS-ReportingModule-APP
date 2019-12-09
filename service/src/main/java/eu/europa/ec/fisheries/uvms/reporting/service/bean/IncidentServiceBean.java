@@ -85,6 +85,7 @@ public class IncidentServiceBean {
         String status = persisted.getStatus().name();
         persisted.setStatus(StatusEnum.valueOf(statusDto.getStatus()));
         Incident updated = incidentDao.update(persisted);
+        updatedIncident.fire(updated);
         incidentLogServiceBean.createIncidentLogForStatus(status, updated, EventTypeEnum.INCIDENT_STATUS);
         return updated;
     }
