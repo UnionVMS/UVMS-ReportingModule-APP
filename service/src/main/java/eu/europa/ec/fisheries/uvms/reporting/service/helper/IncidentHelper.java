@@ -1,7 +1,7 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.helper;
 
-import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketStatusType;
-import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
+import eu.europa.ec.fisheries.schema.movementrules.ticket.v1.TicketStatusType;
+import eu.europa.ec.fisheries.schema.movementrules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetIdentifier;
@@ -22,14 +22,16 @@ public class IncidentHelper {
 
     public Incident constructIncident(TicketType ticket, MicroMovement movement) {
         Incident incident = new Incident();
-        incident.setMobileTerminalId(UUID.fromString(ticket.getMobileTerminalGuid()));
+        if (ticket.getMobileTerminalGuid() != null) {
+            incident.setMobileTerminalId(UUID.fromString(ticket.getMobileTerminalGuid()));
+        }
         incident.setCreateDate(Instant.now());
         incident.setStatus(StatusEnum.valueOf(ticket.getStatus().name()));
         incident.setTicketId(UUID.fromString(ticket.getGuid()));
         if(movement != null) {
             incident.setLatitude(movement.getLocation().getLatitude());
             incident.setLongitude(movement.getLocation().getLongitude());
-            incident.setAltitude(movement.getLocation().getAltitude());
+            incident.setAltitude(0);
         }
         setAssetValues(incident, ticket.getAssetGuid());
         return incident;
@@ -45,15 +47,13 @@ public class IncidentHelper {
     public void updateAssetNotSendingStatus(TicketType ticket, Incident incident) {
         TicketStatusType type = ticket.getStatus();
         switch (type) {
-            case PENDING:
+            case POLL_PENDING:
                 incident.setStatus(StatusEnum.POLL_PENDING);
                 break;
             case CLOSED:
                 incident.setStatus(StatusEnum.RESOLVED);
                 break;
             case OPEN:
-                break;
-            case NONE:
                 break;
         }
     }

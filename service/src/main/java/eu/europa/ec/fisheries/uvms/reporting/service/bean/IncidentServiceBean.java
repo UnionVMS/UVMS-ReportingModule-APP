@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
-import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
+import eu.europa.ec.fisheries.schema.movementrules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.movement.client.MovementRestClient;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentDao;
@@ -46,7 +46,7 @@ public class IncidentServiceBean {
     private IncidentDao incidentDao;
 
     public List<Incident> getAssetNotSendingList() {
-        List<Incident> assetNotSendingList = incidentDao.findAllAssetNotSending(StatusEnum.ASSET_NOT_SENDING);
+        List<Incident> assetNotSendingList = incidentDao.findAllAssetNotSending(StatusEnum.POLL_PENDING);
         return assetNotSendingList.stream()
                 .filter(isOpenOrClosedIn12Hours).collect(Collectors.toList());
     }

@@ -1,15 +1,19 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.message;
 
-import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import eu.europa.ec.fisheries.schema.movementrules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
 import javax.inject.Inject;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
@@ -21,22 +25,31 @@ import javax.jms.TextMessage;
         @ActivationConfigProperty(propertyName = "destinationJndiName", propertyValue = MessageConstants.QUEUE_INCIDENT),
         @ActivationConfigProperty(propertyName = "connectionFactoryJndiName", propertyValue = MessageConstants.CONNECTION_FACTORY)
 })
-
 public class IncidentConsumer implements MessageListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IncidentConsumer.class);
+
+    private ObjectMapper om = new ObjectMapper();
+
+    @PostConstruct
+    public void init() {
+        om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     @Inject
     private IncidentServiceBean incidentServiceBean;
 
-    private static final Logger LOG = LoggerFactory.getLogger(IncidentConsumer.class);
-
     @Override
     public void onMessage(Message message) {
         try {
-            LOG.info("MESSAGE FROM MOVEMENT RULES: " + message.getStringProperty("eventName"));
             TextMessage tm = (TextMessage) message;
-            TicketType ticket = tm.getBody(TicketType.class);
+            String json = tm.getBody(String.class);
+
+            TicketType ticket = om.readValue(json, TicketType.class);
 
             String eventType = message.getStringProperty("eventName");
+
             switch (eventType) {
                 case "Incident":
                     incidentServiceBean.createIncident(ticket);
@@ -45,8 +58,9 @@ public class IncidentConsumer implements MessageListener {
                     incidentServiceBean.updateIncident(ticket);
                     break;
             }
-        } catch (JMSException e) {
-            LOG.info("Error while reading from Incident Queue and converting message to POJO.");
+        } catch (Exception e) {
+            LOG.error("Error while reading from Incident Queue", e);
+            throw new EJBException(e);
         }
     }
 }

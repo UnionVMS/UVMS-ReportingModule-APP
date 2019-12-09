@@ -41,20 +41,28 @@ public class IncidentLogServiceBean {
 
     public void createIncidentLogForStatus(Incident persisted, Incident updated, EventTypeEnum type) {
         try {
-            StatusEnum previous = persisted.getStatus();
-            StatusEnum current = updated.getStatus();
 
-            String jsonPrevious = om.writeValueAsString(previous);
-            String jsonCurrent = om.writeValueAsString(current);
+            switch (type) {
+                case MANUEL_POSITION:
+                    // Todo: Implement this.
+                    break;
+                case INCIDENT_STATUS:
+                    StatusEnum preStatut = persisted.getStatus();
+                    StatusEnum curStatus = updated.getStatus();
+                    String jsonPreStatus = om.writeValueAsString(preStatut);
+                    String jsonCurStatus = om.writeValueAsString(curStatus);
+                    IncidentLog statusLog = new IncidentLog();
+                    statusLog.setCreateDate(Instant.now());
+                    statusLog.setIncidentId(persisted.getId());
+                    statusLog.setEventType(type);
+                    statusLog.setPreviousValue(jsonPreStatus);
+                    statusLog.setCurrentValue(jsonCurStatus);
+                    statusLog.setMessage(type.getMessage());
+                    incidentLogDao.save(statusLog);
+                    break;
+            }
 
-            IncidentLog log = new IncidentLog();
-            log.setCreateDate(Instant.now());
-            log.setIncidentId(persisted.getId());
-            log.setEventType(type);
-            log.setPreviousValue(jsonPrevious);
-            log.setCurrentValue(jsonCurrent);
-            log.setMessage(type.getMessage());
-            incidentLogDao.save(log);
+
         } catch (JsonProcessingException e) {
             LOG.error("Error when creating MicroMovementExtended JSON object: " + e.getMessage(), e);
         }

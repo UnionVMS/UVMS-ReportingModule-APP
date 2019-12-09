@@ -56,6 +56,7 @@
         <docker.liquibase.changeLogFile>LIQUIBASE/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>reporting</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>reporting</docker.liquibase.db.passwd>
+        <docker.dev.version>3.40.13.w18</docker.dev.version>
     </properties>
 
     <scm>
@@ -556,7 +557,6 @@
     <modules>
         <module>rest</module>
         <module>service</module>
-        <module>message</module>
         <module>module</module>
         <module>LIQUIBASE</module>
     </modules>

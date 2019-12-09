@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:AssetListModuleRequest xmlns:ns2="module.asset.wsdl.fisheries.ec.europa.eu">
-    <method>ASSET_LIST</method>
-    <query/>
-</ns2:AssetListModuleRequest>

@@ -28,7 +28,6 @@ public class Incident {
     @Column(name = "asset_id")
     private UUID assetId;
 
-    @NotNull
     @Column(name = "mobterm_id")
     private UUID mobileTerminalId;
 
