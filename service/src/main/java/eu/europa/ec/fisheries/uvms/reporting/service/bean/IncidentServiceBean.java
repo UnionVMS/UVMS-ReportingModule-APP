@@ -67,21 +67,21 @@ public class IncidentServiceBean {
         Incident persisted = incidentDao.findByTicketId(UUID.fromString(ticket.getGuid()));
         // MicroMovement microMovement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
 
-        String ruleName = ticket.getRuleName();
-
-        if ("Asset not sending".equals(ruleName)) {
+        if (persisted != null) {
+            String status = persisted.getStatus().name();
             incidentHelper.updateAssetNotSendingStatus(ticket, persisted);
             Incident updated = incidentDao.update(persisted);
             updatedIncident.fire(updated);
-            incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);
+            incidentLogServiceBean.createIncidentLogForStatus(status, updated, EventTypeEnum.INCIDENT_STATUS);
         }
     }
 
     public Incident updateIncidentStatus(long incidentId, StatusDto statusDto) throws Exception {
         Incident persisted = incidentDao.findById(incidentId);
+        String status = persisted.getStatus().name();
         persisted.setStatus(StatusEnum.valueOf(statusDto.getStatus()));
         Incident updated = incidentDao.update(persisted);
-        incidentLogServiceBean.createIncidentLogForStatus(persisted, updated, EventTypeEnum.INCIDENT_STATUS);
+        incidentLogServiceBean.createIncidentLogForStatus(status, updated, EventTypeEnum.INCIDENT_STATUS);
         return updated;
     }
 }

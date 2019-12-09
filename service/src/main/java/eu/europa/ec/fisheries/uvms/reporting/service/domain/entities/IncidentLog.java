@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "incident_log")
@@ -20,7 +19,7 @@ public class IncidentLog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "uuid", name = "id")
-    private UUID id;
+    private long id;
 
     @NotNull
     @Column(name = "incident_id")
@@ -28,7 +27,6 @@ public class IncidentLog {
 
     @NotNull
     @Column(name = "message")
-    @Lob
     private String message;
 
     @NotNull
@@ -40,19 +38,17 @@ public class IncidentLog {
     @Column(name = "create_date")
     private Instant createDate;
 
-    @Lob
     @Column(name = "previous_value")
     private String previousValue;
 
-    @Lob
     @Column(name = "current_value")
     private String currentValue;
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 

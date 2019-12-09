@@ -39,7 +39,7 @@ public class IncidentLogServiceBean {
         return incidentLogDao.findAllByIncidentId(incidentId);
     }
 
-    public void createIncidentLogForStatus(Incident persisted, Incident updated, EventTypeEnum type) {
+    public void createIncidentLogForStatus(String oldValue, Incident updated, EventTypeEnum type) {
         try {
 
             switch (type) {
@@ -47,13 +47,12 @@ public class IncidentLogServiceBean {
                     // Todo: Implement this.
                     break;
                 case INCIDENT_STATUS:
-                    StatusEnum preStatut = persisted.getStatus();
                     StatusEnum curStatus = updated.getStatus();
-                    String jsonPreStatus = om.writeValueAsString(preStatut);
+                    String jsonPreStatus = om.writeValueAsString(oldValue);
                     String jsonCurStatus = om.writeValueAsString(curStatus);
                     IncidentLog statusLog = new IncidentLog();
                     statusLog.setCreateDate(Instant.now());
-                    statusLog.setIncidentId(persisted.getId());
+                    statusLog.setIncidentId(updated.getId());
                     statusLog.setEventType(type);
                     statusLog.setPreviousValue(jsonPreStatus);
                     statusLog.setCurrentValue(jsonCurStatus);
