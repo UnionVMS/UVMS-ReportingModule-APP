@@ -14,11 +14,9 @@
             <column name="asset_id" type="uuid" />
             <column name="mobterm_id" type="uuid"/>
             <column name="ticket_id" type="uuid"/>
+            <column name="movement_id" type="uuid"/>
             <column name="asset_name" type="VARCHAR(60)"/>
             <column name="ircs" type="VARCHAR(60)"/>
-            <column name="longitude" type="FLOAT8"/>
-            <column name="latitude" type="FLOAT8"/>
-            <column name="altitude" type="FLOAT8"/>
             <column name="status" type="VARCHAR(60)"/>
             <column name="create_date" type="TIMESTAMP WITH TIME ZONE"/>
             <column name="update_date" type="TIMESTAMP WITH TIME ZONE"/>

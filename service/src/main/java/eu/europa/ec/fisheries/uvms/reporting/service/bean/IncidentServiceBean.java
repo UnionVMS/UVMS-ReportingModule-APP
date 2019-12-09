@@ -58,9 +58,11 @@ public class IncidentServiceBean {
 
     public void createIncident(TicketType ticket) {
         MicroMovement movement = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
-        Incident incident = incidentHelper.constructIncident(ticket, movement);
-        incidentDao.save(incident);
-        createdIncident.fire(incident);
+        if("Asset not sending".equalsIgnoreCase(ticket.getRuleGuid())) {
+            Incident incident = incidentHelper.constructIncident(ticket, movement);
+            incidentDao.save(incident);
+            createdIncident.fire(incident);
+        }
     }
 
     public void updateIncident(TicketType ticket) {
@@ -71,8 +73,10 @@ public class IncidentServiceBean {
             String status = persisted.getStatus().name();
             incidentHelper.updateAssetNotSendingStatus(ticket, persisted);
             Incident updated = incidentDao.update(persisted);
-            updatedIncident.fire(updated);
-            incidentLogServiceBean.createIncidentLogForStatus(status, updated, EventTypeEnum.INCIDENT_STATUS);
+            if(!status.equalsIgnoreCase(updated.getStatus().name())) {
+                updatedIncident.fire(updated);
+                incidentLogServiceBean.createIncidentLogForStatus(status, updated, EventTypeEnum.INCIDENT_STATUS);
+            }
         }
     }
 

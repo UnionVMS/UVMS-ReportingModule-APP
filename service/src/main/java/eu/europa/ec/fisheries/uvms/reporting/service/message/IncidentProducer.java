@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.jms.*;
 
@@ -39,7 +38,7 @@ public class IncidentProducer {
     }
 
 
-    public void incidentCreated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentCreate Incident incident) {
+    public void incidentCreated(@Observes @IncidentCreate Incident incident) {
         try {
             sendEvent(incident, "Incident");
         } catch (Exception e){
@@ -48,7 +47,7 @@ public class IncidentProducer {
         }
     }
 
-    public void incidentUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) @IncidentUpdate Incident incident) {
+    public void incidentUpdated(@Observes @IncidentUpdate Incident incident) {
         try {
             sendEvent(incident, "IncidentUpdate");
         } catch (Exception e){

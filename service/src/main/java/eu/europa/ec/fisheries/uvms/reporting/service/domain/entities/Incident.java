@@ -1,5 +1,9 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.entities;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.IncidentInstantDeserializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
 import javax.persistence.*;
@@ -43,14 +47,8 @@ public class Incident {
     @Column(name = "ircs")
     private String ircs;
 
-    @Column(name = "longitude")
-    private double longitude;
-
-    @Column(name = "latitude")
-    private double latitude;
-
-    @Column(name = "altitude")
-    private double altitude;
+    @Column(name = "movement_id")
+    private UUID movementId;
 
     @NotNull
     @Column(name = "status")
@@ -59,9 +57,13 @@ public class Incident {
 
     @NotNull
     @Column(name = "create_date")
+    @JsonSerialize(using = InstantSerializer.class)
+    @JsonDeserialize(using = IncidentInstantDeserializer.class)
     private Instant createDate;
 
     @Column(name = "update_date")
+    @JsonSerialize(using = InstantSerializer.class)
+    @JsonDeserialize(using = IncidentInstantDeserializer.class)
     private Instant updateDate;
 
     public long getId() {
@@ -94,30 +96,6 @@ public class Incident {
 
     public void setIrcs(String ircs) {
         this.ircs = ircs;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getAltitude() {
-        return altitude;
-    }
-
-    public void setAltitude(double altitude) {
-        this.altitude = altitude;
     }
 
     public UUID getMobileTerminalId() {
@@ -160,6 +138,14 @@ public class Incident {
         this.updateDate = updateDate;
     }
 
+    public UUID getMovementId() {
+        return movementId;
+    }
+
+    public void setMovementId(UUID movementId) {
+        this.movementId = movementId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -170,12 +156,10 @@ public class Incident {
                 Objects.equals(mobileTerminalId, that.mobileTerminalId) &&
                 Objects.equals(ticketId, that.ticketId) &&
                 Objects.equals(assetName, that.assetName) &&
-                Objects.equals(longitude, that.longitude) &&
-                Objects.equals(latitude, that.latitude) &&
                 Objects.equals(status, that.status) &&
                 Objects.equals(createDate, that.createDate) &&
                 Objects.equals(updateDate, that.updateDate) &&
-                Objects.equals(altitude, that.altitude);
+                Objects.equals(movementId, that.movementId);
     }
 
     @Override
