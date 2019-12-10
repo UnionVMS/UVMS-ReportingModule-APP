@@ -2,7 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.domain.dto;
 
 import java.io.Serializable;
 
-public class MovementPoint implements Serializable {
+public class MovementPointDto implements Serializable {
     private final static long serialVersionUID = 1L;
 
     protected double longitude;

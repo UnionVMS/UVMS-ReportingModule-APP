@@ -6,9 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 
 import java.time.Instant;
 
-public class MicroMovement {
+public class MicroMovementDto {
 
-    private MovementPoint location;   //vivid solution point causes infinite json recursion ;(
+    private MovementPointDto location;   //vivid solution point causes infinite json recursion ;(
 
     private Double heading;
 
@@ -22,11 +22,11 @@ public class MicroMovement {
 
     private MovementSourceType source;
 
-    public MovementPoint getLocation() {
+    public MovementPointDto getLocation() {
         return location;
     }
 
-    public void setLocation(MovementPoint location) {
+    public void setLocation(MovementPointDto location) {
         this.location = location;
     }
 

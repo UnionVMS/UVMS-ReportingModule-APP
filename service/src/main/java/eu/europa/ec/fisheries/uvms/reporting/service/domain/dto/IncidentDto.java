@@ -24,7 +24,7 @@ public class IncidentDto implements Serializable {
     @JsonSerialize(using = InstantSerializer.class)
     @JsonDeserialize(using = IncidentInstantDeserializer.class)
     private Instant updateDate;
-    private MicroMovement lastKnownLocation;
+    private MicroMovementDto lastKnownLocation;
 
     public long getId() {
         return id;
@@ -82,11 +82,11 @@ public class IncidentDto implements Serializable {
         this.status = status;
     }
 
-    public MicroMovement getLastKnownLocation() {
+    public MicroMovementDto getLastKnownLocation() {
         return lastKnownLocation;
     }
 
-    public void setLastKnownLocation(MicroMovement lastKnownLocation) {
+    public void setLastKnownLocation(MicroMovementDto lastKnownLocation) {
         this.lastKnownLocation = lastKnownLocation;
     }
 

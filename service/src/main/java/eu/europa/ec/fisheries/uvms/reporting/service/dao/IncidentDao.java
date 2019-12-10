@@ -11,6 +11,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,9 +37,16 @@ public class IncidentDao {
         return incident;
     }
 
-    public List<Incident> findAllAssetNotSending(StatusEnum statusEnum) {
-        TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_STATUS, Incident.class);
-        query.setParameter("status", statusEnum);
+    public List<Incident> findUnresolvedIncidents() {
+        TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_ALL_EXCLUDE_STATUS, Incident.class);
+        query.setParameter("status", StatusEnum.RESOLVED);
+        return query.getResultList();
+    }
+
+    public List<Incident> findByStatusAndUpdatedSince() {
+        TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_STATUS_AND_UPDATED_SINCE, Incident.class);
+        query.setParameter("status", StatusEnum.RESOLVED);
+        query.setParameter("updatedSince", Instant.now().minus(12, ChronoUnit.HOURS));
         return query.getResultList();
     }
 

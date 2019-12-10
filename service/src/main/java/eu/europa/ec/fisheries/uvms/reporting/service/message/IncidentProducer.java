@@ -9,6 +9,7 @@ import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticConte
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentCreate;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.interfaces.IncidentUpdate;
+import eu.europa.ec.fisheries.uvms.reporting.service.helper.IncidentHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,9 @@ public class IncidentProducer {
     @Inject
     @JMSConnectionFactory("java:/ConnectionFactory")
     JMSContext context;
+
+    @Inject
+    private IncidentHelper incidentHelper;
 
     private ObjectMapper om = new ObjectMapper();
 
@@ -59,7 +63,7 @@ public class IncidentProducer {
 
     private void sendEvent(Incident incident, String eventName) {
         try {
-            String  outgoingJson =   om.writeValueAsString(incident);
+            String outgoingJson = om.writeValueAsString(incidentHelper.entityToDto(incident));
             TextMessage message = this.context.createTextMessage(outgoingJson);
             message.setStringProperty(MessageConstants.EVENT_STREAM_EVENT, eventName);
             MappedDiagnosticContext.addThreadMappedDiagnosticContextToMessageProperties(message);

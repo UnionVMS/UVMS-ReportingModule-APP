@@ -49,7 +49,8 @@ public class IncidentConsumer implements MessageListener {
             TicketType ticket = om.readValue(json, TicketType.class);
 
             String eventType = message.getStringProperty("eventName");
-
+            LOG.info("New message: " + eventType);
+            System.out.println("New message: " + eventType);
             switch (eventType) {
                 case "Incident":
                     incidentServiceBean.createIncident(ticket);
