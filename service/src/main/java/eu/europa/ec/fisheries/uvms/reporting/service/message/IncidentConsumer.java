@@ -26,10 +26,12 @@ import javax.jms.TextMessage;
         @ActivationConfigProperty(propertyName = "connectionFactoryJndiName", propertyValue = MessageConstants.CONNECTION_FACTORY)
 })
 public class IncidentConsumer implements MessageListener {
-
     private static final Logger LOG = LoggerFactory.getLogger(IncidentConsumer.class);
 
     private ObjectMapper om = new ObjectMapper();
+
+    @Inject
+    private IncidentServiceBean incidentServiceBean;
 
     @PostConstruct
     public void init() {
@@ -37,20 +39,13 @@ public class IncidentConsumer implements MessageListener {
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    @Inject
-    private IncidentServiceBean incidentServiceBean;
-
     @Override
     public void onMessage(Message message) {
         try {
             TextMessage tm = (TextMessage) message;
             String json = tm.getBody(String.class);
-
             TicketType ticket = om.readValue(json, TicketType.class);
-
             String eventType = message.getStringProperty("eventName");
-            LOG.info("New message: " + eventType);
-            System.out.println("New message: " + eventType);
             switch (eventType) {
                 case "Incident":
                     incidentServiceBean.createIncident(ticket);
