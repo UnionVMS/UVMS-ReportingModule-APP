@@ -70,8 +70,8 @@ public class IncidentServiceBean {
                 Incident updated = incidentDao.update(persisted);
                 updatedIncident.fire(updated);
                 incidentLogServiceBean.createIncidentLogForStatus(incidentStatus, updated);
-            } else if (ticket.getMovementGuid() != null) {
-
+            } else if (ticket.getMovementGuid() != null &&
+                    !ticket.getMovementGuid().equals(persisted.getMovementId().toString())) {
                 MicroMovement movementFromTicket = movementClient.getMicroMovementById(UUID.fromString(ticket.getMovementGuid()));
                 if (movementFromTicket.getSource().equals(MovementSourceType.MANUAL)) {
                     MicroMovement latest = movementClient.getMicroMovementById(persisted.getMovementId());
