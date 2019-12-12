@@ -51,9 +51,14 @@ public class IncidentDao {
     }
 
     public Incident findByTicketId(UUID ticketId) {
-        TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_TICKET_ID, Incident.class);
-        query.setParameter("ticketId", ticketId);
-        return query.getSingleResult();
+        try {
+            TypedQuery<Incident> query = em.createNamedQuery(Incident.FIND_BY_TICKET_ID, Incident.class);
+            query.setParameter("ticketId", ticketId);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            LOG.warn("No Ticket found to be updated. Ticket ID: {}", ticketId);
+            return null;
+        }
     }
 
     public Incident update(Incident entity) {

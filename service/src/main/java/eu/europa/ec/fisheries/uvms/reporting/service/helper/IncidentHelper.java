@@ -7,11 +7,9 @@ import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetIdentifier;
 import eu.europa.ec.fisheries.uvms.movement.client.MovementRestClient;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.IncidentDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.MicroMovementDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.MovementPointDto;
-import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.MovementSourceType;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.enums.StatusEnum;
 
 import javax.ejb.EJB;
@@ -52,11 +50,11 @@ public class IncidentHelper {
         incident.setIrcs(asset.getIrcs());
     }
 
-    public IncidentDto entityToDto(Incident incident) {
+    public IncidentDto incidentEntityToDto(Incident incident) {
         return mapEntityToDto(incident);
     }
 
-    public List<IncidentDto> entityToDtoList(List<Incident> incidentList) {
+    public List<IncidentDto> incidentToDtoList(List<Incident> incidentList) {
         List<IncidentDto> retVal = new ArrayList<>();
         for (Incident i : incidentList) {
             IncidentDto dto = mapEntityToDto(i);
@@ -74,9 +72,9 @@ public class IncidentHelper {
         dto.setAssetName(entity.getAssetName());
         dto.setAssetIrcs(entity.getIrcs());
         dto.setStatus(entity.getStatus().name());
-        dto.setCreateDate(entity.getCreateDate());
+        dto.setCreateDate(entity.getCreateDate().getEpochSecond());
         if (entity.getUpdateDate() != null)
-            dto.setUpdateDate(entity.getUpdateDate());
+            dto.setUpdateDate(entity.getUpdateDate().getEpochSecond());
 
         MicroMovement micro = movementClient.getMicroMovementById(entity.getMovementId());
 
@@ -91,7 +89,7 @@ public class IncidentHelper {
         lastKnownLocation.setLocation(location);
         lastKnownLocation.setHeading(micro.getHeading());
         lastKnownLocation.setGuid(micro.getGuid());
-        lastKnownLocation.setTimestamp(micro.getTimestamp());
+        lastKnownLocation.setTimestamp(micro.getTimestamp().getEpochSecond());
         lastKnownLocation.setSpeed(micro.getSpeed());
         lastKnownLocation.setSource(MovementSourceType.fromValue(micro.getSource().name()));
 
@@ -100,13 +98,29 @@ public class IncidentHelper {
         return dto;
     }
 
+    public List<IncidentLogDto> incidentLogToDtoList(List<IncidentLog> incidentLogList) {
+        List<IncidentLogDto> retVal = new ArrayList<>();
+        for (IncidentLog entity : incidentLogList) {
+            IncidentLogDto dto = new IncidentLogDto();
+            dto.setId(entity.getId());
+            dto.setIncidentId(entity.getIncidentId());
+            dto.setMessage(entity.getMessage());
+            dto.setEventType(entity.getEventType().name());
+            dto.setCreateDate(entity.getCreateDate().getEpochSecond());
+            dto.setPreviousValue(entity.getPreviousValue());
+            dto.setCurrentValue(entity.getCurrentValue());
+            retVal.add(dto);
+        }
+        return retVal;
+    }
+
     public MicroMovementDto mapToMicroMovementDto(MicroMovement model) {
         MicroMovementDto dto = new MicroMovementDto();
         dto.setGuid(model.getGuid());
         dto.setHeading(model.getHeading());
         dto.setSource(MovementSourceType.fromValue(model.getSource().name()));
         dto.setSpeed(model.getSpeed());
-        dto.setTimestamp(model.getTimestamp());
+        dto.setTimestamp(model.getTimestamp().getEpochSecond());
         dto.setLocation(mapToMovementPointDto(model.getLocation()));
         return dto;
     }

@@ -1,22 +1,14 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
-
-import java.time.Instant;
-
 public class MicroMovementDto {
 
-    private MovementPointDto location;   //vivid solution point causes infinite json recursion ;(
+    private MovementPointDto location;
 
     private Double heading;
 
     private String guid;
 
-    @JsonSerialize(using = InstantSerializer.class)
-    @JsonDeserialize(using = IncidentInstantDeserializer.class)
-    private Instant timestamp;
+    private long timestamp;
 
     private Double speed;
 
@@ -46,11 +38,11 @@ public class MicroMovementDto {
         this.guid = guid;
     }
 
-    public Instant getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Instant timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

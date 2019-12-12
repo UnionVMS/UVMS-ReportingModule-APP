@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.enums;
 
 public enum EventTypeEnum {
-    MANUEL_POSITION("MANUEL_POSITION"),
-    INCIDENT_STATUS("INCIDENT_STATUS");
+    MANUEL_POSITION("New Manual position created"),
+    INCIDENT_STATUS("Incident Status updated");
 
     private String message;
 

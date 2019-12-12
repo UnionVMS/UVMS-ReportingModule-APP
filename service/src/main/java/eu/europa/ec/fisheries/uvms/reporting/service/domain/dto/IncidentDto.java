@@ -1,11 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.domain.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
-
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.UUID;
 
 public class IncidentDto implements Serializable {
@@ -18,12 +13,8 @@ public class IncidentDto implements Serializable {
     private String assetName;
     private String assetIrcs;
     private String status;
-    @JsonSerialize(using = InstantSerializer.class)
-    @JsonDeserialize(using = IncidentInstantDeserializer.class)
-    private Instant createDate;
-    @JsonSerialize(using = InstantSerializer.class)
-    @JsonDeserialize(using = IncidentInstantDeserializer.class)
-    private Instant updateDate;
+    private long createDate;
+    private long updateDate;
     private MicroMovementDto lastKnownLocation;
 
     public long getId() {
@@ -90,19 +81,19 @@ public class IncidentDto implements Serializable {
         this.lastKnownLocation = lastKnownLocation;
     }
 
-    public Instant getCreateDate() {
+    public long getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Instant createDate) {
+    public void setCreateDate(long createDate) {
         this.createDate = createDate;
     }
 
-    public Instant getUpdateDate() {
+    public long getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Instant updateDate) {
+    public void setUpdateDate(long updateDate) {
         this.updateDate = updateDate;
     }
 }

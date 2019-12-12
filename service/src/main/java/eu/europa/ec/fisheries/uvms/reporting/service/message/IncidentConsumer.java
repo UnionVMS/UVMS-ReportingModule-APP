@@ -37,6 +37,7 @@ public class IncidentConsumer implements MessageListener {
     public void init() {
         om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        om.findAndRegisterModules();
     }
 
     @Override

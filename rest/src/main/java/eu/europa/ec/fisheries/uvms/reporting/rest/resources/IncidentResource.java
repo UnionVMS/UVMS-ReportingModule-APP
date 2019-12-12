@@ -13,8 +13,8 @@ package eu.europa.ec.fisheries.uvms.reporting.rest.resources;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentLogServiceBean;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncidentServiceBean;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.IncidentDto;
+import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.IncidentLogDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.StatusDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.Incident;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.entities.IncidentLog;
@@ -31,7 +31,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.UUID;
 
 @Path("incident")
 @Produces(MediaType.APPLICATION_JSON)
@@ -56,7 +55,7 @@ public class IncidentResource {
     public Response getAssetNotSendingEvents() {
         try {
             List<Incident> notSendingList = incidentServiceBean.getAssetNotSendingList();
-            List<IncidentDto> dtoList = incidentHelper.entityToDtoList(notSendingList);
+            List<IncidentDto> dtoList = incidentHelper.incidentToDtoList(notSendingList);
             return Response.ok(dtoList).build();
         } catch (Exception e) {
             LOG.error("Error while fetching AssetNotSending List", e);
@@ -70,7 +69,8 @@ public class IncidentResource {
     public Response getAssetNotSendingEventChanges(@PathParam("incidentId") long incidentId) {
         try {
             List<IncidentLog> eventChanges = incidentLogServiceBean.getAssetNotSendingEventChanges(incidentId);
-            return Response.ok(eventChanges).build();
+            List<IncidentLogDto> dtoList = incidentHelper.incidentLogToDtoList(eventChanges);
+            return Response.ok(dtoList).build();
         } catch (Exception e) {
             LOG.error("Error while fetching AssetNotSending List", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ExceptionUtils.getRootCause(e)).build();
@@ -83,7 +83,7 @@ public class IncidentResource {
     public Response updateAssetNotSendingStatus(@PathParam("incidentId") long incidentId, StatusDto status) {
         try {
             Incident updated = incidentServiceBean.updateIncidentStatus(incidentId, status);
-            IncidentDto dto = incidentHelper.entityToDto(updated);
+            IncidentDto dto = incidentHelper.incidentEntityToDto(updated);
             return Response.ok(dto).build();
         } catch (Exception e) {
             LOG.error("Error while fetching AssetNotSending List", e);

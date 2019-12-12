@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import eu.europa.ec.fisheries.uvms.movement.client.MovementRestClient;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.IncidentLogDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.domain.dto.MicroMovementDto;
@@ -17,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.time.Instant;
@@ -38,6 +36,7 @@ public class IncidentLogServiceBean {
     public void init() {
         om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        om.findAndRegisterModules();
     }
 
     public List<IncidentLog> getAssetNotSendingEventChanges(long incidentId) {
@@ -45,22 +44,14 @@ public class IncidentLogServiceBean {
     }
 
     public void createIncidentLogForStatus(String oldValue, Incident updated) {
-        try {
-            StatusEnum currentStatus = updated.getStatus();
-            String jsonPrevious = om.writeValueAsString(oldValue);
-            String jsonCurrent = om.writeValueAsString(currentStatus);
-            IncidentLog log = new IncidentLog();
-            log.setCreateDate(Instant.now());
-            log.setIncidentId(updated.getId());
-            log.setEventType(EventTypeEnum.INCIDENT_STATUS);
-            log.setPreviousValue(jsonPrevious);
-            log.setCurrentValue(jsonCurrent);
-            log.setMessage(EventTypeEnum.INCIDENT_STATUS.getMessage());
-            incidentLogDao.save(log);
-        } catch (
-                JsonProcessingException e) {
-            LOG.error("Error when creating MicroMovementExtended JSON object: " + e.getMessage(), e);
-        }
+        IncidentLog log = new IncidentLog();
+        log.setCreateDate(Instant.now());
+        log.setIncidentId(updated.getId());
+        log.setEventType(EventTypeEnum.INCIDENT_STATUS);
+        log.setPreviousValue(oldValue);
+        log.setCurrentValue(updated.getStatus().name());
+        log.setMessage(EventTypeEnum.INCIDENT_STATUS.getMessage());
+        incidentLogDao.save(log);
 
     }
 

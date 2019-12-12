@@ -39,6 +39,7 @@ public class IncidentProducer {
     public void init() {
         om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        om.findAndRegisterModules();
     }
 
 
@@ -63,7 +64,7 @@ public class IncidentProducer {
 
     private void sendEvent(Incident incident, String eventName) {
         try {
-            String outgoingJson = om.writeValueAsString(incidentHelper.entityToDto(incident));
+            String outgoingJson = om.writeValueAsString(incidentHelper.incidentEntityToDto(incident));
             TextMessage message = this.context.createTextMessage(outgoingJson);
             message.setStringProperty(MessageConstants.EVENT_STREAM_EVENT, eventName);
             MappedDiagnosticContext.addThreadMappedDiagnosticContextToMessageProperties(message);
