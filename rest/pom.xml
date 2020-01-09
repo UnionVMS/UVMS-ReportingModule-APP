@@ -18,11 +18,7 @@
 			<artifactId>uvms-pom-monitoring-deps</artifactId>
 			<type>pom</type>
 		</dependency>
-        
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-        </dependency>
+
 		<dependency>
 		    <groupId>net.sf.ehcache.internal</groupId>
 		    <artifactId>ehcache-core</artifactId>
