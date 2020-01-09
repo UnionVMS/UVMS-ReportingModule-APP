@@ -104,14 +104,7 @@
             	<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
             	<artifactId>spatial-model</artifactId>
             	<version>${spatial.model.version}</version>
-        	</dependency>  
-        
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
-                <version>0.4</version>
-                <!--<scope>test</scope>-->
-            </dependency>
+        	</dependency>
 
             <dependency>
                 <groupId>org.geotools</groupId>
