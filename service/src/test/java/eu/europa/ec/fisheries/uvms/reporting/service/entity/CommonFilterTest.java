@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 @RunWith(JUnitParamsRunner.class)
 public class CommonFilterTest {
 
-    final String now = "2013-02-28 12:24:56 +0000";
+    final String now = "2013-02-28 12:24:56 +0100";
 
     @Test
     @Parameters(method = "rangeCriteria")
@@ -78,7 +78,7 @@ public class CommonFilterTest {
 
     protected Object[] rangeCriteria(){
 
-        String fromMinus24Hours = "2013-02-27 12:24:56 +0000";
+        String fromMinus24Hours = "2013-02-27 12:24:56 +0100";
 
         CommonFilter filter1 = new CommonFilter(){
             protected Instant nowUTC() {
@@ -96,7 +96,7 @@ public class CommonFilterTest {
         expectedCriteria.setTo(now);
         setDefaultValues(expectedCriteria);
 
-        String to = "2014-02-28 12:24:56 +0000";
+        String to = "2014-02-28 12:24:56 +0100";
         CommonFilter filter2 = CommonFilter.builder()
                 .positionSelector(PositionSelector.builder()
                         .selector(Selector.all).build())
