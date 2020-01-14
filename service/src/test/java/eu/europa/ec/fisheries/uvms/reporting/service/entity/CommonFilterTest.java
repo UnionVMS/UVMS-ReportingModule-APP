@@ -124,7 +124,7 @@ public class CommonFilterTest {
         RangeCriteria expectedCriteria3 = new RangeCriteria();
         expectedCriteria3.setKey(RangeKeyType.DATE);
         expectedCriteria3.setFrom("1970-01-01 00:00:00 Z");
-        expectedCriteria3.setTo(DateUtils.dateToString(DateUtils.stringToDate(now)));
+        expectedCriteria3.setTo(DateUtils.dateToHumanReadableString(DateUtils.stringToDate(now)));
 
         return $(
                 $(filter1, expectedCriteria),
@@ -163,10 +163,10 @@ public class CommonFilterTest {
 
     private void setDefaultValues(final RangeCriteria date) {
         if (date.getTo() == null) {
-            date.setFrom(DateUtils.dateToString(DateUtils.nowUTC())); // FIXME use offset
+            date.setFrom(DateUtils.dateToHumanReadableString(DateUtils.nowUTC())); // FIXME use offset
         }
         if (date.getFrom() == null) {
-            date.setFrom(DateUtils.dateToString(Instant.EPOCH));
+            date.setFrom(DateUtils.dateToHumanReadableString(Instant.EPOCH));
         }
     }
 
