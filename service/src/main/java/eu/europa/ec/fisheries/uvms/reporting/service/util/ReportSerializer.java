@@ -178,7 +178,7 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         if (executionLog != null) {
             Date executedOn = executionLog.getExecutedOn();
             if (executedOn != null) {
-                js.writeStringField(ExecutionLogDTO.EXECUTED_ON, DateUtils.parseUTCDateToString(executedOn.toInstant()));
+                js.writeStringField(ExecutionLogDTO.EXECUTED_ON, DateUtils.dateToHumanReadableString(executedOn.toInstant()));
             }
         } else {
             js.writeStringField(ExecutionLogDTO.EXECUTED_ON, null); // TODO check if this else is required
@@ -274,11 +274,11 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
             Date startDate = commonFilter.getStartDate();
             Date endDate = commonFilter.getEndDate();
             if (startDate != null) {
-                jgen.writeStringField(CommonFilterDTO.START_DATE, DateUtils.dateToString(startDate.toInstant()));
+                jgen.writeStringField(CommonFilterDTO.START_DATE, DateUtils.dateToHumanReadableString(startDate.toInstant()));
 
             }
             if (endDate != null) {
-                jgen.writeStringField(CommonFilterDTO.END_DATE, DateUtils.dateToString(endDate.toInstant()));
+                jgen.writeStringField(CommonFilterDTO.END_DATE, DateUtils.dateToHumanReadableString(endDate.toInstant()));
             }
 
             jgen.writeEndObject();

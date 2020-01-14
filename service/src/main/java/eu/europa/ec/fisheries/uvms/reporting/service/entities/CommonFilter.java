@@ -108,10 +108,10 @@ public class CommonFilter extends Filter {
 
     private void setDefaultValues(final RangeCriteria date, Instant now) {
         if (date.getTo() == null) {
-            date.setTo(DateUtils.dateToString(now));
+            date.setTo(DateUtils.dateToHumanReadableString(now));
         }
         if (date.getFrom() == null) {
-            date.setFrom(DateUtils.dateToString(Instant.EPOCH));
+            date.setFrom(DateUtils.dateToHumanReadableString(Instant.EPOCH));
         }
     }
 
@@ -132,7 +132,7 @@ public class CommonFilter extends Filter {
                     return Collections.emptyList();
                 }
                 Float hours = getPositionSelector().getValue();
-                startDate = Date.from(DateUtils.nowUTCMinusSeconds(now, hours));
+                startDate = Date.from(DateUtils.nowUTCMinusHours(now, hours.intValue()));
                 endDate = Date.from(now);
                 break;
         }

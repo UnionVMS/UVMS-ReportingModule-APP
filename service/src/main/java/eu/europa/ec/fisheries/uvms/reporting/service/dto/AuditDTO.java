@@ -38,7 +38,7 @@ public class AuditDTO {
 
     @JsonProperty("createdOn")
     public String getCreatedOn() {
-        return DateUtils.dateToString(createdOn.toInstant());
+        return DateUtils.dateToHumanReadableString(createdOn.toInstant());
     }
 
     public void setCreatedOn(Date createdOn) {

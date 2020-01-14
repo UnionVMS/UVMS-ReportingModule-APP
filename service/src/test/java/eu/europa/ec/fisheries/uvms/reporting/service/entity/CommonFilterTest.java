@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 @RunWith(JUnitParamsRunner.class)
 public class CommonFilterTest {
 
-    final String now = "2013-02-28 12:24:56 +0100";
+    final String now = "2013-02-28 12:24:56 +0000";
 
     @Test
     @Parameters(method = "rangeCriteria")
@@ -78,7 +78,7 @@ public class CommonFilterTest {
 
     protected Object[] rangeCriteria(){
 
-        String fromMinus24Hours = "2013-02-27 12:24:56 +0100";
+        String fromMinus24Hours = "2013-02-27 12:24:56 +0000";
 
         CommonFilter filter1 = new CommonFilter(){
             protected Instant nowUTC() {
@@ -96,7 +96,7 @@ public class CommonFilterTest {
         expectedCriteria.setTo(now);
         setDefaultValues(expectedCriteria);
 
-        String to = "2014-02-28 12:24:56 +0100";
+        String to = "2014-02-28 12:24:56 +0000";
         CommonFilter filter2 = CommonFilter.builder()
                 .positionSelector(PositionSelector.builder()
                         .selector(Selector.all).build())
@@ -124,7 +124,7 @@ public class CommonFilterTest {
         RangeCriteria expectedCriteria3 = new RangeCriteria();
         expectedCriteria3.setKey(RangeKeyType.DATE);
         expectedCriteria3.setFrom("1970-01-01 00:00:00 Z");
-        expectedCriteria3.setTo(DateUtils.dateToString(DateUtils.stringToDate(now)));
+        expectedCriteria3.setTo(DateUtils.dateToHumanReadableString(DateUtils.stringToDate(now)));
 
         return $(
                 $(filter1, expectedCriteria),
@@ -163,10 +163,10 @@ public class CommonFilterTest {
 
     private void setDefaultValues(final RangeCriteria date) {
         if (date.getTo() == null) {
-            date.setFrom(DateUtils.dateToString(DateUtils.nowUTC())); // FIXME use offset
+            date.setFrom(DateUtils.dateToHumanReadableString(DateUtils.nowUTC())); // FIXME use offset
         }
         if (date.getFrom() == null) {
-            date.setFrom(DateUtils.dateToString(Instant.EPOCH));
+            date.setFrom(DateUtils.dateToHumanReadableString(Instant.EPOCH));
         }
     }
 
