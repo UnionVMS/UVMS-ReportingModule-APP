@@ -23,12 +23,16 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Selector;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.joda.time.DateTime;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.TimeZone;
+
 import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -36,17 +40,30 @@ import static org.junit.Assert.assertNotEquals;
 @RunWith(JUnitParamsRunner.class)
 public class CommonFilterTest {
 
-    final String now = "2013-02-28 12:24:56 +0100";
+    public static final String START = "0001-01-03 00:00:00 +0000";
+    final String NOW = "2013-02-28 12:24:56 +0000";
+    final String FROM_MINUS_24_HOURS = "2013-02-27 12:24:56 +0000";
+    final String TO = "2014-02-28 12:24:56 +0000";
+    static TimeZone defaultTZ;
+
+    @BeforeClass
+    public static void init() {
+        defaultTZ = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
+
+    @AfterClass
+    public static void shutdown() {
+        TimeZone.setDefault(defaultTZ);
+    }
+
 
     @Test
     @Parameters(method = "rangeCriteria")
     public void shouldReturnRangeCriteria(CommonFilter filter, RangeCriteria rangeCriteria){
 
-        Iterator<RangeCriteria> iterator = filter.movementRangeCriteria(new DateTime(DateUtils.stringToDate(now))).iterator();
-
-        if (iterator.hasNext()) {
-            assertEquals(rangeCriteria, iterator.next());
-        }
+        Iterator<RangeCriteria> iterator = filter.movementRangeCriteria(new DateTime(DateUtils.stringToDate(NOW))).iterator();
+        assertEquals(rangeCriteria, iterator.next());
     }
 
     @Test
@@ -76,11 +93,9 @@ public class CommonFilterTest {
 
     protected Object[] rangeCriteria(){
 
-        String fromMinus24Hours = "2013-02-27 12:24:56 +0100";
-
         CommonFilter filter1 = new CommonFilter(){
             protected DateTime nowUTC() {
-                return new DateTime(DateUtils.stringToDate(now));
+                return new DateTime(DateUtils.stringToDate(NOW));
             }
         };
 
@@ -90,21 +105,20 @@ public class CommonFilterTest {
         );
         RangeCriteria expectedCriteria = new RangeCriteria();
         expectedCriteria.setKey(RangeKeyType.DATE);
-        expectedCriteria.setFrom(fromMinus24Hours);
-        expectedCriteria.setTo(now);
+        expectedCriteria.setFrom(FROM_MINUS_24_HOURS);
+        expectedCriteria.setTo(NOW);
         setDefaultValues(expectedCriteria);
 
-        String to = "2014-02-28 12:24:56 +0100";
         CommonFilter filter2 = CommonFilter.builder()
                 .positionSelector(PositionSelector.builder()
                         .selector(Selector.all).build())
-                .dateRange(new DateRange(DateUtils.stringToDate(now), DateUtils.stringToDate(to)))
+                .dateRange(new DateRange(DateUtils.stringToDate(NOW), DateUtils.stringToDate(TO)))
                 .build();
 
         RangeCriteria expectedCriteria2 = new RangeCriteria();
         expectedCriteria2.setKey(RangeKeyType.DATE);
-        expectedCriteria2.setFrom(now);
-        expectedCriteria2.setTo(to);
+        expectedCriteria2.setFrom(NOW);
+        expectedCriteria2.setTo(TO);
         setDefaultValues(expectedCriteria2);
 
         final Float hours = 100F;
@@ -112,7 +126,7 @@ public class CommonFilterTest {
         CommonFilter filter3 = new CommonFilter(){
             @Override
             protected DateTime nowUTC() {
-                return new DateTime(DateUtils.stringToDate(now));
+                return new DateTime(DateUtils.stringToDate(NOW));
             }
         };
 
@@ -121,8 +135,8 @@ public class CommonFilterTest {
 
         RangeCriteria expectedCriteria3 = new RangeCriteria();
         expectedCriteria3.setKey(RangeKeyType.DATE);
-        expectedCriteria3.setFrom("0001-01-03 01:00:00 +0100");
-        expectedCriteria3.setTo(now);
+        expectedCriteria3.setFrom(START);
+        expectedCriteria3.setTo(NOW);
 
         return $(
                 $(filter1, expectedCriteria),
