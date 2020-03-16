@@ -4,5 +4,13 @@
     <exclude-subsystems>
         <subsystem name="logging" />
     </exclude-subsystems>
+    <exclusions>
+            <module name="org.jboss.resteasy.resteasy-json-binding-provider"/>
+        </exclusions>
   </deployment>
+  <sub-deployment name="reporting-rest-${project.version}.war">
+        <exclusions>
+            <module name="org.jboss.resteasy.resteasy-json-binding-provider"/>
+        </exclusions>
+    </sub-deployment>
 </jboss-deployment-structure>

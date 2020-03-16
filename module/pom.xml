@@ -40,6 +40,7 @@
                             <artifactId>${project.parent.artifactId}-rest</artifactId>
                         </webModule>
                     </modules>
+                    <filtering>true</filtering>
                     <skinnyWars>true</skinnyWars>
                 </configuration>
             </plugin>
