@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -465,6 +466,7 @@ public class ReportingResource extends UnionVMSResource {
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+		mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
 		rootNode = mapper.createObjectNode();
 		StringWriter stringWriter = new StringWriter();
 
