@@ -52,11 +52,22 @@ public class MovementServiceBean {
     public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) throws ReportingServiceException {
         return ExtMovementMessageMapper.getMovementMap(getMovementMapResponseTypes(processor));
     }
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Interceptors(SimpleTracingInterceptor.class)
+    public Map<String, MovementMapResponseType> getMovementMapReporting(FilterProcessor processor) throws ReportingServiceException {
+    	return ExtMovementMessageMapper.getMovementMap(getMovementMapResponseTypesReporting(processor));
+    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<MovementMapResponseType> getMovement(FilterProcessor processor) throws ReportingServiceException {
         log.trace("getMovement({})", processor.toString());
         return getMovementMapResponseTypes(processor);
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public List<MovementMapResponseType> getMovementReporting(FilterProcessor processor) throws ReportingServiceException {
+    	log.trace("getMovement({})", processor.toString());
+    	return getMovementMapResponseTypesReporting(processor);
     }
 
     private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws ReportingServiceException {
@@ -72,6 +83,20 @@ public class MovementServiceBean {
         } catch (JMSException | ModelMapperException | MovementModelException | MessageException e) {
             throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT", e);
         }
+    }
+    private List<MovementMapResponseType> getMovementMapResponseTypesReporting(FilterProcessor processor) throws ReportingServiceException {
+    	try {
+    		String request = ExtMovementMessageMapper.mapToGetMovementMapByQueryRequestReporting(processor.toMovementQuery());
+    		String moduleMessage = movementSender.sendModuleMessage(request, receiver.getDestination());
+    		TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
+    		if (response != null && !isUserFault(response)) {
+    			return ExtMovementMessageMapper.mapToMovementMapResponse(response);
+    		} else {
+    			throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT");
+    		}
+    	} catch (JMSException | ModelMapperException | MovementModelException | MessageException e) {
+    		throw new ReportingServiceException("FAILED TO GET DATA FROM MOVEMENT", e);
+    	}
     }
 
     private boolean isUserFault(TextMessage message) {

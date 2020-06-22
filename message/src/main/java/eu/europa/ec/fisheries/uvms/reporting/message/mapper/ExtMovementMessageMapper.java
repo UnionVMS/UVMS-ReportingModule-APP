@@ -41,6 +41,12 @@ public class ExtMovementMessageMapper {
         }
         return MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(query);
     }
+    public static String mapToGetMovementMapByQueryRequestReporting(final MovementQuery query) throws ModelMarshallException, MovementModelException {
+    	if (query == null) {
+    		throw new IllegalArgumentException("Movementquery can not be null.");
+    	}
+    	return MovementModuleRequestMapper.mapToGetMovementMapByQueryRequestReporting(query);
+    }
 
     public static List<MovementMapResponseType> mapToMovementMapResponse(final TextMessage message) throws ModelMapperException, JMSException, MovementModelException {
         if (message == null) {

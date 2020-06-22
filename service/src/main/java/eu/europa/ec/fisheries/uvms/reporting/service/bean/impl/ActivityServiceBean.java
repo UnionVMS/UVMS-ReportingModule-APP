@@ -64,6 +64,7 @@ public class ActivityServiceBean implements ActivityService {
         return null;
     }
 
+
     @Override
     @Interceptors(SimpleTracingInterceptor.class)
     public FACatchSummaryReportResponse getFaCatchSummaryReport(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters, List<GroupCriteria> groupCriteriaList) throws ReportingServiceException {
@@ -81,4 +82,24 @@ public class ActivityServiceBean implements ActivityService {
         }
         return result;
     }
+
+
+	@Override
+	@Interceptors(SimpleTracingInterceptor.class)
+	public FishingTripResponse getFishingTripsReporting(List<SingleValueTypeFilter> singleValueTypeFilters,
+			List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException {
+
+	    	try {
+	    		String request = ActivityModuleRequestMapper.mapToActivityGetFishingTripRequestReporting(listValueTypeFilters, singleValueTypeFilters);
+	    		String correlationId = activityModule.sendModuleMessage(request, reportingModule.getDestination());
+	    		TextMessage response = reportingModule.getMessage(correlationId, TextMessage.class);
+	    		if (response != null) {
+	    			return ActivityModuleResponseMapper.mapToActivityFishingTripFromResponse(response, correlationId);
+	    		}
+	    	} catch (MessageException | ActivityModelMapperException e) {
+	    		throw new ReportingServiceException(e.getMessage(), e);
+	    	}
+	    	return null;
+		
+	}
 }

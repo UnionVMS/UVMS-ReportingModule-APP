@@ -71,6 +71,31 @@ public class AssetServiceBean {
         }
         return ExtAssetMessageMapper.getAssetMap(assetList);
     }
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @Interceptors(SimpleTracingInterceptor.class)
+    public Map<String, Asset> getAssetMapReporting(final FilterProcessor processor) throws ReportingServiceException {
+    	Set<Asset> assetList = new HashSet<>();
+    	
+    	try {
+    		if (processor.hasAssets()) {
+    			String request = ExtAssetMessageMapper.createAssetListModuleRequestReporting(processor.toAssetListQuery());
+    			String moduleMessage = assetSender.sendModuleMessage(request, receiver.getDestination());
+    			TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
+    			List<Asset> assets = getAssets(moduleMessage, response);
+    			assetList.addAll(assets);
+    		}
+    		if (processor.hasAssetGroups()) {
+    			String request = ExtAssetMessageMapper.createAssetListModuleRequestReporting(processor.getAssetGroupList());
+    			String moduleMessage = assetSender.sendModuleMessage(request, receiver.getDestination());
+    			TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
+    			List<Asset> groupList = getAssets(moduleMessage, response);
+    			assetList.addAll(groupList);
+    		}
+    	} catch (MessageException | AssetModelMapperException e) {
+    		throw new ReportingServiceException("FAILED TO GET DATA FROM ASSET", e);
+    	}
+    	return ExtAssetMessageMapper.getAssetMap(assetList);
+    }
 
     public List<Asset> getAssets(AssetListQuery assetList) throws ReportingServiceException {
         try {

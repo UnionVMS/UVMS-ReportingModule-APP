@@ -76,6 +76,13 @@ public class ExtAssetMessageMapper {
         }
         return AssetModuleRequestMapper.createAssetListModuleRequest(query);
     }
+    
+    public static String createAssetListModuleRequestReporting(AssetListQuery query) throws AssetModelMapperException {
+    	if (query == null) {
+    		throw new IllegalArgumentException("AssetListQuery can not be null.");
+    	}
+    	return AssetModuleRequestMapper.createAssetListModuleRequestReporting(query);
+    }
 
     public static String createAssetListModuleRequest(Set<AssetGroup> assetGroup) throws AssetModelMapperException {
         if (assetGroup == null) {
@@ -84,5 +91,14 @@ public class ExtAssetMessageMapper {
         List<AssetGroup> assetGroupList = new ArrayList<>();
         assetGroupList.addAll(assetGroup);
         return AssetModuleRequestMapper.createAssetListModuleRequest(assetGroupList);
+    }
+    
+    public static String createAssetListModuleRequestReporting(Set<AssetGroup> assetGroup) throws AssetModelMapperException {
+    	if (assetGroup == null) {
+    		throw new IllegalArgumentException("List<AssetGroup> can not be null.");
+    	}
+    	List<AssetGroup> assetGroupList = new ArrayList<>();
+    	assetGroupList.addAll(assetGroup);
+    	return AssetModuleRequestMapper.createAssetListModuleRequestReporting(assetGroupList);
     }
 }

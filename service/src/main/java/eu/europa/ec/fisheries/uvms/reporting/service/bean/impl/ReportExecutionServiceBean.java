@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.vividsolutions.jts.io.ParseException;
@@ -137,19 +138,28 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     }
 
     @SneakyThrows
+    @Interceptors(SimpleTracingInterceptor.class)
     private ExecutionResultDTO executeReport(Report report, DateTime dateTime, List<AreaIdentifierType> areaRestrictions, Boolean userActivityAllowed, DisplayFormat format) {
         try {
+        	final Stopwatch stopwatch = Stopwatch.createStarted();
+        	log.debug("--> executeReport start");
             Set<Filter> filters = report.getFilters();
             FilterProcessor processor = new FilterProcessor(report.getFilters(), dateTime);
             ExecutionResultDTO resultDTO = new ExecutionResultDTO();
             String wkt = getFilterAreaWkt(processor, areaRestrictions);
             boolean hasAssets = processor.hasAssetsOrAssetGroups();
+            log.debug("--> executeReport (elapsed: {}) : before fetchPositionalData",stopwatch);            
             MovementData movementData = fetchPositionalData(processor, wkt);
+            log.debug("--> executeReport (elapsed: {}) : after fetchPositionalData",stopwatch);
             List<SingleValueTypeFilter> singleValueTypeFilters = extractSingleValueFilters(processor, wkt);
             List<ListValueTypeFilter> listValueTypeFilters = extractListValueFilters(processor, movementData.getAssetMap(), hasAssets);
             if (ReportTypeEnum.STANDARD == report.getReportType()) {
+            	log.debug("--> executeReport (elapsed: {}) : starting STANDARD report Type",stopwatch);
+            	final Stopwatch standardStopwatch = Stopwatch.createStarted();
                 if (userActivityAllowed && !report.isLastPositionSelected()) {
-                    FishingTripResponse tripResponse = activityService.getFishingTrips(singleValueTypeFilters, listValueTypeFilters);
+                	log.debug("--> executeReport (elapsed: {}) : starting trip retrieval",stopwatch);
+                	final Stopwatch tripStopwatch = Stopwatch.createStarted();
+                    FishingTripResponse tripResponse = activityService.getFishingTripsReporting(singleValueTypeFilters, listValueTypeFilters);
                     if (tripResponse != null && CollectionUtils.isNotEmpty(tripResponse.getFishingTripIdLists())){
                         for (FishingTripIdWithGeometry fishingTripIdWithGeometry : tripResponse.getFishingTripIdLists()) {
                             TripDTO trip = FishingTripMapper.INSTANCE.fishingTripToTripDto(fishingTripIdWithGeometry);
@@ -163,11 +173,14 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                         resultDTO.setActivityList(activitySummaryDTOs);
                         populateActivityesAsDefaultCollections(resultDTO);
                     }
+                    log.debug("--> executeReport (elapsed: {}) : trip retrieval finished in {}",stopwatch, tripStopwatch);
                 }
                 DefaultFeatureCollection movements = new DefaultFeatureCollection(null, MovementDTO.SIMPLE_FEATURE_TYPE);
                 DefaultFeatureCollection segments = new DefaultFeatureCollection(null, SegmentDTO.SEGMENT);
                 List<TrackDTO> tracks = new ArrayList<>();
                 if (isNotEmpty(movementData.getMovementMap())) {
+                	log.debug("--> executeReport (elapsed: {}) : starting movement loop",stopwatch);
+                	final Stopwatch movementStopwatch = Stopwatch.createStarted();
                     for (MovementMapResponseType map : movementData.getMovementMap()) {
                         Asset asset = movementData.getAssetMap().get(map.getKey());
                         if (asset != null) {
@@ -182,17 +195,23 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                             }
                         }
                     }
+                    log.debug("--> executeReport (elapsed: {}) : movement loop done in {}",stopwatch,movementStopwatch);
                 }
                 resultDTO.setTracks(tracks);
                 resultDTO.setMovements(movements);
                 resultDTO.setSegments(segments);
+                log.debug("--> executeReport (elapsed: {}) : STANDARD report finished in {}",stopwatch, standardStopwatch);
             } else if (userActivityAllowed && ReportTypeEnum.SUMMARY == report.getReportType()) {
+            	log.debug("--> executeReport (elapsed: {}) : starting SUMMARY report Type",stopwatch);
+            	final Stopwatch summaryStopwatch = Stopwatch.createStarted();
                 List<GroupCriteria> groupCriteriaList = extractGroupCriteriaList(filters);
                 FACatchSummaryReportResponse faCatchSummaryReport = activityService.getFaCatchSummaryReport(singleValueTypeFilters, listValueTypeFilters, groupCriteriaList);
                 FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                 resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
                 populateActivityesAsDefaultCollections(resultDTO);
+                log.debug("--> executeReport (elapsed: {}) : ending SUMMARY report Type in {}",stopwatch,summaryStopwatch);
             }
+            log.debug("--> executeReport (elapsed: {}) : ENDED",stopwatch);
             return resultDTO;
         } catch (ProcessorException e) {
             String error = "Error while processing reporting filters";
@@ -242,6 +261,8 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Interceptors(SimpleTracingInterceptor.class)
     private MovementData fetchPositionalData(FilterProcessor processor, String wkt) throws ReportingServiceException {
         MovementData movementData = new MovementData();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+    	log.debug("-- | --> fetchPositionalData start");
         try {
             Collection<MovementMapResponseType> movementMap;
             Map<String, MovementMapResponseType> responseTypeMap = null;
@@ -249,15 +270,27 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             processor.addAreaCriteria(wkt);
             log.trace("Running report {} assets or asset groups.", processor.hasAssetsOrAssetGroups() ? "has" : "doesn't have");
             if (processor.hasAssetsOrAssetGroups()) {
-                assetMap = assetModule.getAssetMap(processor);
+                log.debug("-- | --> fetchPositionalData (elapsed: {}) : start asset filter",stopwatch);
+                final Stopwatch assetstopwatch = Stopwatch.createStarted();
+                assetMap = assetModule.getAssetMapReporting(processor);
+                log.debug("-- | --> fetchPositionalData (elapsed: {}) : getAssetMap done in {}",stopwatch,assetstopwatch);
                 processor.getMovementListCriteria().addAll(ExtMovementMessageMapper.movementListCriteria(assetMap.keySet()));
-                movementMap = movementModule.getMovement(processor);
+                log.debug("-- | --> fetchPositionalData (elapsed: {}) : added assetmap to movement criteria",stopwatch);
+                final Stopwatch movementStopwatch = Stopwatch.createStarted();
+                movementMap = movementModule.getMovementReporting(processor);
+                log.debug("-- | --> fetchPositionalData (elapsed: {}) : getMovement done in {}",stopwatch,movementStopwatch);
             } else {
-                responseTypeMap = movementModule.getMovementMap(processor);
+            	log.debug("-- | --> fetchPositionalData (elapsed: {}) : NO asset filter",stopwatch);
+            	final Stopwatch movementStopwatch = Stopwatch.createStarted();
+                responseTypeMap = movementModule.getMovementMapReporting(processor);
+                log.debug("-- | --> fetchPositionalData (elapsed: {}) : getMovement done in {}",stopwatch,movementStopwatch);
                 Set<String> assetGuids = responseTypeMap.keySet();
                 movementMap = responseTypeMap.values();
                 processor.getAssetListCriteriaPairs().addAll(ExtAssetMessageMapper.assetCriteria(assetGuids));
-                assetMap = assetModule.getAssetMap(processor);
+                log.debug("-- | --> fetchPositionalData (elapsed: {}) : added assetGuids to criteria",stopwatch);
+                final Stopwatch assetstopwatch = Stopwatch.createStarted();
+                assetMap = assetModule.getAssetMapReporting(processor);
+                log.debug("-- | --> fetchPositionalData (elapsed: {}) : getAssetMap done in {}",stopwatch,assetstopwatch);
             }
             movementData.setAssetMap(assetMap);
             movementData.setMovementMap(movementMap);
@@ -267,6 +300,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             log.error(error, e);
             throw new ReportingServiceException(error, e);
         }
+        log.debug("-- | --> fetchPositionalData (elapsed: {}) : END",stopwatch);
         return movementData;
     }
 

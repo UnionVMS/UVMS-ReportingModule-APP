@@ -27,4 +27,7 @@ public interface ActivityService {
     FishingTripResponse getFishingTrips(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException;
 
     FACatchSummaryReportResponse getFaCatchSummaryReport(List<SingleValueTypeFilter> singleValueTypeFilters, List<ListValueTypeFilter> listValueTypeFilters, List<GroupCriteria> groupCriteriaList) throws ReportingServiceException;
+
+	FishingTripResponse getFishingTripsReporting(List<SingleValueTypeFilter> singleValueTypeFilters,
+			List<ListValueTypeFilter> listValueTypeFilters) throws ReportingServiceException;
 }
