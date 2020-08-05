@@ -47,6 +47,7 @@ public class SegmentDTO {
     private static final String SEGMENTS = "segments";
     private static final String SEGMENT_CATEGORY_TYPE = "segmentCategory";
     private static final String EXTERNAL_MARKING = "externalMarking";
+    private static final String CONNECTION_ID = "connectionId";
     private AssetDTO asset;
 
     @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
@@ -89,10 +90,11 @@ public class SegmentDTO {
         sb.add(TRACK_ID, String.class);
         sb.add(SEGMENT_CATEGORY_TYPE, String.class);
         sb.add(EXTERNAL_MARKING, String.class);
+        sb.add(CONNECTION_ID, String.class);
         return sb.buildFeatureType();
     }
 
-    public SimpleFeature toFeature() throws ReportingServiceException, ParseException {
+    public SimpleFeature toFeature() throws ParseException {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(SEGMENT);
         featureBuilder.set(SPEED_OVER_GROUND, velocityConverter.convert(getSpeedOverGround() != null ? getSpeedOverGround() : 0));
         featureBuilder.set(COURSE_OVER_GROUND, getCourseOverGround());
@@ -106,6 +108,7 @@ public class SegmentDTO {
         featureBuilder.set(COUNTRY_CODE, asset.getCountryCode());
         featureBuilder.set(NAME, asset.getName());
         featureBuilder.set(SEGMENT_CATEGORY_TYPE, getCategory());
+        featureBuilder.set(CONNECTION_ID, asset.getGuid());
         return featureBuilder.buildFeature(String.valueOf(getId()));
     }
 
