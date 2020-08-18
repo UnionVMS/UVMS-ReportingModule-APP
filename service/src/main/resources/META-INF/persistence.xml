@@ -4,17 +4,10 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
-    <persistence-unit name="reportingConfig" transaction-type="JTA">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <jta-data-source>jdbc/uvms_config</jta-data-source>
-        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL94Dialect"/>
-        </properties>
-    </persistence-unit>
-
     <persistence-unit name="reportingPUposgres" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/uvms_reporting</jta-data-source>
+        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
+
         <properties>
             <property name="hibernate.dialect" value="${hibernate.spatial.dialect}"/>
             <property name="show_sql" value="false" />
