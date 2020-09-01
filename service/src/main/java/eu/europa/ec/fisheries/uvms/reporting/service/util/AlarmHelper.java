@@ -39,6 +39,9 @@ public class AlarmHelper {
     public static List<TicketAndRuleType> removeRestrictedTickets(List<TicketAndRuleType> ticketAndRules, String userName) {
         for (Iterator<TicketAndRuleType> iterator = ticketAndRules.listIterator(); iterator.hasNext();) {
             TicketAndRuleType ticketAndRule = iterator.next();
+            if (ticketAndRule.getRule() == null){
+                continue;
+            }
             AvailabilityType availabilityType = ticketAndRule.getRule().getAvailability();
             switch (availabilityType) {
                 case PUBLIC:
@@ -73,9 +76,11 @@ public class AlarmHelper {
         properties.put(TICKET_OPENDATE, ticketAndRule.getTicket().getOpenDate());
         properties.put(TICKET_UPDATEDATE, ticketAndRule.getTicket().getUpdated());
         properties.put(TICKET_UPDATEDBY, ticketAndRule.getTicket().getUpdatedBy());
-        properties.put(RULE_NAME, ticketAndRule.getRule().getName());
-        properties.put(RULE_DESC, ticketAndRule.getRule().getDescription());
-        properties.put(RULE_DEFINITION, getRuleDefinitions(ticketAndRule.getRule().getDefinitions()));
+        if(ticketAndRule.getRule() != null){
+            properties.put(RULE_NAME, ticketAndRule.getRule().getName());
+            properties.put(RULE_DESC, ticketAndRule.getRule().getDescription());
+            properties.put(RULE_DEFINITION, getRuleDefinitions(ticketAndRule.getRule().getDefinitions()));
+        }
         return properties;
     }
 
