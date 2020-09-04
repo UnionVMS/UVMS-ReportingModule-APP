@@ -17,9 +17,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.jms.TextMessage;
+import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMapperException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
@@ -35,7 +39,14 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.ActivityModuleSende
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 
 @Stateless
 @Local(ActivityService.class)
@@ -47,6 +58,8 @@ public class ActivityServiceBean implements ActivityService {
 
     @EJB
     private ReportingModuleReceiverBean reportingModule;
+
+    private ActivityRepositoryBean activityRepositoryBean;
 
     @Override
     @Interceptors(SimpleTracingInterceptor.class)
