@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="Tables for report generation" author="cpapatheodorou">
+
+        <createSequence sequenceName="movement_seq" startValue="1"/>
+
+        <createTable tableName="movement">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="position_coordinates" type="geometry(Point, 4326)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position_time" type="timestamp"/>
+            <column name="connect_id" type="varchar(36)"/>
+            <column name="movement_guid" type="varchar(36)"/>
+            <column name="source" type="varchar(60)"/>
+            <column name="movement_type" type="varchar(60)"/>
+            <column name="reported_course" type="double"/>
+            <column name="reported_speed" type="double"/>
+            <column name="calculated_speed" type="double"/>
+
+            <column name="cfr" type="varchar(12)"/>
+            <column name="ircs" type="varchar(8)"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="ext_mark" type="varchar(50)"/>
+            <column name="country_code" type="varchar(3)"/>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="movement_seq"/>
+            <dropTable tableName="movement"/>
+        </rollback>
+
+        <createSequence sequenceName="segment_seq" startValue="1"/>
+
+        <createTable tableName="segment">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="movement_guid" type="varchar(36)"/>
+            <column name="segment_coordinates" type="geometry(LineString, 4326)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="track_id" type="bigint"/>
+            <column name="segment_category" type="varchar(60)"/>
+
+            <column name="course_over_ground" type="double"/>
+            <column name="speed_over_ground" type="double"/>
+            <column name="duration" type="double"/>
+            <column name="distance" type="double"/>
+
+            <column name="cfr" type="varchar(12)"/>
+            <column name="ircs" type="varchar(8)"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="ext_mark" type="varchar(50)"/>
+            <column name="country_code" type="varchar(3)"/>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="segment_seq"/>
+            <dropTable tableName="segment"/>
+        </rollback>
+
+        <createSequence sequenceName="track_seq" startValue="1"/>
+
+        <createTable tableName="track">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="guid" type="varchar(36)"/>
+            <column name="nearest_point_coordinates" type="geometry(LineString, 4326)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="extent_coordinates" type="geometry(MultiPoint, 4326)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="duration" type="double"/>
+            <column name="distance" type="double"/>
+            <column name="total_time_at_sea" type="double"/>
+
+            <column name="cfr" type="varchar(12)"/>
+            <column name="ircs" type="varchar(8)"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="ext_mark" type="varchar(50)"/>
+            <column name="country_code" type="varchar(3)"/>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="track_seq"/>
+            <dropTable tableName="track"/>
+        </rollback>
+
+        <createSequence sequenceName="activity_seq" startValue="1"/>
+
+        <createTable tableName="activity">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="activity_id" type="varchar(30)"/>
+            <column name="fa_report_id" type="varchar(30)"/>
+            <column name="trip_id" type="varchar(50)"/>
+
+            <column name="report_type" type="varchar(50)"/>
+            <column name="activity_type" type="varchar(50)"/>
+            <column name="purpose_code" type="varchar(50)"/>
+            <column name="source" type="varchar(60)"/>
+            <column name="accepted_timestamp" type="timestamp"/>
+            <column name="correction" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="species" type="varchar(600)"/>
+            <column name="gears" type="varchar(600)"/>
+
+            <column name="activity_coordinates" type="geometry(Multipoint, 4326)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="gfcm" type="varchar(60)"/>
+
+            <column name="asset_guid" type="varchar(36)"/>
+            <column name="uvi" type="varchar(8)"/>
+            <column name="iccat" type="varchar(16)"/>
+
+            <column name="cfr" type="varchar(12)"/>
+            <column name="ircs" type="varchar(8)"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="ext_mark" type="varchar(50)"/>
+            <column name="country_code" type="varchar(3)"/>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="activity_seq"/>
+            <dropTable tableName="activity"/>
+        </rollback>
+
+        <createSequence sequenceName="trip_seq" startValue="1"/>
+
+        <createTable tableName="trip">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="trip_id" type="varchar(50)"/>
+            <column name="trip_id_scheme" type="varchar(50)"/>
+            <column name="trip_coordinates" type="geometry(Multipoint, 4326)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="first_fishing_activity" type="varchar(50)"/>
+            <column name="first_fishing_activity_timestamp" type="timestamp"/>
+            <column name="last_fishing_activity" type="varchar(50)"/>
+            <column name="last_fishing_activity_timestamp" type="timestamp"/>
+
+            <column name="trip_duration" type="double"/>
+            <column name="number_of_corrections" type="integer"/>
+            <column name="number_of_positions" type="integer"/>
+
+            <column name="cfr" type="varchar(12)"/>
+            <column name="ircs" type="varchar(8)"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="ext_mark" type="varchar(50)"/>
+            <column name="country_code" type="varchar(3)"/>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="trip_seq"/>
+            <dropTable tableName="trip"/>
+        </rollback>
+
+        <createSequence sequenceName="area_seq" startValue="1"/>
+
+        <createTable tableName="area">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="area_type_code" type="varchar(50)"/>
+            <column name="area_code" type="varchar(50)"/>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="area_seq"/>
+            <dropTable tableName="area"/>
+        </rollback>
+
+        <createTable tableName="activity_area">
+            <column name="activity_id" type="bigint"/>
+            <column name="area_id" type="bigint"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="activity_area"/>
+        </rollback>
+
+        <createTable tableName="activity_port">
+            <column name="activity_id" type="bigint"/>
+            <column name="port_code" type="varchar(10)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="activity_id,port_code" constraintName="activity_port_unique" deferrable="true" initiallyDeferred="true" tableName="activity_port"/>
+        <rollback>
+            <dropUniqueConstraint constraintName="activity_port_unique" tableName="activity_port"/>
+            <dropTable tableName="activity_port"/>
+        </rollback>
+
+        <createTable tableName="activity_species">
+            <column name="activity_id" type="bigint"/>
+            <column name="species_code" type="varchar(10)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="activity_id,species_code" constraintName="activity_species_unique" deferrable="true" initiallyDeferred="true" tableName="activity_species"/>
+        <rollback>
+            <dropUniqueConstraint constraintName="activity_species_unique" tableName="activity_species"/>
+            <dropTable tableName="activity_species"/>
+        </rollback>
+
+        <createTable tableName="activity_gear">
+            <column name="activity_id" type="bigint"/>
+            <column name="gear_code" type="varchar(10)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="activity_id,gear_code" constraintName="activity_gear_unique" deferrable="true" initiallyDeferred="true" tableName="activity_gear"/>
+        <rollback>
+            <dropUniqueConstraint constraintName="activity_gear_unique" tableName="activity_gear"/>
+            <dropTable tableName="activity_gear"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
