@@ -2,7 +2,7 @@
 <databaseChangeLog  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-  
+
 	<include file="0.1/generatedChangelog.xml" relativeToChangelogFile="true" />
 	<include file="0.1/testData.xml" relativeToChangelogFile="true"/>
 	<include file="0.1/disableTriggers.xml" relativeToChangelogFile="true"/>
@@ -10,5 +10,7 @@
 	<include file="1.0.3/db-changelog-103-001.xml" relativeToChangelogFile="true"/>
 	<include file="/1.0.4/db-changelog-UNIONVMS-4855.xml" relativeToChangelogFile="true"/>
 	<include file="3.4/db-changelog-UNIONVMS-4856.xml" relativeToChangelogFile="true"/>
+
+	<include file="1.0.4/db-changelog-UNIONVMS-4657.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog> 
