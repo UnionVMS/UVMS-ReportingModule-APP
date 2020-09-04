@@ -11,4 +11,7 @@
 	<include file="/1.0.4/db-changelog-UNIONVMS-4855.xml" relativeToChangelogFile="true"/>
 	<include file="3.4/db-changelog-UNIONVMS-4856.xml" relativeToChangelogFile="true"/>
 
+	<include file="1.0.4/db-changelog-UNIONVMS-4657.xml" relativeToChangelogFile="true"/>
+
+
 </databaseChangeLog> 
