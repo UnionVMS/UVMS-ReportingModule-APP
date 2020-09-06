@@ -52,7 +52,7 @@ public class RulesEventServiceBean implements RulesEventService {
             GetTicketsAndRulesByMovementsResponse response = RulesModuleResponseMapper.mapToGetTicketsAndRulesByMovementsFromResponse((TextMessage) message);
             return response != null ? response.getTicketsAndRules() : null;
         } catch (MessageException | JMSException | RulesModelMapperException | RulesFaultException e) {
-            throw new ReportingServiceException(e);
+            throw new ReportingServiceException("Could not get tickets and rules by movements",e);
         }
     }
 

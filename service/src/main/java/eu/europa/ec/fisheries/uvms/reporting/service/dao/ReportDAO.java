@@ -51,10 +51,7 @@ public class ReportDAO extends AbstractDAO<Report> {
             session.flush();
             log.debug("softDelete successful");
         } catch (RuntimeException re) {
-            String errorMessage = "softDelete failed";
-
-            log.error(errorMessage, re);
-            throw new ReportingServiceException(errorMessage, re);
+            throw new ReportingServiceException("SoftDelete failed", re);
         }
     }
 
@@ -94,10 +91,7 @@ public class ReportDAO extends AbstractDAO<Report> {
             session.flush();
             log.debug("visibility successfully changed.");
         } catch (RuntimeException re) {
-            String errorMessage = "visibility change failed";
-
-            log.error(errorMessage, re);
-            throw new ReportingServiceException(errorMessage, re);
+            throw new ReportingServiceException("Visibility change failed", re);
         }
         log.debug("[END] changeVisibility(...)");
     }
@@ -110,8 +104,7 @@ public class ReportDAO extends AbstractDAO<Report> {
             getSession().enableFilter(EXECUTED_BY_USER).setParameter("username", username);
             reports = findEntityByNamedQuery(Report.class, Report.FIND_BY_ID, with("reportID", id).and("scopeName", scopeName).and("username", username).and("isAdmin", isAdmin?1:0).parameters(), 1);
         } catch (Exception exc) {
-            log.error("findReport failed", exc);
-            throw new ReportingServiceException("findReport failed", exc);
+            throw new ReportingServiceException("FindReport failed", exc);
         }
         if (reports != null && !reports.isEmpty()) {
             result = reports.get(0);
@@ -129,7 +122,6 @@ public class ReportDAO extends AbstractDAO<Report> {
             log.debug("list successful");
             return listReports;
         } catch (Exception exc) {
-            log.error("list failed", exc);
             throw new ReportingServiceException("list failed", exc);
         }
     }

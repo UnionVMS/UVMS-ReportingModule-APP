@@ -40,7 +40,7 @@ public class ReportingConfigProducerBean extends AbstractProducer implements Con
         try {
             return sendModuleMessage(textMsg, reportingINQueue);
         } catch (MessageException e) {
-            log.error("[ERROR] Error while trying to send message to Config! Check ReportingConfigProducerBeanImpl..");
+            log.error("Error while trying to send message to Config! Check ReportingConfigProducerBeanImpl..",e);
         }
         return StringUtils.EMPTY;
     }

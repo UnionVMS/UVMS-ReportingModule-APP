@@ -75,7 +75,7 @@ public class SpatialServiceBean implements SpatialService {
             TextMessage message = reportingJMSConsumerBean.getMessage(correlationId, TextMessage.class);
             return getFilterAreaResponse(message, correlationId);
         } catch (SpatialModelMapperException | MessageException e) {
-            throw new ReportingServiceException(e);
+            throw new ReportingServiceException("Could not get filter area",e);
         }
     }
 
@@ -97,7 +97,7 @@ public class SpatialServiceBean implements SpatialService {
             mapConfigurationDTO.setReferenceData(referenceData);
             return mapConfigurationDTO;
         } catch (SpatialModelMapperException | MessageException e) {
-            throw new ReportingServiceException(e);
+            throw new ReportingServiceException("Could not retrieve map configuration",e);
         }
     }
 

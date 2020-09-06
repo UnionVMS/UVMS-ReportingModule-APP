@@ -82,9 +82,7 @@ public class ReportRepositoryBean implements ReportRepository {
                 filterMerger.merge(filters);
           }
         } catch (ServiceException e) {
-            String message = "UPDATE FAILED";
-            log.error(message, e);
-            throw new ReportingServiceException(message, e);
+            throw new ReportingServiceException("UPDATE FAILED", e);
         }
         return true;
     }
@@ -121,7 +119,6 @@ public class ReportRepositoryBean implements ReportRepository {
         try {
             return reportDAO.createEntity(report);
         } catch (Exception e) {
-            log.error("createEntity failed", e);
             throw new ReportingServiceException("createEntity failed", e);
         }
     }
