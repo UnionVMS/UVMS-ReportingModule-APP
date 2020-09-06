@@ -50,11 +50,9 @@ public class AuditServiceBean implements AuditService {
             log.trace("Sending JMS message to Audit {} ", msgToSend);
             auditProducerBean.sendModuleMessage(msgToSend, auditResponseConsumer.getDestination());
         } catch (MessageException e) {
-            log.error("Exception in Sending Message to Audit Queue", e);
-            throw new ReportingServiceException(e);
+            throw new ReportingServiceException("Exception in Sending Message to Audit Queue",e);
 		} catch (AuditModelMarshallException e) {
-            log.error("Audit model marshal exception", e);
-            throw new ReportingServiceException(e);
+            throw new ReportingServiceException("Audit model marshal exception",e);
 		}
 	}
 }

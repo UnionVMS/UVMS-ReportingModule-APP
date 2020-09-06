@@ -58,8 +58,7 @@ public class GeoJsonBuilder {
             rootNode.set("alarms", mapper.readTree(writer.toString()));
             return rootNode;
         } catch (IOException e) {
-            log.error("Exception in building geo Json for alarm properties", e);
-            throw new ReportingServiceException(e);
+            throw new ReportingServiceException("Exception in building geo Json for alarm properties",e);
         }
     }
 

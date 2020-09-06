@@ -82,7 +82,6 @@ public class MovementServiceBean {
             isErrorResponse = true;
         } catch (ReportingModelException e) {
             //do nothing  since it's not a UserFault
-            log.trace("Unexpected exception was thrown.", e);
         }
         return isErrorResponse;
     }

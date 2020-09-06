@@ -195,9 +195,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             }
             return resultDTO;
         } catch (ProcessorException e) {
-            String error = "Error while processing reporting filters";
-            log.error(error, e);
-            throw new ReportingServiceException(error, e);
+            throw new ReportingServiceException("Error while processing reporting filters", e);
         }
     }
 
@@ -263,9 +261,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             movementData.setMovementMap(movementMap);
             movementData.setResponseTypeMap(responseTypeMap);
         } catch (ReportingServiceException e) {
-            String error = "Exception during retrieving filter area";
-            log.error(error, e);
-            throw new ReportingServiceException(error, e);
+            throw new ReportingServiceException("Exception during retrieving filter area", e);
         }
         return movementData;
     }

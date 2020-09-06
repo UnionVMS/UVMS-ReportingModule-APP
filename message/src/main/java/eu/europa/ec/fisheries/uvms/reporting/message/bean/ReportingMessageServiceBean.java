@@ -41,7 +41,7 @@ public class ReportingMessageServiceBean extends AbstractProducer {
             String data = JAXBMarshaller.marshall(messageWrap.getFault());
             sendResponseMessageToSender(messageWrap.getMessage(), data);
         } catch (MessageException | ReportingModelException e) {
-            log.error("[ Error when returning module spatial request. ] {} {}", e.getMessage(), e.getStackTrace(), e);
+            log.error("Error when returning module spatial request. ", e);
         }
     }
 }
