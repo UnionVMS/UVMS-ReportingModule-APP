@@ -13,9 +13,12 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -35,8 +38,8 @@ import org.hibernate.annotations.Type;
 public class Movement {
 
     @Id
-    @SequenceGenerator(name="movement_seq", sequenceName="movement_seq", allocationSize = 1)
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="movement_seq")
+    @SequenceGenerator(name = "movement_seq", sequenceName = "movement_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "movement_seq")
     private Long id;
 
     @NotNull
@@ -48,8 +51,9 @@ public class Movement {
     @Column(name = "position_time")
     private Date positionTime;
 
-    @Column(name = "connect_id")
-    private String connectionId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "connect_id", referencedColumnName = "asset_guid")
+    private Asset asset;
 
     @Column(name = "movement_guid")
     private String movementGuid;
@@ -68,20 +72,4 @@ public class Movement {
 
     @Column(name = "calculated_speed")
     private Double calculatedSpeed;
-
-    @Column(name = "cfr")
-    private String cfr;
-
-    @Column(name = "ircs")
-    private String ircs;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "ext_mark")
-    private String externalMakrking;
-
-    @Column(name = "country_code")
-    private String countryCode;
-
 }

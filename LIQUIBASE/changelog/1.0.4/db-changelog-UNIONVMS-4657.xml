@@ -23,11 +23,6 @@
             <column name="reported_speed" type="double"/>
             <column name="calculated_speed" type="double"/>
 
-            <column name="cfr" type="varchar(12)"/>
-            <column name="ircs" type="varchar(8)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="ext_mark" type="varchar(50)"/>
-            <column name="country_code" type="varchar(3)"/>
         </createTable>
 
         <rollback>
@@ -54,11 +49,7 @@
             <column name="duration" type="double"/>
             <column name="distance" type="double"/>
 
-            <column name="cfr" type="varchar(12)"/>
-            <column name="ircs" type="varchar(8)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="ext_mark" type="varchar(50)"/>
-            <column name="country_code" type="varchar(3)"/>
+            <column name="asset_guid" type="varchar(36)"/>
         </createTable>
 
         <rollback>
@@ -84,11 +75,7 @@
             <column name="distance" type="double"/>
             <column name="total_time_at_sea" type="double"/>
 
-            <column name="cfr" type="varchar(12)"/>
-            <column name="ircs" type="varchar(8)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="ext_mark" type="varchar(50)"/>
-            <column name="country_code" type="varchar(3)"/>
+            <column name="asset_guid" type="varchar(36)"/>
         </createTable>
 
         <rollback>
@@ -125,14 +112,6 @@
             <column name="gfcm" type="varchar(60)"/>
 
             <column name="asset_guid" type="varchar(36)"/>
-            <column name="uvi" type="varchar(8)"/>
-            <column name="iccat" type="varchar(16)"/>
-
-            <column name="cfr" type="varchar(12)"/>
-            <column name="ircs" type="varchar(8)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="ext_mark" type="varchar(50)"/>
-            <column name="country_code" type="varchar(3)"/>
         </createTable>
 
         <rollback>
@@ -161,11 +140,7 @@
             <column name="number_of_corrections" type="integer"/>
             <column name="number_of_positions" type="integer"/>
 
-            <column name="cfr" type="varchar(12)"/>
-            <column name="ircs" type="varchar(8)"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="ext_mark" type="varchar(50)"/>
-            <column name="country_code" type="varchar(3)"/>
+            <column name="asset_guid" type="varchar(36)"/>
         </createTable>
 
         <rollback>
@@ -229,6 +204,25 @@
             <dropUniqueConstraint constraintName="activity_gear_unique" tableName="activity_gear"/>
             <dropTable tableName="activity_gear"/>
         </rollback>
+
+        <createTable tableName="asset">
+            <column name="asset_guid" type="varchar(36)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="uvi" type="varchar(8)"/>
+            <column name="iccat" type="varchar(16)"/>
+            <column name="cfr" type="varchar(12)"/>
+            <column name="ircs" type="varchar(8)"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="ext_mark" type="varchar(50)"/>
+            <column name="country_code" type="varchar(3)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="asset"/>
+        </rollback>
+
     </changeSet>
 
 </databaseChangeLog>

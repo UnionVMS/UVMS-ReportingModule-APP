@@ -13,15 +13,16 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.MultiPoint;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.converter.ListStringConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -105,28 +105,8 @@ public class Activity implements Serializable {
     @Column(name = "correction")
     private Boolean correction;
 
-    @Column(name = "asset_guid")
-    private String assetGuid;
-
-    @Column(name = "iccat")
-    private String iccat;
-
-    @Column(name = "uvi")
-    private String uvi;
-
-    @Column(name = "cfr")
-    private String cfr;
-
-    @Column(name = "ircs")
-    private String ircs;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "ext_mark")
-    private String externalMakrking;
-
-    @Column(name = "country_code")
-    private String countryCode;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "asset_guid", referencedColumnName = "asset_guid")
+    private Asset asset;
 
 }

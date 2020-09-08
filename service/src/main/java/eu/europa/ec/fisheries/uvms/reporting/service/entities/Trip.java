@@ -13,21 +13,22 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import java.util.Date;
 
 import com.vividsolutions.jts.geom.MultiPoint;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.opengis.geometry.primitive.Point;
 
 @Entity
 @Table(name = "trip")
@@ -73,19 +74,7 @@ public class Trip {
     @Column(name = "number_of_corrections")
     private Integer numberOfCorrections;
 
-    @Column(name = "cfr")
-    private String cfr;
-
-    @Column(name = "ircs")
-    private String ircs;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "ext_mark")
-    private String externalMakrking;
-
-    @Column(name = "country_code")
-    private String countryCode;
-
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "asset_guid", referencedColumnName = "asset_guid")
+    private Asset asset;
 }
