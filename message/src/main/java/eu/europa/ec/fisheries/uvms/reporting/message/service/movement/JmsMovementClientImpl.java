@@ -14,12 +14,14 @@ import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.ec.fisheries.schema.movement.module.v1.GetSegmentsAndTrackBySegmentIdsRequest;
 import eu.europa.ec.fisheries.schema.movement.module.v1.GetSegmentsAndTrackBySegmentIdsResponse;
 import eu.europa.ec.fisheries.schema.movement.module.v1.MovementModuleMethod;
-import eu.europa.ec.fisheries.schema.movement.v1.SegmentAndTrack;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentAndTrackList;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentIds;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementModelException;
@@ -54,9 +56,9 @@ public class JmsMovementClientImpl implements MovementClient {
     }
 
     @Override
-    public List<SegmentAndTrack> getSegmentsAndTrackBySegmentIds(List<Long> segmentIds) {
+    public List<SegmentAndTrackList> getSegmentsAndTrackBySegmentIds(List<SegmentIds> segmentIds) {
         GetSegmentsAndTrackBySegmentIdsResponse resp = null;
-        String corrId = null;
+        String corrId;
         try {
             GetSegmentsAndTrackBySegmentIdsRequest request = new GetSegmentsAndTrackBySegmentIdsRequest();
             request.setMethod(MovementModuleMethod.GET_SEGMENTS_AND_TRACK_BY_SEGMENT_IDS);
@@ -75,6 +77,6 @@ public class JmsMovementClientImpl implements MovementClient {
         } catch (MessageException | MovementModelException | JMSException | JAXBException e) {
             e.printStackTrace();
         }
-        return resp.getSegmentAndTrackList();
+        return resp != null ? resp.getSegmentAndTrackList() : new ArrayList<>();
     }
 }

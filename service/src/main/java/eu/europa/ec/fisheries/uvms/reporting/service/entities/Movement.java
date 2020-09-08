@@ -79,7 +79,7 @@ public class Movement {
     private String name;
 
     @Column(name = "ext_mark")
-    private String externalMakrking;
+    private String externalMarking;
 
     @Column(name = "country_code")
     private String countryCode;
