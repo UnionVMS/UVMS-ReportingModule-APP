@@ -16,13 +16,21 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentAndTrackList;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentIds;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
 import eu.europa.ec.fisheries.uvms.config.model.exception.ModelMapperException;
@@ -30,11 +38,22 @@ import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementModelExcepti
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtMovementMessageMapper;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.MovementModuleSenderBean;
 import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
+import eu.europa.ec.fisheries.uvms.reporting.message.service.movement.MovementClient;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MovementMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Stateless
@@ -42,11 +61,23 @@ import lombok.extern.slf4j.Slf4j;
 public class MovementServiceBean {
 
     @EJB
+    private AssetServiceBean assetServiceBean;
+
+    @EJB
     private MovementModuleSenderBean movementSender;
 
     @EJB
     private ReportingModuleReceiverBean receiver;
 
+    @Inject
+    private MovementRepositoryBean movementRepositoryBean;
+
+    @Inject
+    private MovementMapper movementMapper;
+    
+    @Inject
+    private MovementClient movementClient;
+    
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Interceptors(SimpleTracingInterceptor.class)
     public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) throws ReportingServiceException {
@@ -59,6 +90,86 @@ public class MovementServiceBean {
         return getMovementMapResponseTypes(processor);
     }
 
+    /**
+     * Creates Movement,Segment and Track entities enriched with Asset,Movement module data
+     * @param movementTypes List of MovementType to be mapped to Movements
+     * @throws ReportingServiceException Thrown if error occurs
+     */
+    public void createMovementsSegmentsAndTracks(List<MovementType> movementTypes) throws ReportingServiceException {
+        Map<String,Asset> assetMap = getFromAsset(movementTypes);
+        Map<String,MovementTypeData> movementTypeDataMap = movementTypes.stream()
+                .map(movementType -> new MovementTypeData(movementType,assetMap.get(movementType.getConnectId())))
+                .collect(Collectors.toMap(toConnectId(),Function.identity()));
+        movementTypeDataMap.values().forEach(this::createMovement);
+        createSegmentsAndTracks(movementTypes,movementTypeDataMap);
+    }
+
+    /**
+     * Generates Segment and Tracks based on segment id list
+     * @param movementTypes The MovementType list
+     */
+    public void createSegmentsAndTracks(List<MovementType> movementTypes,Map<String,MovementTypeData> movementTypeDataMap){
+        List<SegmentIds> segmentIds = movementTypes.stream()
+                                .map(toSegmentId())
+                                .collect(Collectors.toList());
+        List<SegmentAndTrackList> segmentAndTrackList = movementClient.getSegmentsAndTrackBySegmentIds(segmentIds);
+        if(segmentAndTrackList != null) {
+            segmentAndTrackList.forEach(segmentAndTrackListItem -> {
+                MovementTypeData movementTypeData = movementTypeDataMap.get(segmentAndTrackListItem.getMoveGuid());
+                segmentAndTrackListItem.getSegmentAndTrackList().forEach(segmentAndTrack -> {
+                    createSegment(segmentAndTrack.getSegment(),movementTypeData);
+                    createTrack(segmentAndTrack.getTrack(),movementTypeData);
+                });
+            });
+        }
+    }
+    
+    private static Function<MovementType,SegmentIds> toSegmentId(){
+        return (mt)-> {
+            SegmentIds segmentId = new SegmentIds();
+            segmentId.setMoveGuid(mt.getGuid());
+            segmentId.getSegmentIds().addAll(mt.getSegmentIds().stream().map(Long::parseLong).collect(Collectors.toList()));
+            return segmentId;
+        };
+    }
+    
+    private Movement createMovement(MovementTypeData movementTypeData) {
+        Asset asset = movementTypeData.asset;
+        MovementType movementType = movementTypeData.movementType;
+        return movementRepositoryBean.createMovementEntity(movementMapper.toMovement(movementType,asset));
+    }
+    private Segment createSegment(MovementSegment movementSegment,MovementTypeData movementTypeData){
+        Segment segment = movementMapper.toSegment(movementSegment,movementTypeData.asset);
+        segment.setMovementGuid(movementTypeData.movementType.getGuid());
+        return movementRepositoryBean.createSegmentEntity(segment);
+    }
+    private Track createTrack(MovementTrack movementTrack, MovementTypeData movementTypeData){
+        Track track = movementMapper.toTrack(movementTrack,movementTypeData.asset);
+        return movementRepositoryBean.createTrackEntity(track);
+    }
+
+    private Map<String, Asset>  getFromAsset(List<MovementType> movementTypes) throws ReportingServiceException {
+        AssetListQuery query = new AssetListQuery();
+        AssetListCriteria value = new AssetListCriteria();
+        List<AssetListCriteriaPair> criteriaPairs = value.getCriterias();
+        for(MovementType movementType : movementTypes){
+            AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+            criteriaPair.setKey(ConfigSearchField.HIST_GUID);
+            criteriaPair.setValue(movementType.getConnectId());
+            criteriaPairs.add(criteriaPair);
+        }
+        value.setIsDynamic(false);
+        query.setAssetSearchCriteria(value);
+        List<Asset> assets = assetServiceBean.getAssets(query);
+        return assets.stream().collect(Collectors.toMap(toAssetGuid(), Function.identity()));
+    }
+    private static Function<Asset,String> toAssetGuid(){
+        return (asset) -> asset.getAssetId().getGuid();
+    }
+    private static Function<MovementTypeData,String> toConnectId(){
+        return (mtd) -> mtd.movementType.getConnectId();
+    }
+    
     private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws ReportingServiceException {
         try {
             String request = ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
@@ -85,5 +196,10 @@ public class MovementServiceBean {
         }
         return isErrorResponse;
     }
-
+    
+    @AllArgsConstructor
+    private static class MovementTypeData{
+        MovementType movementType;
+        Asset asset;
+    }
 }

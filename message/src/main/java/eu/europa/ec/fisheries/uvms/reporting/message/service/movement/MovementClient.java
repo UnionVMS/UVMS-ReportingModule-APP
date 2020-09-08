@@ -11,8 +11,9 @@ package eu.europa.ec.fisheries.uvms.reporting.message.service.movement;
 
 import java.util.List;
 
-import eu.europa.ec.fisheries.schema.movement.v1.SegmentAndTrack;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentAndTrackList;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentIds;
 
 public interface MovementClient {
-    List<SegmentAndTrack> getSegmentsAndTrackBySegmentIds(List<Long> segmentIds);
+    List<SegmentAndTrackList> getSegmentsAndTrackBySegmentIds(List<SegmentIds> segmentIds);
 }

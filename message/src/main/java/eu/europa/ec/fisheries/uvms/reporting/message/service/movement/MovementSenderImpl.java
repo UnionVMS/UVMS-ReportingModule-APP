@@ -13,7 +13,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
-import eu.europa.ec.fisheries.schema.movement.v1.SegmentAndTrack;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentAndTrackList;
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentIds;
 
 /**
  * Implementation of {@link MovementSender}
@@ -42,7 +43,7 @@ public class MovementSenderImpl implements MovementSender {
     }
 
     @Override
-    public List<SegmentAndTrack> getSegmentsAndTrackBySegmentIds(List<Long> segmentIds) {
+    public List<SegmentAndTrackList> getSegmentsAndTrackBySegmentIds(List<SegmentIds> segmentIds) {
         return movementClient.getSegmentsAndTrackBySegmentIds(segmentIds);
     }
 }
