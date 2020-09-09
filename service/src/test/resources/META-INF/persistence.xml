@@ -11,7 +11,10 @@
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter</class>
-
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Track</class>
+        
         <properties>
             <property name="hibernate.default_schema" value="reporting"/>
             <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
