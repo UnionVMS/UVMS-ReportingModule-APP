@@ -9,10 +9,11 @@ the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the impl
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.europa.ec.fisheries.uvms.reporting.message.bean;
+package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
@@ -22,13 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @MessageDriven(mappedName = "jms/topic/EventMessageTopic", activationConfig = {
-        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "ServiceName" + " = '" + "MOVEMENT" + "'"),
+        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "mainTopic" + " = '" + "reporting" + "'"),
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
         @ActivationConfigProperty(propertyName = MessageConstants.SUBSCRIPTION_DURABILITY_STR, propertyValue = MessageConstants.DURABLE_CONNECTION),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_TOPIC),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = "EventMessageTopic"),
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_JNDI_NAME, propertyValue = "jms/topic/EventMessageTopic"),
-        @ActivationConfigProperty(propertyName = MessageConstants.SUBSCRIPTION_NAME_STR, propertyValue = "MOVEMENT"),
+        @ActivationConfigProperty(propertyName = MessageConstants.SUBSCRIPTION_NAME_STR, propertyValue = "SubscriptionForReporting"),
         @ActivationConfigProperty(propertyName = MessageConstants.CLIENT_ID_STR, propertyValue = "REPORTING_MODULE"),
         @ActivationConfigProperty(propertyName = MessageConstants.CONNECTION_FACTORY_JNDI_NAME, propertyValue = MessageConstants.CONNECTION_FACTORY)
 })
@@ -36,13 +37,24 @@ public class EventMessageListener implements MessageListener {
 
     final static Logger LOG = LoggerFactory.getLogger(EventMessageListener.class);
 
+    private static final String ACTIVITY_SUB_TOPIC = "ACTIVITY";
+    private static final String MOVEMENT_SUB_TOPIC = "MOVEMENT";
+
     @Override
     public void onMessage(Message message) {
-        TextMessage textMessage = null;
         try {
-            textMessage = (TextMessage) message;
-            // todo call handler for message
-        } catch (Exception e) {
+            TextMessage textMessage = (TextMessage) message;
+            String subTopic = message.getStringProperty("subTopic");
+
+            switch (subTopic) {
+                case ACTIVITY_SUB_TOPIC:
+                    break;
+                case MOVEMENT_SUB_TOPIC:
+                    break;
+                default:
+                    LOG.error("Unknown message sub topic");
+            }
+        } catch (JMSException e) {
             LOG.error("An error occured in message processing", e);
             e.printStackTrace();
         }
