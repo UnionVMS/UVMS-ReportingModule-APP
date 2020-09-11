@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ActivityDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +34,17 @@ public class ActivityRepositoryBean implements ActivityRepository {
     }
 
     @Override
-    public Trip createTripEntity(Trip trip) {
-        return activityDao.createEntity(trip);
+    public Trip createTripEntity(Trip entity) {
+        return activityDao.createEntity(entity);
+    }
+
+    @Override
+    public Area createArea(Area entity) {
+        return activityDao.createEntity(entity);
+    }
+
+    @Override
+    public Area findAreaByTypeCodeAndAreaCode(String areaTypeCode, String areaCode) {
+        return activityDao.findAreaByTypeCodeAndAreaCode(areaTypeCode, areaCode);
     }
 }
