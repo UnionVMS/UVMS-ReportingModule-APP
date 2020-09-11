@@ -14,8 +14,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,6 +42,18 @@ public class ActivityDaoImpl implements ActivityDao {
     @Override
     public <T> T update(T entity) {
         return em.merge(entity);
+    }
+
+    @Override
+    public Area findAreaByTypeCodeAndAreaCode(String areaTypeCode, String areaCode) {
+        Query nativeQuery = em.createNativeQuery("select * from reporting.area where area_type_code = :areaTypeCode and area_code = :areaCode", Area.class);
+        nativeQuery.setParameter("areaTypeCode", areaTypeCode);
+        nativeQuery.setParameter("areaCode", areaCode);
+        try {
+            return (Area) nativeQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 }
