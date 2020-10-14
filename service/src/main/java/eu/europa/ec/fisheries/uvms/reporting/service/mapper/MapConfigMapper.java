@@ -55,8 +55,7 @@ public abstract class MapConfigMapper {
     public abstract VisibilitySettingsType getVisibilitySettingsType(VisibilitySettingsDto visibilitySettingsDto);
 
     @Mappings({
-            @Mapping(source = "orders", target = "order"),
-            @Mapping(target = "isAttributeVisible", expression = "java(getAttributeValue(visibilityAttributeType.isIsAttributeVisible()))")
+            @Mapping(source = "orders", target = "order")
     })
     public abstract VisibilityAttributesDto getVisibilityAttributeDto(VisibilityAttributeType visibilityAttributeType);
 
@@ -68,8 +67,7 @@ public abstract class MapConfigMapper {
 
 
     @Mappings({
-            @Mapping(source = "order", target = "orders"),
-            @Mapping(target = "isAttributeVisible", expression = "java(getAttributeValue(visibilityAttributeDto.isAttributeVisible()))")
+            @Mapping(source = "order", target = "orders")
     })
     public abstract VisibilityAttributeType getVisibilityAttributeType(VisibilityAttributesDto visibilityAttributeDto);
 

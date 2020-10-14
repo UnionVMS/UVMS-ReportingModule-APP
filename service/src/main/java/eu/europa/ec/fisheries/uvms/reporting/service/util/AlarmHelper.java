@@ -39,7 +39,7 @@ public class AlarmHelper {
     public static List<TicketAndRuleType> removeRestrictedTickets(List<TicketAndRuleType> ticketAndRules, String userName) {
         for (Iterator<TicketAndRuleType> iterator = ticketAndRules.listIterator(); iterator.hasNext();) {
             TicketAndRuleType ticketAndRule = iterator.next();
-            AvailabilityType availabilityType = ticketAndRule.getRule().getAvailability();
+            AvailabilityType availabilityType = ticketAndRule.getRule() != null ? ticketAndRule.getRule().getAvailability() : AvailabilityType.PUBLIC;
             switch (availabilityType) {
                 case PUBLIC:
                     break;
@@ -73,9 +73,9 @@ public class AlarmHelper {
         properties.put(TICKET_OPENDATE, ticketAndRule.getTicket().getOpenDate());
         properties.put(TICKET_UPDATEDATE, ticketAndRule.getTicket().getUpdated());
         properties.put(TICKET_UPDATEDBY, ticketAndRule.getTicket().getUpdatedBy());
-        properties.put(RULE_NAME, ticketAndRule.getRule().getName());
-        properties.put(RULE_DESC, ticketAndRule.getRule().getDescription());
-        properties.put(RULE_DEFINITION, getRuleDefinitions(ticketAndRule.getRule().getDefinitions()));
+        properties.put(RULE_NAME, ticketAndRule.getRule() != null ? ticketAndRule.getRule().getName() : ticketAndRule.getTicket().getRuleName());
+        properties.put(RULE_DESC, ticketAndRule.getRule() != null ? ticketAndRule.getRule().getDescription() : "");
+        properties.put(RULE_DEFINITION, ticketAndRule.getRule() != null ? getRuleDefinitions(ticketAndRule.getRule().getDefinitions()) : "");
         return properties;
     }
 
