@@ -35,6 +35,9 @@ public class Constants {
     public static final String ADDITIONAL_PROPERTIES = "additionalProperties";
     public static final String START_DATE = "startDate";
     public static final String END_DATE = "endDate";
+    public static final String MAP_LAYERS_CONFIG = "mapLayerConfig";
+    public static final String MAP_ZOOM = "mapZoom";
+    public static final String MAP_CENTER = "mapCenter";
 
     private Constants() {
 

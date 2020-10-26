@@ -73,6 +73,10 @@ public class ReportMapper {
         reportDTO.setVisibility(report.getVisibility());
         reportDTO.setReportTypeEnum(report.getReportType());
 
+        reportDTO.setMapLayerConfig(report.getMapLayerConfig());
+        reportDTO.setMapCenter(report.getMapCenter());
+        reportDTO.setMapZoom(report.getMapZoom());
+
         if (filters) {
             reportDTO.setFilters(filterSetToFilterDTOSet(report.getFilters()));
         }
@@ -104,6 +108,9 @@ public class ReportMapper {
         report.setDeletedBy(dto.getDeletedBy());
         report.setVisibility(dto.getVisibility());
         report.setReportType(dto.getReportTypeEnum());
+        report.setMapZoom(dto.getMapZoom());
+        report.setMapLayerConfig(dto.getMapLayerConfig());
+        report.setMapCenter(dto.getMapCenter());
         return report;
     }
 

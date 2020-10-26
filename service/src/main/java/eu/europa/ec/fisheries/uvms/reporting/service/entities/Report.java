@@ -32,6 +32,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -127,6 +128,15 @@ public class Report extends BaseEntity {
     @Column(name = "deleted_by")
     private String deletedBy;
 
+    @Column(name = "map_zoom")
+    private Integer mapZoom;
+
+    @Column(name = "map_center")
+    private String mapCenter;
+
+    @Column(name="map_layer_config")
+    private String mapLayerConfig;
+
     @Embedded
     private ReportDetails details = new ReportDetails();
 
@@ -135,7 +145,7 @@ public class Report extends BaseEntity {
 
     @Builder
     public Report(ReportDetails details, String createdBy, Set<Filter> filters,
-                  Set<ExecutionLog> executionLogs, Audit audit) {
+                  Set<ExecutionLog> executionLogs, Audit audit, String mapCenter, String mapLayerConfig, Integer mapZoom) {
         this.details = details;
         this.visibility = VisibilityEnum.PRIVATE;
         this.filters = filters;
@@ -143,6 +153,9 @@ public class Report extends BaseEntity {
         this.executionLogs = executionLogs;
         this.isDeleted = false;
         this.audit = audit;
+        this.mapCenter = mapCenter;
+        this.mapLayerConfig = mapLayerConfig;
+        this.mapZoom = mapZoom;
     }
 
     public void updateExecutionLog(final String username) throws ReportingServiceException {
@@ -179,6 +192,9 @@ public class Report extends BaseEntity {
         this.deletedBy = incoming.deletedBy;
         this.visibility = incoming.visibility;
         this.reportType = incoming.reportType;
+        this.mapZoom =incoming.mapZoom;
+        this.mapLayerConfig = incoming.mapLayerConfig;
+        this.mapCenter = incoming.mapCenter;
     }
 
     public void mergeDetails(ReportDetails reportDetails) {

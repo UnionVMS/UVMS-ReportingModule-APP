@@ -77,6 +77,9 @@ public class ReportRepositoryBean implements ReportRepository {
             entityById.getDetails().setName(reportDTO.getName());
             entityById.getDetails().setWithMap(reportDTO.getWithMap());
             entityById.setVisibility(reportDTO.getVisibility());
+            entityById.setMapZoom(reportDTO.getMapZoom());
+            entityById.setMapLayerConfig(reportDTO.getMapLayerConfig());
+            entityById.setMapCenter(reportDTO.getMapCenter());
             List<FilterDTO> filters = reportDTO.getFilters();
             if (CollectionUtils.isNotEmpty(filters)) {
                 filterMerger.merge(filters);
