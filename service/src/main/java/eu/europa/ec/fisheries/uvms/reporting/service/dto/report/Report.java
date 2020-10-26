@@ -43,6 +43,9 @@ public class Report {
     private boolean withMap;
     private MapConfiguration mapConfiguration;
     private FilterExpression filterExpression;
+    private Integer mapZoom;
+    private String mapCenter;
+    private String mapLayerConfig;
 
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();

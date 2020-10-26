@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -55,6 +56,9 @@ public class ReportDTO {
     private boolean isDeleted;
     private boolean isDefault;
     private ReportTypeEnum reportTypeEnum = ReportTypeEnum.STANDARD;
+    private Integer mapZoom;
+    private String mapCenter;
+    private String mapLayerConfig;
 
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date deletedOn;
@@ -227,5 +231,29 @@ public class ReportDTO {
 
     public void addFilter(FilterDTO filter) {
         filters.add(filter);
+    }
+
+    public Integer getMapZoom() {
+        return mapZoom;
+    }
+
+    public void setMapZoom(Integer mapZoom) {
+        this.mapZoom = mapZoom;
+    }
+
+    public String getMapCenter() {
+        return mapCenter;
+    }
+
+    public void setMapCenter(String mapCenter) {
+        this.mapCenter = mapCenter;
+    }
+
+    public String getMapLayerConfig() {
+        return mapLayerConfig;
+    }
+
+    public void setMapLayerConfig(String mapLayerConfig) {
+        this.mapLayerConfig = mapLayerConfig;
     }
 }

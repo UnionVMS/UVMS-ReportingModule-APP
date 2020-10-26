@@ -12,20 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
 import static eu.europa.ec.fisheries.uvms.commons.date.DateUtils.UI_FORMATTER;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ASSETS;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_BY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_ON;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DESC;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.END_DATE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.FILTER_EXPRESSION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.GUID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.MAP_CONFIGURATION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.NAME;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.REPORT_TYPE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.START_DATE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.*;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -128,11 +115,32 @@ public class ReportDeserializer extends JsonDeserializer<ReportDTO> {
         if (createdOnNode != null) {
             editableValue = editableNode.booleanValue();
         }
+        JsonNode mapZoomNode = node.get(MAP_ZOOM);
+        Integer mapZoomValue = null;
+        if (mapZoomNode != null) {
+            mapZoomValue = mapZoomNode.intValue();
+        }
+        JsonNode mapCenterNode = node.get(MAP_CENTER);
+        String mapCenterValue = null;
+        if (mapCenterNode != null) {
+            mapCenterValue = mapCenterNode.textValue();
+        }
+        JsonNode mapLayerConfigNode = node.get(MAP_LAYERS_CONFIG);
+        String mapLayerConfigValue = null;
+        if (mapLayerConfigNode != null) {
+            mapLayerConfigValue = mapLayerConfigNode.textValue();
+        }
+
+
+
         ReportDTO build = ReportDTO.builder()
                 .description(node.get(DESC) != null ? node.get(DESC).textValue() : null)
                 .id(node.get(ID) != null ? node.get(ID).longValue() : null)
                 .name(nameValue)
                 .withMap(withMap)
+                .mapZoom(mapZoomValue)
+                .mapCenter(mapCenterValue)
+                .mapLayerConfig(mapLayerConfigValue)
                 .createdBy(node.get(CREATED_BY) != null ? node.get(CREATED_BY).textValue() : null)
                 .filters(filterDTOList)
                 .visibility(visibilityEnum)

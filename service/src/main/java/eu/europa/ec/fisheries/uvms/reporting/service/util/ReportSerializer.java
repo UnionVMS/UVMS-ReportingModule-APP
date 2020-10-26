@@ -11,22 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.util;
 
 import static eu.europa.ec.fisheries.uvms.commons.date.DateUtils.UI_FORMATTER;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ASSETS;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_BY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.CREATED_ON;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DELETABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.DESC;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.EDITABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.FILTER_EXPRESSION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.ID;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.IS_DEFAULT;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.MAP_CONFIGURATION;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.NAME;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.REPORT_TYPE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SCOPE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.SHAREABLE;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.VISIBILITY;
-import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.WITH_MAP;
+import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.*;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -236,6 +221,11 @@ public class ReportSerializer extends JsonSerializer<ReportDTO> {
         if (reportTypeEnum != null) {
             jgen.writeStringField(REPORT_TYPE, reportTypeEnum.getType());
         }
+        jgen.writeStringField(MAP_LAYERS_CONFIG, reportDTO.getMapLayerConfig());
+        if (reportDTO.getMapZoom() != null) {
+            jgen.writeNumberField(MAP_ZOOM, reportDTO.getMapZoom());
+        }
+        jgen.writeStringField(MAP_CENTER, reportDTO.getMapCenter());
         writeMapConfigFileds(reportDTO, jgen);
     }
 
