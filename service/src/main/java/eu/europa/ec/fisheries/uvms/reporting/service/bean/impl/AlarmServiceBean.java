@@ -28,6 +28,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,14 +42,12 @@ public class AlarmServiceBean {
     @EJB
     private RulesEventService rulesModule;
 
-    @EJB
+    @Inject
     private AssetServiceBean assetService;
 
     private static final String LONGITUDE = "longitude";
 
     private static final String LATITUDE = "latitude";
-
-    private static final String TYPE = "Point";
 
     public ObjectNode getAlarmsForMovements(AlarmMovementList alarmMovementList, String userName) throws ReportingServiceException {
         List<String> movementIds = getMovementIds(alarmMovementList.getAlarmMovementList());
@@ -76,7 +75,7 @@ public class AlarmServiceBean {
         return geoJsonBuilder.toJson();
     }
 
-    private List<Asset> getAssets(List<TicketAndRuleType> ticketAndRules) throws ReportingServiceException {
+    private List<Asset> getAssets(List<TicketAndRuleType> ticketAndRules) {
         return assetService.getAssets(AlarmHelper.getAssetListQuery(ticketAndRules));
     }
 
