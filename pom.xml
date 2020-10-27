@@ -37,6 +37,7 @@
         <rules.model.version>${uvms.rules.module.version}</rules.model.version>
 		<reporting.model.version>${uvms.reporting.model.version}</reporting.model.version>
         <activity.model.version>${uvms.activity.model.version}</activity.model.version>
+        <asset.rest.client.version>${uvms.asset.module.version}</asset.rest.client.version>
         <uvms.test.version>0.0.4</uvms.test.version>
 
         <!-- UVMS Libraries -->
@@ -348,6 +349,11 @@
             <version>${logback.core.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-rest-client</artifactId>
+            <version>${asset.rest.client.version}</version>
+        </dependency>
     </dependencies>
 
     <repositories>

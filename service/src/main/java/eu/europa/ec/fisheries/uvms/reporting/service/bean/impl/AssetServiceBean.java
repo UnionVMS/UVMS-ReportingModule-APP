@@ -12,11 +12,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.jms.TextMessage;
 import java.util.HashSet;
@@ -25,65 +24,40 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
-import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.AssetModuleSenderBean;
-import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleReceiverBean;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.asset.gateway.ReportingAssetGateway;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 
-@LocalBean
 @Stateless
 public class AssetServiceBean {
 
-    @EJB
-    private AssetModuleSenderBean assetSender;
+    @Inject
+    private ReportingAssetGateway reportingAssetGateway;
 
-    @EJB
-    private ReportingModuleReceiverBean receiver;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Interceptors(SimpleTracingInterceptor.class)
-    public Map<String, Asset> getAssetMap(final FilterProcessor processor) throws ReportingServiceException {
+    public Map<String, Asset> getAssetMap(final FilterProcessor processor) {
         Set<Asset> assetList = new HashSet<>();
 
-        try {
             if (processor.hasAssets()) {
-                String request = ExtAssetMessageMapper.createAssetListModuleRequest(processor.toAssetListQuery());
-                String moduleMessage = assetSender.sendModuleMessage(request, receiver.getDestination());
-                TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
-                List<Asset> assets = getAssets(moduleMessage, response);
-                assetList.addAll(assets);
+                assetList.addAll(reportingAssetGateway.getAssetListByQuery(processor.toAssetListQuery()));
             }
             if (processor.hasAssetGroups()) {
-                String request = ExtAssetMessageMapper.createAssetListModuleRequest(processor.getAssetGroupList());
-                String moduleMessage = assetSender.sendModuleMessage(request, receiver.getDestination());
-                TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
-                List<Asset> groupList = getAssets(moduleMessage, response);
-                assetList.addAll(groupList);
+                assetList.addAll(reportingAssetGateway.getAssetGroup(processor.getAssetGroupList()));
             }
-        } catch (MessageException | AssetModelMapperException e) {
-            throw new ReportingServiceException("FAILED TO GET DATA FROM ASSET", e);
-        }
+
         return ExtAssetMessageMapper.getAssetMap(assetList);
     }
 
-    public List<Asset> getAssets(AssetListQuery assetList) throws ReportingServiceException {
-        try {
-            String request = AssetModuleRequestMapper.createAssetListModuleRequest(assetList);
-            String moduleMessage = assetSender.sendModuleMessage(request, receiver.getDestination());
-            TextMessage response = receiver.getMessage(moduleMessage, TextMessage.class);
-            return getAssets(moduleMessage, response);
-        } catch (AssetModelMapperException | MessageException e) {
-            throw new ReportingServiceException("FAILED TO GET DATA FROM ASSET", e);
-        }
+    public List<Asset> getAssets(AssetListQuery assetList){
+            return reportingAssetGateway.getAssetListByQuery(assetList);
+
     }
 
-    // UT
     public List<Asset> getAssets(String moduleMessage, TextMessage response) throws AssetModelMapperException {
         return ExtAssetMessageMapper.mapToAssetListFromResponse(response, moduleMessage);
     }
