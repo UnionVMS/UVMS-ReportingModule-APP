@@ -18,6 +18,7 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @EJB
     private AuditService auditService;
 
-    @EJB
+    @Inject
     private AssetServiceBean assetModule;
 
     @EJB
