@@ -109,8 +109,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="gfcm" type="varchar(60)"/>
-
             <column name="asset_guid" type="varchar(36)"/>
         </createTable>
 
@@ -216,6 +214,7 @@
             <column name="ircs" type="varchar(8)"/>
             <column name="name" type="varchar(255)"/>
             <column name="ext_mark" type="varchar(50)"/>
+            <column name="gfcm" type="varchar(60)"/>
             <column name="country_code" type="varchar(3)"/>
         </createTable>
 
