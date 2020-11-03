@@ -77,9 +77,6 @@ public class Activity implements Serializable {
     @Column(name = "activity_coordinates", columnDefinition = "Geometry")
     private MultiPoint activityCoordinates;
 
-    @Column(name = "gfcm")
-    private String gfcm;
-
     @ElementCollection
     @CollectionTable(name = "activity_species", joinColumns = @JoinColumn(name = "activity_id"))
     @Column(name = "species_code")

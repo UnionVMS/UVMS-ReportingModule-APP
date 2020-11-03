@@ -48,6 +48,9 @@ public class Asset implements Serializable {
     @Column(name = "ext_mark")
     private String externalMakrking;
 
+    @Column(name = "gfcm")
+    private String gfcm;
+
     @Column(name = "country_code")
     private String countryCode;
 
