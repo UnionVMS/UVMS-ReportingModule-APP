@@ -14,7 +14,8 @@
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Track</class>
-        
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset</class>
+
         <properties>
             <property name="hibernate.default_schema" value="reporting"/>
             <property name="javax.persistence.schema-generation.scripts.action" value="create"/>

@@ -7,7 +7,7 @@
  *  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  *  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  *  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 /*
@@ -19,7 +19,7 @@
  *  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  *  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  *  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 /*
@@ -34,12 +34,14 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
-import eu.europa.ec.fisheries.uvms.reporting.service.exception.EntityDoesNotExistException;
-import lombok.extern.slf4j.Slf4j;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
+import eu.europa.ec.fisheries.uvms.reporting.service.exception.EntityDoesNotExistException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * {@link MovementDao} JPA implementation.
@@ -48,11 +50,14 @@ import javax.persistence.EntityManager;
 @Slf4j
 class MovementDaoImpl implements MovementDao {
 
+    @PersistenceContext(unitName = "reportingPUposgres")
     private EntityManager em;
 
-    @Inject
     public MovementDaoImpl(EntityManager em) {
         this.em = em;
+    }
+
+    public MovementDaoImpl() {
     }
 
     @Override
@@ -75,7 +80,7 @@ class MovementDaoImpl implements MovementDao {
     public <T> void delete(Long id, Class<T> clazz) throws ApplicationException {
         T en = em.find(clazz, id);
         if (en == null) {
-            throw new EntityDoesNotExistException(clazz+" with id " + id);
+            throw new EntityDoesNotExistException(clazz + " with id " + id);
         }
         em.remove(en);
     }

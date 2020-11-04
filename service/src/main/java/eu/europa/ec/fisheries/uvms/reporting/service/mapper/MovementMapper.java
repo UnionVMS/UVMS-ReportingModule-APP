@@ -51,7 +51,7 @@ public abstract class MovementMapper {
             @Mapping(target = "source", expression = "java(getEnumVal(movementType.getSource()))"),
             @Mapping(target = "movementType", expression = "java(getEnumVal(movementType.getMovementType()))")
     })
-    public abstract Movement toMovement(MovementType movementType, Asset asset);
+    public abstract Movement toMovement(MovementType movementType/*, Asset asset*/);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -59,7 +59,7 @@ public abstract class MovementMapper {
             @Mapping(target = "segmentCategory", expression = "java(getEnumVal(movementSegment.getCategory()))"),
             @Mapping(target = "segment", expression = "java(getLineString(movementSegment.getWkt()))"),
     })
-    public abstract Segment toSegment(MovementSegment movementSegment, Asset asset);
+    public abstract Segment toSegment(MovementSegment movementSegment/*, Asset asset*/);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -67,7 +67,7 @@ public abstract class MovementMapper {
             @Mapping(target = "nearestPoint", ignore = true), // ignore for now
             @Mapping(target = "extent", ignore = true) // ignore for now
     })
-    public abstract Track toTrack(MovementTrack movementTrack, Asset asset);
+    public abstract Track toTrack(MovementTrack movementTrack/*, Asset asset*/);
 
     protected String getEnumVal(Enum<?> type){
         if(type == null){

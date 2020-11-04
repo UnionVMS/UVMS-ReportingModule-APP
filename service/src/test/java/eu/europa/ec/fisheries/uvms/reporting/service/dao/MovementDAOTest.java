@@ -27,6 +27,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
 import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static junit.framework.TestCase.assertEquals;
 
@@ -41,12 +43,12 @@ public class MovementDAOTest extends BaseMovementDAOTest {
         movement.setMovementGuid("7913c585-3a20-4717-a045-a8db9633636f");
         movement.setSource("MANUAL");
         movement.setMovementType("POS");
-        movement.setConnectionId("ee41a86b-6d1d-4b55-acc5-801c485a4cb6");
-        movement.setCountryCode("EST");
-        movement.setExternalMarking("AMA-028");
-        movement.setName("AMA-028");
-        movement.setIrcs("UNKNOWN");
-        movement.setCfr("EST180525027");
+//        movement.setConnectionId("ee41a86b-6d1d-4b55-acc5-801c485a4cb6");
+//        movement.setCountryCode("EST");
+//        movement.setExternalMarking("AMA-028");
+//        movement.setName("AMA-028");
+//        movement.setIrcs("UNKNOWN");
+//        movement.setCfr("EST180525027");
         movement = dao.createEntity(movement);
         Movement savedMovement = dao.findById(movement.getId(),Movement.class);
         assertEquals(movement.getId(), savedMovement.getId());
@@ -66,11 +68,11 @@ public class MovementDAOTest extends BaseMovementDAOTest {
         LineString lineString = GeometryUtil.toLineString(wkt);
         segment.setSegment(lineString);
         segment.setSegmentCategory("OTHER");
-        segment.setCountryCode("EST");
-        segment.setExternalMarking("AMA-028");
-        segment.setName("AMA-028");
-        segment.setIrcs("UNKNOWN");
-        segment.setCfr("EST180525027");
+//        segment.setCountryCode("EST");
+//        segment.setExternalMarking("AMA-028");
+//        segment.setName("AMA-028");
+//        segment.setIrcs("UNKNOWN");
+//        segment.setCfr("EST180525027");
 
         segment = dao.createEntity(segment);
         Segment savedSegment = dao.findById(segment.getId(),Segment.class);
