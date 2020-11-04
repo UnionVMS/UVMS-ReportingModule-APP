@@ -42,7 +42,7 @@ public class Segment {
     private String movementGuid;
 
     @Column(name = "track_id")
-    private String trackId;
+    private Long trackId;
 
     @Type(type = "org.hibernate.spatial.GeometryType")
     @Column(name = "segment_coordinates", columnDefinition = "Geometry")

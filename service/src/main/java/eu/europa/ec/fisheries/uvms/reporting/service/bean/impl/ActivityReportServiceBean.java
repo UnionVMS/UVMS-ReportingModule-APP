@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardReportToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
@@ -40,6 +41,19 @@ public class ActivityReportServiceBean implements ActivityReportService {
     @Inject
     private ActivityRepository activityRepository;
 
+    @Override
+    @Transactional
+    public void createActivitiesAndTrips(ForwardReportToSubscriptionRequest activityData) {
+        activityData.getFaReports().forEach(e->{
+            e.getFishingActivities().forEach(fa -> {
+                String purposeCode = fa.getReasonCode().getValue();
+                crateFishingActivity(fa, purposeCode);
+                createFishingTrip(fa.getSpecifiedFishingTrip());
+            });
+        });
+
+
+    }
     @Override
     @Transactional
     public void createActivitiesAndTrips(FLUXFAReportMessage activityData) {
@@ -84,7 +98,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private void mapAreas(FishingActivity fishingActivity, Activity activity) {
         List<Area> areas = new ArrayList<>();
         for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
-            Area a = activityRepository.findAreaByTypeCodeAndAreaCode(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
+            Area a = activityRepository.findAreaByTypeCodeAndAreaCode(relatedFLUXLocation.getTypeCode().getValue(), relatedFLUXLocation.getCountryID().getValue());
             a = createAreaIfNotExists(relatedFLUXLocation, a);
             areas.add(a);
         }
@@ -94,8 +108,8 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private Area createAreaIfNotExists(FLUXLocation relatedFLUXLocation, Area a) {
         if (a == null) {
             a = new Area();
-            a.setAreaTypeCode(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID());
-            a.setAreaCode(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
+            a.setAreaTypeCode(relatedFLUXLocation.getTypeCode().getValue());
+            a.setAreaCode(relatedFLUXLocation.getCountryID().getValue());
             activityRepository.createArea(a);
         }
         return a;

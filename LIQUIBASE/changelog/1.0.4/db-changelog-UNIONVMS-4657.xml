@@ -64,12 +64,8 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="guid" type="varchar(36)"/>
-            <column name="nearest_point_coordinates" type="geometry(LineString, 4326)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="extent_coordinates" type="geometry(MultiPoint, 4326)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="nearest_point_coordinates" type="geometry(LineString, 4326)"/>
+            <column name="extent_coordinates" type="geometry(MultiPoint, 4326)"/>
 
             <column name="duration" type="double"/>
             <column name="distance" type="double"/>
@@ -98,16 +94,12 @@
             <column name="purpose_code" type="varchar(50)"/>
             <column name="source" type="varchar(60)"/>
             <column name="accepted_timestamp" type="timestamp"/>
-            <column name="correction" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
+            <column name="correction" type="boolean" defaultValueBoolean="false"/>
 
             <column name="species" type="varchar(600)"/>
             <column name="gears" type="varchar(600)"/>
 
-            <column name="activity_coordinates" type="geometry(Multipoint, 4326)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="activity_coordinates" type="geometry(Multipoint, 4326)"/>
 
             <column name="asset_guid" type="varchar(36)"/>
         </createTable>
@@ -125,9 +117,7 @@
             </column>
             <column name="trip_id" type="varchar(50)"/>
             <column name="trip_id_scheme" type="varchar(50)"/>
-            <column name="trip_coordinates" type="geometry(Multipoint, 4326)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="trip_coordinates" type="geometry(Multipoint, 4326)"/>
 
             <column name="first_fishing_activity" type="varchar(50)"/>
             <column name="first_fishing_activity_timestamp" type="timestamp"/>

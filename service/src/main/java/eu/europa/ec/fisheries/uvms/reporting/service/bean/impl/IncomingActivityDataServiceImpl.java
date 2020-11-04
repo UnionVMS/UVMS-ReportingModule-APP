@@ -16,6 +16,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardReportToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityReportService;
@@ -32,14 +33,13 @@ public class IncomingActivityDataServiceImpl implements IncomingActivityDataServ
 
     @Override
     public void handle(String message) throws ReportingServiceException {
-        FLUXFAReportMessage activityData = unmarshal(message);
-
+        ForwardReportToSubscriptionRequest activityData = unmarshal(message);
         activityReportService.createActivitiesAndTrips(activityData);
     }
 
-    private FLUXFAReportMessage unmarshal(String message) throws ReportingServiceException {
+    private ForwardReportToSubscriptionRequest unmarshal(String message) throws ReportingServiceException {
         try {
-            return JAXBUtils.unMarshallMessage(message, FLUXFAReportMessage.class);
+            return JAXBUtils.unMarshallMessage(message, ForwardReportToSubscriptionRequest.class);
         } catch (JAXBException e) {
             throw new ReportingServiceException("Cannot parse message");
         }

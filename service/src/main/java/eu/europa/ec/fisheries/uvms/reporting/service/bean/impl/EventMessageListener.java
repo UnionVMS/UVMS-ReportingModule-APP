@@ -13,12 +13,16 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingActivityDataService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingMovementDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +41,14 @@ public class EventMessageListener implements MessageListener {
 
     final static Logger LOG = LoggerFactory.getLogger(EventMessageListener.class);
 
-    private static final String ACTIVITY_SUB_TOPIC = "ACTIVITY";
-    private static final String MOVEMENT_SUB_TOPIC = "MOVEMENT";
+    private static final String ACTIVITY_SUB_TOPIC = "activity";
+    private static final String MOVEMENT_SUB_TOPIC = "movement";
+
+    @Inject
+    private IncomingActivityDataService incomingActivityDataService;
+
+    @Inject
+    private IncomingMovementDataService incomingMovementDataService;
 
     @Override
     public void onMessage(Message message) {
@@ -48,15 +58,16 @@ public class EventMessageListener implements MessageListener {
 
             switch (subTopic) {
                 case ACTIVITY_SUB_TOPIC:
+                    incomingActivityDataService.handle(textMessage.getText());
                     break;
                 case MOVEMENT_SUB_TOPIC:
+                    incomingMovementDataService.handle(textMessage.getText());
                     break;
                 default:
                     LOG.error("Unknown message sub topic");
             }
-        } catch (JMSException e) {
+        } catch (JMSException | ReportingServiceException e) {
             LOG.error("An error occured in message processing", e);
-            e.printStackTrace();
         }
     }
 

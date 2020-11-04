@@ -50,6 +50,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.user.types.UserFault;
@@ -159,6 +160,9 @@ public class MovementServiceBean {
             criteriaPairs.add(criteriaPair);
         }
         value.setIsDynamic(false);
+        query.setPagination(new AssetListPagination());
+        query.getPagination().setPage(1);
+        query.getPagination().setListSize(100);
         query.setAssetSearchCriteria(value);
         List<Asset> assets = assetServiceBean.getAssets(query);
         return assets.stream().collect(Collectors.toMap(toAssetGuid(), Function.identity()));
@@ -167,7 +171,7 @@ public class MovementServiceBean {
         return (asset) -> asset.getAssetId().getGuid();
     }
     private static Function<MovementTypeData,String> toConnectId(){
-        return (mtd) -> mtd.movementType.getConnectId();
+        return (mtd) -> mtd.movementType.getGuid();
     }
     
     private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws ReportingServiceException {
