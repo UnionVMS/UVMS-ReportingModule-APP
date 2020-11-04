@@ -136,15 +136,15 @@ public class MovementServiceBean {
     private Movement createMovement(MovementTypeData movementTypeData) {
         Asset asset = movementTypeData.asset;
         MovementType movementType = movementTypeData.movementType;
-        return movementRepositoryBean.createMovementEntity(movementMapper.toMovement(movementType,asset));
+        return movementRepositoryBean.createMovementEntity(movementMapper.toMovement(movementType/*,asset*/));
     }
     private Segment createSegment(MovementSegment movementSegment,MovementTypeData movementTypeData){
-        Segment segment = movementMapper.toSegment(movementSegment,movementTypeData.asset);
+        Segment segment = movementMapper.toSegment(movementSegment/*,movementTypeData.asset*/);
         segment.setMovementGuid(movementTypeData.movementType.getGuid());
         return movementRepositoryBean.createSegmentEntity(segment);
     }
     private Track createTrack(MovementTrack movementTrack, MovementTypeData movementTypeData){
-        Track track = movementMapper.toTrack(movementTrack,movementTypeData.asset);
+        Track track = movementMapper.toTrack(movementTrack/*,movementTypeData.asset*/);
         return movementRepositoryBean.createTrackEntity(track);
     }
 

@@ -26,7 +26,6 @@ import javax.transaction.Transactional;
 
 @ApplicationScoped
 @Slf4j
-@Transactional
 public class MovementRepositoryBean implements MovementRepository {
 
     @Inject
