@@ -13,21 +13,28 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.io.WKTWriter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardReportToSubscriptionRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
@@ -41,64 +48,53 @@ public class ActivityReportServiceBean implements ActivityReportService {
     @Inject
     private ActivityRepository activityRepository;
 
+    private final WKTReader wktReader = new WKTReader();
+
     @Override
     @Transactional
-    public void createActivitiesAndTrips(ForwardReportToSubscriptionRequest activityData) {
-        activityData.getFaReports().forEach(e->{
-            e.getFishingActivities().forEach(fa -> {
-                String purposeCode = fa.getReasonCode().getValue();
-                crateFishingActivity(fa, purposeCode);
-                createFishingTrip(fa.getSpecifiedFishingTrip());
-            });
-        });
-
-
-    }
-    @Override
-    @Transactional
-    public void createActivitiesAndTrips(FLUXFAReportMessage activityData) {
-        for (FAReportDocument doc : activityData.getFAReportDocuments()) {
-            for (FishingActivity fa : doc.getSpecifiedFishingActivities()) {
-                String purposeCode = activityData.getFLUXReportDocument().getPurposeCode().getValue();
-                crateFishingActivity(fa, purposeCode);
-                createFishingTrip(fa.getSpecifiedFishingTrip());
-            }
-        }
-
+    public void processReports(ForwardReportToSubscriptionRequest activityData) {
+        activityData.getFaReports().forEach(this::createActivitiesAndTripsFromReport);
     }
 
-    private void createFishingTrip(FishingTrip fishingTrip) {
-        Trip trip = new Trip();
-
-        mapTripId(fishingTrip, trip);
-        activityRepository.createTripEntity(trip);
-    }
-
-    private void mapTripId(FishingTrip fishingTrip, Trip trip) {
-        for (IDType id : fishingTrip.getIDS()) {
-            trip.setTripIdScheme(id.getSchemeID());
-            trip.setTripId(id.getValue());
+    private void createActivitiesAndTripsFromReport(ReportToSubscription reports) {
+        for (int i = 0; i < reports.getFishingActivities().size(); i++) {
+            createFishingActivity(reports.getFishingActivities().get(i),
+                    reports.getFluxFaReportMessageIds().get(i).getId(),
+                    reports.getActivitiesWktLists().get(i),
+                    reports.getActivityAreas().get(i),
+                    reports.getFaReportType());
         }
     }
 
-    private void crateFishingActivity(FishingActivity fishingActivity, String purposeCode) {
+    private void createFishingActivity(FishingActivity fishingActivity, String reportId, String wkt, ActivityAreas activityAreas, String reportType) {
         Activity activity = new Activity();
+//        activity.setPurposeCode();
+        activity.setActivityType(fishingActivity.getTypeCode().getValue());
+        activity.setAcceptedDate(Date.from(fishingActivity.getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant()));
+        activity.setFaReportId(reportId);
+        activity.setReportType(reportType);
+        try {
+            MultiPoint geometry = (MultiPoint) wktReader.read(wkt);
+            geometry.setSRID(4326);
+            activity.setActivityCoordinates(geometry);
+        } catch (ParseException e) {
+            log.error("unable to set geometry from wkt string: {}", wkt);
+        }
         mapFishingGear(fishingActivity, activity);
-        activity.setPurposeCode(purposeCode);
-
-        mapSpecies(fishingActivity, activity);
-
         mapAreas(fishingActivity, activity);
 
-        // todo map all data
+        activity = activityRepository.createActivityEntity(activity);
+        mapSpecies(fishingActivity, activity);
 
-        activityRepository.createActivityEntity(activity);
+        Trip trip = createFishingTrip(fishingActivity.getSpecifiedFishingTrip());
+        activity.setTripId(trip.getTripId());
+
     }
 
     private void mapAreas(FishingActivity fishingActivity, Activity activity) {
-        List<Area> areas = new ArrayList<>();
+        Set<Area> areas = new HashSet<>();
         for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
-            Area a = activityRepository.findAreaByTypeCodeAndAreaCode(relatedFLUXLocation.getTypeCode().getValue(), relatedFLUXLocation.getCountryID().getValue());
+            Area a = activityRepository.findAreaByTypeCodeAndAreaCode(relatedFLUXLocation.getTypeCode().getValue(), relatedFLUXLocation.getID().getValue());
             a = createAreaIfNotExists(relatedFLUXLocation, a);
             areas.add(a);
         }
@@ -109,18 +105,26 @@ public class ActivityReportServiceBean implements ActivityReportService {
         if (a == null) {
             a = new Area();
             a.setAreaTypeCode(relatedFLUXLocation.getTypeCode().getValue());
-            a.setAreaCode(relatedFLUXLocation.getCountryID().getValue());
+            a.setAreaCode(relatedFLUXLocation.getID().getValue());
             activityRepository.createArea(a);
         }
         return a;
     }
 
     private void mapSpecies(FishingActivity fishingActivity, Activity activity) {
-        Set<String> speciesCodes = new HashSet<>();
+        List<Catch> catches = new ArrayList<>();
         for (FACatch faCatch : fishingActivity.getSpecifiedFACatches()) {
-            speciesCodes.add(faCatch.getSpeciesCode().getValue());
+            Catch speciesCatch = new Catch();
+            speciesCatch.setSpeciesCode(faCatch.getSpeciesCode().getValue());
+            speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
+            speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
+
+            speciesCatch.setActivityId(activity.getId());
+            activityRepository.createCatchEntity(speciesCatch);
+
+            catches.add(speciesCatch);
         }
-        activity.setSpecies(speciesCodes);
+        activity.setSpeciesCatch(catches);
     }
 
     private void mapFishingGear(FishingActivity fishingActivity, Activity activity) {
@@ -131,4 +135,17 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setGears(gearTypes);
     }
 
+    private Trip createFishingTrip(FishingTrip fishingTrip) {
+        Trip trip = new Trip();
+        mapTripId(fishingTrip, trip);
+        activityRepository.createTripEntity(trip);
+        return trip;
+    }
+
+    private void mapTripId(FishingTrip fishingTrip, Trip trip) {
+        for (IDType id : fishingTrip.getIDS()) {
+            trip.setTripIdScheme(id.getSchemeID());
+            trip.setTripId(id.getValue());
+        }
+    }
 }
