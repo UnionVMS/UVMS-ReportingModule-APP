@@ -44,6 +44,8 @@
             <column name="track_id" type="bigint"/>
             <column name="segment_category" type="varchar(60)"/>
 
+            <column name="calculated_speed" type="double"/>
+
             <column name="course_over_ground" type="double"/>
             <column name="speed_over_ground" type="double"/>
             <column name="duration" type="double"/>
@@ -86,7 +88,7 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="activity_id" type="varchar(30)"/>
-            <column name="fa_report_id" type="varchar(30)"/>
+            <column name="fa_report_id" type="varchar(36)"/>
             <column name="trip_id" type="varchar(50)"/>
 
             <column name="report_type" type="varchar(50)"/>
@@ -95,9 +97,6 @@
             <column name="source" type="varchar(60)"/>
             <column name="accepted_timestamp" type="timestamp"/>
             <column name="correction" type="boolean" defaultValueBoolean="false"/>
-
-            <column name="species" type="varchar(600)"/>
-            <column name="gears" type="varchar(600)"/>
 
             <column name="activity_coordinates" type="geometry(Multipoint, 4326)"/>
 
@@ -144,6 +143,11 @@
             </column>
             <column name="area_type_code" type="varchar(50)"/>
             <column name="area_code" type="varchar(50)"/>
+
+            <column name="geom" type="GEOMETRY(Multipolygon, 4326)"/>
+            <column name="latitude" type="FLOAT8"/>
+            <column name="longitude" type="FLOAT8"/>
+
         </createTable>
 
         <rollback>
@@ -171,15 +175,17 @@
             <dropTable tableName="activity_port"/>
         </rollback>
 
-        <createTable tableName="activity_species">
+        <createTable tableName="activity_catch">
             <column name="activity_id" type="bigint"/>
             <column name="species_code" type="varchar(10)"/>
+            <column name="weight_measure" type="FLOAT8"/>
+            <column name="weight_measure_unit_code" type="VARCHAR(255)"/>
         </createTable>
 
-        <addUniqueConstraint columnNames="activity_id,species_code" constraintName="activity_species_unique" deferrable="true" initiallyDeferred="true" tableName="activity_species"/>
+        <addUniqueConstraint columnNames="activity_id,species_code" constraintName="activity_catch_unique" deferrable="true" initiallyDeferred="true" tableName="activity_catch"/>
         <rollback>
-            <dropUniqueConstraint constraintName="activity_species_unique" tableName="activity_species"/>
-            <dropTable tableName="activity_species"/>
+            <dropUniqueConstraint constraintName="activity_catch_unique" tableName="activity_catch"/>
+            <dropTable tableName="activity_catch"/>
         </rollback>
 
         <createTable tableName="activity_gear">

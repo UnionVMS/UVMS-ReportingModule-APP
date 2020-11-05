@@ -34,7 +34,7 @@ public class IncomingActivityDataServiceImpl implements IncomingActivityDataServ
     @Override
     public void handle(String message) throws ReportingServiceException {
         ForwardReportToSubscriptionRequest activityData = unmarshal(message);
-        activityReportService.createActivitiesAndTrips(activityData);
+        activityReportService.processReports(activityData);
     }
 
     private ForwardReportToSubscriptionRequest unmarshal(String message) throws ReportingServiceException {

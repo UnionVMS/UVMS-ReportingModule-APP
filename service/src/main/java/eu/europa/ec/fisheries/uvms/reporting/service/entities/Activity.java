@@ -20,6 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -78,11 +79,6 @@ public class Activity implements Serializable {
     private MultiPoint activityCoordinates;
 
     @ElementCollection
-    @CollectionTable(name = "activity_species", joinColumns = @JoinColumn(name = "activity_id"))
-    @Column(name = "species_code")
-    private Set<String> species;
-
-    @ElementCollection
     @CollectionTable(name = "activity_gear", joinColumns = @JoinColumn(name = "activity_id"))
     @Column(name = "gear_code")
     private Set<String> gears;
@@ -93,11 +89,17 @@ public class Activity implements Serializable {
     private Set<String> ports;
 
     @OneToMany
+    @JoinColumns({
+            @JoinColumn(name = "activity_id", referencedColumnName = "id"),
+    })
+    private List<Catch> speciesCatch;
+
+    @OneToMany
     @JoinTable(name = "activity_area",
             joinColumns = {@JoinColumn(name = "activity_id")},
             inverseJoinColumns = {@JoinColumn(name = "area_id")}
     )
-    private List<Area> areas;
+    private Set<Area> areas;
 
     @Column(name = "correction")
     private Boolean correction;
