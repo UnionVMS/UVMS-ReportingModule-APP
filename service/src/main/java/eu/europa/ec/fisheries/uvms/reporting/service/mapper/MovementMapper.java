@@ -51,7 +51,7 @@ public abstract class MovementMapper {
             @Mapping(target = "source", expression = "java(getEnumVal(movementType.getSource()))"),
             @Mapping(target = "movementType", expression = "java(getEnumVal(movementType.getMovementType()))")
     })
-    public abstract Movement toMovement(MovementType movementType/*, Asset asset*/);
+    public abstract Movement toMovement(MovementType movementType);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),

@@ -13,12 +13,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -63,8 +62,8 @@ public class Segment {
     @Column(name = "distance")
     private Double distance;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "asset_guid", referencedColumnName = "asset_guid")
+    @ManyToOne
+    @JoinColumn(name = "asset_hist_guid", referencedColumnName = "asset_hist_guid")
     private Asset asset;
 
 }

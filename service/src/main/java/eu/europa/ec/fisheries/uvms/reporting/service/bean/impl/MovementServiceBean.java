@@ -20,8 +20,10 @@ import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,12 +44,16 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.movement.MovementCl
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.MovementMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetHistoryId;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetIdType;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
@@ -78,6 +84,9 @@ public class MovementServiceBean {
     
     @Inject
     private MovementClient movementClient;
+
+    @Inject
+    private AssetRepository assetRepository;
     
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Interceptors(SimpleTracingInterceptor.class)
@@ -97,10 +106,10 @@ public class MovementServiceBean {
      * @throws ReportingServiceException Thrown if error occurs
      */
     public void createMovementsSegmentsAndTracks(List<MovementType> movementTypes) throws ReportingServiceException {
-        Map<String,Asset> assetMap = getFromAsset(movementTypes);
+        Map<String,Asset> assetMap = getFromAssetIfNotAvailableLocally(movementTypes);
         Map<String,MovementTypeData> movementTypeDataMap = movementTypes.stream()
                 .map(movementType -> new MovementTypeData(movementType,assetMap.get(movementType.getConnectId())))
-                .collect(Collectors.toMap(toConnectId(),Function.identity()));
+                .collect(Collectors.toMap(toMovementGuid(), Function.identity()));
         movementTypeDataMap.values().forEach(this::createMovement);
         createSegmentsAndTracks(movementTypes,movementTypeDataMap);
     }
@@ -113,15 +122,20 @@ public class MovementServiceBean {
         List<SegmentIds> segmentIds = movementTypes.stream()
                                 .map(toSegmentId())
                                 .collect(Collectors.toList());
-        List<SegmentAndTrackList> segmentAndTrackList = movementClient.getSegmentsAndTrackBySegmentIds(segmentIds);
-        if(segmentAndTrackList != null) {
-            segmentAndTrackList.forEach(segmentAndTrackListItem -> {
-                MovementTypeData movementTypeData = movementTypeDataMap.get(segmentAndTrackListItem.getMoveGuid());
-                segmentAndTrackListItem.getSegmentAndTrackList().forEach(segmentAndTrack -> {
-                    createSegment(segmentAndTrack.getSegment(),movementTypeData);
-                    createTrack(segmentAndTrack.getTrack(),movementTypeData);
+        segmentIds = segmentIds.stream().filter(s-> s.getSegmentIds().size() > 0).collect(Collectors.toList());
+        if (segmentIds.size() > 0) {
+            List<SegmentAndTrackList> segmentAndTrackList = movementClient.getSegmentsAndTrackBySegmentIds(segmentIds);
+            if(segmentAndTrackList != null) {
+                segmentAndTrackList.forEach(segmentAndTrackListItem -> {
+                    MovementTypeData movementTypeData = movementTypeDataMap.get(segmentAndTrackListItem.getMoveGuid());
+                    // normally this asset can be retrieved once before the loop or passed on through the caller of this function createSegmentsAndTracks
+                    eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset = assetRepository.findAssetByAssetHistoryGuid(movementTypeData.movementType.getConnectId());
+                    segmentAndTrackListItem.getSegmentAndTrackList().forEach(segmentAndTrack -> {
+                        createSegment(segmentAndTrack.getSegment(), movementTypeData, asset);
+                        createTrack(segmentAndTrack.getTrack(), asset);
+                    });
                 });
-            });
+            }
         }
     }
     
@@ -135,42 +149,111 @@ public class MovementServiceBean {
     }
     
     private Movement createMovement(MovementTypeData movementTypeData) {
-        Asset asset = movementTypeData.asset;
-        MovementType movementType = movementTypeData.movementType;
-        return movementRepositoryBean.createMovementEntity(movementMapper.toMovement(movementType/*,asset*/));
+        Movement movement = movementMapper.toMovement(movementTypeData.movementType);
+        movement.setMovementGuid(movementTypeData.movementType.getGuid());
+        movement.setAsset(assetRepository.findAssetByAssetHistoryGuid(movementTypeData.movementType.getConnectId()));
+        return movementRepositoryBean.createMovementEntity(movement);
     }
-    private Segment createSegment(MovementSegment movementSegment,MovementTypeData movementTypeData){
-        Segment segment = movementMapper.toSegment(movementSegment/*,movementTypeData.asset*/);
+    private Segment createSegment(MovementSegment movementSegment, MovementTypeData movementTypeData, eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset){
+        Segment segment = movementMapper.toSegment(movementSegment);
         segment.setMovementGuid(movementTypeData.movementType.getGuid());
+        segment.setAsset(asset);
         return movementRepositoryBean.createSegmentEntity(segment);
     }
-    private Track createTrack(MovementTrack movementTrack, MovementTypeData movementTypeData){
-        Track track = movementMapper.toTrack(movementTrack/*,movementTypeData.asset*/);
+    private Track createTrack(MovementTrack movementTrack, eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset){
+        Track track = movementMapper.toTrack(movementTrack);
+        track.setAsset(asset);
         return movementRepositoryBean.createTrackEntity(track);
     }
 
-    private Map<String, Asset>  getFromAsset(List<MovementType> movementTypes) throws ReportingServiceException {
-        AssetListQuery query = new AssetListQuery();
-        AssetListCriteria value = new AssetListCriteria();
-        List<AssetListCriteriaPair> criteriaPairs = value.getCriterias();
-        for(MovementType movementType : movementTypes){
-            AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-            criteriaPair.setKey(ConfigSearchField.HIST_GUID);
-            criteriaPair.setValue(movementType.getConnectId());
-            criteriaPairs.add(criteriaPair);
+    private Map<String, Asset> getFromAssetIfNotAvailableLocally(List<MovementType> movementTypes) throws ReportingServiceException {
+        boolean found;
+        List<eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset> assetsFromDb = new ArrayList<>();
+        found = getAssetsFromDb(movementTypes, assetsFromDb);
+
+        List<Asset> assets;
+        if (found) {
+            assets = assetsFromDb.stream().map(this::mapFromAssetEntity).collect(Collectors.toList());
+        } else {
+            AssetListQuery query = new AssetListQuery();
+            AssetListCriteria value = new AssetListCriteria();
+            List<AssetListCriteriaPair> criteriaPairs = value.getCriterias();
+            for(MovementType movementType : movementTypes){
+                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+                criteriaPair.setKey(ConfigSearchField.HIST_GUID);
+                criteriaPair.setValue(movementType.getConnectId());
+                criteriaPairs.add(criteriaPair);
+            }
+            value.setIsDynamic(false);
+            query.setPagination(new AssetListPagination());
+            query.getPagination().setPage(1);
+            query.getPagination().setListSize(100);
+            query.setAssetSearchCriteria(value);
+            assets = assetServiceBean.getAssets(query);
+
+            assets.forEach(a -> {
+                eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset = mapFromAsset(a);
+                asset.setAssetHistGuid(a.getEventHistory().getEventId());
+                assetRepository.createAssetEntity(asset);
+            });
         }
-        value.setIsDynamic(false);
-        query.setPagination(new AssetListPagination());
-        query.getPagination().setPage(1);
-        query.getPagination().setListSize(100);
-        query.setAssetSearchCriteria(value);
-        List<Asset> assets = assetServiceBean.getAssets(query);
         return assets.stream().collect(Collectors.toMap(toAssetGuid(), Function.identity()));
     }
-    private static Function<Asset,String> toAssetGuid(){
-        return (asset) -> asset.getAssetId().getGuid();
+
+    private boolean getAssetsFromDb(List<MovementType> movementTypes, List<eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset> assetsFromDb) {
+        boolean found = false;
+        for (int i=0; i< movementTypes.size();i++) {
+            Optional<eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset> assetByGuid = Optional.ofNullable(assetRepository.findAssetByAssetHistoryGuid(movementTypes.get(i).getConnectId()));
+            if (assetByGuid.isPresent()) {
+                assetsFromDb.add(assetByGuid.get());
+                found = true;
+            } else {
+                found = false;
+                break;
+            }
+        }
+        return found;
     }
-    private static Function<MovementTypeData,String> toConnectId(){
+
+    private Asset mapFromAssetEntity(eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset a) {
+        Asset asset = new Asset();
+        asset.setCfr(a.getCfr());
+        asset.setIrcs(a.getIrcs());
+        asset.setIccat(a.getIccat());
+        asset.setUvi(a.getUvi());
+        asset.setGfcm(a.getGfcm());
+        asset.setExternalMarking(a.getExternalMarking());
+        asset.setName(a.getName());
+        asset.setCountryCode(a.getCountryCode());
+
+        AssetId assetId = new AssetId();
+        assetId.setGuid(a.getAssetGuid());
+        assetId.setType(AssetIdType.GUID);
+        asset.setAssetId(assetId);
+        AssetHistoryId assetHistoryId = new AssetHistoryId();
+        assetHistoryId.setEventId(a.getAssetHistGuid());
+        asset.setEventHistory(assetHistoryId);
+        return asset;
+    }
+
+    private eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset mapFromAsset(Asset a) {
+        eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset = new eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset();
+        asset.setCfr(a.getCfr());
+        asset.setIrcs(a.getIrcs());
+        asset.setIccat(a.getIccat());
+        asset.setUvi(a.getUvi());
+        asset.setGfcm(a.getGfcm());
+        asset.setExternalMarking(a.getExternalMarking());
+        asset.setName(a.getName());
+        asset.setCountryCode(a.getCountryCode());
+        asset.setAssetGuid(a.getAssetId().getGuid());
+        return asset;
+    }
+
+    private static Function<Asset,String> toAssetGuid(){
+        return (asset) -> asset.getEventHistory().getEventId();
+    }
+    private static Function<MovementTypeData,String> toMovementGuid(){
         return (mtd) -> mtd.movementType.getGuid();
     }
     
