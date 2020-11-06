@@ -51,7 +51,7 @@
             <column name="duration" type="double"/>
             <column name="distance" type="double"/>
 
-            <column name="asset_guid" type="varchar(36)"/>
+            <column name="asset_hist_guid" type="varchar(36)"/>
         </createTable>
 
         <rollback>
@@ -73,7 +73,7 @@
             <column name="distance" type="double"/>
             <column name="total_time_at_sea" type="double"/>
 
-            <column name="asset_guid" type="varchar(36)"/>
+            <column name="asset_hist_guid" type="varchar(36)"/>
         </createTable>
 
         <rollback>
@@ -200,9 +200,11 @@
         </rollback>
 
         <createTable tableName="asset">
-            <column name="asset_guid" type="varchar(36)">
+            <column name="asset_hist_guid" type="varchar(36)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
+
+            <column name="asset_guid" type="varchar(36)"/>
 
             <column name="uvi" type="varchar(8)"/>
             <column name="iccat" type="varchar(16)"/>

@@ -27,6 +27,9 @@ import lombok.NoArgsConstructor;
 public class Asset implements Serializable {
 
     @Id
+    @Column(name = "asset_hist_guid")
+    private String assetHistGuid;
+
     @Column(name = "asset_guid")
     private String assetGuid;
 
@@ -46,7 +49,7 @@ public class Asset implements Serializable {
     private String name;
 
     @Column(name = "ext_mark")
-    private String externalMakrking;
+    private String externalMarking;
 
     @Column(name = "gfcm")
     private String gfcm;
