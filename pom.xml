@@ -141,6 +141,12 @@
             	<groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
             	<artifactId>spatial-model</artifactId>
             	<version>${spatial.model.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
         	</dependency>  
         
             <dependency>
