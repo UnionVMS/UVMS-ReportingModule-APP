@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
@@ -104,8 +105,7 @@ public class Activity implements Serializable {
     @Column(name = "correction")
     private Boolean correction;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "asset_guid", referencedColumnName = "asset_guid")
+    @ManyToOne
+    @JoinColumn(name = "asset_hist_guid", referencedColumnName = "asset_hist_guid")
     private Asset asset;
-
 }

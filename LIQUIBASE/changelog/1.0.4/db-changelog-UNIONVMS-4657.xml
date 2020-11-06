@@ -100,7 +100,7 @@
 
             <column name="activity_coordinates" type="geometry(Multipoint, 4326)"/>
 
-            <column name="asset_guid" type="varchar(36)"/>
+            <column name="asset_hist_guid" type="varchar(36)"/>
         </createTable>
 
         <rollback>
@@ -127,7 +127,7 @@
             <column name="number_of_corrections" type="integer"/>
             <column name="number_of_positions" type="integer"/>
 
-            <column name="asset_guid" type="varchar(36)"/>
+            <column name="asset_hist_guid" type="varchar(36)"/>
         </createTable>
 
         <rollback>

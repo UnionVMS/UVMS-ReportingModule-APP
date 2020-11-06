@@ -17,20 +17,21 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.io.WKTWriter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardReportToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,9 @@ public class ActivityReportServiceBean implements ActivityReportService {
     @Inject
     private ActivityRepository activityRepository;
 
+    @Inject
+    private AssetRepository assetRepository;
+
     private final WKTReader wktReader = new WKTReader();
 
     @Override
@@ -57,16 +61,21 @@ public class ActivityReportServiceBean implements ActivityReportService {
     }
 
     private void createActivitiesAndTripsFromReport(ReportToSubscription reports) {
+        List<Asset> assets = new ArrayList<>();
+        reports.getAssetHistoryGuids().forEach(assetHistGuid -> {
+            Optional.ofNullable(assetRepository.findAssetByAssetHistoryGuid(assetHistGuid)).ifPresent(assets::add);
+        });
         for (int i = 0; i < reports.getFishingActivities().size(); i++) {
-            createFishingActivity(reports.getFishingActivities().get(i),
+            createFishingActivityAndTrip(reports.getFishingActivities().get(i),
                     reports.getFluxFaReportMessageIds().get(i).getId(),
                     reports.getActivitiesWktLists().get(i),
                     reports.getActivityAreas().get(i),
-                    reports.getFaReportType());
+                    reports.getFaReportType(),
+                    assets);
         }
     }
 
-    private void createFishingActivity(FishingActivity fishingActivity, String reportId, String wkt, ActivityAreas activityAreas, String reportType) {
+    private void createFishingActivityAndTrip(FishingActivity fishingActivity, String reportId, String wkt, ActivityAreas activityAreas, String reportType, List<Asset> assets) {
         Activity activity = new Activity();
 //        activity.setPurposeCode();
         activity.setActivityType(fishingActivity.getTypeCode().getValue());
@@ -83,10 +92,12 @@ public class ActivityReportServiceBean implements ActivityReportService {
         mapFishingGear(fishingActivity, activity);
         mapAreas(fishingActivity, activity);
 
+        activity.setAsset(assets.stream().findFirst().orElse(null));
+
         activity = activityRepository.createActivityEntity(activity);
         mapSpecies(fishingActivity, activity);
 
-        Trip trip = createFishingTrip(fishingActivity.getSpecifiedFishingTrip());
+        Trip trip = createFishingTrip(fishingActivity.getSpecifiedFishingTrip(), assets);
         activity.setTripId(trip.getTripId());
 
     }
@@ -135,9 +146,10 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setGears(gearTypes);
     }
 
-    private Trip createFishingTrip(FishingTrip fishingTrip) {
+    private Trip createFishingTrip(FishingTrip fishingTrip, List<Asset> assets) {
         Trip trip = new Trip();
         mapTripId(fishingTrip, trip);
+        trip.setAsset(assets.stream().findFirst().orElse(null));
         activityRepository.createTripEntity(trip);
         return trip;
     }
