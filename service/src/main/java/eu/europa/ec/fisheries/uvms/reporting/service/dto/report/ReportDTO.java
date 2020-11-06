@@ -18,7 +18,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.AuditDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionLogDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
@@ -56,7 +55,6 @@ public class ReportDTO {
     private boolean isDefault;
     private ReportTypeEnum reportTypeEnum = ReportTypeEnum.STANDARD;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date deletedOn;
 
     private String deletedBy;

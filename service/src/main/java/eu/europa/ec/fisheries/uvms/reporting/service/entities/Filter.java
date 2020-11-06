@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.commons.domain.BaseEntity;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -89,10 +88,6 @@ public abstract class Filter extends BaseEntity {
         return Collections.emptyList();
     }
 
-    public List<AssetGroup> assetGroupCriteria() {
-        return Collections.emptyList();
-    }
-
     public List<RangeCriteria> movementRangeCriteria(Instant now) {
         return Collections.emptyList();
     }
@@ -133,7 +128,7 @@ public abstract class Filter extends BaseEntity {
 
         @Override
         public FilterDTO visitAssetGroupFilter(AssetGroupFilter assetGroupFilter) {
-            return AssetGroupFilterMapper.INSTANCE.assetGroupFilterToAssetGroupFilterDTO(assetGroupFilter);
+            return null;
         }
 
         @Override

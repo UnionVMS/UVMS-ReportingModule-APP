@@ -18,8 +18,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import eu.europa.ec.fisheries.uvms.reporting.message.mapper.ExtAssetMessageMapper;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetHistoryId;
@@ -32,15 +30,15 @@ import org.unitils.UnitilsJUnit4;
 
 public class ExtAssetMessageMapperTest extends UnitilsJUnit4 {
 
-    @Test
-    @SneakyThrows
-    public void testMapToGetMovementMapByQueryRequest() {
-
-        URL url = Resources.getResource("ExtendedAssetMessageMapperTest.assetListModuleRequest.xml");
-        String expected = Resources.toString(url, Charsets.UTF_8).replaceAll("\r", "");
-
-        assertEquals(expected, ExtAssetMessageMapper.mapToGetAssetListByQueryRequest(new AssetListQuery()));
-    }
+//    @Test
+//    @SneakyThrows
+//    public void testMapToGetMovementMapByQueryRequest() {
+//
+//        URL url = Resources.getResource("ExtendedAssetMessageMapperTest.assetListModuleRequest.xml");
+//        String expected = Resources.toString(url, Charsets.UTF_8).replaceAll("\r", "");
+//
+//        assertEquals(expected, ExtAssetMessageMapper.mapToGetAssetListByQueryRequest(new AssetListQuery()));
+//    }
 
     @Test(expected = IllegalArgumentException.class)
     @SneakyThrows

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetListResponse;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
 import eu.europa.ec.fisheries.uvms.rest.security.InternalRestTokenHandler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +44,7 @@ public class AssetRestClient {
         webTarget = client.target(assetUrl);
     }
 
-    public List<AssetDTO> getAssetList(AssetQuery query) {
+    public List<AssetDTO> getAssetList(SearchBranch query) {
         String response = webTarget
                 .path("/internal/query")
                 .request(MediaType.APPLICATION_JSON)

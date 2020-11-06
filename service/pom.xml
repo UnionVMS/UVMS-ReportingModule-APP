@@ -75,7 +75,7 @@
         </dependency>		
 
     	<dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+            <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
             <artifactId>spatial-model</artifactId>
         </dependency>
 
@@ -125,27 +125,27 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-service</artifactId>
-            <version>${uvms.commons.version}</version>
+            <version>4.0.13</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-domain</artifactId>
-            <version>${uvms.commons.version}</version>
+            <version>4.0.13</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-dao</artifactId>
-            <version>${uvms.commons.version}</version>
+            <version>4.0.13</version>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-geometry</artifactId>
-            <version>${uvms.commons.version}</version>		            
+            <version>4.0.13</version>		            
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-rest</artifactId>
-            <version>${uvms.commons.version}</version>
+            <version>4.0.13</version>
         </dependency>
 
 		<dependency>
@@ -278,8 +278,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>11</source>
+                    <target>11</target>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
                 </configuration>
             </plugin>
           	<plugin>

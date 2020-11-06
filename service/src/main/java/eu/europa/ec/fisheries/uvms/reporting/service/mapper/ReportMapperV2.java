@@ -56,7 +56,7 @@ public abstract class ReportMapperV2 {
 
         for (Asset asset : assets){
             if ("vgroup".equals(asset.getType())){
-                filterSet.add(AssetGroupFilterMapper.INSTANCE.assetToAssetFilterGroup(asset));
+//                filterSet.add(AssetGroupFilterMapper.INSTANCE.assetToAssetFilterGroup(asset));
             }
             else if ("asset".equals(asset.getType())){
                 filterSet.add(AssetFilterMapper.INSTANCE.assetToAssetFilter(asset));

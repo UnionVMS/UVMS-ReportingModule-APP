@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.Builder;
 
 import java.io.Serializable;
@@ -25,7 +24,6 @@ public class ExecutionLogDTO implements Serializable {
 	private long id;
 	private String executedBy;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date executedOn;
 
 	public ExecutionLogDTO() {

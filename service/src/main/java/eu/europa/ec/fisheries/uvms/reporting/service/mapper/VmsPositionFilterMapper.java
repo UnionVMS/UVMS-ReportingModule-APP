@@ -47,7 +47,7 @@ public interface VmsPositionFilterMapper {
     VmsPositionFilter vmsPositionToVmsPositionFilter(VmsPosition dto);
 
     @Mappings({
-            @Mapping(constant = "ACTIVITY_TYPE", target = "key"),
+            @Mapping(constant = "MOVEMENT_TYPE", target = "key"),
             @Mapping(source = "movementActivity", target = "value")
     })
     ListCriteria movementActivityToListCriteria(VmsPositionFilter vmsPositionFilter);

@@ -1,19 +1,17 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchFields;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.*;
 
 public class AssetQueryMapper {
 
-    public static AssetQuery assetListQueryToAssetQuery(AssetListQuery assetListQuery) {
-        AssetQuery query = new AssetQuery();
+    public static SearchBranch assetListQueryToAssetQuery(AssetListQuery assetListQuery) {
+        SearchBranch query = new SearchBranch(false);
 
         List<AssetListCriteriaPair> criteriaPairs = assetListQuery.getAssetSearchCriteria().getCriterias();
 
@@ -22,102 +20,57 @@ public class AssetQueryMapper {
 
             switch (key) {
                 case FLAG_STATE:
-                    if(query.getFlagState() == null)
-                        query.setFlagState(new ArrayList<>());
-                    query.getFlagState().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.FLAG_STATE, criteria.getValue());
                     break;
                 case EXTERNAL_MARKING:
-                    if(query.getExternalMarking() == null)
-                        query.setExternalMarking(new ArrayList<>());
-                    query.getExternalMarking().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.EXTERNAL_MARKING, criteria.getValue());
                     break;
                 case NAME:
-                    if(query.getName() == null)
-                        query.setName(new ArrayList<>());
-                    query.getName().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.NAME, criteria.getValue());
                     break;
                 case IRCS:
-                    if(query.getIrcs() == null)
-                        query.setIrcs(new ArrayList<>());
-                    query.getIrcs().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.IRCS, criteria.getValue());
                     break;
                 case CFR:
-                    if(query.getCfr() == null)
-                        query.setCfr(new ArrayList<>());
-                    query.getCfr().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.CFR, criteria.getValue());
                     break;
                 case MMSI:
-                    if(query.getMmsi() == null)
-                        query.setMmsi(new ArrayList<>());
-                    query.getMmsi().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.MMSI, criteria.getValue());
                     break;
                 case GUID:
-                    if(query.getId() == null)
-                        query.setId(new ArrayList<>());
-                    UUID uuid = UUID.fromString(criteria.getValue());
-                    query.getId().add(uuid);
+                    query.addNewSearchLeaf(SearchFields.GUID, criteria.getValue());
                     break;
                 case HIST_GUID:
-                    if(query.getHistoryId() == null)
-                        query.setHistoryId(new ArrayList<>());
-                    UUID historyId = UUID.fromString(criteria.getValue());
-                    query.getHistoryId().add(historyId);
+                    query.addNewSearchLeaf(SearchFields.HIST_GUID, criteria.getValue());
                     break;
 //                case DATE:
 //                    query.setDate(Instant.parse(criteria.getValue()));
 //                    break;
                 case ICCAT:
-                    if(query.getIccat() == null)
-                        query.setIccat(new ArrayList<>());
-                    query.getIccat().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.ICCAT, criteria.getValue());
                     break;
                 case UVI:
-                    if(query.getUvi() == null)
-                        query.setUvi(new ArrayList<>());
-                    query.getUvi().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.UVI, criteria.getValue());
                     break;
                 case GFCM:
-                    if(query.getGfcm() == null)
-                        query.setGfcm(new ArrayList<>());
-                    query.getGfcm().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.GFCM, criteria.getValue());
                     break;
                 case HOMEPORT:
-                    if(query.getPortOfRegistration() == null)
-                        query.setPortOfRegistration(new ArrayList<>());
-                    query.getPortOfRegistration().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.HOMEPORT, criteria.getValue());
                     break;
                 case ASSET_TYPE: // No counterpart in AssetQuery
                     break;
                 case LICENSE_TYPE:
-                    if(query.getLicenseType() == null)
-                        query.setLicenseType(new ArrayList<>());
-                    query.getLicenseType().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.LICENSE, criteria.getValue());
                     break;
                 case PRODUCER_NAME:
-                    if(query.getProducerName() == null)
-                        query.setProducerName(new ArrayList<>());
-                    query.getProducerName().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.PRODUCER_NAME, criteria.getValue());
                     break;
                 case IMO:
-                    if(query.getImo() == null)
-                        query.setImo(new ArrayList<>());
-                    query.getImo().add(criteria.getValue());
+                    query.addNewSearchLeaf(SearchFields.IMO, criteria.getValue());
                     break;
                 case GEAR_TYPE:
-                    query.setGearType(criteria.getValue());
-                    break;
-                case MIN_LENGTH:
-                    query.setMinLength(Double.valueOf(criteria.getValue()));
-                    break;
-                case MAX_LENGTH:
-                    query.setMaxLength(Double.valueOf(criteria.getValue()));
-                    break;
-                case MIN_POWER:
-                    query.setMinPower(Double.valueOf(criteria.getValue()));
-                    break;
-                case MAX_POWER:
-                    query.setMaxPower(Double.valueOf(criteria.getValue()));
-                    break;
+                    query.addNewSearchLeaf(SearchFields.GEAR_TYPE, criteria.getValue());
                 default:
                     throw new RuntimeException("Unknown ConfigSearchField. " +
                             "Key = [" + key + "] Value: [" + criteria.getValue() + "]");
@@ -179,14 +132,6 @@ public class AssetQueryMapper {
             assetList.add(asset);
         }
         return assetList;
-    }
-
-    public static List<UUID> getGroupListIds(Set<AssetGroup> assetGroupList) {
-        List<UUID> uuidList = new ArrayList<>();
-        for(AssetGroup ag : assetGroupList) {
-            uuidList.add(UUID.fromString(ag.getGuid()));
-        }
-        return uuidList;
     }
 
     public static Map<String, Asset> assetListToAssetMap(List<Asset> assetList) {

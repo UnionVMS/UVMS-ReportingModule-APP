@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.*;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.SneakyThrows;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.inject.annotation.InjectIntoByType;
@@ -90,6 +91,7 @@ public class ReportExecutionServiceBeanTest extends UnitilsJUnit4 {
         MockUnitils.assertNoMoreInvocations();
     }
 
+    @Ignore
     @Test
     @SneakyThrows
     public void testGetVmsDataByReportIdWithAssetGroupFilters() {

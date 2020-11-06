@@ -21,7 +21,6 @@ import java.util.Set;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
@@ -76,12 +75,12 @@ public class ExtAssetMessageMapper {
         return AssetModuleRequestMapper.createAssetListModuleRequest(query);
     }
 
-    public static String createAssetListModuleRequest(Set<AssetGroup> assetGroup) throws AssetException {
-        if (assetGroup == null) {
-            throw new IllegalArgumentException("List<AssetGroup> can not be null.");
-        }
-        List<AssetGroup> assetGroupList = new ArrayList<>();
-        assetGroupList.addAll(assetGroup);
-        return AssetModuleRequestMapper.createAssetListModuleRequest(assetGroupList);
-    }
+//    public static String createAssetListModuleRequest(Set<AssetGroup> assetGroup) throws AssetException {
+//        if (assetGroup == null) {
+//            throw new IllegalArgumentException("List<AssetGroup> can not be null.");
+//        }
+//        List<AssetGroup> assetGroupList = new ArrayList<>();
+//        assetGroupList.addAll(assetGroup);
+//        return AssetModuleRequestMapper.createAssetListModuleRequest(assetGroupList);
+//    }
 }

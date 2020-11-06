@@ -11,17 +11,18 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.message.mapper;
 
-import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.schema.movement.search.v1.ListCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ExtMovementMessageMapper {
 
     public static Map<String, MovementMapResponseType> getMovementMap(List<MovementMapResponseType> movementMapResponseTypes) {
-        return Maps.uniqueIndex(movementMapResponseTypes, MovementMapResponseType::getKey);
+        return movementMapResponseTypes.stream().collect(Collectors.toMap(MovementMapResponseType::getKey, Function.identity()));
     }
 
     public static Collection<? extends ListCriteria> movementListCriteria(Set<String> connectIds) {

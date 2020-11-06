@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetGroupFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
@@ -51,7 +50,6 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         assertEquals(1, processor.getAssetListCriteriaPairs().size());
         assertEquals(0, processor.getRangeCriteria().size());
-        assertEquals(0, processor.getAssetGroupList().size());
         assertEquals(1, processor.getMovementListCriteria().size());
 
         List<AssetListCriteriaPair> assetListCriteriaPairList = new ArrayList<>();
@@ -66,34 +64,6 @@ public class FilterProcessorTest extends UnitilsJUnit4 {
 
         assertEquals(listCriteria.get(0).getKey(), SearchKey.CONNECT_ID);
         assertEquals(listCriteria.get(0).getValue(), "guid");
-
-    }
-
-    @Test
-    @SneakyThrows
-    public void testInitWithAssetGroupFilter() {
-
-        Set<Filter> filterList = new HashSet<>();
-
-        AssetGroupFilter assetGroupFilter = new AssetGroupFilter();
-        assetGroupFilter.setGuid("1");
-        assetGroupFilter.setUserName("test");
-
-        filterList.add(assetGroupFilter);
-
-        processor = new FilterProcessor(filterList, Instant.now());
-
-        List<AssetGroup> assetGroupList = new ArrayList<>();
-        assetGroupList.addAll(processor.getAssetGroupList());
-
-        assertEquals(0, processor.getAssetListCriteriaPairs().size());
-        assertEquals(0, processor.getRangeCriteria().size());
-        assertEquals(1, processor.getAssetGroupList().size());
-        assertEquals(0, processor.getMovementListCriteria().size());
-
-        assertEquals(assetGroupList.get(0).getGuid(), "1");
-        assertEquals(assetGroupList.get(0).getName(), null);
-        assertEquals(assetGroupList.get(0).getUser(), "test");
 
     }
 

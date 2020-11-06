@@ -30,7 +30,7 @@
 		</dependency>
 	
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+            <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
             <artifactId>spatial-model</artifactId>
         </dependency>
         <dependency>

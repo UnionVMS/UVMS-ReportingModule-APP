@@ -22,7 +22,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ProcessorException;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AreaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
@@ -42,7 +41,7 @@ public class FilterProcessor {
     private final Set<ListCriteria> movementListCriteria = new HashSet<>();
     private final Set<RangeCriteria> rangeCriteria = new HashSet<>();
     private final Set<AssetListCriteriaPair> assetListCriteriaPairs = new HashSet<>();
-    private final Set<AssetGroup> assetGroupList = new HashSet<>();
+//    private final Set<AssetGroup> assetGroupList = new HashSet<>();
     private final Set<AreaIdentifierType> areaIdentifierList = new HashSet<>();
     private final List<SingleValueTypeFilter> singleValueTypeFilters = new ArrayList<>();
     private final List<ListValueTypeFilter> listValueTypeFilters = new ArrayList<>();
@@ -72,7 +71,6 @@ public class FilterProcessor {
 
     private void addCriteria(Filter filter) {
         assetListCriteriaPairs.addAll(filter.assetCriteria());
-        assetGroupList.addAll(filter.assetGroupCriteria());
         rangeCriteria.addAll(filter.movementRangeCriteria(now));
         movementListCriteria.addAll(filter.movementListCriteria());
         singleValueTypeFilters.addAll(filter.getSingleValueFilters(now));
@@ -111,10 +109,10 @@ public class FilterProcessor {
         assetListCriteria.getCriterias().addAll(assetListCriteriaPairs);
         return assetListCriteria;
     }
-
-    public Set<AssetGroup> getAssetGroupList() {
-        return assetGroupList;
-    }
+//
+//    public Set<AssetGroup> getAssetGroupList() {
+//        return assetGroupList;
+//    }
 
     public boolean hasAssetsOrAssetGroups() {
         return hasAssets() || hasAssetGroups();
@@ -125,7 +123,7 @@ public class FilterProcessor {
     }
 
     public boolean hasAssetGroups() {
-        return !assetGroupList.isEmpty();
+        return false;
     }
 
     public Set<ListCriteria> getMovementListCriteria() {

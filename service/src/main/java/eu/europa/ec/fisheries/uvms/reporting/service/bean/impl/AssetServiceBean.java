@@ -12,12 +12,11 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
 import eu.europa.ec.fisheries.uvms.commons.service.interceptor.SimpleTracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.service.AssetRestClient;
 import eu.europa.ec.fisheries.uvms.reporting.service.mapper.AssetQueryMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.FilterProcessor;
-import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 
@@ -42,26 +41,26 @@ public class AssetServiceBean {
 
         if (processor.hasAssets()) {
             AssetListQuery assetListQuery = processor.toAssetListQuery();
-            AssetQuery query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
+            SearchBranch query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
 
             List<AssetDTO> assetDTOList = assetRestClient.getAssetList(query);
             assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
             assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
         }
 
-        if (processor.hasAssetGroups()) {
-            Set<AssetGroup> assetGroups = processor.getAssetGroupList();
-            List<UUID> idList = AssetQueryMapper.getGroupListIds(assetGroups);
-
-            List<AssetDTO> assetDTOList = assetRestClient.getAssetsByGroupIds(idList);
-            assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
-            assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
-        }
+//        if (processor.hasAssetGroups()) {
+//            Set<AssetGroup> assetGroups = processor.getAssetGroupList();
+//            List<UUID> idList = AssetQueryMapper.getGroupListIds(assetGroups);
+//
+//            List<AssetDTO> assetDTOList = assetRestClient.getAssetsByGroupIds(idList);
+//            assetList = AssetQueryMapper.dtoListToAssetList(assetDTOList);
+//            assetMap = AssetQueryMapper.assetListToAssetMap(assetList);
+//        }
         return assetMap;
     }
 
     public List<Asset> getAssets(AssetListQuery assetListQuery) {
-        AssetQuery query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
+        SearchBranch query = AssetQueryMapper.assetListQueryToAssetQuery(assetListQuery);
         List<AssetDTO> list = assetRestClient.getAssetList(query);
         return AssetQueryMapper.dtoListToAssetList(list);
     }

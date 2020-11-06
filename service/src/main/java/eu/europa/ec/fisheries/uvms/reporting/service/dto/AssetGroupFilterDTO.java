@@ -74,7 +74,7 @@ public class AssetGroupFilterDTO extends FilterDTO {
 
     @Override
     public Filter convertToFilter() {
-        return AssetGroupFilterMapper.INSTANCE.assetGroupFilterDTOToAssetGroupFilter(this);
+        return null; //AssetGroupFilterMapper.INSTANCE.assetGroupFilterDTOToAssetGroupFilter(this);
     }
 
     public String getName() {
