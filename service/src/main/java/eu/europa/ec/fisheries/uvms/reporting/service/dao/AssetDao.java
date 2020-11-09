@@ -11,4 +11,8 @@ public interface AssetDao {
     <T> T findById(Long id, Class<T> clazz);
 
     Asset findAssetByAssetHistoryGuid(String assetGuid);
+
+    int updateHistoryRecordsAsInactiveForAssetGuid(String guid);
+
+    int makeOtherHistoryEntriesOfAssetInactiveExceptCurrentHistId(String guid, String eventId);
 }

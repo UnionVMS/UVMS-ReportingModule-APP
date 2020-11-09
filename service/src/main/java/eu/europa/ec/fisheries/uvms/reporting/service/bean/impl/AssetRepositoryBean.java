@@ -35,4 +35,14 @@ public class AssetRepositoryBean implements AssetRepository {
     public Asset findAssetByAssetHistoryGuid(String guid) {
         return assetDao.findAssetByAssetHistoryGuid(guid);
     }
+
+    @Override
+    public int updateHistoryRecordsAsInactiveForAssetGuid(String guid) {
+        return assetDao.updateHistoryRecordsAsInactiveForAssetGuid(guid);
+    }
+
+    @Override
+    public int makeOtherHistoryEntriesOfAssetInactiveExceptCurrentHistId(String guid, String eventId) {
+        return assetDao.makeOtherHistoryEntriesOfAssetInactiveExceptCurrentHistId(guid, eventId);
+    }
 }
