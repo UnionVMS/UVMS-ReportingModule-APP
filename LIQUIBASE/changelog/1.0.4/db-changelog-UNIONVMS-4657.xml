@@ -206,6 +206,8 @@
 
             <column name="asset_guid" type="varchar(36)"/>
 
+            <column name="asset_hist_active" type="boolean"/>
+
             <column name="uvi" type="varchar(8)"/>
             <column name="iccat" type="varchar(16)"/>
             <column name="cfr" type="varchar(12)"/>

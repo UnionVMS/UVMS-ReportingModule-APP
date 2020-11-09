@@ -46,7 +46,7 @@ public class AssetDaoImpl implements AssetDao {
 
     @Override
     public Asset findAssetByAssetHistoryGuid(String guid) {
-        Query nativeQuery = em.createNativeQuery("select * from reporting.asset where asset_hist_guid = :assetHistoryGuid", Asset.class);
+        Query nativeQuery = em.createNativeQuery("SELECT * FROM reporting.asset WHERE asset_hist_guid = :assetHistoryGuid", Asset.class);
         nativeQuery.setParameter("assetHistoryGuid", guid);
         try {
             return (Asset) nativeQuery.getSingleResult();
@@ -55,4 +55,25 @@ public class AssetDaoImpl implements AssetDao {
         }
     }
 
+    @Override
+    public int updateHistoryRecordsAsInactiveForAssetGuid(String guid) {
+        Query nativeQuery = em.createNativeQuery("UPDATE reporting.asset SET asset_hist_active = false WHERE asset_guid = :assetGuid");
+        nativeQuery.setParameter("assetGuid", guid);
+        try {
+            return nativeQuery.executeUpdate();
+        } catch (NoResultException e) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int makeOtherHistoryEntriesOfAssetInactiveExceptCurrentHistId(String guid, String eventId) {
+        Query nativeQuery = em.createNativeQuery("UPDATE reporting.asset SET asset_hist_active = false WHERE asset_guid = :assetGuid AND asset_hist_guid <> :assetHistGuid");
+        nativeQuery.setParameter("assetGuid", guid);
+        nativeQuery.setParameter("assetHistGuid", eventId);
+        try {
+            return nativeQuery.executeUpdate();
+        } catch (NoResultException e) {
+            return 0;
+        }    }
 }

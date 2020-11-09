@@ -33,6 +33,9 @@ public class Asset implements Serializable {
     @Column(name = "asset_guid")
     private String assetGuid;
 
+    @Column(name = "asset_hist_active")
+    private Boolean assetHistActive;
+
     @Column(name = "iccat")
     private String iccat;
 

@@ -22,6 +22,7 @@ import javax.jms.TextMessage;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingActivityDataService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingAssetDataService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingMovementDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,12 +44,16 @@ public class EventMessageListener implements MessageListener {
 
     private static final String ACTIVITY_SUB_TOPIC = "activity";
     private static final String MOVEMENT_SUB_TOPIC = "movement";
+    private static final String ASSET_SUB_TOPIC = "asset";
 
     @Inject
     private IncomingActivityDataService incomingActivityDataService;
 
     @Inject
     private IncomingMovementDataService incomingMovementDataService;
+
+    @Inject
+    private IncomingAssetDataService incomingAssetDataService;
 
     @Override
     public void onMessage(Message message) {
@@ -61,7 +66,10 @@ public class EventMessageListener implements MessageListener {
                     incomingActivityDataService.handle(textMessage.getText());
                     break;
                 case MOVEMENT_SUB_TOPIC:
-                    incomingMovementDataService.handle(textMessage.getText());
+                    incomingActivityDataService.handle(textMessage.getText());
+                    break;
+                case ASSET_SUB_TOPIC:
+                    incomingAssetDataService.handle(textMessage.getText());
                     break;
                 default:
                     LOG.error("Unknown message sub topic");
