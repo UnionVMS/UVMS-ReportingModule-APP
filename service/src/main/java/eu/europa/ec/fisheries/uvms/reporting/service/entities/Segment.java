@@ -56,6 +56,9 @@ public class Segment {
     @Column(name = "speed_over_ground")
     private Double speedOverGround;
 
+    @Column(name = "calculated_speed")
+    private Double calculatedSpeed;
+
     @Column(name = "duration")
     private Double duration;
 
