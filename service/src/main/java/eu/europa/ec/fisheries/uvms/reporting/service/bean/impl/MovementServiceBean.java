@@ -193,7 +193,6 @@ public class MovementServiceBean {
 
             assets.forEach(a -> {
                 eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset = mapFromAsset(a);
-                asset.setAssetHistGuid(a.getEventHistory().getEventId());
                 assetRepository.createAssetEntity(asset);
             });
         }
@@ -247,6 +246,8 @@ public class MovementServiceBean {
         asset.setName(a.getName());
         asset.setCountryCode(a.getCountryCode());
         asset.setAssetGuid(a.getAssetId().getGuid());
+        asset.setAssetHistGuid(a.getEventHistory().getEventId());
+        asset.setAssetHistActive(a.isActive());
         return asset;
     }
 

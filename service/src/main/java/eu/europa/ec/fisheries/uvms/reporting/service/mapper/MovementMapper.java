@@ -58,8 +58,9 @@ public abstract class MovementMapper {
             @Mapping(target = "movementGuid", ignore = true),
             @Mapping(target = "segmentCategory", expression = "java(getEnumVal(movementSegment.getCategory()))"),
             @Mapping(target = "segment", expression = "java(getLineString(movementSegment.getWkt()))"),
+            @Mapping(target = "calculatedSpeed", expression ="java(calculateSpeed(movementSegment))")
     })
-    public abstract Segment toSegment(MovementSegment movementSegment/*, Asset asset*/);
+    public abstract Segment toSegment(MovementSegment movementSegment);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
@@ -67,7 +68,7 @@ public abstract class MovementMapper {
             @Mapping(target = "nearestPoint", ignore = true), // ignore for now
             @Mapping(target = "extent", ignore = true) // ignore for now
     })
-    public abstract Track toTrack(MovementTrack movementTrack/*, Asset asset*/);
+    public abstract Track toTrack(MovementTrack movementTrack);
 
     protected String getEnumVal(Enum<?> type){
         if(type == null){
@@ -81,5 +82,13 @@ public abstract class MovementMapper {
     @SneakyThrows
     protected LineString getLineString(String wtk){
         return GeometryUtil.toLineString(wtk);
+    }
+
+    protected Double calculateSpeed(MovementSegment movementSegment) {
+        try {
+            return movementSegment.getDistance() / movementSegment.getDuration();
+        } catch(Exception e) {
+            return null;
+        }
     }
 }

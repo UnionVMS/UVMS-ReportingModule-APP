@@ -66,7 +66,7 @@ public class EventMessageListener implements MessageListener {
                     incomingActivityDataService.handle(textMessage.getText());
                     break;
                 case MOVEMENT_SUB_TOPIC:
-                    incomingActivityDataService.handle(textMessage.getText());
+                    incomingMovementDataService.handle(textMessage.getText());
                     break;
                 case ASSET_SUB_TOPIC:
                     incomingAssetDataService.handle(textMessage.getText());
