@@ -96,9 +96,17 @@
             <column name="purpose_code" type="varchar(50)"/>
             <column name="source" type="varchar(60)"/>
             <column name="accepted_timestamp" type="timestamp"/>
+            <column name="calculated_timestamp" type="timestamp"/>
+            <column name="occurrence_timestamp" type="timestamp"/>
+            <column name="start_timestamp" type="timestamp"/>
+            <column name="end_timestamp" type="timestamp"/>
+
             <column name="correction" type="boolean" defaultValueBoolean="false"/>
 
             <column name="activity_coordinates" type="geometry(Multipoint, 4326)"/>
+
+            <column name="master" type="varchar(255)"/>
+            <column name="reason_code" type="varchar(255)"/>
 
             <column name="asset_hist_guid" type="varchar(36)"/>
         </createTable>
@@ -141,10 +149,11 @@
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="area_type_code" type="varchar(50)"/>
+            <column name="area_type" type="varchar(50)"/>
+            <column name="area_type_code" type="varchar(64)"/>
             <column name="area_code" type="varchar(50)"/>
 
-            <column name="geom" type="GEOMETRY(Multipolygon, 4326)"/>
+            <column name="geom" type="geometry(Multipolygon, 4326)"/>
             <column name="latitude" type="FLOAT8"/>
             <column name="longitude" type="FLOAT8"/>
 

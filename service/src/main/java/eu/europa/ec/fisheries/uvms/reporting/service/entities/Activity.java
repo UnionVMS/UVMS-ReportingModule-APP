@@ -65,6 +65,12 @@ public class Activity implements Serializable {
     @Column(name = "activity_type")
     private String activityType;
 
+    @Column(name = "reason_code")
+    private String reasonCode;
+
+    @Column(name = "master")
+    private String master;
+
     @Column(name = "purpose_code")
     private String purposeCode;
 
@@ -74,6 +80,22 @@ public class Activity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "accepted_timestamp")
     private Date acceptedDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "calculated_timestamp")
+    private Date calculatedDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "occurrence_timestamp")
+    private Date occurrenceDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "start_timestamp")
+    private Date startDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_timestamp")
+    private Date endDate;
 
     @Type(type = "org.hibernate.spatial.GeometryType")
     @Column(name = "activity_coordinates", columnDefinition = "Geometry")
