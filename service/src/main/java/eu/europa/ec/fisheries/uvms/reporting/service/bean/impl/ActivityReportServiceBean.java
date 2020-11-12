@@ -53,10 +53,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByCodeRequest;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByCodeResponse;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaSimpleType;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.GeometryByPortCodeResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -106,7 +104,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
         for (int i = 0; i < reports.getFishingActivities().size(); i++) {
             createFishingActivityAndTrip(reports.getFishingActivities().get(i),
                     reports.getFluxFaReportMessageIds().get(i).getId(),
-                    reports.getActivitiesWktLists().get(i),
+                    reports.getActivitiesWktLists() != null && reports.getActivitiesWktLists().size() > 0 ? reports.getActivitiesWktLists().get(i) : null,
                     reports.getActivityAreas().get(i),
                     reports.getFaReportType(),
                     assets);
@@ -115,11 +113,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
     private void createFishingActivityAndTrip(FishingActivity fishingActivity, String reportId, String wkt, ActivityAreas activityAreas, String reportType, List<Asset> assets) {
         Activity activity = new Activity();
-        activity.setActivityType(fishingActivity.getTypeCode().getValue());
-        activity.setFaReportId(reportId);
-        activity.setReportType(reportType);
-        activity.setActivityCoordinates(getMultipointGeometryFromWktString(wkt));
-        activity.setReasonCode(fishingActivity.getReasonCode().getValue());
+        mapBasicActivityFields(fishingActivity, reportId, wkt, reportType, activity);
         mapFishingGear(fishingActivity, activity);
         mapAreas(fishingActivity, activity);
 
@@ -131,26 +125,36 @@ public class ActivityReportServiceBean implements ActivityReportService {
         Optional<IDType> tripId = fishingActivity.getSpecifiedFishingTrip().getIDS().stream().findFirst();
         if (tripId.isPresent()) {
             FishingTripResponse tripDetailsFromActivity = getTripDetailsFromActivity(tripId.get().getValue());
-
             Trip trip = createFishingTrip(fishingActivity.getSpecifiedFishingTrip(), assets, tripDetailsFromActivity);
             activity.setTripId(trip.getTripId());
 
             Optional<FishingActivitySummary> fishingActivitySummaryOptional = tripDetailsFromActivity.getFishingActivityLists().stream().findFirst();
             if (fishingActivitySummaryOptional.isPresent()) {
                 FishingActivitySummary fishingActivitySummary = fishingActivitySummaryOptional.get();
-
-                activity.setPurposeCode(fishingActivitySummary.getPurposeCode());
-                activity.setSource(fishingActivitySummary.getDataSource());
-                activity.setCorrection(fishingActivitySummary.isIsCorrection());
-                activity.setActivityId(String.valueOf(fishingActivitySummary.getActivityId()));
-                activity.setMaster(fishingActivitySummary.getVesselContactParty().getGivenName());
-                activity.setAcceptedDate(Date.from(fishingActivitySummary.getAcceptedDateTime().toGregorianCalendar().toInstant()));
-                activity.setCalculatedDate(calculateActivityDate(fishingActivitySummary, fishingActivity));
-                activity.setOccurrenceDate(fishingActivitySummary.getOccurence() != null ? Date.from(fishingActivitySummary.getOccurence().toGregorianCalendar().toInstant()) : null);
-                activity.setStartDate(getDate(fishingActivitySummary, fishingActivity, false));
-                activity.setEndDate(getDate(fishingActivitySummary, fishingActivity, true));
+                mapActivityFields(fishingActivity, activity, fishingActivitySummary);
             }
         }
+    }
+
+    private void mapActivityFields(FishingActivity fishingActivity, Activity activity, FishingActivitySummary fishingActivitySummary) {
+        activity.setPurposeCode(fishingActivitySummary.getPurposeCode());
+        activity.setSource(fishingActivitySummary.getDataSource());
+        activity.setCorrection(fishingActivitySummary.isIsCorrection());
+        activity.setActivityId(String.valueOf(fishingActivitySummary.getActivityId()));
+        activity.setMaster(fishingActivitySummary.getVesselContactParty().getGivenName());
+        activity.setAcceptedDate(Date.from(fishingActivitySummary.getAcceptedDateTime().toGregorianCalendar().toInstant()));
+        activity.setCalculatedDate(calculateActivityDate(fishingActivitySummary, fishingActivity));
+        activity.setOccurrenceDate(fishingActivitySummary.getOccurence() != null ? Date.from(fishingActivitySummary.getOccurence().toGregorianCalendar().toInstant()) : null);
+        activity.setStartDate(getDate(fishingActivity, false));
+        activity.setEndDate(getDate(fishingActivity, true));
+    }
+
+    private void mapBasicActivityFields(FishingActivity fishingActivity, String reportId, String wkt, String reportType, Activity activity) {
+        activity.setActivityType(fishingActivity.getTypeCode().getValue());
+        activity.setFaReportId(reportId);
+        activity.setReportType(reportType);
+        activity.setActivityCoordinates(getMultipointGeometryFromWktString(wkt));
+        activity.setReasonCode(fishingActivity.getReasonCode().getValue());
     }
 
     private Date calculateActivityDate(FishingActivitySummary fishingActivitySummary, FishingActivity fishingActivity) {
@@ -166,14 +170,23 @@ public class ActivityReportServiceBean implements ActivityReportService {
                     return Date.from(period.get().getStartDateTime().getDateTime().toGregorianCalendar().toInstant());
                 }
             }
-            // get start/end date from sub activity ?? trip??
+            if (fishingActivity.getRelatedFishingActivities() != null) {
+                Optional<FishingActivity> gearRetrieval = fishingActivity.getRelatedFishingActivities().stream().filter(rfa -> rfa.getTypeCode().getValue().equals("GEAR_RETRIEVAL")).findFirst();
+                Optional<FishingActivity> gearShot = fishingActivity.getRelatedFishingActivities().stream().filter(rfa -> rfa.getTypeCode().getValue().equals("GEAR_SHOT")).findFirst();
+                if (gearRetrieval.isPresent()) {
+                    return Date.from(gearRetrieval.get().getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant());
+                }
+                if (gearShot.isPresent()) {
+                    return Date.from(gearShot.get().getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant());
+                }
+            }
 
         }
         // otherwise return accepted date/time as in NOTIFICATION report type
         return Date.from(fishingActivitySummary.getAcceptedDateTime().toGregorianCalendar().toInstant());
     }
 
-    private Date getDate(FishingActivitySummary fishingActivitySummary, FishingActivity fishingActivity, boolean getEndDate) {
+    private Date getDate(FishingActivity fishingActivity, boolean getEndDate) {
         Optional<DelimitedPeriod> period = fishingActivity.getSpecifiedDelimitedPeriods().stream().findFirst();
         if (period.isPresent()) {
             if (getEndDate && period.get().getEndDateTime() != null) {
@@ -182,14 +195,26 @@ public class ActivityReportServiceBean implements ActivityReportService {
                 return Date.from(period.get().getStartDateTime().getDateTime().toGregorianCalendar().toInstant());
             }
         }
-        // get from subactivity ??
+        if (fishingActivity.getRelatedFishingActivities() != null) {
+            if (getEndDate) {
+                Optional<FishingActivity> gearRetrieval = fishingActivity.getRelatedFishingActivities().stream().filter(rfa -> rfa.getTypeCode().getValue().equals("GEAR_RETRIEVAL")).findFirst();
+                if (gearRetrieval.isPresent()) {
+                    return Date.from(gearRetrieval.get().getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant());
+                }
+            } else {
+                Optional<FishingActivity> gearShot = fishingActivity.getRelatedFishingActivities().stream().filter(rfa -> rfa.getTypeCode().getValue().equals("GEAR_SHOT")).findFirst();
+                if (gearShot.isPresent()) {
+                    return Date.from(gearShot.get().getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant());
+                }
+            }
+        }
         return null;
     }
 
     private void mapAreas(FishingActivity fishingActivity, Activity activity) {
         Set<Area> areas = new HashSet<>();
         for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
-            Area a = activityRepository.findAreaByTypeCodeAndAreaCode(relatedFLUXLocation.getTypeCode().getValue(), relatedFLUXLocation.getID().getValue());
+            Area a = activityRepository.findAreaByTypeCodeAndAreaCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
             a = createAreaIfNotExists(relatedFLUXLocation, a);
             areas.add(a);
         }
@@ -199,29 +224,35 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private Area createAreaIfNotExists(FLUXLocation relatedFLUXLocation, Area a) {
         if (a == null) {
             a = new Area();
-            a.setAreaTypeCode(relatedFLUXLocation.getTypeCode().getValue());
+            a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
+            a.setAreaTypeCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()));
             a.setAreaCode(relatedFLUXLocation.getID().getValue());
-            a.setAreaType(relatedFLUXLocation.getID().getSchemeID());
-            if (a.getAreaType().equals("LOCATION")) {
-                a.setAreaType("PORT_AREA");
-            }
-            try {
-                List<AreaSimpleType> areas = new ArrayList<>();
-                AreaSimpleType areaSimpleType = new AreaSimpleType();
-                areaSimpleType.setAreaCode(a.getAreaCode());
-                areaSimpleType.setAreaType(a.getAreaType());
-                areas.add(areaSimpleType);
-                String areaByCodeRequest = SpatialModuleRequestMapper.mapToCreateGetAreaByCodeRequest(areas);
-                String correlationId = spatialProducerBean.sendModuleMessage(areaByCodeRequest, reportingModuleReceiverBean.getDestination());
-                TextMessage textMessage = reportingModuleReceiverBean.getMessage(correlationId, TextMessage.class, 60000L);
-                AreaByCodeResponse response = JAXBMarshaller.unmarshall(textMessage, AreaByCodeResponse.class);
-                a.setAreaCoordinates(getMultipolygonGeometryFromWktString(response.getAreaSimples().get(0).getWkt()));
-            } catch (SpatialModelMarshallException | MessageException | ReportingModelException e) {
-                log.error("Could not get port information for {} from spatial", a.getAreaCode(), e);
+
+            Optional<String> areaCoordinatesFromSpatial = getAreaCoordinatesFromSpatial(a.getAreaTypeCode(), a.getAreaCode());
+            if (areaCoordinatesFromSpatial.isPresent()) {
+                a.setAreaCoordinates(getMultipolygonGeometryFromWktString(areaCoordinatesFromSpatial.get()));
             }
             activityRepository.createArea(a);
         }
         return a;
+    }
+
+    private Optional<String> getAreaCoordinatesFromSpatial(String areaTypeCode, String areaCode) {
+        try {
+            List<AreaSimpleType> areas = new ArrayList<>();
+            AreaSimpleType areaSimpleType = new AreaSimpleType();
+            areaSimpleType.setAreaType(areaTypeCode);
+            areaSimpleType.setAreaCode(areaCode);
+            areas.add(areaSimpleType);
+            String areaByCodeRequest = SpatialModuleRequestMapper.mapToCreateGetAreaByCodeRequest(areas);
+            String correlationId = spatialProducerBean.sendModuleMessage(areaByCodeRequest, reportingModuleReceiverBean.getDestination());
+            TextMessage textMessage = reportingModuleReceiverBean.getMessage(correlationId, TextMessage.class, 60000L);
+            AreaByCodeResponse response = JAXBMarshaller.unmarshall(textMessage, AreaByCodeResponse.class);
+            return response.getAreaSimples().stream().findFirst().map(AreaSimpleType::getWkt);
+        } catch (SpatialModelMarshallException | MessageException | ReportingModelException e) {
+            log.error("Could not get port information for {} - {} from spatial", areaTypeCode, areaCode, e);
+            return Optional.empty();
+        }
     }
 
     private void mapSpecies(FishingActivity fishingActivity, Activity activity) {
@@ -231,7 +262,11 @@ public class ActivityReportServiceBean implements ActivityReportService {
             speciesCatch.setSpeciesCode(faCatch.getSpeciesCode().getValue());
             speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
             speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
-
+            Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
+            faCatch.getSpecifiedSizeDistribution().getClassCodes().stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()));
+            faCatch.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
+                ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESENTATION")).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
+            });
             speciesCatch.setActivityId(activity.getId());
             activityRepository.createCatchEntity(speciesCatch);
 
@@ -280,8 +315,10 @@ public class ActivityReportServiceBean implements ActivityReportService {
             return geometry;
         } catch (ParseException e) {
             log.error("unable to set geometry from wkt string: {}", wkt);
-            return null;
+        } catch (NullPointerException e) {
+            log.error("Error occurred with wkt string: {}, possibly no coordinates available", wkt, e);
         }
+        return null;
     }
 
     private MultiPolygon getMultipolygonGeometryFromWktString(String wkt) {
@@ -298,21 +335,21 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private FishingTripResponse getTripDetailsFromActivity(String tripId) {
         try {
             DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(ISODateTimeFormat.dateTimeNoMillis()).toFormatter().withOffsetParsed();
-
             List<SingleValueTypeFilter> singleFilters = Arrays.asList(
                     new SingleValueTypeFilter(SearchFilter.TRIP_ID, tripId),
                     new SingleValueTypeFilter(SearchFilter.PERIOD_START, formatter.print(DateTime.now().minusYears(3).toLocalDateTime())),
                     new SingleValueTypeFilter(SearchFilter.PERIOD_END, formatter.print(DateTime.now().toLocalDateTime())));
-
-            List<ListValueTypeFilter> listFilter = Collections.singletonList(new ListValueTypeFilter(SearchFilter.ACTIVITY_TYPE, Collections.singletonList("DEPARTURE")));
-            String request = ActivityModuleRequestMapper.mapToActivityGetFishingTripRequest(listFilter, singleFilters);
+            String request = ActivityModuleRequestMapper.mapToActivityGetFishingTripRequest(Collections.EMPTY_LIST, singleFilters);
             String correlationId = activityModuleSenderBean.sendModuleMessageNonPersistent(request, reportingModuleReceiverBean.getDestination(), 60000L);
             TextMessage receivedMessageAsTextMessage = reportingModuleReceiverBean.getMessage(correlationId, TextMessage.class, 60000L);
-            log.debug("Received response message");
             return JAXBMarshaller.unmarshall(receivedMessageAsTextMessage, FishingTripResponse.class);
         } catch (ActivityModelMarshallException | MessageException | ReportingModelException e) {
             log.error("Error getting fishing trip information");
             return null;
         }
+    }
+
+    private String mapAreaTypeCode(String value) {
+        return "LOCATION".equals(value) ? "PORT_AREA" : value;
     }
 }

@@ -27,6 +27,14 @@ public class Catch {
     @Column(name = "weight_measure", precision = 17, scale = 17)
     private Double weightMeasure;
 
+    @Column(name = "quantity", precision = 17, scale = 17)
+    private Double quantity;
+
+    @Column(name = "size_class")
+    private String sizeClass;
+
+    @Column(name = "presentation")
+    private String presentation;
 
 }
 

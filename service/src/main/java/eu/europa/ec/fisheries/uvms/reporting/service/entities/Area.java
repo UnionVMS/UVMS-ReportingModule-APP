@@ -37,10 +37,10 @@ public class Area {
     private Long id;
 
     @Column(name = "area_type")
-    private String areaTypeCode;
+    private String areaType;
 
     @Column(name = "area_type_code")
-    private String areaType;
+    private String areaTypeCode;
 
     @Column(name = "area_code")
     private String areaCode;

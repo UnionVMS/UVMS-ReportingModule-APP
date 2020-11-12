@@ -63,6 +63,9 @@ public class Movement {
     @Column(name = "movement_type")
     private String movementType;
 
+    @Column(name = "movement_activity_type")
+    private String movementActivityType;
+
     @Column(name = "reported_course")
     private Double reportedCourse;
 
