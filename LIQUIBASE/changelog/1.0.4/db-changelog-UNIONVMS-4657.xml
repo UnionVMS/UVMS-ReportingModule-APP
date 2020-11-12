@@ -19,6 +19,7 @@
             <column name="movement_guid" type="varchar(36)"/>
             <column name="source" type="varchar(60)"/>
             <column name="movement_type" type="varchar(60)"/>
+            <column name="movement_activity_type" type="varchar(60)"/>
             <column name="reported_course" type="double"/>
             <column name="reported_speed" type="double"/>
             <column name="calculated_speed" type="double"/>
@@ -189,6 +190,9 @@
             <column name="species_code" type="varchar(10)"/>
             <column name="weight_measure" type="FLOAT8"/>
             <column name="weight_measure_unit_code" type="VARCHAR(255)"/>
+            <column name="quantity" type="FLOAT8"/>
+            <column name="size_class" type="VARCHAR(50)"/>
+            <column name="presentation" type="VARCHAR(50)"/>
         </createTable>
 
         <addUniqueConstraint columnNames="activity_id,species_code" constraintName="activity_catch_unique" deferrable="true" initiallyDeferred="true" tableName="activity_catch"/>
