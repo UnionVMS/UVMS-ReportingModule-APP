@@ -21,6 +21,7 @@
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Areas;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
 
 /**
@@ -32,4 +33,6 @@ public interface MovementDao {
 	<T> T update(T entity);
 	<T> T findById(Long id,Class<T> clazz);
 	<T> void delete(Long id,Class<T> clazz) throws ApplicationException;
+
+    Areas findAreaByTypeAndAreaCode(String areaType, String areaCode);
 }

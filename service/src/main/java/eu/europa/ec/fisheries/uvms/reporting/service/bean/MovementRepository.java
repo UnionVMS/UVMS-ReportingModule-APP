@@ -13,6 +13,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Areas;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
@@ -31,4 +33,8 @@ public interface MovementRepository {
     Movement updateMovement(Movement entity);
 
     void deleteMovement(Long id) throws ApplicationException;
+
+    Areas createArea(Areas entity);
+
+    Areas findAreaByTypeAndAreaCode(String areaType, String areaCode);
 }

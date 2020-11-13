@@ -21,9 +21,11 @@ import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelExcep
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Areas;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
@@ -81,13 +84,13 @@ public class MovementServiceBean {
 
     @Inject
     private MovementMapper movementMapper;
-    
+
     @Inject
     private MovementClient movementClient;
 
     @Inject
     private AssetRepository assetRepository;
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Interceptors(SimpleTracingInterceptor.class)
     public Map<String, MovementMapResponseType> getMovementMap(FilterProcessor processor) throws ReportingServiceException {
@@ -102,30 +105,32 @@ public class MovementServiceBean {
 
     /**
      * Creates Movement,Segment and Track entities enriched with Asset,Movement module data
+     *
      * @param movementTypes List of MovementType to be mapped to Movements
      * @throws ReportingServiceException Thrown if error occurs
      */
     public void createMovementsSegmentsAndTracks(List<MovementType> movementTypes) throws ReportingServiceException {
-        Map<String,Asset> assetMap = getFromAssetIfNotAvailableLocally(movementTypes);
-        Map<String,MovementTypeData> movementTypeDataMap = movementTypes.stream()
-                .map(movementType -> new MovementTypeData(movementType,assetMap.get(movementType.getConnectId())))
+        Map<String, Asset> assetMap = getFromAssetIfNotAvailableLocally(movementTypes);
+        Map<String, MovementTypeData> movementTypeDataMap = movementTypes.stream()
+                .map(movementType -> new MovementTypeData(movementType, assetMap.get(movementType.getConnectId())))
                 .collect(Collectors.toMap(toMovementGuid(), Function.identity()));
         movementTypeDataMap.values().forEach(this::createMovement);
-        createSegmentsAndTracks(movementTypes,movementTypeDataMap);
+        createSegmentsAndTracks(movementTypes, movementTypeDataMap);
     }
 
     /**
      * Generates Segment and Tracks based on segment id list
+     *
      * @param movementTypes The MovementType list
      */
-    public void createSegmentsAndTracks(List<MovementType> movementTypes,Map<String,MovementTypeData> movementTypeDataMap){
+    public void createSegmentsAndTracks(List<MovementType> movementTypes, Map<String, MovementTypeData> movementTypeDataMap) {
         List<SegmentIds> segmentIds = movementTypes.stream()
-                                .map(toSegmentId())
-                                .collect(Collectors.toList());
-        segmentIds = segmentIds.stream().filter(s-> s.getSegmentIds().size() > 0).collect(Collectors.toList());
+                .map(toSegmentId())
+                .collect(Collectors.toList());
+        segmentIds = segmentIds.stream().filter(s -> s.getSegmentIds().size() > 0).collect(Collectors.toList());
         if (segmentIds.size() > 0) {
             List<SegmentAndTrackList> segmentAndTrackList = movementClient.getSegmentsAndTrackBySegmentIds(segmentIds);
-            if(segmentAndTrackList != null) {
+            if (segmentAndTrackList != null) {
                 segmentAndTrackList.forEach(segmentAndTrackListItem -> {
                     MovementTypeData movementTypeData = movementTypeDataMap.get(segmentAndTrackListItem.getMoveGuid());
                     // normally this asset can be retrieved once before the loop or passed on through the caller of this function createSegmentsAndTracks
@@ -138,29 +143,56 @@ public class MovementServiceBean {
             }
         }
     }
-    
-    private static Function<MovementType,SegmentIds> toSegmentId(){
-        return (mt)-> {
+
+    private static Function<MovementType, SegmentIds> toSegmentId() {
+        return (mt) -> {
             SegmentIds segmentId = new SegmentIds();
             segmentId.setMoveGuid(mt.getGuid());
             segmentId.getSegmentIds().addAll(mt.getSegmentIds().stream().map(Long::parseLong).collect(Collectors.toList()));
             return segmentId;
         };
     }
-    
+
     private Movement createMovement(MovementTypeData movementTypeData) {
         Movement movement = movementMapper.toMovement(movementTypeData.movementType);
         movement.setMovementGuid(movementTypeData.movementType.getGuid());
         movement.setAsset(assetRepository.findAssetByAssetHistoryGuid(movementTypeData.movementType.getConnectId()));
+        enrichMovementWithAreas(movementTypeData, movement);
         return movementRepositoryBean.createMovementEntity(movement);
     }
-    private Segment createSegment(MovementSegment movementSegment, MovementTypeData movementTypeData, eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset){
+
+    private void enrichMovementWithAreas(MovementTypeData movementTypeData, Movement movement) {
+        movement.setClosestCountry(movementTypeData.movementType.getMetaData().getClosestCountry().getCode());
+        movement.setClosestCountryDistance(movementTypeData.movementType.getMetaData().getClosestCountry().getDistance());
+        movement.setClosestPort(movementTypeData.movementType.getMetaData().getClosestPort().getCode());
+        movement.setClosestPortDistance(movementTypeData.movementType.getMetaData().getClosestPort().getDistance());
+        Set<Areas> areas = new HashSet<>();
+
+        movementTypeData.movementType.getMetaData().getAreas().forEach(area -> {
+            Areas a = movementRepositoryBean.findAreaByTypeAndAreaCode(area.getAreaType(), area.getCode());
+            if (a == null) {
+                a = new Areas();
+                a.setAreaType(area.getAreaType());
+                a.setAreaCode(area.getCode());
+                a.setAreaName(area.getName());
+                a.setRemoteId(area.getRemoteId());
+                movementRepositoryBean.createArea(a);
+                areas.add(a);
+            } else {
+                areas.add(a);
+            }
+        });
+        movement.setAreas(areas);
+    }
+
+    private Segment createSegment(MovementSegment movementSegment, MovementTypeData movementTypeData, eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset) {
         Segment segment = movementMapper.toSegment(movementSegment);
         segment.setMovementGuid(movementTypeData.movementType.getGuid());
         segment.setAsset(asset);
         return movementRepositoryBean.createSegmentEntity(segment);
     }
-    private Track createTrack(MovementTrack movementTrack, eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset){
+
+    private Track createTrack(MovementTrack movementTrack, eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset) {
         Track track = movementMapper.toTrack(movementTrack);
         track.setAsset(asset);
         return movementRepositoryBean.createTrackEntity(track);
@@ -178,7 +210,7 @@ public class MovementServiceBean {
             AssetListQuery query = new AssetListQuery();
             AssetListCriteria value = new AssetListCriteria();
             List<AssetListCriteriaPair> criteriaPairs = value.getCriterias();
-            for(MovementType movementType : movementTypes){
+            for (MovementType movementType : movementTypes) {
                 AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
                 criteriaPair.setKey(ConfigSearchField.HIST_GUID);
                 criteriaPair.setValue(movementType.getConnectId());
@@ -201,7 +233,7 @@ public class MovementServiceBean {
 
     private boolean getAssetsFromDb(List<MovementType> movementTypes, List<eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset> assetsFromDb) {
         boolean found = false;
-        for (int i=0; i< movementTypes.size();i++) {
+        for (int i = 0; i < movementTypes.size(); i++) {
             Optional<eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset> assetByGuid = Optional.ofNullable(assetRepository.findAssetByAssetHistoryGuid(movementTypes.get(i).getConnectId()));
             if (assetByGuid.isPresent()) {
                 assetsFromDb.add(assetByGuid.get());
@@ -251,13 +283,14 @@ public class MovementServiceBean {
         return asset;
     }
 
-    private static Function<Asset,String> toAssetGuid(){
+    private static Function<Asset, String> toAssetGuid() {
         return (asset) -> asset.getEventHistory().getEventId();
     }
-    private static Function<MovementTypeData,String> toMovementGuid(){
+
+    private static Function<MovementTypeData, String> toMovementGuid() {
         return (mtd) -> mtd.movementType.getGuid();
     }
-    
+
     private List<MovementMapResponseType> getMovementMapResponseTypes(FilterProcessor processor) throws ReportingServiceException {
         try {
             String request = ExtMovementMessageMapper.mapToGetMovementMapByQueryRequest(processor.toMovementQuery());
@@ -284,9 +317,9 @@ public class MovementServiceBean {
         }
         return isErrorResponse;
     }
-    
+
     @AllArgsConstructor
-    private static class MovementTypeData{
+    private static class MovementTypeData {
         MovementType movementType;
         Asset asset;
     }

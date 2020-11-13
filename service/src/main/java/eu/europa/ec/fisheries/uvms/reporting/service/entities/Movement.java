@@ -17,13 +17,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Point;
 import lombok.Data;
@@ -74,4 +77,23 @@ public class Movement {
 
     @Column(name = "calculated_speed")
     private Double calculatedSpeed;
+
+    @Column(name = "closest_country")
+    private String closestCountry;
+
+    @Column(name = "closest_country_distance")
+    private Double closestCountryDistance;
+
+    @Column(name = "closest_port")
+    private String closestPort;
+
+    @Column(name = "closest_port_distance")
+    private Double closestPortDistance;
+
+    @OneToMany
+    @JoinTable(name = "movement_area",
+            joinColumns = {@JoinColumn(name = "movement_id")},
+            inverseJoinColumns = {@JoinColumn(name = "area_id")}
+    )
+    private Set<Areas> areas;
 }
