@@ -214,9 +214,18 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private void mapAreas(FishingActivity fishingActivity, Activity activity) {
         Set<Area> areas = new HashSet<>();
         for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
-            Area a = activityRepository.findAreaByTypeCodeAndAreaCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
-            a = createAreaIfNotExists(relatedFLUXLocation, a);
-            areas.add(a);
+            if (relatedFLUXLocation.getTypeCode().getValue().equals("POSITION")) {
+                Area a = new Area();
+                a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
+                a.setLatitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
+                a.setLongitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
+                activityRepository.createArea(a);
+                areas.add(a);
+            } else {
+                Area a = activityRepository.findAreaByTypeCodeAndAreaCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
+                a = createAreaIfNotExists(relatedFLUXLocation, a);
+                areas.add(a);
+            }
         }
         activity.setAreas(areas);
     }

@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.MovementRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.MovementDao;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Areas;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
@@ -22,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 @ApplicationScoped
 @Slf4j
@@ -59,5 +59,15 @@ public class MovementRepositoryBean implements MovementRepository {
     @Override
     public void deleteMovement(Long id) throws ApplicationException {
         movementDao.delete(id,Movement.class);
+    }
+
+    @Override
+    public Areas createArea(Areas entity) {
+        return movementDao.createEntity(entity);
+    }
+
+    @Override
+    public Areas findAreaByTypeAndAreaCode(String areaType, String areaCode) {
+        return movementDao.findAreaByTypeAndAreaCode(areaType, areaCode);
     }
 }

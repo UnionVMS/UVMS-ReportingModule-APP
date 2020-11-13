@@ -65,8 +65,8 @@ public abstract class MovementMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "guid", ignore = true),
-            @Mapping(target = "nearestPoint", ignore = true), // ignore for now
-            @Mapping(target = "extent", ignore = true) // ignore for now
+            @Mapping(target = "nearestPoint", ignore = true),
+            @Mapping(target = "extent", ignore = true)
     })
     public abstract Track toTrack(MovementTrack movementTrack);
 
