@@ -7,7 +7,7 @@
  *  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  *  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  *  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 /*
@@ -24,37 +24,44 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
-import eu.europa.ec.fisheries.schema.movement.common.v1.SimpleResponse;
-import eu.europa.ec.fisheries.schema.movement.module.v1.CreateMovementBatchResponse;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
-import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingMovementDataService;
-import eu.europa.ec.fisheries.uvms.reporting.service.exception.MessageFormatException;
-
 import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eu.europa.ec.fisheries.schema.movement.common.v1.SimpleResponse;
+import eu.europa.ec.fisheries.schema.movement.module.v1.CreateMovementBatchResponse;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingEventDataService;
+import eu.europa.ec.fisheries.uvms.reporting.service.exception.MessageFormatException;
+
 @ApplicationScoped
-public class IncomingMovementDataServiceImpl implements IncomingMovementDataService {
+public class IncomingMovementDataServiceImpl implements IncomingEventDataService {
+
+    private static final String MOVEMENT_SUB_TOPIC = "movement";
 
     @EJB
     private MovementServiceBean movementServiceBean;
-    
+
     @Override
     public void handle(String message) throws ReportingServiceException {
         CreateMovementBatchResponse messageObj = unmarshal(message);
-        if(messageObj.getResponse() == SimpleResponse.OK){
+        if (messageObj.getResponse() == SimpleResponse.OK) {
             List<MovementType> movementTypes = messageObj.getMovements().stream()
                     .filter(m -> !m.isDuplicate())
                     .collect(Collectors.toList());
             movementServiceBean.createMovementsSegmentsAndTracks(movementTypes);
         }
     }
-    
+
+    @Override
+    public boolean canHandle(String eventType) {
+        return MOVEMENT_SUB_TOPIC.equals(eventType);
+    }
+
     private CreateMovementBatchResponse unmarshal(String message) {
         try {
             return JAXBUtils.unMarshallMessage(message, CreateMovementBatchResponse.class);

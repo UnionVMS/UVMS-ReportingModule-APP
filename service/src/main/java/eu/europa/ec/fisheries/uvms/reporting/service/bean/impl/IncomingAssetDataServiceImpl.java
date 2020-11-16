@@ -32,12 +32,15 @@ import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingAssetDataService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingEventDataService;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.MessageFormatException;
 import eu.europa.ec.fisheries.wsdl.asset.module.UpsertAssetModuleResponse;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 
 @ApplicationScoped
-public class IncomingAssetDataServiceImpl implements IncomingAssetDataService {
+public class IncomingAssetDataServiceImpl implements IncomingEventDataService {
+
+    private static final String ASSET_SUB_TOPIC = "asset";
 
     @Inject
     private AssetReportService assetReportService;
@@ -46,6 +49,11 @@ public class IncomingAssetDataServiceImpl implements IncomingAssetDataService {
     public void handle(String message) throws ReportingServiceException {
         Asset asset = unmarshal(message);
         assetReportService.createOrUpdate(asset);
+    }
+
+    @Override
+    public boolean canHandle(String eventType) {
+        return ASSET_SUB_TOPIC.equals(eventType);
     }
 
     private Asset unmarshal(String message) {

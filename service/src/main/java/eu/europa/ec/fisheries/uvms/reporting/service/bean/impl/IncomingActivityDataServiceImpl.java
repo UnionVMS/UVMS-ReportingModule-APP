@@ -20,13 +20,14 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardReportToSubscri
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityReportService;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingActivityDataService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingEventDataService;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 @ApplicationScoped
 @Slf4j
-public class IncomingActivityDataServiceImpl implements IncomingActivityDataService {
+public class IncomingActivityDataServiceImpl implements IncomingEventDataService {
+
+    private static final String ACTIVITY_SUB_TOPIC = "activity";
 
     @Inject
     private ActivityReportService activityReportService;
@@ -35,6 +36,11 @@ public class IncomingActivityDataServiceImpl implements IncomingActivityDataServ
     public void handle(String message) throws ReportingServiceException {
         ForwardReportToSubscriptionRequest activityData = unmarshal(message);
         activityReportService.processReports(activityData);
+    }
+
+    @Override
+    public boolean canHandle(String eventType) {
+        return ACTIVITY_SUB_TOPIC.equals(eventType);
     }
 
     private ForwardReportToSubscriptionRequest unmarshal(String message) throws ReportingServiceException {

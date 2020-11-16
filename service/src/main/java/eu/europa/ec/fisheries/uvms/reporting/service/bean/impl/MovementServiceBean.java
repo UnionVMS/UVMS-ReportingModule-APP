@@ -166,6 +166,7 @@ public class MovementServiceBean {
         movement.setClosestCountryDistance(movementTypeData.movementType.getMetaData().getClosestCountry().getDistance());
         movement.setClosestPort(movementTypeData.movementType.getMetaData().getClosestPort().getCode());
         movement.setClosestPortDistance(movementTypeData.movementType.getMetaData().getClosestPort().getDistance());
+        Optional.ofNullable(movementTypeData.movementType.getActivity()).ifPresent(activityType -> movement.setMovementActivityType(activityType.getMessageType().value()));
         Set<Areas> areas = new HashSet<>();
 
         movementTypeData.movementType.getMetaData().getAreas().forEach(area -> {
