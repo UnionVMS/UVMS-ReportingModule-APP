@@ -47,7 +47,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingModelExcep
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.util.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Areas;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
@@ -166,13 +166,15 @@ public class MovementServiceBean {
         movement.setClosestCountryDistance(movementTypeData.movementType.getMetaData().getClosestCountry().getDistance());
         movement.setClosestPort(movementTypeData.movementType.getMetaData().getClosestPort().getCode());
         movement.setClosestPortDistance(movementTypeData.movementType.getMetaData().getClosestPort().getDistance());
-        Optional.ofNullable(movementTypeData.movementType.getActivity()).ifPresent(activityType -> movement.setMovementActivityType(activityType.getMessageType().value()));
-        Set<Areas> areas = new HashSet<>();
+        Optional.ofNullable(movementTypeData.movementType.getActivity())
+                .ifPresent(activityType -> Optional.ofNullable(activityType.getMessageType())
+                        .ifPresent(mt ->movement.setMovementActivityType(activityType.getMessageType().value())));
+        Set<Area> areas = new HashSet<>();
 
         movementTypeData.movementType.getMetaData().getAreas().forEach(area -> {
-            Areas a = movementRepositoryBean.findAreaByTypeAndAreaCode(area.getAreaType(), area.getCode());
+            Area a = movementRepositoryBean.findAreaByTypeAndAreaCode(area.getAreaType(), area.getCode());
             if (a == null) {
-                a = new Areas();
+                a = new Area();
                 a.setAreaType(area.getAreaType());
                 a.setAreaCode(area.getCode());
                 a.setAreaName(area.getName());

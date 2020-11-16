@@ -19,31 +19,40 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "areas")
+@Table(name = "area")
 @Data
 @NoArgsConstructor
-public class Areas {
+public class Location {
 
     @Id
-    @SequenceGenerator(name = "areas_seq", sequenceName = "areas_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "areas_seq")
+    @SequenceGenerator(name = "area_seq", sequenceName = "area_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "area_seq")
     private Long id;
 
     @Column(name = "area_type")
-    private String areaType;
+    private String locationType;
 
-    @Column(name = "area_remote_id")
-    private String remoteId;
+    @Column(name = "area_type_code")
+    private String locationTypeCode;
 
     @Column(name = "area_code")
-    private String areaCode;
+    private String locationCode;
 
-    @Column(name = "area_name")
-    private String areaName;
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    @Column(name = "geom", columnDefinition = "Geometry")
+    private MultiPolygon locationCoordinates;
+
 }

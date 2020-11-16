@@ -118,7 +118,7 @@ public class Activity implements Serializable {
             joinColumns = {@JoinColumn(name = "activity_id")},
             inverseJoinColumns = {@JoinColumn(name = "area_id")}
     )
-    private Set<Area> areas;
+    private Set<Location> locations;
 
     @Column(name = "correction")
     private Boolean correction;

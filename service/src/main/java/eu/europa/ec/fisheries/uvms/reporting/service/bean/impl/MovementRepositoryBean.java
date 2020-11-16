@@ -12,17 +12,17 @@
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.MovementRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.MovementDao;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Areas;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 @Slf4j
@@ -30,7 +30,7 @@ public class MovementRepositoryBean implements MovementRepository {
 
     @Inject
     private MovementDao movementDao;
-    
+
     @Override
     public Movement createMovementEntity(Movement entity) {
         return movementDao.createEntity(entity);
@@ -48,7 +48,7 @@ public class MovementRepositoryBean implements MovementRepository {
 
     @Override
     public Movement findMovementById(Long id) {
-        return movementDao.findById(id,Movement.class);
+        return movementDao.findById(id, Movement.class);
     }
 
     @Override
@@ -58,16 +58,16 @@ public class MovementRepositoryBean implements MovementRepository {
 
     @Override
     public void deleteMovement(Long id) throws ApplicationException {
-        movementDao.delete(id,Movement.class);
+        movementDao.delete(id, Movement.class);
     }
 
     @Override
-    public Areas createArea(Areas entity) {
+    public Area createArea(Area entity) {
         return movementDao.createEntity(entity);
     }
 
     @Override
-    public Areas findAreaByTypeAndAreaCode(String areaType, String areaCode) {
+    public Area findAreaByTypeAndAreaCode(String areaType, String areaCode) {
         return movementDao.findAreaByTypeAndAreaCode(areaType, areaCode);
     }
 }
