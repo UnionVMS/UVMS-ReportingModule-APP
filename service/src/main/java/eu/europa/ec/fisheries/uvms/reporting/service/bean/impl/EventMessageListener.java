@@ -13,17 +13,19 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingActivityDataService;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingAssetDataService;
-import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingMovementDataService;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.IncomingEventDataService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,45 +40,37 @@ import org.slf4j.LoggerFactory;
         @ActivationConfigProperty(propertyName = MessageConstants.CLIENT_ID_STR, propertyValue = "REPORTING_MODULE"),
         @ActivationConfigProperty(propertyName = MessageConstants.CONNECTION_FACTORY_JNDI_NAME, propertyValue = MessageConstants.CONNECTION_FACTORY)
 })
+@Slf4j
 public class EventMessageListener implements MessageListener {
 
     final static Logger LOG = LoggerFactory.getLogger(EventMessageListener.class);
 
-    private static final String ACTIVITY_SUB_TOPIC = "activity";
-    private static final String MOVEMENT_SUB_TOPIC = "movement";
-    private static final String ASSET_SUB_TOPIC = "asset";
+    private List<IncomingEventDataService> eventHandlers;
+
+    public EventMessageListener() {
+    }
 
     @Inject
-    private IncomingActivityDataService incomingActivityDataService;
-
-    @Inject
-    private IncomingMovementDataService incomingMovementDataService;
-
-    @Inject
-    private IncomingAssetDataService incomingAssetDataService;
+    public EventMessageListener(Instance<IncomingEventDataService> eventHandlers) {
+        this.eventHandlers = eventHandlers.stream().collect(Collectors.toList());
+    }
 
     @Override
     public void onMessage(Message message) {
-        try {
-            TextMessage textMessage = (TextMessage) message;
-            String subTopic = message.getStringProperty("subTopic");
-
-            switch (subTopic) {
-                case ACTIVITY_SUB_TOPIC:
-                    incomingActivityDataService.handle(textMessage.getText());
-                    break;
-                case MOVEMENT_SUB_TOPIC:
-                    incomingMovementDataService.handle(textMessage.getText());
-                    break;
-                case ASSET_SUB_TOPIC:
-                    incomingAssetDataService.handle(textMessage.getText());
-                    break;
-                default:
-                    LOG.error("Unknown message sub topic");
+        eventHandlers.forEach(handler -> {
+            String subTopic = "";
+            try {
+                TextMessage textMessage = (TextMessage) message;
+                subTopic = message.getStringProperty("subTopic");
+                if (handler.canHandle(subTopic)){
+                    handler.handle(textMessage.getText());
+                }
+            } catch (ReportingServiceException e) {
+                log.error("Error occured when tried to handle event of type {}", subTopic, e);
+            } catch (JMSException e) {
+                log.error("Error occured when processing JMS message", e);
             }
-        } catch (JMSException | ReportingServiceException e) {
-            LOG.error("An error occured in message processing", e);
-        }
+        });
     }
 
 }

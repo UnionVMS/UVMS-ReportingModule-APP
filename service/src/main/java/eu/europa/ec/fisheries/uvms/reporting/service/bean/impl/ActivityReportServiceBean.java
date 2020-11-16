@@ -33,7 +33,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardReportToSubscriptionRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
@@ -93,10 +92,10 @@ public class ActivityReportServiceBean implements ActivityReportService {
     @Override
     @Transactional
     public void processReports(ForwardReportToSubscriptionRequest activityData) {
-        activityData.getFaReports().forEach(this::createActivitiesAndTripsFromReport);
+        activityData.getFaReports().forEach(this::processReport);
     }
 
-    private void createActivitiesAndTripsFromReport(ReportToSubscription reports) {
+    private void processReport(ReportToSubscription reports) {
         List<Asset> assets = new ArrayList<>();
         reports.getAssetHistoryGuids().forEach(assetHistGuid -> {
             Optional.ofNullable(assetRepository.findAssetByAssetHistoryGuid(assetHistGuid)).ifPresent(assets::add);
@@ -113,13 +112,14 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
     private void createFishingActivityAndTrip(FishingActivity fishingActivity, String reportId, String wkt, ActivityAreas activityAreas, String reportType, List<Asset> assets) {
         Activity activity = new Activity();
+
         mapBasicActivityFields(fishingActivity, reportId, wkt, reportType, activity);
         mapFishingGear(fishingActivity, activity);
         mapAreas(fishingActivity, activity);
-
-        activity.setAsset(assets.stream().findFirst().orElse(null));
+        mapAsset(assets, activity);
 
         activity = activityRepository.createActivityEntity(activity);
+
         mapSpecies(fishingActivity, activity);
 
         Optional<IDType> tripId = fishingActivity.getSpecifiedFishingTrip().getIDS().stream().findFirst();
@@ -134,6 +134,10 @@ public class ActivityReportServiceBean implements ActivityReportService {
                 mapActivityFields(fishingActivity, activity, fishingActivitySummary);
             }
         }
+    }
+
+    private void mapAsset(List<Asset> assets, Activity activity) {
+        activity.setAsset(assets.stream().findFirst().orElse(null));
     }
 
     private void mapActivityFields(FishingActivity fishingActivity, Activity activity, FishingActivitySummary fishingActivitySummary) {
@@ -155,6 +159,92 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setReportType(reportType);
         activity.setActivityCoordinates(getMultipointGeometryFromWktString(wkt));
         activity.setReasonCode(fishingActivity.getReasonCode().getValue());
+    }
+
+    private void mapAreas(FishingActivity fishingActivity, Activity activity) {
+        Set<Area> areas = new HashSet<>();
+        for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
+            if (relatedFLUXLocation.getTypeCode().getValue().equals("POSITION")) {
+                Area a = new Area();
+                a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
+                a.setLatitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
+                a.setLongitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
+                activityRepository.createArea(a);
+                areas.add(a);
+            } else {
+                Area a = activityRepository.findAreaByTypeCodeAndAreaCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
+                a = createAreaIfNotExists(relatedFLUXLocation, a);
+                areas.add(a);
+            }
+        }
+        activity.setAreas(areas);
+    }
+
+    private Area createAreaIfNotExists(FLUXLocation relatedFLUXLocation, Area a) {
+        if (a == null) {
+            a = new Area();
+            a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
+            a.setAreaTypeCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()));
+            a.setAreaCode(relatedFLUXLocation.getID().getValue());
+
+            Optional<String> areaCoordinatesFromSpatial = Optional.empty();
+            if (a.getAreaType().equals("AREA")) {
+               // areaCoordinatesFromSpatial = getAreaCoordinatesFromSpatial(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
+            } else {
+                areaCoordinatesFromSpatial = getAreaCoordinatesFromSpatial(a.getAreaTypeCode(), a.getAreaCode());
+            }
+            if (areaCoordinatesFromSpatial.isPresent()) {
+                a.setAreaCoordinates(getMultipolygonGeometryFromWktString(areaCoordinatesFromSpatial.get()));
+            }
+            activityRepository.createArea(a);
+        }
+        return a;
+    }
+
+    private Optional<String> getAreaCoordinatesFromSpatial(String areaTypeCode, String areaCode) {
+        try {
+            List<AreaSimpleType> areas = new ArrayList<>();
+            AreaSimpleType areaSimpleType = new AreaSimpleType();
+            areaSimpleType.setAreaType(areaTypeCode);
+            areaSimpleType.setAreaCode(areaCode);
+            areas.add(areaSimpleType);
+            String areaByCodeRequest = SpatialModuleRequestMapper.mapToCreateGetAreaByCodeRequest(areas);
+            String correlationId = spatialProducerBean.sendModuleMessage(areaByCodeRequest, reportingModuleReceiverBean.getDestination());
+            TextMessage textMessage = reportingModuleReceiverBean.getMessage(correlationId, TextMessage.class, 60000L);
+            AreaByCodeResponse response = JAXBMarshaller.unmarshall(textMessage, AreaByCodeResponse.class);
+            return response.getAreaSimples().stream().findFirst().map(AreaSimpleType::getWkt);
+        } catch (SpatialModelMarshallException | MessageException | ReportingModelException e) {
+            log.error("Could not get port information for {} - {} from spatial", areaTypeCode, areaCode, e);
+            return Optional.empty();
+        }
+    }
+
+    private void mapSpecies(FishingActivity fishingActivity, Activity activity) {
+        List<Catch> catches = new ArrayList<>();
+        for (FACatch faCatch : fishingActivity.getSpecifiedFACatches()) {
+            Catch speciesCatch = new Catch();
+            speciesCatch.setSpeciesCode(faCatch.getSpeciesCode().getValue());
+            speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
+            speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
+            Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
+            faCatch.getSpecifiedSizeDistribution().getClassCodes().stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()));
+            faCatch.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
+                ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESENTATION")).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
+            });
+            speciesCatch.setActivity(activity);
+            activityRepository.createCatchEntity(speciesCatch);
+
+            catches.add(speciesCatch);
+        }
+        activity.setSpeciesCatch(catches);
+    }
+
+    private void mapFishingGear(FishingActivity fishingActivity, Activity activity) {
+        Set<String> gearTypes = new HashSet<>();
+        for (FishingGear g : fishingActivity.getSpecifiedFishingGears()) {
+            gearTypes.add(g.getTypeCode().getValue());
+        }
+        activity.setGears(gearTypes);
     }
 
     private Date calculateActivityDate(FishingActivitySummary fishingActivitySummary, FishingActivity fishingActivity) {
@@ -209,87 +299,6 @@ public class ActivityReportServiceBean implements ActivityReportService {
             }
         }
         return null;
-    }
-
-    private void mapAreas(FishingActivity fishingActivity, Activity activity) {
-        Set<Area> areas = new HashSet<>();
-        for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
-            if (relatedFLUXLocation.getTypeCode().getValue().equals("POSITION")) {
-                Area a = new Area();
-                a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
-                a.setLatitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
-                a.setLongitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
-                activityRepository.createArea(a);
-                areas.add(a);
-            } else {
-                Area a = activityRepository.findAreaByTypeCodeAndAreaCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
-                a = createAreaIfNotExists(relatedFLUXLocation, a);
-                areas.add(a);
-            }
-        }
-        activity.setAreas(areas);
-    }
-
-    private Area createAreaIfNotExists(FLUXLocation relatedFLUXLocation, Area a) {
-        if (a == null) {
-            a = new Area();
-            a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
-            a.setAreaTypeCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()));
-            a.setAreaCode(relatedFLUXLocation.getID().getValue());
-
-            Optional<String> areaCoordinatesFromSpatial = getAreaCoordinatesFromSpatial(a.getAreaTypeCode(), a.getAreaCode());
-            if (areaCoordinatesFromSpatial.isPresent()) {
-                a.setAreaCoordinates(getMultipolygonGeometryFromWktString(areaCoordinatesFromSpatial.get()));
-            }
-            activityRepository.createArea(a);
-        }
-        return a;
-    }
-
-    private Optional<String> getAreaCoordinatesFromSpatial(String areaTypeCode, String areaCode) {
-        try {
-            List<AreaSimpleType> areas = new ArrayList<>();
-            AreaSimpleType areaSimpleType = new AreaSimpleType();
-            areaSimpleType.setAreaType(areaTypeCode);
-            areaSimpleType.setAreaCode(areaCode);
-            areas.add(areaSimpleType);
-            String areaByCodeRequest = SpatialModuleRequestMapper.mapToCreateGetAreaByCodeRequest(areas);
-            String correlationId = spatialProducerBean.sendModuleMessage(areaByCodeRequest, reportingModuleReceiverBean.getDestination());
-            TextMessage textMessage = reportingModuleReceiverBean.getMessage(correlationId, TextMessage.class, 60000L);
-            AreaByCodeResponse response = JAXBMarshaller.unmarshall(textMessage, AreaByCodeResponse.class);
-            return response.getAreaSimples().stream().findFirst().map(AreaSimpleType::getWkt);
-        } catch (SpatialModelMarshallException | MessageException | ReportingModelException e) {
-            log.error("Could not get port information for {} - {} from spatial", areaTypeCode, areaCode, e);
-            return Optional.empty();
-        }
-    }
-
-    private void mapSpecies(FishingActivity fishingActivity, Activity activity) {
-        List<Catch> catches = new ArrayList<>();
-        for (FACatch faCatch : fishingActivity.getSpecifiedFACatches()) {
-            Catch speciesCatch = new Catch();
-            speciesCatch.setSpeciesCode(faCatch.getSpeciesCode().getValue());
-            speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
-            speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
-            Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
-            faCatch.getSpecifiedSizeDistribution().getClassCodes().stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()));
-            faCatch.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
-                ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESENTATION")).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
-            });
-            speciesCatch.setActivityId(activity.getId());
-            activityRepository.createCatchEntity(speciesCatch);
-
-            catches.add(speciesCatch);
-        }
-        activity.setSpeciesCatch(catches);
-    }
-
-    private void mapFishingGear(FishingActivity fishingActivity, Activity activity) {
-        Set<String> gearTypes = new HashSet<>();
-        for (FishingGear g : fishingActivity.getSpecifiedFishingGears()) {
-            gearTypes.add(g.getTypeCode().getValue());
-        }
-        activity.setGears(gearTypes);
     }
 
     private void mapTripId(FishingTrip fishingTrip, Trip trip) {

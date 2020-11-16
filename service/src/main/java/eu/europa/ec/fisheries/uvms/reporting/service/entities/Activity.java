@@ -11,11 +11,11 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,7 +24,6 @@ import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -111,10 +110,7 @@ public class Activity implements Serializable {
     @Column(name = "port_code")
     private Set<String> ports;
 
-    @OneToMany
-    @JoinColumns({
-            @JoinColumn(name = "activity_id", referencedColumnName = "id"),
-    })
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "activity")
     private List<Catch> speciesCatch;
 
     @OneToMany
