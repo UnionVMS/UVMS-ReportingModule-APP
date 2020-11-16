@@ -73,9 +73,8 @@
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="guid" type="varchar(36)"/>
-            <column name="nearest_point_coordinates" type="geometry(LineString, 4326)"/>
-            <column name="extent_coordinates" type="geometry(MultiPoint, 4326)"/>
+            <column name="nearest_point_coordinates" type="varchar(255)"/>
+            <column name="extent_coordinates" type="varchar(255)"/>
 
             <column name="duration" type="double"/>
             <column name="distance" type="double"/>
@@ -151,15 +150,15 @@
             <dropTable tableName="trip"/>
         </rollback>
 
-        <createSequence sequenceName="area_seq" startValue="1"/>
+        <createSequence sequenceName="location_seq" startValue="1"/>
 
-        <createTable tableName="area">
+        <createTable tableName="location">
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="area_type" type="varchar(50)"/>
-            <column name="area_type_code" type="varchar(64)"/>
-            <column name="area_code" type="varchar(50)"/>
+            <column name="type" type="varchar(50)"/>
+            <column name="type_code" type="varchar(64)"/>
+            <column name="code" type="varchar(50)"/>
 
             <column name="geom" type="geometry(Multipolygon, 4326)"/>
             <column name="latitude" type="FLOAT8"/>
@@ -168,17 +167,17 @@
         </createTable>
 
         <rollback>
-            <dropSequence sequenceName="area_seq"/>
-            <dropTable tableName="area"/>
+            <dropSequence sequenceName="location_seq"/>
+            <dropTable tableName="location"/>
         </rollback>
 
-        <createTable tableName="activity_area">
+        <createTable tableName="activity_location">
             <column name="activity_id" type="bigint"/>
-            <column name="area_id" type="bigint"/>
+            <column name="location_id" type="bigint"/>
         </createTable>
 
         <rollback>
-            <dropTable tableName="activity_area"/>
+            <dropTable tableName="activity_location"/>
         </rollback>
 
         <createTable tableName="activity_port">
@@ -242,9 +241,9 @@
             <dropTable tableName="asset"/>
         </rollback>
 
-        <createSequence sequenceName="areas_seq" startValue="1"/>
+        <createSequence sequenceName="area_seq" startValue="1"/>
 
-        <createTable tableName="areas">
+        <createTable tableName="area">
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -255,8 +254,8 @@
         </createTable>
 
         <rollback>
-            <dropSequence sequenceName="areas_seq"/>
-            <dropTable tableName="areas"/>
+            <dropSequence sequenceName="area_seq"/>
+            <dropTable tableName="area"/>
         </rollback>
 
         <createTable tableName="movement_area">

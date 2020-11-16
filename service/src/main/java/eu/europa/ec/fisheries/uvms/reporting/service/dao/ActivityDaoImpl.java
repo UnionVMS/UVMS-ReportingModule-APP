@@ -46,9 +46,9 @@ public class ActivityDaoImpl implements ActivityDao {
 
     @Override
     public Location findLocationByTypeCodeAndCode(String typeCode, String code) {
-        Query nativeQuery = em.createNativeQuery("select * from reporting.area where area_type_code = :areaTypeCode and area_code = :areaCode", Location.class);
-        nativeQuery.setParameter("areaTypeCode", typeCode);
-        nativeQuery.setParameter("areaCode", code);
+        Query nativeQuery = em.createNativeQuery("select * from reporting.location where type_code = :typeCode and code = :code", Location.class);
+        nativeQuery.setParameter("typeCode", typeCode);
+        nativeQuery.setParameter("code", code);
         try {
             return (Location) nativeQuery.getSingleResult();
         } catch (NoResultException e) {

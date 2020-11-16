@@ -7,7 +7,7 @@
  *  the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  *  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
  *  details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 /*
@@ -24,7 +24,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.mapper;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
@@ -36,7 +35,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.GeometryUtil;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.SneakyThrows;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -58,36 +56,37 @@ public abstract class MovementMapper {
             @Mapping(target = "movementGuid", ignore = true),
             @Mapping(target = "segmentCategory", expression = "java(getEnumVal(movementSegment.getCategory()))"),
             @Mapping(target = "segment", expression = "java(getLineString(movementSegment.getWkt()))"),
-            @Mapping(target = "calculatedSpeed", expression ="java(calculateSpeed(movementSegment))")
+            @Mapping(target = "calculatedSpeed", expression = "java(calculateSpeed(movementSegment))")
     })
     public abstract Segment toSegment(MovementSegment movementSegment);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "guid", ignore = true),
             @Mapping(target = "nearestPoint", ignore = true),
             @Mapping(target = "extent", ignore = true)
     })
     public abstract Track toTrack(MovementTrack movementTrack);
 
-    protected String getEnumVal(Enum<?> type){
-        if(type == null){
+    protected String getEnumVal(Enum<?> type) {
+        if (type == null) {
             return null;
         }
         return type.name();
     }
-    protected Point getPoint(MovementPoint movementPoint){
-        return  (Point) GeometryUtils.createPoint(movementPoint.getLatitude(), movementPoint.getLongitude());
+
+    protected Point getPoint(MovementPoint movementPoint) {
+        return (Point) GeometryUtils.createPoint(movementPoint.getLatitude(), movementPoint.getLongitude());
     }
+
     @SneakyThrows
-    protected LineString getLineString(String wtk){
+    protected LineString getLineString(String wtk) {
         return GeometryUtil.toLineString(wtk);
     }
 
     protected Double calculateSpeed(MovementSegment movementSegment) {
         try {
             return movementSegment.getDistance() / movementSegment.getDuration();
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }

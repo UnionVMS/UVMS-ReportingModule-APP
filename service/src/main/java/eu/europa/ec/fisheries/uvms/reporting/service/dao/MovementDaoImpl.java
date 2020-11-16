@@ -89,7 +89,7 @@ class MovementDaoImpl implements MovementDao {
 
     @Override
     public Area findAreaByTypeAndAreaCode(String areaType, String areaCode) {
-        Query nativeQuery = em.createNativeQuery("select * from reporting.areas where area_type = :areaType and area_code = :areaCode", Area.class);
+        Query nativeQuery = em.createNativeQuery("select * from reporting.area where area_type = :areaType and area_code = :areaCode", Area.class);
         nativeQuery.setParameter("areaType", areaType);
         nativeQuery.setParameter("areaCode", areaCode);
         try {

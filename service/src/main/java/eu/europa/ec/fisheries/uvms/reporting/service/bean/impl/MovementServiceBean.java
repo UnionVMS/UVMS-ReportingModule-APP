@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.operation.distance.DistanceOp;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementTrack;
@@ -90,6 +98,9 @@ public class MovementServiceBean {
 
     @Inject
     private AssetRepository assetRepository;
+
+    private final WKTReader wktReader = new WKTReader();
+
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @Interceptors(SimpleTracingInterceptor.class)
@@ -198,6 +209,9 @@ public class MovementServiceBean {
     private Track createTrack(MovementTrack movementTrack, eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset) {
         Track track = movementMapper.toTrack(movementTrack);
         track.setAsset(asset);
+        LineString geometry = getLineStringGeometryFromWktString(movementTrack.getWkt());
+        track.setNearestPoint( calculateNearestPoint(geometry));
+        track.setExtent(calculateExtent(geometry));
         return movementRepositoryBean.createTrackEntity(track);
     }
 
@@ -319,6 +333,51 @@ public class MovementServiceBean {
             //do nothing  since it's not a UserFault
         }
         return isErrorResponse;
+    }
+
+    private LineString getLineStringGeometryFromWktString(String wkt) {
+        try {
+            LineString geometry = (LineString) wktReader.read(wkt);
+            geometry.setSRID(4326);
+            return geometry;
+        } catch (ParseException e) {
+            log.error("unable to set geometry from wkt string: {}", wkt);
+        } catch (NullPointerException e) {
+            log.error("Error occurred with wkt string: {}, possibly no coordinates available", wkt, e);
+        }
+        return null;
+    }
+
+    private String calculateNearestPoint(LineString geometry) {
+        List<String> nearestPoint = new ArrayList<>();
+        if (geometry != null && geometry.getCentroid() != null) {
+            if (geometry.isValid()) {
+                DistanceOp distanceOp = new DistanceOp(geometry.getCentroid(), geometry);
+                Coordinate[] nearestPoints = distanceOp.nearestPoints();
+                nearestPoint.add(String.valueOf(nearestPoints[0].x));
+                nearestPoint.add(String.valueOf(nearestPoints[0].y));
+            } else if (geometryContainsOnlyOnePoint(geometry)) {
+                nearestPoint.add(String.valueOf(geometry.getCoordinate().x));
+                nearestPoint.add(String.valueOf(geometry.getCoordinate().y));
+            }
+        }
+        return nearestPoint.stream().collect(Collectors.joining(","));
+    }
+
+    private boolean geometryContainsOnlyOnePoint(LineString geometry) {
+        return BigDecimal.valueOf(geometry.getLength()).compareTo(BigDecimal.valueOf(0)) == 0;
+    }
+
+    private String calculateExtent(LineString geometry) {
+        List<String> extent = new ArrayList<>();
+        if (geometry != null && geometry.getEnvelopeInternal() != null) {
+            Envelope internal = geometry.getEnvelopeInternal();
+            extent.add(String.valueOf(internal.getMinX()));
+            extent.add(String.valueOf(internal.getMinY()));
+            extent.add(String.valueOf(internal.getMaxX()));
+            extent.add(String.valueOf(internal.getMaxY()));
+        }
+        return extent.stream().collect(Collectors.joining(","));
     }
 
     @AllArgsConstructor

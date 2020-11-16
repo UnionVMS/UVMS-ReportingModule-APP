@@ -38,16 +38,11 @@ public class Track {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "track_seq")
     private Long id;
 
-    @Column(name = "guid")
-    private String guid;
+    @Column(name = "nearest_point_coordinates")
+    private String nearestPoint;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
-    @Column(name = "nearest_point_coordinates", columnDefinition = "Geometry")
-    private Point nearestPoint;
-
-    @Type(type = "org.hibernate.spatial.GeometryType")
-    @Column(name = "extent_coordinates", columnDefinition = "Geometry")
-    private MultiPoint extent;
+    @Column(name = "extent_coordinates")
+    private String extent;
 
     @Column(name = "duration")
     private Double duration;
