@@ -25,14 +25,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "areas")
+@Table(name = "area")
 @Data
 @NoArgsConstructor
 public class Area {
 
     @Id
-    @SequenceGenerator(name = "areas_seq", sequenceName = "areas_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "areas_seq")
+    @SequenceGenerator(name = "area_seq", sequenceName = "area_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "area_seq")
     private Long id;
 
     @Column(name = "area_type")

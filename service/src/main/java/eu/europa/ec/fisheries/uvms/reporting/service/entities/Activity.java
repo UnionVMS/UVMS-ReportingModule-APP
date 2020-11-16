@@ -114,9 +114,9 @@ public class Activity implements Serializable {
     private List<Catch> speciesCatch;
 
     @OneToMany
-    @JoinTable(name = "activity_area",
+    @JoinTable(name = "activity_location",
             joinColumns = {@JoinColumn(name = "activity_id")},
-            inverseJoinColumns = {@JoinColumn(name = "area_id")}
+            inverseJoinColumns = {@JoinColumn(name = "location_id")}
     )
     private Set<Location> locations;
 
