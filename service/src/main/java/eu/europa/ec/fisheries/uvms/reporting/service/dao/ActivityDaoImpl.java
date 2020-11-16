@@ -18,7 +18,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,12 +45,12 @@ public class ActivityDaoImpl implements ActivityDao {
     }
 
     @Override
-    public Area findAreaByTypeCodeAndAreaCode(String areaTypeCode, String areaCode) {
-        Query nativeQuery = em.createNativeQuery("select * from reporting.area where area_type_code = :areaTypeCode and area_code = :areaCode", Area.class);
-        nativeQuery.setParameter("areaTypeCode", areaTypeCode);
-        nativeQuery.setParameter("areaCode", areaCode);
+    public Location findLocationByTypeCodeAndCode(String typeCode, String code) {
+        Query nativeQuery = em.createNativeQuery("select * from reporting.area where area_type_code = :areaTypeCode and area_code = :areaCode", Location.class);
+        nativeQuery.setParameter("areaTypeCode", typeCode);
+        nativeQuery.setParameter("areaCode", code);
         try {
-            return (Area) nativeQuery.getSingleResult();
+            return (Location) nativeQuery.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

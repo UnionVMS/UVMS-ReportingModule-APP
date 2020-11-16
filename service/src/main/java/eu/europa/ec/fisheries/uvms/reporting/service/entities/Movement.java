@@ -95,5 +95,5 @@ public class Movement {
             joinColumns = {@JoinColumn(name = "movement_id")},
             inverseJoinColumns = {@JoinColumn(name = "area_id")}
     )
-    private Set<Areas> areas;
+    private Set<Area> areas;
 }

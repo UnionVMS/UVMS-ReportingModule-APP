@@ -46,7 +46,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
@@ -115,7 +115,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
         mapBasicActivityFields(fishingActivity, reportId, wkt, reportType, activity);
         mapFishingGear(fishingActivity, activity);
-        mapAreas(fishingActivity, activity);
+        mapActivityLocations(fishingActivity, activity);
         mapAsset(assets, activity);
 
         activity = activityRepository.createActivityEntity(activity);
@@ -161,47 +161,47 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setReasonCode(fishingActivity.getReasonCode().getValue());
     }
 
-    private void mapAreas(FishingActivity fishingActivity, Activity activity) {
-        Set<Area> areas = new HashSet<>();
+    private void mapActivityLocations(FishingActivity fishingActivity, Activity activity) {
+        Set<Location> locations = new HashSet<>();
         for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
             if (relatedFLUXLocation.getTypeCode().getValue().equals("POSITION")) {
-                Area a = new Area();
-                a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
-                a.setLatitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
-                a.setLongitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
-                activityRepository.createArea(a);
-                areas.add(a);
+                Location l = new Location();
+                l.setLocationType(relatedFLUXLocation.getTypeCode().getValue());
+                l.setLatitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
+                l.setLongitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
+                activityRepository.createLocation(l);
+                locations.add(l);
             } else {
-                Area a = activityRepository.findAreaByTypeCodeAndAreaCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
-                a = createAreaIfNotExists(relatedFLUXLocation, a);
-                areas.add(a);
+                Location l = activityRepository.findLocationByTypeCodeAndCode(mapLocationTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
+                l = createLocationIfNotExists(relatedFLUXLocation, l);
+                locations.add(l);
             }
         }
-        activity.setAreas(areas);
+        activity.setLocations(locations);
     }
 
-    private Area createAreaIfNotExists(FLUXLocation relatedFLUXLocation, Area a) {
-        if (a == null) {
-            a = new Area();
-            a.setAreaType(relatedFLUXLocation.getTypeCode().getValue());
-            a.setAreaTypeCode(mapAreaTypeCode(relatedFLUXLocation.getID().getSchemeID()));
-            a.setAreaCode(relatedFLUXLocation.getID().getValue());
+    private Location createLocationIfNotExists(FLUXLocation relatedFLUXLocation, Location l) {
+        if (l == null) {
+            l = new Location();
+            l.setLocationType(relatedFLUXLocation.getTypeCode().getValue());
+            l.setLocationTypeCode(mapLocationTypeCode(relatedFLUXLocation.getID().getSchemeID()));
+            l.setLocationCode(relatedFLUXLocation.getID().getValue());
 
-            Optional<String> areaCoordinatesFromSpatial = Optional.empty();
-            if (a.getAreaType().equals("AREA")) {
-               // areaCoordinatesFromSpatial = getAreaCoordinatesFromSpatial(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
+            Optional<String> locationCoordinatesFromSpatial = Optional.empty();
+            if (l.getLocationType().equals("AREA")) {
+               // locationCoordinatesFromSpatial = getLocationCoordinatesFromSpatial(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
             } else {
-                areaCoordinatesFromSpatial = getAreaCoordinatesFromSpatial(a.getAreaTypeCode(), a.getAreaCode());
+                locationCoordinatesFromSpatial = getLocationCoordinatesFromSpatial(l.getLocationTypeCode(), l.getLocationCode());
             }
-            if (areaCoordinatesFromSpatial.isPresent()) {
-                a.setAreaCoordinates(getMultipolygonGeometryFromWktString(areaCoordinatesFromSpatial.get()));
+            if (locationCoordinatesFromSpatial.isPresent()) {
+                l.setLocationCoordinates(getMultipolygonGeometryFromWktString(locationCoordinatesFromSpatial.get()));
             }
-            activityRepository.createArea(a);
+            activityRepository.createLocation(l);
         }
-        return a;
+        return l;
     }
 
-    private Optional<String> getAreaCoordinatesFromSpatial(String areaTypeCode, String areaCode) {
+    private Optional<String> getLocationCoordinatesFromSpatial(String areaTypeCode, String areaCode) {
         try {
             List<AreaSimpleType> areas = new ArrayList<>();
             AreaSimpleType areaSimpleType = new AreaSimpleType();
@@ -367,7 +367,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
         }
     }
 
-    private String mapAreaTypeCode(String value) {
+    private String mapLocationTypeCode(String value) {
         return "LOCATION".equals(value) ? "PORT_AREA" : value;
     }
 }

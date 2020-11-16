@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Areas;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
@@ -34,7 +33,7 @@ public interface MovementRepository {
 
     void deleteMovement(Long id) throws ApplicationException;
 
-    Areas createArea(Areas entity);
+    Area createArea(Area entity);
 
-    Areas findAreaByTypeAndAreaCode(String areaType, String areaCode);
+    Area findAreaByTypeAndAreaCode(String areaType, String areaCode);
 }

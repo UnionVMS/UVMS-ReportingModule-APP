@@ -1,8 +1,8 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 
 public interface ActivityRepository {
@@ -13,7 +13,7 @@ public interface ActivityRepository {
 
     Trip createTripEntity(Trip entity);
 
-    Area createArea(Area entity);
+    Location createLocation(Location entity);
 
-    Area findAreaByTypeCodeAndAreaCode(String areaTypeCode, String areaCode);
+    Location findLocationByTypeCodeAndCode(String typeCode, String code);
 }

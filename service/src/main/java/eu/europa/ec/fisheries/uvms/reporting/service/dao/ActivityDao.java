@@ -1,6 +1,6 @@
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 
 public interface ActivityDao {
 
@@ -10,5 +10,5 @@ public interface ActivityDao {
 
     <T> T findById(Long id, Class<T> clazz);
 
-    Area findAreaByTypeCodeAndAreaCode(String typeCode, String areaCode);
+    Location findLocationByTypeCodeAndCode(String typeCode, String code);
 }

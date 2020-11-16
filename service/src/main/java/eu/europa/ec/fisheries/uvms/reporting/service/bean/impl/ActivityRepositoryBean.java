@@ -17,8 +17,8 @@ import javax.inject.Inject;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ActivityDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +35,7 @@ public class ActivityRepositoryBean implements ActivityRepository {
     }
 
     @Override
-    public Catch createCatchEntity(Catch speciesCatch){
+    public Catch createCatchEntity(Catch speciesCatch) {
         return activityDao.createEntity(speciesCatch);
     }
 
@@ -46,12 +46,12 @@ public class ActivityRepositoryBean implements ActivityRepository {
     }
 
     @Override
-    public Area createArea(Area entity) {
+    public Location createLocation(Location entity) {
         return activityDao.createEntity(entity);
     }
 
     @Override
-    public Area findAreaByTypeCodeAndAreaCode(String areaTypeCode, String areaCode) {
-        return activityDao.findAreaByTypeCodeAndAreaCode(areaTypeCode, areaCode);
+    public Location findLocationByTypeCodeAndCode(String typeCode, String code) {
+        return activityDao.findLocationByTypeCodeAndCode(typeCode, code);
     }
 }
