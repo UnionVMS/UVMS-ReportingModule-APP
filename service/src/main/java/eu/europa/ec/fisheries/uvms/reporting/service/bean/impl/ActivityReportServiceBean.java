@@ -145,7 +145,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setSource(fishingActivitySummary.getDataSource());
         activity.setCorrection(fishingActivitySummary.isIsCorrection());
         activity.setActivityId(String.valueOf(fishingActivitySummary.getActivityId()));
-        activity.setMaster(fishingActivitySummary.getVesselContactParty().getGivenName());
+        Optional.ofNullable(fishingActivitySummary.getVesselContactParty()).ifPresent(vcp -> activity.setMaster(vcp.getGivenName()));
         activity.setAcceptedDate(Date.from(fishingActivitySummary.getAcceptedDateTime().toGregorianCalendar().toInstant()));
         activity.setCalculatedDate(calculateActivityDate(fishingActivitySummary, fishingActivity));
         activity.setOccurrenceDate(fishingActivitySummary.getOccurence() != null ? Date.from(fishingActivitySummary.getOccurence().toGregorianCalendar().toInstant()) : null);
@@ -158,7 +158,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setFaReportId(reportId);
         activity.setReportType(reportType);
         activity.setActivityCoordinates(getMultipointGeometryFromWktString(wkt));
-        activity.setReasonCode(fishingActivity.getReasonCode().getValue());
+        Optional.ofNullable(fishingActivity.getReasonCode()).ifPresent(rc -> activity.setReasonCode(rc.getValue()));
     }
 
     private void mapActivityLocations(FishingActivity fishingActivity, Activity activity) {
