@@ -315,6 +315,13 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
+                    <include>**/app-version.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
                     <include>**/usmDeploymentDescriptor.xml</include>
                 </includes>
             </resource>
