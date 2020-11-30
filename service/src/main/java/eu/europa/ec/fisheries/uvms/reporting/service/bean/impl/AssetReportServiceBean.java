@@ -13,7 +13,9 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
@@ -39,6 +41,8 @@ public class AssetReportServiceBean implements AssetReportService {
             assetEntity.setGfcm(asset.getGfcm());
             assetEntity.setExternalMarking(asset.getExternalMarking());
             assetEntity.setName(asset.getName());
+            assetEntity.setLengthOverall(Optional.ofNullable(asset.getLengthOverAll()).map(BigDecimal::doubleValue).orElse(null));
+            assetEntity.setMainGearType(asset.getGearType());
             assetEntity.setCountryCode(asset.getCountryCode());
             assetEntity.setAssetHistActive(asset.isActive());
         } else {
@@ -62,6 +66,8 @@ public class AssetReportServiceBean implements AssetReportService {
         asset.setExternalMarking(a.getExternalMarking());
         asset.setName(a.getName());
         asset.setCountryCode(a.getCountryCode());
+        asset.setMainGearType(a.getGearType());
+        asset.setLengthOverall(a.getLengthOverAll().doubleValue());
         asset.setAssetGuid(a.getAssetId().getGuid());
         asset.setAssetHistGuid(a.getEventHistory().getEventId());
         asset.setAssetHistActive(a.isActive());

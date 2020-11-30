@@ -27,6 +27,9 @@ public class Catch {
     @Column(name = "species_code")
     private String speciesCode;
 
+    @Column(name = "catch_type")
+    private String catchType;
+
     @Column(name = "weight_measure_unit_code")
     private String weightMeasureUnitCode;
 
@@ -39,8 +42,26 @@ public class Catch {
     @Column(name = "size_class")
     private String sizeClass;
 
+    @Column(name = "size_category")
+    private String sizeCategory;
+
+    @Column(name = "cf", precision = 17, scale = 17)
+    private Double cf;
+
     @Column(name = "presentation")
     private String presentation;
+
+    @Column(name = "preservation")
+    private String preservation;
+
+    @Column(name = "product_weight_measure_unit_code")
+    private String productWeightMeasureUnitCode;
+
+    @Column(name = "product_weight_measure", precision = 17, scale = 17)
+    private Double productWeightMeasure;
+
+    @Column(name = "product_quantity", precision = 17, scale = 17)
+    private Double productQuantity;
 
 }
 

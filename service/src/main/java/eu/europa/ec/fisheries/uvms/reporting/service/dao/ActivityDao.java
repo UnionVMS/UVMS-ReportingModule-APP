@@ -11,4 +11,6 @@ public interface ActivityDao {
     <T> T findById(Long id, Class<T> clazz);
 
     Location findLocationByTypeCodeAndCode(String typeCode, String code);
+
+    int updateOlderReportsAsNotLatest(String faReportId, Long latestActivityId);
 }

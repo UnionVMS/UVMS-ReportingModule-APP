@@ -60,4 +60,10 @@ public class Asset implements Serializable {
     @Column(name = "country_code")
     private String countryCode;
 
+    @Column(name = "length_overall")
+    private Double lengthOverall;
+
+    @Column(name = "main_gear_type")
+    private String mainGearType;
+
 }

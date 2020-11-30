@@ -16,4 +16,7 @@ public interface ActivityRepository {
     Location createLocation(Location entity);
 
     Location findLocationByTypeCodeAndCode(String typeCode, String code);
-}
+
+    void updateOlderReportsAsNotLatest(String faReportId, Long latestActivityId);
+
+    }

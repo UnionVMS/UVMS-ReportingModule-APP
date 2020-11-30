@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -46,9 +47,9 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
-import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
 import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
@@ -65,6 +66,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @ApplicationScoped
@@ -120,7 +122,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
         activity = activityRepository.createActivityEntity(activity);
 
-        mapSpecies(fishingActivity, activity);
+        mapSpecies(fishingActivity, activity, assets);
 
         Optional<IDType> tripId = fishingActivity.getSpecifiedFishingTrip().getIDS().stream().findFirst();
         if (tripId.isPresent()) {
@@ -132,6 +134,10 @@ public class ActivityReportServiceBean implements ActivityReportService {
             if (fishingActivitySummaryOptional.isPresent()) {
                 FishingActivitySummary fishingActivitySummary = fishingActivitySummaryOptional.get();
                 mapActivityFields(fishingActivity, activity, fishingActivitySummary);
+                if (activity.isCorrection()) {
+                    // update records with the same report id as not latest (this is the most recent correction)
+                    activityRepository.updateOlderReportsAsNotLatest(activity.getFaReportId(), activity.getId());
+                }
             }
         }
     }
@@ -144,6 +150,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setPurposeCode(fishingActivitySummary.getPurposeCode());
         activity.setSource(fishingActivitySummary.getDataSource());
         activity.setCorrection(fishingActivitySummary.isIsCorrection());
+        activity.setLatest(true);
         activity.setActivityId(String.valueOf(fishingActivitySummary.getActivityId()));
         Optional.ofNullable(fishingActivitySummary.getVesselContactParty()).ifPresent(vcp -> activity.setMaster(vcp.getGivenName()));
         activity.setAcceptedDate(Date.from(fishingActivitySummary.getAcceptedDateTime().toGregorianCalendar().toInstant()));
@@ -189,7 +196,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
             Optional<String> locationCoordinatesFromSpatial = Optional.empty();
             if (l.getLocationType().equals("AREA")) {
-               // locationCoordinatesFromSpatial = getLocationCoordinatesFromSpatial(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
+                // locationCoordinatesFromSpatial = getLocationCoordinatesFromSpatial(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
             } else {
                 locationCoordinatesFromSpatial = getLocationCoordinatesFromSpatial(l.getLocationTypeCode(), l.getLocationCode());
             }
@@ -219,17 +226,32 @@ public class ActivityReportServiceBean implements ActivityReportService {
         }
     }
 
-    private void mapSpecies(FishingActivity fishingActivity, Activity activity) {
+    private String getCfrFromVesselTransportMeans(VesselTransportMeans vtm) {
+        Optional<IDType> cfr = vtm.getIDS().stream().filter(id -> id.getSchemeID().equals("CFR")).findAny();
+        return cfr.map(IDType::getValue).orElse(null);
+    }
+
+    private void mapSpecies(FishingActivity fishingActivity, Activity activity, List<Asset> assets) {
         List<Catch> catches = new ArrayList<>();
-        for (FACatch faCatch : fishingActivity.getSpecifiedFACatches()) {
+        List<FACatch> catchesToProcess = fishingActivity.getSpecifiedFACatches();
+
+        if (fishingActivity.getTypeCode().getValue().equals("JOINT_FISHING_OPERATION")) {
+            Optional<Asset> asset = assets.stream().findFirst();
+            final String cfrToMatch = asset.map(Asset::getCfr).orElse("");
+            List<FishingActivity> relatedFishingActivitiesForCfr = findRelatedFishingActivitiesForJFOwithCFR(fishingActivity, cfrToMatch);
+
+            Optional<FishingActivity> first = relatedFishingActivitiesForCfr.stream().findFirst();
+            if (first.isPresent()) {
+                catchesToProcess = first.get().getSpecifiedFACatches();
+            }
+        }
+
+        for (FACatch faCatch : catchesToProcess) {
             Catch speciesCatch = new Catch();
-            speciesCatch.setSpeciesCode(faCatch.getSpeciesCode().getValue());
-            speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
-            speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
-            Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
-            faCatch.getSpecifiedSizeDistribution().getClassCodes().stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()));
-            faCatch.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
-                ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESENTATION")).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
+            setBaseCatchInfo(faCatch, speciesCatch);
+            // get this from root specified catch
+            fishingActivity.getSpecifiedFACatches().stream().findFirst().ifPresent(rsc -> {
+                setProcessingCatchInfo(speciesCatch, rsc);
             });
             speciesCatch.setActivity(activity);
             activityRepository.createCatchEntity(speciesCatch);
@@ -237,6 +259,43 @@ public class ActivityReportServiceBean implements ActivityReportService {
             catches.add(speciesCatch);
         }
         activity.setSpeciesCatch(catches);
+    }
+
+    private List<FishingActivity> findRelatedFishingActivitiesForJFOwithCFR(FishingActivity fishingActivity, String cfrToMatch) {
+        return fishingActivity.getRelatedFishingActivities().stream().filter(rfa -> {
+            boolean matches = false;
+            for (int i = 0; i < rfa.getRelatedVesselTransportMeans().size(); i++) {
+                if (getCfrFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i)).equals(cfrToMatch)) {
+                    matches = true;
+                    break;
+                }
+            }
+            return matches;
+        }).collect(Collectors.toList());
+    }
+
+    private void setProcessingCatchInfo(Catch speciesCatch, FACatch rsc) {
+        Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getClassCodes()).ifPresent(cd->cd.stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()))));
+        Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getCategoryCode()).ifPresent(cat -> speciesCatch.setSizeCategory(cat.getValue())));
+        rsc.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
+            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESERVATION")).findAny().ifPresent(pr -> speciesCatch.setPreservation(pr.getValue()));
+            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESENTATION")).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
+            speciesCatch.setCf(ap.getConversionFactorNumeric().getValue().doubleValue());
+
+            ap.getResultAAPProducts().stream().findFirst().ifPresent(p -> {
+                speciesCatch.setProductWeightMeasureUnitCode(p.getWeightMeasure().getUnitCode());
+                speciesCatch.setProductWeightMeasure(p.getWeightMeasure().getValue().doubleValue());
+                speciesCatch.setProductQuantity(p.getPackagingUnitQuantity().getValue().doubleValue());
+            });
+        });
+    }
+
+    private void setBaseCatchInfo(FACatch faCatch, Catch speciesCatch) {
+        speciesCatch.setSpeciesCode(faCatch.getSpeciesCode().getValue());
+        speciesCatch.setCatchType(faCatch.getTypeCode().getValue());
+        speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
+        speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
+        Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
     }
 
     private void mapFishingGear(FishingActivity fishingActivity, Activity activity) {

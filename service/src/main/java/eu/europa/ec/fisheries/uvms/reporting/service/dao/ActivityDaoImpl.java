@@ -56,4 +56,15 @@ public class ActivityDaoImpl implements ActivityDao {
         }
     }
 
+    @Override
+    public int updateOlderReportsAsNotLatest(String faReportId, Long latestActivityId) {
+        Query nativeQuery = em.createNativeQuery("UPDATE reporting.activity SET is_latest = false WHERE fa_report_id = :faReportId AND id <> :latestActivityId");
+        nativeQuery.setParameter("faReportId", faReportId);
+        nativeQuery.setParameter("latestActivityId", latestActivityId);
+        try {
+            return nativeQuery.executeUpdate();
+        } catch (NoResultException e) {
+            return 0;
+        }
+    }
 }
