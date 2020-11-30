@@ -120,8 +120,11 @@ public class Activity implements Serializable {
     )
     private Set<Location> locations;
 
-    @Column(name = "correction")
-    private Boolean correction;
+    @Column(name = "is_correction")
+    private boolean correction;
+
+    @Column(name = "is_latest")
+    private boolean latest;
 
     @ManyToOne
     @JoinColumn(name = "asset_hist_guid", referencedColumnName = "asset_hist_guid")

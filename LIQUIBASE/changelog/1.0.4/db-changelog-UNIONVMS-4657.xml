@@ -108,7 +108,8 @@
             <column name="start_timestamp" type="timestamp"/>
             <column name="end_timestamp" type="timestamp"/>
 
-            <column name="correction" type="boolean" defaultValueBoolean="false"/>
+            <column name="is_correction" type="boolean" defaultValueBoolean="false"/>
+            <column name="is_latest" type="boolean" defaultValueBoolean="false"/>
 
             <column name="activity_coordinates" type="geometry(Multipoint, 4326)"/>
 
@@ -194,11 +195,18 @@
         <createTable tableName="activity_catch">
             <column name="activity_id" type="bigint"/>
             <column name="species_code" type="varchar(10)"/>
+            <column name="catch_type" type="VARCHAR(50)"/>
             <column name="weight_measure" type="FLOAT8"/>
             <column name="weight_measure_unit_code" type="VARCHAR(255)"/>
-            <column name="quantity" type="FLOAT8"/>
             <column name="size_class" type="VARCHAR(50)"/>
+            <column name="size_category" type="VARCHAR(50)"/>
+            <column name="quantity" type="FLOAT8"/>
+            <column name="cf" type="FLOAT8"/>
             <column name="presentation" type="VARCHAR(50)"/>
+            <column name="preservation" type="VARCHAR(50)"/>
+            <column name="product_weight_measure" type="FLOAT8"/>
+            <column name="product_weight_measure_unit_code" type="VARCHAR(255)"/>
+            <column name="product_quantity" type="FLOAT8"/>
         </createTable>
 
         <addUniqueConstraint columnNames="activity_id,species_code" constraintName="activity_catch_unique" deferrable="true" initiallyDeferred="true" tableName="activity_catch"/>
@@ -235,6 +243,8 @@
             <column name="ext_mark" type="varchar(50)"/>
             <column name="gfcm" type="varchar(60)"/>
             <column name="country_code" type="varchar(3)"/>
+            <column name="length_overall" type="FLOAT8"/>
+            <column name="main_gear_type" type="varchar(10)"/>
         </createTable>
 
         <rollback>

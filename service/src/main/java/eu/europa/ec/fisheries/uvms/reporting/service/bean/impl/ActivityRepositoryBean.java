@@ -20,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
@@ -53,5 +54,10 @@ public class ActivityRepositoryBean implements ActivityRepository {
     @Override
     public Location findLocationByTypeCodeAndCode(String typeCode, String code) {
         return activityDao.findLocationByTypeCodeAndCode(typeCode, code);
+    }
+
+    @Override
+    public void updateOlderReportsAsNotLatest(String faReportId, Long latestActivityId) {
+        activityDao.updateOlderReportsAsNotLatest(faReportId, latestActivityId);
     }
 }

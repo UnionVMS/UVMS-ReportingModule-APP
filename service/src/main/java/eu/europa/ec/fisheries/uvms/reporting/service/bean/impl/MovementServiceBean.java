@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
@@ -179,7 +178,7 @@ public class MovementServiceBean {
         movement.setClosestPortDistance(movementTypeData.movementType.getMetaData().getClosestPort().getDistance());
         Optional.ofNullable(movementTypeData.movementType.getActivity())
                 .ifPresent(activityType -> Optional.ofNullable(activityType.getMessageType())
-                        .ifPresent(mt ->movement.setMovementActivityType(activityType.getMessageType().value())));
+                        .ifPresent(mt -> movement.setMovementActivityType(activityType.getMessageType().value())));
         Set<Area> areas = new HashSet<>();
 
         movementTypeData.movementType.getMetaData().getAreas().forEach(area -> {
@@ -210,7 +209,7 @@ public class MovementServiceBean {
         Track track = movementMapper.toTrack(movementTrack);
         track.setAsset(asset);
         LineString geometry = getLineStringGeometryFromWktString(movementTrack.getWkt());
-        track.setNearestPoint( calculateNearestPoint(geometry));
+        track.setNearestPoint(calculateNearestPoint(geometry));
         track.setExtent(calculateExtent(geometry));
         return movementRepositoryBean.createTrackEntity(track);
     }
@@ -273,6 +272,10 @@ public class MovementServiceBean {
         asset.setExternalMarking(a.getExternalMarking());
         asset.setName(a.getName());
         asset.setCountryCode(a.getCountryCode());
+        asset.setGearType(a.getMainGearType());
+        Optional.ofNullable(a.getLengthOverall()).ifPresent(l -> {
+            asset.setLengthOverAll(BigDecimal.valueOf(a.getLengthOverall()));
+        });
 
         AssetId assetId = new AssetId();
         assetId.setGuid(a.getAssetGuid());
@@ -294,6 +297,8 @@ public class MovementServiceBean {
         asset.setExternalMarking(a.getExternalMarking());
         asset.setName(a.getName());
         asset.setCountryCode(a.getCountryCode());
+        asset.setLengthOverall(Optional.ofNullable(a.getLengthOverAll()).map(BigDecimal::doubleValue).orElse(null));
+        asset.setMainGearType(a.getGearType());
         asset.setAssetGuid(a.getAssetId().getGuid());
         asset.setAssetHistGuid(a.getEventHistory().getEventId());
         asset.setAssetHistActive(a.isActive());
