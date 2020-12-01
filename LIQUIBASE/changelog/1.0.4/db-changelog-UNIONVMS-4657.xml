@@ -215,6 +215,37 @@
             <dropTable tableName="activity_catch"/>
         </rollback>
 
+
+        <createSequence sequenceName="catch_location_seq" startValue="1"/>
+
+        <createTable tableName="catch_location">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="catch_area_type" type="varchar(50)"/>
+            <column name="catch_area_type_code" type="varchar(64)"/>
+            <column name="catch_area_code" type="varchar(50)"/>
+
+            <column name="catch_latitude" type="FLOAT8"/>
+            <column name="catch_longitude" type="FLOAT8"/>
+
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="catch_location_seq"/>
+            <dropTable tableName="catch_location"/>
+        </rollback>
+
+        <createTable tableName="activity_catch_location">
+            <column name="activity_catch_id" type="bigint"/>
+            <column name="activity_species_code" type="varchar(10)"/>
+            <column name="catch_location_id" type="bigint"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="activity_catch_location"/>
+        </rollback>
+
         <createTable tableName="activity_gear">
             <column name="activity_id" type="bigint"/>
             <column name="gear_code" type="varchar(10)"/>

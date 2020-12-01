@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ActivityDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.Builder;
@@ -59,5 +60,10 @@ public class ActivityRepositoryBean implements ActivityRepository {
     @Override
     public void updateOlderReportsAsNotLatest(String faReportId, Long latestActivityId) {
         activityDao.updateOlderReportsAsNotLatest(faReportId, latestActivityId);
+    }
+
+    @Override
+    public CatchLocation createActivityCatchLocation(CatchLocation loc) {
+        return activityDao.createEntity(loc);
     }
 }

@@ -49,6 +49,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.AssetRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
@@ -296,6 +297,23 @@ public class ActivityReportServiceBean implements ActivityReportService {
         speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
         speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
         Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
+        Set<CatchLocation> locations = new HashSet<>();
+        faCatch.getSpecifiedFLUXLocations().stream().forEach(l -> {
+            CatchLocation loc = new CatchLocation();
+            loc.setLocationTypeCode(l.getTypeCode().getValue());
+            Optional.ofNullable(l.getID()).ifPresent(locId -> {
+                loc.setLocationType(locId.getSchemeID());
+                loc.setLocationCode(locId.getValue());
+            });
+            Optional.ofNullable(l.getSpecifiedPhysicalFLUXGeographicalCoordinate()).ifPresent(pl ->{
+                loc.setLongitude(pl.getLongitudeMeasure().getValue().doubleValue());
+                loc.setLongitude(pl.getLatitudeMeasure().getValue().doubleValue());
+            });
+
+            activityRepository.createActivityCatchLocation(loc);
+            locations.add(loc);
+        });
+        speciesCatch.setLocations(locations);
     }
 
     private void mapFishingGear(FishingActivity fishingActivity, Activity activity) {
