@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 
@@ -19,4 +20,5 @@ public interface ActivityRepository {
 
     void updateOlderReportsAsNotLatest(String faReportId, Long latestActivityId);
 
-    }
+    CatchLocation createActivityCatchLocation(CatchLocation loc);
+}
