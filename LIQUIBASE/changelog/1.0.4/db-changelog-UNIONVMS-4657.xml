@@ -112,6 +112,8 @@
             <column name="is_latest" type="boolean" defaultValueBoolean="false"/>
 
             <column name="activity_coordinates" type="geometry(Multipoint, 4326)"/>
+            <column name="activity_latitude" type="FLOAT8"/>
+            <column name="activity_longitude" type="FLOAT8"/>
 
             <column name="master" type="varchar(255)"/>
             <column name="reason_code" type="varchar(255)"/>
