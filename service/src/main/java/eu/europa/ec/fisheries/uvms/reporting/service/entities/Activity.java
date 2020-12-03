@@ -100,6 +100,12 @@ public class Activity implements Serializable {
     @Column(name = "activity_coordinates", columnDefinition = "Geometry")
     private MultiPoint activityCoordinates;
 
+    @Column(name = "activity_latitude")
+    private Double latitude;
+
+    @Column(name = "activity_longitude")
+    private Double longitude;
+
     @ElementCollection
     @CollectionTable(name = "activity_gear", joinColumns = @JoinColumn(name = "activity_id"))
     @Column(name = "gear_code")

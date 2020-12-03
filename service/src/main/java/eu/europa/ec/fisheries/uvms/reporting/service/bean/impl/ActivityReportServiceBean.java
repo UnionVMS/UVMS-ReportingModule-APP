@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,10 +25,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.io.WKTWriter;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
@@ -165,8 +168,25 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setActivityType(fishingActivity.getTypeCode().getValue());
         activity.setFaReportId(reportId);
         activity.setReportType(reportType);
-        activity.setActivityCoordinates(getMultipointGeometryFromWktString(wkt));
+        mapActivityCoordinates(fishingActivity, wkt, activity);
+
         Optional.ofNullable(fishingActivity.getReasonCode()).ifPresent(rc -> activity.setReasonCode(rc.getValue()));
+    }
+
+    private void mapActivityCoordinates(FishingActivity fishingActivity, String wkt, Activity activity) {
+        activity.setActivityCoordinates(getMultipointGeometryFromWktString(wkt));
+        if (activity.getActivityCoordinates() == null) {
+            List<FishingActivity> relatedActivities = getGearRelatedActivitiesSorted(fishingActivity);
+            Optional.ofNullable(relatedActivities).ifPresent(ra -> {
+                ra.stream().filter(e -> e.getRelatedFLUXLocations() != null && e.getRelatedFLUXLocations().size() > 0)
+                        .findFirst()
+                        .ifPresent(f -> f.getRelatedFLUXLocations().stream().filter(rll -> rll.getTypeCode().getValue().equals("POSITION")).findFirst()
+                                .ifPresent(loc -> {
+                                    activity.setLongitude(loc.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
+                                    activity.setLatitude(loc.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
+                                }));
+            });
+        }
     }
 
     private void mapActivityLocations(FishingActivity fishingActivity, Activity activity) {
@@ -276,7 +296,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
     }
 
     private void setProcessingCatchInfo(Catch speciesCatch, FACatch rsc) {
-        Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getClassCodes()).ifPresent(cd->cd.stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()))));
+        Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getClassCodes()).ifPresent(cd -> cd.stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()))));
         Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getCategoryCode()).ifPresent(cat -> speciesCatch.setSizeCategory(cat.getValue())));
         rsc.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
             ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESERVATION")).findAny().ifPresent(pr -> speciesCatch.setPreservation(pr.getValue()));
@@ -305,7 +325,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
                 loc.setLocationType(locId.getSchemeID());
                 loc.setLocationCode(locId.getValue());
             });
-            Optional.ofNullable(l.getSpecifiedPhysicalFLUXGeographicalCoordinate()).ifPresent(pl ->{
+            Optional.ofNullable(l.getSpecifiedPhysicalFLUXGeographicalCoordinate()).ifPresent(pl -> {
                 loc.setLongitude(pl.getLongitudeMeasure().getValue().doubleValue());
                 loc.setLongitude(pl.getLatitudeMeasure().getValue().doubleValue());
             });
@@ -321,7 +341,36 @@ public class ActivityReportServiceBean implements ActivityReportService {
         for (FishingGear g : fishingActivity.getSpecifiedFishingGears()) {
             gearTypes.add(g.getTypeCode().getValue());
         }
+
+        if (gearTypes.size() == 0) { // get gear type from related fishing activities
+            List<FishingActivity> relatedActivities = getGearRelatedActivitiesSorted(fishingActivity);
+            Optional.ofNullable(getValidGearTypes(relatedActivities)).ifPresent(gearTypes::addAll);
+        }
         activity.setGears(gearTypes);
+    }
+
+    private List<String> getValidGearTypes(List<FishingActivity> relatedActivities) {
+        List<String> gearTypes = null;
+        if (relatedActivities.size() > 0) {
+            for (int i = 0; i < relatedActivities.size(); i++) {
+                List<String> types = relatedActivities.get(i).getSpecifiedFishingGears().stream()
+                        .filter(fg -> fg.getTypeCode() != null)
+                        .map(fg -> fg.getTypeCode().getValue())
+                        .collect(Collectors.toList());
+                if (types != null && types.size() > 0) {
+                    gearTypes = types;
+                    break;
+                }
+            }
+        }
+        return gearTypes;
+    }
+
+    private List<FishingActivity> getGearRelatedActivitiesSorted(FishingActivity fishingActivity) {
+        return fishingActivity.getRelatedFishingActivities().stream()
+                .filter(fa -> Arrays.asList("GEAR_SHOT", "GEAR_RETRIEVAL").contains(fa.getTypeCode().getValue()))
+                .sorted(Comparator.comparing(fa -> fa.getTypeCode().getValue()))
+                .collect(Collectors.toList());
     }
 
     private Date calculateActivityDate(FishingActivitySummary fishingActivitySummary, FishingActivity fishingActivity) {
