@@ -25,12 +25,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.io.WKTWriter;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
@@ -55,10 +53,6 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
-import eu.europa.ec.fisheries.uvms.spatial.model.exception.SpatialModelMarshallException;
-import eu.europa.ec.fisheries.uvms.spatial.model.mapper.SpatialModuleRequestMapper;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaByCodeResponse;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaSimpleType;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -78,6 +72,8 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 public class ActivityReportServiceBean implements ActivityReportService {
 
     public static final String REPORT_TYPE_DECLARATION = "DECLARATION";
+    public static final String FISH_PRESERVATION = "FISH_PRESERVATION";
+    public static final String FISH_PRESENTATION = "FISH_PRESENTATION";
     @Inject
     private ActivityRepository activityRepository;
 
@@ -121,12 +117,12 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
         mapBasicActivityFields(fishingActivity, reportId, wkt, reportType, activity);
         mapFishingGear(fishingActivity, activity);
-        mapActivityLocations(fishingActivity, activity);
         mapAsset(assets, activity);
 
         activity = activityRepository.createActivityEntity(activity);
 
-        mapSpecies(fishingActivity, activity, assets);
+        mapActivityLocations(fishingActivity, activity);
+        mapCatches(fishingActivity, activity, assets);
 
         Optional<IDType> tripId = fishingActivity.getSpecifiedFishingTrip().getIDS().stream().findFirst();
         if (tripId.isPresent()) {
@@ -138,7 +134,9 @@ public class ActivityReportServiceBean implements ActivityReportService {
             if (fishingActivitySummaryOptional.isPresent()) {
                 FishingActivitySummary fishingActivitySummary = fishingActivitySummaryOptional.get();
                 mapActivityFields(fishingActivity, activity, fishingActivitySummary);
-                if (activity.isCorrection()) {
+
+                // todo check status update as well!!
+                if (fishingActivitySummary.isIsCorrection()) {
                     // update records with the same report id as not latest (this is the most recent correction)
                     activityRepository.updateOlderReportsAsNotLatest(activity.getFaReportId(), activity.getId());
                 }
@@ -153,7 +151,8 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private void mapActivityFields(FishingActivity fishingActivity, Activity activity, FishingActivitySummary fishingActivitySummary) {
         activity.setPurposeCode(fishingActivitySummary.getPurposeCode());
         activity.setSource(fishingActivitySummary.getDataSource());
-        activity.setCorrection(fishingActivitySummary.isIsCorrection());
+
+        activity.setStatus(getActivityStatusFrom(fishingActivitySummary.getPurposeCode()));
         activity.setLatest(true);
         activity.setActivityId(String.valueOf(fishingActivitySummary.getActivityId()));
         Optional.ofNullable(fishingActivitySummary.getVesselContactParty()).ifPresent(vcp -> activity.setMaster(vcp.getGivenName()));
@@ -162,6 +161,18 @@ public class ActivityReportServiceBean implements ActivityReportService {
         activity.setOccurrenceDate(fishingActivitySummary.getOccurence() != null ? Date.from(fishingActivitySummary.getOccurence().toGregorianCalendar().toInstant()) : null);
         activity.setStartDate(getDate(fishingActivity, false));
         activity.setEndDate(getDate(fishingActivity, true));
+    }
+
+    private String getActivityStatusFrom(String purposeCode) {
+        if (purposeCode.equals("5")) {
+            return "REPLACED";
+        } else if (purposeCode.equals("1")) {
+            return "CANCELLED";
+        } else if (purposeCode.equals("3")) {
+            return "DELETED";
+        } else {
+            return "LATEST"; // 9
+        }
     }
 
     private void mapBasicActivityFields(FishingActivity fishingActivity, String reportId, String wkt, String reportType, Activity activity) {
@@ -190,61 +201,34 @@ public class ActivityReportServiceBean implements ActivityReportService {
     }
 
     private void mapActivityLocations(FishingActivity fishingActivity, Activity activity) {
-        Set<Location> locations = new HashSet<>();
+        List<Location> locations = new ArrayList<>();
         for (FLUXLocation relatedFLUXLocation : fishingActivity.getRelatedFLUXLocations()) {
             if (relatedFLUXLocation.getTypeCode().getValue().equals("POSITION")) {
                 Location l = new Location();
                 l.setLocationType(relatedFLUXLocation.getTypeCode().getValue());
                 l.setLatitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
                 l.setLongitude(relatedFLUXLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
+                l.setActivity(activity);
                 activityRepository.createLocation(l);
                 locations.add(l);
             } else {
-                Location l = activityRepository.findLocationByTypeCodeAndCode(mapLocationTypeCode(relatedFLUXLocation.getID().getSchemeID()), relatedFLUXLocation.getID().getValue());
-                l = createLocationIfNotExists(relatedFLUXLocation, l);
+                Location l = createLocation(relatedFLUXLocation, activity);
                 locations.add(l);
             }
         }
         activity.setLocations(locations);
     }
 
-    private Location createLocationIfNotExists(FLUXLocation relatedFLUXLocation, Location l) {
-        if (l == null) {
-            l = new Location();
-            l.setLocationType(relatedFLUXLocation.getTypeCode().getValue());
-            l.setLocationTypeCode(mapLocationTypeCode(relatedFLUXLocation.getID().getSchemeID()));
-            l.setLocationCode(relatedFLUXLocation.getID().getValue());
+    private Location createLocation(FLUXLocation relatedFLUXLocation, Activity activity) {
+        Location l = new Location();
+        l.setLocationType(relatedFLUXLocation.getTypeCode().getValue());
+        l.setLocationTypeCode(relatedFLUXLocation.getID().getSchemeID());
+        l.setLocationCode(relatedFLUXLocation.getID().getValue());
 
-            Optional<String> locationCoordinatesFromSpatial = Optional.empty();
-            if (l.getLocationType().equals("AREA")) {
-                // locationCoordinatesFromSpatial = getLocationCoordinatesFromSpatial(relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), relatedFLUXLocation.getRegionalFisheriesManagementOrganizationCode().getValue());
-            } else {
-                locationCoordinatesFromSpatial = getLocationCoordinatesFromSpatial(l.getLocationTypeCode(), l.getLocationCode());
-            }
-            if (locationCoordinatesFromSpatial.isPresent()) {
-                l.setLocationCoordinates(getMultipolygonGeometryFromWktString(locationCoordinatesFromSpatial.get()));
-            }
-            activityRepository.createLocation(l);
-        }
+        l.setActivity(activity);
+        activityRepository.createLocation(l);
+
         return l;
-    }
-
-    private Optional<String> getLocationCoordinatesFromSpatial(String areaTypeCode, String areaCode) {
-        try {
-            List<AreaSimpleType> areas = new ArrayList<>();
-            AreaSimpleType areaSimpleType = new AreaSimpleType();
-            areaSimpleType.setAreaType(areaTypeCode);
-            areaSimpleType.setAreaCode(areaCode);
-            areas.add(areaSimpleType);
-            String areaByCodeRequest = SpatialModuleRequestMapper.mapToCreateGetAreaByCodeRequest(areas);
-            String correlationId = spatialProducerBean.sendModuleMessage(areaByCodeRequest, reportingModuleReceiverBean.getDestination());
-            TextMessage textMessage = reportingModuleReceiverBean.getMessage(correlationId, TextMessage.class, 60000L);
-            AreaByCodeResponse response = JAXBMarshaller.unmarshall(textMessage, AreaByCodeResponse.class);
-            return response.getAreaSimples().stream().findFirst().map(AreaSimpleType::getWkt);
-        } catch (SpatialModelMarshallException | MessageException | ReportingModelException e) {
-            log.error("Could not get port information for {} - {} from spatial", areaTypeCode, areaCode, e);
-            return Optional.empty();
-        }
     }
 
     private String getCfrFromVesselTransportMeans(VesselTransportMeans vtm) {
@@ -252,7 +236,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
         return cfr.map(IDType::getValue).orElse(null);
     }
 
-    private void mapSpecies(FishingActivity fishingActivity, Activity activity, List<Asset> assets) {
+    private void mapCatches(FishingActivity fishingActivity, Activity activity, List<Asset> assets) {
         List<Catch> catches = new ArrayList<>();
         List<FACatch> catchesToProcess = fishingActivity.getSpecifiedFACatches();
 
@@ -269,14 +253,13 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
         for (FACatch faCatch : catchesToProcess) {
             Catch speciesCatch = new Catch();
-            setBaseCatchInfo(faCatch, speciesCatch);
             // get this from root specified catch
             fishingActivity.getSpecifiedFACatches().stream().findFirst().ifPresent(rsc -> {
                 setProcessingCatchInfo(speciesCatch, rsc);
             });
-            speciesCatch.setActivity(activity);
             activityRepository.createCatchEntity(speciesCatch);
-
+            setBaseCatchInfo(faCatch, speciesCatch);
+            speciesCatch.setActivity(activity);
             catches.add(speciesCatch);
         }
         activity.setSpeciesCatch(catches);
@@ -299,8 +282,8 @@ public class ActivityReportServiceBean implements ActivityReportService {
         Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getClassCodes()).ifPresent(cd -> cd.stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()))));
         Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getCategoryCode()).ifPresent(cat -> speciesCatch.setSizeCategory(cat.getValue())));
         rsc.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
-            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESERVATION")).findAny().ifPresent(pr -> speciesCatch.setPreservation(pr.getValue()));
-            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals("FISH_PRESENTATION")).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
+            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals(FISH_PRESERVATION)).findAny().ifPresent(pr -> speciesCatch.setPreservation(pr.getValue()));
+            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals(FISH_PRESENTATION)).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
             speciesCatch.setCf(ap.getConversionFactorNumeric().getValue().doubleValue());
 
             ap.getResultAAPProducts().stream().findFirst().ifPresent(p -> {
@@ -317,7 +300,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
         speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
         speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
         Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
-        Set<CatchLocation> locations = new HashSet<>();
+        List<CatchLocation> locations = new ArrayList<>();
         faCatch.getSpecifiedFLUXLocations().stream().forEach(l -> {
             CatchLocation loc = new CatchLocation();
             loc.setLocationTypeCode(l.getTypeCode().getValue());
@@ -329,7 +312,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
                 loc.setLongitude(pl.getLongitudeMeasure().getValue().doubleValue());
                 loc.setLongitude(pl.getLatitudeMeasure().getValue().doubleValue());
             });
-
+            loc.setActivityCatch(speciesCatch);
             activityRepository.createActivityCatchLocation(loc);
             locations.add(loc);
         });
@@ -491,9 +474,5 @@ public class ActivityReportServiceBean implements ActivityReportService {
             log.error("Error getting fishing trip information");
             return null;
         }
-    }
-
-    private String mapLocationTypeCode(String value) {
-        return "LOCATION".equals(value) ? "PORT_AREA" : value;
     }
 }
