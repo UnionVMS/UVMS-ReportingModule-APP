@@ -16,24 +16,28 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "location")
+@Table(name = "activity_location")
 @Data
 @NoArgsConstructor
 public class Location {
 
     @Id
-    @SequenceGenerator(name = "location_seq", sequenceName = "location_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "location_seq")
+    @SequenceGenerator(name = "activity_location_seq", sequenceName = "activity_location_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "activity_location_seq")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "activity_id", nullable = false)
+    private Activity activity;
 
     @Column(name = "type")
     private String locationType;
@@ -49,9 +53,5 @@ public class Location {
 
     @Column(name = "longitude")
     private Double longitude;
-
-    @Type(type = "org.hibernate.spatial.GeometryType")
-    @Column(name = "geom", columnDefinition = "Geometry")
-    private MultiPolygon locationCoordinates;
 
 }

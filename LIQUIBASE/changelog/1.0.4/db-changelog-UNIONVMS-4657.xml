@@ -94,7 +94,7 @@
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="activity_id" type="varchar(30)"/>
+            <column name="act_id" type="varchar(30)"/>
             <column name="fa_report_id" type="varchar(36)"/>
             <column name="trip_id" type="varchar(50)"/>
 
@@ -108,7 +108,7 @@
             <column name="start_timestamp" type="timestamp"/>
             <column name="end_timestamp" type="timestamp"/>
 
-            <column name="is_correction" type="boolean" defaultValueBoolean="false"/>
+            <column name="status" type="varchar(10)"/>
             <column name="is_latest" type="boolean" defaultValueBoolean="false"/>
 
             <column name="activity_coordinates" type="geometry(Multipoint, 4326)"/>
@@ -153,48 +153,32 @@
             <dropTable tableName="trip"/>
         </rollback>
 
-        <createSequence sequenceName="location_seq" startValue="1"/>
+        <createSequence sequenceName="activity_location_seq" startValue="1"/>
 
-        <createTable tableName="location">
+        <createTable tableName="activity_location">
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
+            <column name="activity_id" type="bigint"/>
             <column name="type" type="varchar(50)"/>
             <column name="type_code" type="varchar(64)"/>
             <column name="code" type="varchar(50)"/>
-
-            <column name="geom" type="geometry(Multipolygon, 4326)"/>
             <column name="latitude" type="FLOAT8"/>
             <column name="longitude" type="FLOAT8"/>
 
         </createTable>
 
         <rollback>
-            <dropSequence sequenceName="location_seq"/>
-            <dropTable tableName="location"/>
-        </rollback>
-
-        <createTable tableName="activity_location">
-            <column name="activity_id" type="bigint"/>
-            <column name="location_id" type="bigint"/>
-        </createTable>
-
-        <rollback>
+            <dropSequence sequenceName="activity_location_seq"/>
             <dropTable tableName="activity_location"/>
         </rollback>
 
-        <createTable tableName="activity_port">
-            <column name="activity_id" type="bigint"/>
-            <column name="port_code" type="varchar(10)"/>
-        </createTable>
-
-        <addUniqueConstraint columnNames="activity_id,port_code" constraintName="activity_port_unique" deferrable="true" initiallyDeferred="true" tableName="activity_port"/>
-        <rollback>
-            <dropUniqueConstraint constraintName="activity_port_unique" tableName="activity_port"/>
-            <dropTable tableName="activity_port"/>
-        </rollback>
+        <createSequence sequenceName="activity_catch_seq" startValue="1"/>
 
         <createTable tableName="activity_catch">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
             <column name="activity_id" type="bigint"/>
             <column name="species_code" type="varchar(10)"/>
             <column name="catch_type" type="VARCHAR(50)"/>
@@ -211,22 +195,21 @@
             <column name="product_quantity" type="FLOAT8"/>
         </createTable>
 
-        <addUniqueConstraint columnNames="activity_id,species_code" constraintName="activity_catch_unique" deferrable="true" initiallyDeferred="true" tableName="activity_catch"/>
         <rollback>
-            <dropUniqueConstraint constraintName="activity_catch_unique" tableName="activity_catch"/>
+            <dropSequence sequenceName="activity_catch_seq"/>
             <dropTable tableName="activity_catch"/>
         </rollback>
 
+        <createSequence sequenceName="activity_catch_location_seq" startValue="1"/>
 
-        <createSequence sequenceName="catch_location_seq" startValue="1"/>
-
-        <createTable tableName="catch_location">
+        <createTable tableName="activity_catch_location">
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="catch_area_type" type="varchar(50)"/>
-            <column name="catch_area_type_code" type="varchar(64)"/>
-            <column name="catch_area_code" type="varchar(50)"/>
+            <column name="activity_catch_id" type="bigint"/>
+            <column name="catch_location_type" type="varchar(50)"/>
+            <column name="catch_location_type_code" type="varchar(64)"/>
+            <column name="catch_location_code" type="varchar(50)"/>
 
             <column name="catch_latitude" type="FLOAT8"/>
             <column name="catch_longitude" type="FLOAT8"/>
@@ -234,19 +217,10 @@
         </createTable>
 
         <rollback>
-            <dropSequence sequenceName="catch_location_seq"/>
-            <dropTable tableName="catch_location"/>
-        </rollback>
-
-        <createTable tableName="activity_catch_location">
-            <column name="activity_catch_id" type="bigint"/>
-            <column name="activity_species_code" type="varchar(10)"/>
-            <column name="catch_location_id" type="bigint"/>
-        </createTable>
-
-        <rollback>
+            <dropSequence sequenceName="activity_catch_location_seq"/>
             <dropTable tableName="activity_catch_location"/>
         </rollback>
+
 
         <createTable tableName="activity_gear">
             <column name="activity_id" type="bigint"/>

@@ -16,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -25,23 +27,27 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "catch_location")
+@Table(name = "activity_catch_location")
 @Data
 @NoArgsConstructor
 public class CatchLocation {
 
     @Id
-    @SequenceGenerator(name = "catch_location_seq", sequenceName = "catch_location_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "catch_location_seq")
+    @SequenceGenerator(name = "activity_catch_location_seq", sequenceName = "activity_catch_location_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "activity_catch_location_seq")
     private Long id;
 
-    @Column(name = "catch_area_type")
+    @ManyToOne
+    @JoinColumn(name="activity_catch_id", nullable = false)
+    private Catch activityCatch;
+
+    @Column(name = "catch_location_type")
     private String locationType;
 
-    @Column(name = "catch_area_type_code")
+    @Column(name = "catch_location_type_code")
     private String locationTypeCode;
 
-    @Column(name = "catch_area_code")
+    @Column(name = "catch_location_code")
     private String locationCode;
 
     @Column(name = "catch_latitude")

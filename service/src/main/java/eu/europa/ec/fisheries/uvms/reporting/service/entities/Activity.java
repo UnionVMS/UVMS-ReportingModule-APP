@@ -16,12 +16,11 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -49,7 +48,7 @@ public class Activity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "activity_seq")
     private Long id;
 
-    @Column(name = "activity_id")
+    @Column(name = "act_id")
     private String activityId;
 
     @Column(name = "fa_report_id")
@@ -111,23 +110,14 @@ public class Activity implements Serializable {
     @Column(name = "gear_code")
     private Set<String> gears;
 
-    @ElementCollection
-    @CollectionTable(name = "activity_port", joinColumns = @JoinColumn(name = "activity_id"))
-    @Column(name = "port_code")
-    private Set<String> ports;
-
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "activity")
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Catch> speciesCatch;
 
-    @OneToMany
-    @JoinTable(name = "activity_location",
-            joinColumns = {@JoinColumn(name = "activity_id")},
-            inverseJoinColumns = {@JoinColumn(name = "location_id")}
-    )
-    private Set<Location> locations;
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Location> locations;
 
-    @Column(name = "is_correction")
-    private boolean correction;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "is_latest")
     private boolean latest;
