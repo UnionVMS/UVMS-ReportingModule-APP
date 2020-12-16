@@ -187,6 +187,20 @@
             <column name="size_class" type="VARCHAR(50)"/>
             <column name="size_category" type="VARCHAR(50)"/>
             <column name="quantity" type="FLOAT8"/>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="activity_catch_seq"/>
+            <dropTable tableName="activity_catch"/>
+        </rollback>
+
+        <createSequence sequenceName="activity_catch_processing_seq" startValue="1"/>
+
+        <createTable tableName="activity_catch_processing">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="activity_catch_id" type="bigint"/>
             <column name="cf" type="FLOAT8"/>
             <column name="presentation" type="VARCHAR(50)"/>
             <column name="preservation" type="VARCHAR(50)"/>
@@ -196,9 +210,10 @@
         </createTable>
 
         <rollback>
-            <dropSequence sequenceName="activity_catch_seq"/>
-            <dropTable tableName="activity_catch"/>
+            <dropSequence sequenceName="activity_catch_processing_seq"/>
+            <dropTable tableName="activity_catch_processing"/>
         </rollback>
+
 
         <createSequence sequenceName="activity_catch_location_seq" startValue="1"/>
 

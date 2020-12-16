@@ -51,6 +51,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchProcessing;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
     public static final String REPORT_TYPE_DECLARATION = "DECLARATION";
     public static final String FISH_PRESERVATION = "FISH_PRESERVATION";
     public static final String FISH_PRESENTATION = "FISH_PRESENTATION";
+
     @Inject
     private ActivityRepository activityRepository;
 
@@ -253,11 +255,11 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
         for (FACatch faCatch : catchesToProcess) {
             Catch speciesCatch = new Catch();
+            activityRepository.createCatchEntity(speciesCatch);
             // get this from root specified catch
             fishingActivity.getSpecifiedFACatches().stream().findFirst().ifPresent(rsc -> {
                 setProcessingCatchInfo(speciesCatch, rsc);
             });
-            activityRepository.createCatchEntity(speciesCatch);
             setBaseCatchInfo(faCatch, speciesCatch);
             speciesCatch.setActivity(activity);
             catches.add(speciesCatch);
@@ -281,17 +283,27 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private void setProcessingCatchInfo(Catch speciesCatch, FACatch rsc) {
         Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getClassCodes()).ifPresent(cd -> cd.stream().findAny().ifPresent(c -> speciesCatch.setSizeClass(c.getValue()))));
         Optional.ofNullable(rsc.getSpecifiedSizeDistribution()).ifPresent(sd -> Optional.ofNullable(sd.getCategoryCode()).ifPresent(cat -> speciesCatch.setSizeCategory(cat.getValue())));
-        rsc.getAppliedAAPProcesses().stream().findFirst().ifPresent(ap -> {
-            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals(FISH_PRESERVATION)).findAny().ifPresent(pr -> speciesCatch.setPreservation(pr.getValue()));
-            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals(FISH_PRESENTATION)).findAny().ifPresent(pr -> speciesCatch.setPresentation(pr.getValue()));
-            speciesCatch.setCf(ap.getConversionFactorNumeric().getValue().doubleValue());
+
+        List<CatchProcessing> catchProcessingList = new ArrayList<>();
+
+        rsc.getAppliedAAPProcesses().stream().forEach(ap -> {
+            CatchProcessing catchProcessing = new CatchProcessing();
+            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals(FISH_PRESERVATION)).findAny().ifPresent(pr -> catchProcessing.setPreservation(pr.getValue()));
+            ap.getTypeCodes().stream().filter(tc -> tc.getListID().equals(FISH_PRESENTATION)).findAny().ifPresent(pr -> catchProcessing.setPresentation(pr.getValue()));
+            catchProcessing.setCf(ap.getConversionFactorNumeric().getValue().doubleValue());
 
             ap.getResultAAPProducts().stream().findFirst().ifPresent(p -> {
-                speciesCatch.setProductWeightMeasureUnitCode(p.getWeightMeasure().getUnitCode());
-                speciesCatch.setProductWeightMeasure(p.getWeightMeasure().getValue().doubleValue());
-                speciesCatch.setProductQuantity(p.getPackagingUnitQuantity().getValue().doubleValue());
+                catchProcessing.setProductWeightMeasureUnitCode(p.getWeightMeasure().getUnitCode());
+                catchProcessing.setProductWeightMeasure(p.getWeightMeasure().getValue().doubleValue());
+                catchProcessing.setProductQuantity(p.getPackagingUnitQuantity().getValue().doubleValue());
             });
+            catchProcessing.setActivityCatch(speciesCatch);
+            activityRepository.createActivityCatchProcessing(catchProcessing);
+            catchProcessingList.add(catchProcessing);
         });
+        if (catchProcessingList.size() > 0) {
+            speciesCatch.setCatchProcessingList(catchProcessingList);
+        }
     }
 
     private void setBaseCatchInfo(FACatch faCatch, Catch speciesCatch) {

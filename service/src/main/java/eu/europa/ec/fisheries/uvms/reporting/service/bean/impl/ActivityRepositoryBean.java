@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dao.ActivityDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchProcessing;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.Builder;
@@ -66,4 +67,10 @@ public class ActivityRepositoryBean implements ActivityRepository {
     public CatchLocation createActivityCatchLocation(CatchLocation loc) {
         return activityDao.createEntity(loc);
     }
+
+    @Override
+    public CatchProcessing createActivityCatchProcessing(CatchProcessing processing){
+        return activityDao.createEntity(processing);
+    }
+
 }
