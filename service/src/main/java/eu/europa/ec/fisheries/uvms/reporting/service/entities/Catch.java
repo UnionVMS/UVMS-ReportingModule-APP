@@ -49,6 +49,9 @@ public class Catch {
     @Column(name = "catch_type")
     private String catchType;
 
+    @Column(name = "gear_code")
+    private String gearCode;
+
     @Column(name = "weight_measure_unit_code")
     private String weightMeasureUnitCode;
 

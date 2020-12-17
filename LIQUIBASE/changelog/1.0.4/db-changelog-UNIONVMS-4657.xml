@@ -181,6 +181,7 @@
             </column>
             <column name="activity_id" type="bigint"/>
             <column name="species_code" type="varchar(10)"/>
+            <column name="gear_code" type="varchar(10)"/>
             <column name="catch_type" type="VARCHAR(50)"/>
             <column name="weight_measure" type="FLOAT8"/>
             <column name="weight_measure_unit_code" type="VARCHAR(255)"/>
@@ -266,7 +267,7 @@
             <column name="gfcm" type="varchar(60)"/>
             <column name="country_code" type="varchar(3)"/>
             <column name="length_overall" type="FLOAT8"/>
-            <column name="main_gear_type" type="varchar(10)"/>
+            <column name="main_gear_type" type="varchar(30)"/>
         </createTable>
 
         <rollback>

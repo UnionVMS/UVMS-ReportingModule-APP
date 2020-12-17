@@ -51,6 +51,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation_;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchProcessing;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
@@ -261,10 +262,38 @@ public class ActivityReportServiceBean implements ActivityReportService {
                 setProcessingCatchInfo(speciesCatch, rsc);
             });
             setBaseCatchInfo(faCatch, speciesCatch);
+
+            if (Arrays.asList("JOINT_FISHING_OPERATION", "FISHING_OPERATION").contains(fishingActivity.getTypeCode().getValue())) {
+                getGearCodeFromActivityIfNotExistsInCatch(activity, speciesCatch);
+                getLocationFromActivityIfNotExistsInCatch(activity, speciesCatch);
+            }
             speciesCatch.setActivity(activity);
             catches.add(speciesCatch);
         }
         activity.setSpeciesCatch(catches);
+    }
+
+    private void getLocationFromActivityIfNotExistsInCatch(Activity activity, Catch speciesCatch) {
+        if ((speciesCatch.getLocations() == null || speciesCatch.getLocations().size() == 0) && activity.getLocations() != null && activity.getLocations().size() > 0) {
+            speciesCatch.setLocations(new ArrayList<CatchLocation>());
+
+            activity.getLocations().forEach(l -> {
+                CatchLocation catchLocationFromActivity = new CatchLocation();
+                catchLocationFromActivity.setLocationTypeCode(l.getLocationTypeCode());
+                catchLocationFromActivity.setLocationType(l.getLocationType());
+                catchLocationFromActivity.setLocationCode(l.getLocationCode());
+                catchLocationFromActivity.setLatitude(l.getLatitude());
+                catchLocationFromActivity.setLongitude(l.getLongitude());
+                catchLocationFromActivity.setActivityCatch(speciesCatch);
+                speciesCatch.getLocations().add(catchLocationFromActivity);
+            });
+        }
+    }
+
+    private void getGearCodeFromActivityIfNotExistsInCatch(Activity activity, Catch speciesCatch) {
+        if (speciesCatch.getGearCode() == null && activity.getGears() != null && activity.getGears().size() > 0) {
+            speciesCatch.setGearCode(activity.getGears().stream().findFirst().orElse(null));
+        }
     }
 
     private List<FishingActivity> findRelatedFishingActivitiesForJFOwithCFR(FishingActivity fishingActivity, String cfrToMatch) {
@@ -312,6 +341,9 @@ public class ActivityReportServiceBean implements ActivityReportService {
         speciesCatch.setWeightMeasureUnitCode(faCatch.getWeightMeasure().getUnitCode());
         speciesCatch.setWeightMeasure(faCatch.getWeightMeasure().getValue().doubleValue());
         Optional.ofNullable(faCatch.getUnitQuantity()).ifPresent(q -> speciesCatch.setQuantity(q.getValue().doubleValue()));
+        Optional.ofNullable(faCatch.getUsedFishingGears()).ifPresent(fg -> {
+            fg.stream().findFirst().ifPresent(g -> speciesCatch.setGearCode(g.getTypeCode().getValue()));
+        });
         List<CatchLocation> locations = new ArrayList<>();
         faCatch.getSpecifiedFLUXLocations().stream().forEach(l -> {
             CatchLocation loc = new CatchLocation();
