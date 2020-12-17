@@ -300,6 +300,18 @@
             <dropTable tableName="movement_area"/>
         </rollback>
 
+        <createSequence sequenceName="alarm_seq" startValue="1"/>
+
+        <createTable tableName="alarm">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropSequence sequenceName="alarm_seq"/>
+            <dropTable tableName="alarm"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
