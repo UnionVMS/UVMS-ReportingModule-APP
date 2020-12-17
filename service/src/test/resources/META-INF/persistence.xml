@@ -14,9 +14,15 @@
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Track</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Area</class>
         <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Location</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Alarm</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation</class>
+        <class>eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchProcessing</class>
 
         <properties>
             <property name="hibernate.default_schema" value="reporting"/>
