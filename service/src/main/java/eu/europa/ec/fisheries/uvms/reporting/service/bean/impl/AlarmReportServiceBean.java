@@ -12,10 +12,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.Instant;
+import java.util.Date;
 
 import eu.europa.ec.fisheries.schema.rules.ticket.v1.TicketType;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AlarmReportService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AlarmRepository;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Alarm;
 import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
@@ -27,35 +30,38 @@ public class AlarmReportServiceBean implements AlarmReportService {
 
     @Override
     public void createOrUpdate(TicketType alarm) {
-//        eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset assetEntity = assetRepository.findAssetByAssetHistoryGuid(asset.getEventHistory().getEventId());
-//        if (assetEntity != null) {
-//            assetEntity.setAssetGuid(asset.getAssetId().getGuid());
-//            assetEntity.setCfr(asset.getCfr());
-//            assetEntity.setIrcs(asset.getIrcs());
-//            assetEntity.setIccat(asset.getIccat());
-//            assetEntity.setUvi(asset.getUvi());
-//            assetEntity.setGfcm(asset.getGfcm());
-//            assetEntity.setExternalMarking(asset.getExternalMarking());
-//            assetEntity.setName(asset.getName());
-//            assetEntity.setLengthOverall(Optional.ofNullable(asset.getLengthOverAll()).map(BigDecimal::doubleValue).orElse(null));
-//            assetEntity.setMainGearType(asset.getGearType());
-//            assetEntity.setCountryCode(asset.getCountryCode());
-//            assetEntity.setAssetHistActive(asset.isActive());
-//        } else {
-//            assetRepository.createAssetEntity(mapToAssetEntity(asset));
-//        }
-//
-//        assetRepository.makeOtherHistoryEntriesOfAssetInactiveExceptCurrentHistId(asset.getAssetId().getGuid(), asset.getEventHistory().getEventId());
-
-//        if (!asset.isActive()) { // archiving asset event
-//            int affected = assetRepository.updateHistoryRecordsAsInactiveForAssetGuid(asset.getAssetId().getGuid());
-//        }
-        alarmRepository.createAlarmEntity(mapToAlarmEntity(alarm));
+        Alarm alarmEntity = alarmRepository.findAlarmByGuid(alarm.getGuid());
+        if (alarmEntity != null) {
+            alarmRepository.updateAlarmEntity(mapToAlarmEntity(alarm));
+        } else {
+            alarmRepository.createAlarmEntity(mapToAlarmEntity(alarm));
+        }
     }
 
     private eu.europa.ec.fisheries.uvms.reporting.service.entities.Alarm mapToAlarmEntity(TicketType inputData) {
-        eu.europa.ec.fisheries.uvms.reporting.service.entities.Alarm alarm = new eu.europa.ec.fisheries.uvms.reporting.service.entities.Alarm();
-
+        Alarm alarm = new Alarm();
+        alarm.setGuid(inputData.getGuid());
+        alarm.setAssetHistGuid(inputData.getAssetGuid());
+        alarm.setMovementGuid(inputData.getMovementGuid());
+        alarm.setOpenDate(parseDate(inputData.getOpenDate()));
+        alarm.setUpdated(parseDate(inputData.getUpdated()));
+        alarm.setUpdatedBy(inputData.getUpdatedBy());
+        alarm.setRuleName(inputData.getRuleName());
+        alarm.setStatus(inputData.getStatus().value());
         return alarm;
+    }
+
+    private Date parseDate(String date) {
+        String formattedTextDate = date;
+        try {
+            formattedTextDate = formattedTextDate.replaceFirst(" ", "T");
+            formattedTextDate = formattedTextDate.substring(0, formattedTextDate.indexOf(" "));
+            formattedTextDate = formattedTextDate + "Z";
+            Instant instant = Instant.parse(formattedTextDate);
+            return Date.from(instant);
+        } catch (Exception e) {
+            log.error("An error occured when parsing date " + date + " for saving to alarm reporting db, will save null");
+        }
+        return null;
     }
 }

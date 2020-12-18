@@ -19,6 +19,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import java.util.Date;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,9 +31,21 @@ import lombok.NoArgsConstructor;
 public class Alarm {
 
     @Id
-    @SequenceGenerator(name = "alarm_seq", sequenceName = "alarm_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alarm_seq")
-    private Long id;
-
+    @Column(name="guid")
+    private String guid;
+    @Column(name="status")
+    private String status;
+    @Column(name="asset_hist_guid")
+    private String assetHistGuid;
+    @Column(name="rule_name")
+    private String ruleName;
+    @Column(name="movement_guid")
+    private String movementGuid;
+    @Column(name="open_date")
+    private Date openDate;
+    @Column(name="updated_date")
+    private Date updated;
+    @Column(name="updated_by")
+    private String updatedBy;
 
 }

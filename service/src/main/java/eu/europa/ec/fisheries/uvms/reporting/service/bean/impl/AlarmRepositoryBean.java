@@ -15,7 +15,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AlarmRepository;
-import eu.europa.ec.fisheries.uvms.reporting.service.dao.AssetDao;
+import eu.europa.ec.fisheries.uvms.reporting.service.dao.AlarmDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Alarm;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,11 +24,21 @@ import lombok.extern.slf4j.Slf4j;
 public class AlarmRepositoryBean implements AlarmRepository {
 
     @Inject
-    private AssetDao assetDao;
+    private AlarmDao alarmDao;
 
     @Override
     public Alarm createAlarmEntity(Alarm entity) {
-        return assetDao.createEntity(entity);
+        return alarmDao.createEntity(entity);
+    }
+
+    @Override
+    public Alarm findAlarmByGuid(String guid) {
+        return alarmDao.findByGuid(guid);
+    }
+
+    @Override
+    public Alarm updateAlarmEntity(Alarm entity) {
+        return alarmDao.update(entity);
     }
 
 }

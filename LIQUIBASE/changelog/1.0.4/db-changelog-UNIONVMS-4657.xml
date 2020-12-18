@@ -300,16 +300,20 @@
             <dropTable tableName="movement_area"/>
         </rollback>
 
-        <createSequence sequenceName="alarm_seq" startValue="1"/>
-
         <createTable tableName="alarm">
-            <column name="id" type="bigint">
+            <column name="guid" type="varchar(40)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
+            <column name="status" type="varchar(10)"/>
+            <column name="asset_hist_guid" type="varchar(40)"/>
+            <column name="rule_name" type="varchar(60)"/>
+            <column name="movement_guid" type="varchar(40)"/>
+            <column name="open_date" type="timestamp"/>
+            <column name="updated_date" type="timestamp" />
+            <column name="updated_by" type="varchar(40)"/>
         </createTable>
 
         <rollback>
-            <dropSequence sequenceName="alarm_seq"/>
             <dropTable tableName="alarm"/>
         </rollback>
     </changeSet>
