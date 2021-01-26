@@ -24,12 +24,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mockito.version>1.9.5</mockito.version>
         <javaee.version>8.0</javaee.version>
-        <sl4j.version>1.7.25</sl4j.version>
-        <logback.version>1.2.3</logback.version>
         <mapstruct.version>1.1.0.Final</mapstruct.version>
         <jackson.version>2.7.3</jackson.version>
-        <logback.core.version>1.2.3</logback.core.version>
-        
+
         <asset.model.version>${uvms.asset.module.version}</asset.model.version>
         <audit.model.version>${uvms.audit.module.version}</audit.model.version>
         <movement.model.version>${uvms.movement.module.version}</movement.model.version>
@@ -47,8 +44,8 @@
         
         <application.name>${project.parent.artifactId}</application.name>
         <application.version>${project.parent.version}</application.version>
-        <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
-        <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log</application.error.logfile>
+        <application.logfile>${project.parent.artifactId}/${project.parent.artifactId}.log</application.logfile>
+        <application.logfile.message.pattern>%replace(%rEx){'[\r\n]+', '~~'}%nopex %n</application.logfile.message.pattern>
         <hibernate.version>4.3.11.Final</hibernate.version>
 
         <geotools.version>14.4</geotools.version>
@@ -81,6 +78,14 @@
     <dependencyManagement>
 
         <dependencies>
+
+            <dependency>
+                <groupId>fish.focus.uvms.maven</groupId>
+                <artifactId>uvms-pom-logging-deps</artifactId>
+                <version>1.21</version>
+                <type>pom</type>
+            </dependency>
+
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -325,23 +330,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- LOGGING DEPENDENCIES -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${sl4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.core.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
             <artifactId>asset-rest-client</artifactId>
@@ -433,6 +421,12 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>multilineLog</id>
+            <properties>
+                <application.logfile.message.pattern>%n</application.logfile.message.pattern>
+            </properties>
         </profile>
     </profiles>
 
