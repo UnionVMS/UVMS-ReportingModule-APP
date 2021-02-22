@@ -70,4 +70,9 @@ public class MovementRepositoryBean implements MovementRepository {
     public Area findAreaByTypeAndAreaCode(String areaType, String areaCode) {
         return movementDao.findAreaByTypeAndAreaCode(areaType, areaCode);
     }
+
+    @Override
+    public Object executeQuery(String query) {
+        return movementDao.executeQuery(query);
+    }
 }

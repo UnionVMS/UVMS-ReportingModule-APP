@@ -40,6 +40,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import java.util.List;
+
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.EntityDoesNotExistException;
@@ -94,6 +96,16 @@ class MovementDaoImpl implements MovementDao {
         nativeQuery.setParameter("areaCode", areaCode);
         try {
             return (Area) nativeQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Object executeQuery(String query){
+        Query nativeQuery = em.createNativeQuery(query);
+        try {
+            return (Object) nativeQuery.getResultList();
         } catch (NoResultException e) {
             return null;
         }

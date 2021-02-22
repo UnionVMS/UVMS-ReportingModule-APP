@@ -12,6 +12,12 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
+import javax.interceptor.Interceptors;
+import javax.transaction.Transactional;
+
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.AuditActionEnum;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.IAuditInterceptor;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
@@ -21,6 +27,11 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 public interface ReportExecutionService {
+
+    @Transactional
+    @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
+    @Interceptors(TracingInterceptor.class)
+    ExecutionResultDTO getReportExecutionByReportIdV2(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat, Long pageNumber, Long pageSize) throws ReportingServiceException;
 
     ExecutionResultDTO getReportExecutionByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat format) throws ReportingServiceException;
 

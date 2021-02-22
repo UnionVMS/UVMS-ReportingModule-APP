@@ -36,4 +36,6 @@ public interface MovementRepository {
     Area createArea(Area entity);
 
     Area findAreaByTypeAndAreaCode(String areaType, String areaCode);
+
+    Object executeQuery(String query);
 }

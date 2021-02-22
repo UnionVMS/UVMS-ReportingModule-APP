@@ -430,6 +430,39 @@ public class ReportingResource extends UnionVMSResource {
 	}
 
 	@POST
+	@Path("/v2/execute/{id}")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response runReportV2(@Context HttpServletRequest request, @PathParam("id") Long id,
+							  @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+							  DisplayFormat format) {
+
+		String username = request.getRemoteUser();
+
+		log.debug("{} is requesting runReport(...), with a ID={}", username, id);
+
+		try {
+			Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+			DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+			List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
+			Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+
+
+			ExecutionResultDTO reportExecutionByReportId = reportExecutionService.getReportExecutionByReportIdV2(id,
+					username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format, null, null);
+
+//			ObjectNode rootNode = mapToGeoJson(reportExecutionByReportId);
+//			return createSuccessResponse(rootNode);
+			return createSuccessResponse();
+
+		} catch (Exception e) {
+			log.error("Report execution failed.", e);
+			return createErrorResponse(e.getMessage());
+		}
+	}
+
+	@POST
 	@Path("/execute/{id}")
 	@Produces(APPLICATION_JSON)
 	@Consumes(APPLICATION_JSON)

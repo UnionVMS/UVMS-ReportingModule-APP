@@ -57,6 +57,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingDataService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
@@ -102,6 +103,9 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Inject
     private AssetServiceBean assetModule;
 
+    @Inject
+    private ReportingDataService reportingDataService;
+
     @EJB
     private MovementServiceBean movementModule;
 
@@ -110,6 +114,23 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
     @EJB
     private ActivityService activityService;
+
+
+    @Override
+    @Transactional
+    @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
+    @Interceptors(TracingInterceptor.class)
+    public ExecutionResultDTO getReportExecutionByReportIdV2(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat, Long pageNumber, Long pageSize) throws ReportingServiceException {
+        Report report = repository.findReportByReportId(id, username, scopeName, isAdmin);
+        if (report == null) {
+            final String error = "No report found with id " + id;
+            log.error("No report found with id " + id);
+            throw new ReportingServiceException(error);
+        }
+        ExecutionResultDTO resultDTO = reportingDataService.executeReport(report, now, areaRestrictions, withActivity, displayFormat, pageNumber, pageSize);
+        report.updateExecutionLog(username);
+        return resultDTO;
+    }
 
     @Override
     @Transactional

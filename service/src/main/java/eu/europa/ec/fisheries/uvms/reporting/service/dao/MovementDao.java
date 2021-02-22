@@ -38,4 +38,6 @@ public interface MovementDao {
     <T> void delete(Long id, Class<T> clazz) throws ApplicationException;
 
     Area findAreaByTypeAndAreaCode(String areaType, String areaCode);
+
+    Object executeQuery(String query);
 }
