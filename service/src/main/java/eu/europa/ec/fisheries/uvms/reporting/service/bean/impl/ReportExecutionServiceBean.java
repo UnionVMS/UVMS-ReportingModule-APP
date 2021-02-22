@@ -31,6 +31,7 @@ import java.util.Set;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.sun.xml.fastinfoset.util.CharArrayArray;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.schema.movement.search.v1.MovementMapResponseType;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementSegment;
@@ -57,6 +58,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.AuditService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
+import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingDataService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
@@ -68,9 +70,12 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementData;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ActivityReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.MovementReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.ReportTypeEnum;
@@ -102,6 +107,9 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Inject
     private AssetServiceBean assetModule;
 
+    @Inject
+    private ReportingDataService reportingDataService;
+
     @EJB
     private MovementServiceBean movementModule;
 
@@ -110,6 +118,25 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
 
     @EJB
     private ActivityService activityService;
+
+
+    @Override
+    @Transactional
+    @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
+    @Interceptors(TracingInterceptor.class)
+    public ReportResult getReportExecutionByReportIdV2(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat, Long pageNumber, Long pageSize) throws ReportingServiceException {
+        Report report = repository.findReportByReportId(id, username, scopeName, isAdmin);
+        if (report == null) {
+            final String error = "No report found with id " + id;
+            log.error("No report found with id " + id);
+            throw new ReportingServiceException(error);
+        }
+        List<MovementReportResult> movementReportResultList = reportingDataService.executeMovementReport(report, now, areaRestrictions, withActivity, displayFormat, pageNumber, pageSize);
+        List<ActivityReportResult> activityReportResult = reportingDataService.findActivityReportByReportId(report, 0, 0);
+        report.updateExecutionLog(username);
+        //TODO count number of records in db
+        return new ReportResult(activityReportResult,movementReportResultList,0,0,0,0);
+    }
 
     @Override
     @Transactional

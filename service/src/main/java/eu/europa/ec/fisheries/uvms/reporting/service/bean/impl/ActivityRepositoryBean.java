@@ -17,13 +17,15 @@ import javax.inject.Inject;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ActivityDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ActivityReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Catch;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchLocation;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CatchProcessing;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @ApplicationScoped
 @Slf4j
@@ -71,6 +73,11 @@ public class ActivityRepositoryBean implements ActivityRepository {
     @Override
     public CatchProcessing createActivityCatchProcessing(CatchProcessing processing){
         return activityDao.createEntity(processing);
+    }
+
+    @Override
+    public List<ActivityReportResult> executeQuery(String query) {
+        return activityDao.executeQuery(query);
     }
 
 }

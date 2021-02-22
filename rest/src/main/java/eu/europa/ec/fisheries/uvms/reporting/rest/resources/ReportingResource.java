@@ -18,6 +18,7 @@ import static eu.europa.ec.fisheries.uvms.reporting.service.Constants.TIMESTAMP;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -64,8 +65,10 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.VelocityType;
+import eu.europa.ec.fisheries.uvms.reporting.service.mapper.ReportResultMapper;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.ServiceLayerUtils;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
@@ -104,6 +107,9 @@ public class ReportingResource extends UnionVMSResource {
 
 	@EJB
 	private ReportExecutionService reportExecutionService;
+
+	@Inject
+	private ReportResultMapper reportResultMapper;
 
 	@EJB
 	private USMService usmService;
@@ -431,6 +437,43 @@ public class ReportingResource extends UnionVMSResource {
 
 	@POST
 	@Path("/execute/{id}")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response runReportV2(@Context HttpServletRequest request, @PathParam("id") Long id,
+							  @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+							  DisplayFormat format) {
+
+		String username = request.getRemoteUser();
+
+		log.debug("{} is requesting runReport(...), with a ID={}", username, id);
+
+		try {
+			Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+			DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+			List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
+			Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+
+			ReportResult reportExecutionByReportId = reportExecutionService.getReportExecutionByReportIdV2(id, username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format, null, null);
+
+			try {
+				ExecutionResultDTO executionResult = reportResultMapper.map(reportExecutionByReportId, format);
+				ObjectNode rootNode = mapToGeoJson(executionResult);
+				return createSuccessResponse(rootNode);
+
+			} catch (Exception e) {
+				log.error("Error mapping report result to dto");
+				return createErrorResponse(e.getMessage());
+			}
+
+		} catch (Exception e) {
+			log.error("Report execution failed.", e);
+			return createErrorResponse(e.getMessage());
+		}
+	}
+
+	@POST
+	@Path("/old/execute/{id}")
 	@Produces(APPLICATION_JSON)
 	@Consumes(APPLICATION_JSON)
 	public Response runReport(@Context HttpServletRequest request, @PathParam("id") Long id,

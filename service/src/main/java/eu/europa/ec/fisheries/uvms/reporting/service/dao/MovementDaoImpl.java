@@ -39,11 +39,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.List;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.MovementReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.EntityDoesNotExistException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SQLQuery;
 
 /**
  * {@link MovementDao} JPA implementation.
@@ -94,6 +97,17 @@ class MovementDaoImpl implements MovementDao {
         nativeQuery.setParameter("areaCode", areaCode);
         try {
             return (Area) nativeQuery.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<MovementReportResult> executeQuery(String query) {
+        javax.persistence.Query nativeQuery = em.createNativeQuery(query);
+        nativeQuery.unwrap(SQLQuery.class).addEntity(MovementReportResult.class);
+        try {
+            return (List<MovementReportResult>) nativeQuery.getResultList();
         } catch (NoResultException e) {
             return null;
         }

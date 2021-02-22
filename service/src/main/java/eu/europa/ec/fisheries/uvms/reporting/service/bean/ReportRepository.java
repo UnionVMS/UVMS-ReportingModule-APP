@@ -16,7 +16,9 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ActivityReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+
 import java.util.List;
 
 public interface ReportRepository {

@@ -158,7 +158,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
 
         activity.setStatus(getActivityStatusFrom(fishingActivitySummary.getPurposeCode()));
         activity.setLatest(true);
-        activity.setActivityId(String.valueOf(fishingActivitySummary.getActivityId()));
+        activity.setActivityId(fishingActivitySummary.getActivityId());
         Optional.ofNullable(fishingActivitySummary.getVesselContactParty()).ifPresent(vcp -> activity.setMaster(vcp.getGivenName()));
         activity.setAcceptedDate(Date.from(fishingActivitySummary.getAcceptedDateTime().toGregorianCalendar().toInstant()));
         activity.setCalculatedDate(calculateActivityDate(fishingActivitySummary, fishingActivity));
