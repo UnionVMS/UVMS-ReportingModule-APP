@@ -21,7 +21,10 @@
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
+import java.util.List;
+
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.MovementReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
 
 /**
@@ -38,4 +41,6 @@ public interface MovementDao {
     <T> void delete(Long id, Class<T> clazz) throws ApplicationException;
 
     Area findAreaByTypeAndAreaCode(String areaType, String areaCode);
+
+    List<MovementReportResult> executeQuery(String query);
 }

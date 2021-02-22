@@ -26,7 +26,9 @@ import lombok.Setter;
 import javax.measure.converter.UnitConverter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.measure.unit.NonSI.KNOT;
 import static javax.measure.unit.NonSI.NAUTICAL_MILE;
@@ -54,8 +56,30 @@ public class TrackDTO {
         computerNearestPoint();
     }
 
+    public TrackDTO(MovementTrack track, Asset asset, String extent, String nearestPoint) throws ReportingServiceException, ParseException {
+        this.track = track;
+        this.asset = new AssetDTO(asset);
+        geometry = GeometryUtil.toGeometry(track.getWkt());
+        this.setExtent(extent);
+        this.setNearestPoint(nearestPoint);
+    }
+
     public TrackDTO(MovementTrack track, Asset asset, DisplayFormat format) throws ReportingServiceException, ParseException {
         this(track, asset);
+
+        if (format != null) {
+            if (format.getLengthType() != null) {
+                lengthConverter = format.getLengthType().getConverter();
+            }
+            if (format.getVelocityType() != null) {
+                velocityConverter = format.getVelocityType().getConverter();
+            }
+        }
+
+    }
+
+    public TrackDTO(MovementTrack track, Asset asset, String extent, String nearestPoint, DisplayFormat format) throws ReportingServiceException, ParseException {
+        this(track, asset, extent, nearestPoint);
 
         if (format != null) {
             if (format.getLengthType() != null) {
@@ -129,5 +153,25 @@ public class TrackDTO {
 
         return track.getId();
 
+    }
+
+    public void setNearestPoint(String nearestPoint) {
+        if (nearestPoint != null) {
+            this.nearestPoint = Arrays.stream(nearestPoint.split(","))
+                    .map(Double::parseDouble)
+                    .collect(Collectors.toList());
+        } else {
+            nearestPoint = null;
+        }
+    }
+
+    public void setExtent(String extent) {
+        if (extent != null) {
+            this.extent = Arrays.stream(extent.split(","))
+                    .map(Double::parseDouble)
+                    .collect(Collectors.toList());
+        } else {
+            this.extent = null;
+        }
     }
 }

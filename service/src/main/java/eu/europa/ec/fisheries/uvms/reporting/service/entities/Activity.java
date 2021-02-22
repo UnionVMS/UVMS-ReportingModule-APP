@@ -49,7 +49,7 @@ public class Activity implements Serializable {
     private Long id;
 
     @Column(name = "act_id")
-    private String activityId;
+    private Integer activityId;
 
     @Column(name = "fa_report_id")
     private String faReportId;

@@ -18,8 +18,13 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.ActivityReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Location;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SQLQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @ApplicationScoped
@@ -67,4 +72,17 @@ public class ActivityDaoImpl implements ActivityDao {
             return 0;
         }
     }
+
+
+    @Override
+    public List<ActivityReportResult> executeQuery(String query) {
+        javax.persistence.Query nativeQuery = em.createNativeQuery(query);
+        nativeQuery.unwrap(SQLQuery.class).addEntity(ActivityReportResult.class);
+        try {
+            return (List<ActivityReportResult>) nativeQuery.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
+
 }
