@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.commons.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.MovementRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingDataService;
@@ -19,6 +20,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import org.joda.time.DateTime;
@@ -63,14 +65,15 @@ public class ReportingDataServiceImpl implements ReportingDataService {
         updateQueryWithAreaCriteria(query, areaFilters);
 
         List<Filter> filters = report.getFilters().stream()
-                .filter(f -> Arrays.asList(FilterType.common, FilterType.asset, FilterType.areas).contains(f.getType()))
+                .filter(f -> !Arrays.asList(FilterType.fa, FilterType.common, FilterType.asset, FilterType.areas).contains(f.getType()))
                 .collect(Collectors.toList());
 
         for (Filter f : filters) {
 
             if (FilterType.vmstrack.equals(f.getType())) {
-                query.append("AND ");
                 updateQueryWithTrackCriteria(query, (VmsTrackFilter) f);
+            } else if (FilterType.vmsseg.equals(f.getType())) {
+                updateQueryWithSegmentCriteria(query, (VmsSegmentFilter) f);
             }
         }
 
@@ -82,6 +85,32 @@ public class ReportingDataServiceImpl implements ReportingDataService {
 
         movementRepository.executeQuery(query.toString());
         return new ExecutionResultDTO();
+    }
+
+    private void updateQueryWithSegmentCriteria(StringBuilder query, VmsSegmentFilter f) {
+        DurationRange durationRange = f.getDurationRange();
+        if (durationRange != null) {
+            if (durationRange.getMinDuration() != null && durationRange.getMaxDuration() != null) {
+                query.append("AND s.duration >= " + durationRange.getMinDuration() + " AND s.duration <= " + durationRange.getMaxDuration() + " ");
+            } else if (durationRange.getMinDuration() != null && durationRange.getMaxDuration() == null) {
+                query.append("AND s.duration >= " + durationRange.getMinDuration() + " ");
+            } else if (durationRange.getMinDuration() == null && durationRange.getMaxDuration() != null) {
+                query.append("AND s.duration <= " + durationRange.getMaxDuration() + " ");
+            }
+        }
+        SegmentCategoryType category = f.getCategory();
+        if (category != null){
+            SegmentCategoryType[] values = SegmentCategoryType.values();
+            query.append("AND s.segment_category = '" + values[category.ordinal()] + "' ");
+        }
+
+        if (f.getMinimumSpeed() != null && f.getMaximumSpeed() != null) {
+            query.append("AND s.speed_over_ground >= " + f.getMinimumSpeed() + " AND s.speed_over_ground <= " +f.getMaximumSpeed() + " ");
+        } else if (f.getMinimumSpeed() != null && f.getMaximumSpeed() == null) {
+            query.append("AND s.speed_over_ground >= " + f.getMinimumSpeed() + " ");
+        } else if (f.getMinimumSpeed() == null && f.getMaximumSpeed() != null) {
+            query.append("AND s.speed_over_ground <= " + f.getMaximumSpeed() + " ");
+        }
     }
 
     private void updateQueryWithJoinForAreaCriteria(StringBuilder query, List<Filter> areaFilters) {
@@ -125,13 +154,13 @@ public class ReportingDataServiceImpl implements ReportingDataService {
         if (timeRange != null) {
             if (timeRange.getMin() != null && timeRange.getMax() != null) {
                 hasTimeRange = true;
-                query.append("t.duration >= " + timeRange.getMin() + " AND t.duration <= " + timeRange.getMax() + " ");
+                query.append("AND t.duration >= " + timeRange.getMin() + " AND t.duration <= " + timeRange.getMax() + " ");
             } else if (timeRange.getMin() != null && timeRange.getMax() == null) {
                 hasTimeRange = true;
-                query.append("t.duration >= " + timeRange.getMin() + " ");
+                query.append("AND t.duration >= " + timeRange.getMin() + " ");
             } else if (timeRange.getMin() == null && timeRange.getMax() != null) {
                 hasTimeRange = true;
-                query.append("t.duration <= " + timeRange.getMax() + " ");
+                query.append("AND t.duration <= " + timeRange.getMax() + " ");
             }
         }
 
