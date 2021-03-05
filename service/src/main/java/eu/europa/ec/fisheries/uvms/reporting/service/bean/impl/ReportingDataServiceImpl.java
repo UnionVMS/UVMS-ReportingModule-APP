@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eu.europa.ec.fisheries.schema.movement.v1.MovementActivityTypeType;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType;
 import eu.europa.ec.fisheries.schema.movement.v1.SegmentCategoryType;
 import eu.europa.ec.fisheries.uvms.commons.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.MovementRepository;
@@ -24,6 +26,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import org.joda.time.DateTime;
+import org.mapstruct.ap.internal.util.Strings;
 
 public class ReportingDataServiceImpl implements ReportingDataService {
 
@@ -53,7 +56,7 @@ public class ReportingDataServiceImpl implements ReportingDataService {
                 .filter(f -> FilterType.areas.equals(f.getType()))
                 .collect(Collectors.toList());
 
-        updateQueryWithJoinForAreaCriteria(query,areaFilters);
+        updateQueryWithJoinForAreaCriteria(query, areaFilters);
 
         Optional<Filter> dateFilter = report.getFilters().stream().filter(f -> FilterType.common.equals(f.getType())).findFirst();
         dateFilter.ifPresent(dF -> {
@@ -74,6 +77,8 @@ public class ReportingDataServiceImpl implements ReportingDataService {
                 updateQueryWithTrackCriteria(query, (VmsTrackFilter) f);
             } else if (FilterType.vmsseg.equals(f.getType())) {
                 updateQueryWithSegmentCriteria(query, (VmsSegmentFilter) f);
+            } else if (FilterType.vmspos.equals(f.getType())) {
+                updateQueryWithPositionalCriteria(query, (VmsPositionFilter) f);
             }
         }
 
@@ -99,17 +104,43 @@ public class ReportingDataServiceImpl implements ReportingDataService {
             }
         }
         SegmentCategoryType category = f.getCategory();
-        if (category != null){
+        if (category != null) {
             SegmentCategoryType[] values = SegmentCategoryType.values();
             query.append("AND s.segment_category = '" + values[category.ordinal()] + "' ");
         }
 
         if (f.getMinimumSpeed() != null && f.getMaximumSpeed() != null) {
-            query.append("AND s.speed_over_ground >= " + f.getMinimumSpeed() + " AND s.speed_over_ground <= " +f.getMaximumSpeed() + " ");
+            query.append("AND s.speed_over_ground >= " + f.getMinimumSpeed() + " AND s.speed_over_ground <= " + f.getMaximumSpeed() + " ");
         } else if (f.getMinimumSpeed() != null && f.getMaximumSpeed() == null) {
             query.append("AND s.speed_over_ground >= " + f.getMinimumSpeed() + " ");
         } else if (f.getMinimumSpeed() == null && f.getMaximumSpeed() != null) {
             query.append("AND s.speed_over_ground <= " + f.getMaximumSpeed() + " ");
+        }
+    }
+
+    private void updateQueryWithPositionalCriteria(StringBuilder query, VmsPositionFilter f) {
+        if (f.getMinimumSpeed() != null && f.getMaximumSpeed() != null) {
+            query.append("AND m.reported_speed >= " + f.getMinimumSpeed() + " AND m.reported_speed <= " + f.getMaximumSpeed() + " ");
+        } else if (f.getMinimumSpeed() != null && f.getMaximumSpeed() == null) {
+            query.append("AND m.reported_speed >= " + f.getMinimumSpeed() + " ");
+        } else if (f.getMinimumSpeed() == null && f.getMaximumSpeed() != null) {
+            query.append("AND m.reported_speed <= " + f.getMaximumSpeed() + " ");
+        }
+
+        MovementTypeType movementType = f.getMovementType();
+        if (movementType != null) {
+            query.append("AND m.movement_type = '" + movementType.value() + "' ");
+        }
+
+        MovementActivityTypeType movementActivity = f.getMovementActivity();
+        if (movementActivity != null) {
+            query.append("AND m.movement_activity_type = '" + movementActivity.value() + "' ");
+        }
+        List<String> movementSources = f.getMovementSources();
+        if (movementSources != null && !movementSources.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("'").append(Strings.join(movementSources, "','")).append("'");
+            query.append("AND m.source IN (" + sb.toString() + ") ");
         }
     }
 
