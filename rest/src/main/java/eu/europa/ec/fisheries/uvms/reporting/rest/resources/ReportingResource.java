@@ -64,6 +64,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportFeatureEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.MovementReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.Projection;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.VelocityType;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.AuthorizationCheckUtil;
@@ -449,7 +450,7 @@ public class ReportingResource extends UnionVMSResource {
 			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
 
 
-			ExecutionResultDTO reportExecutionByReportId = reportExecutionService.getReportExecutionByReportIdV2(id,
+			reportExecutionService.getReportExecutionByReportIdV2(id,
 					username, scopeName, areaRestrictions, dateTime, isAdmin, withActivity, format, null, null);
 
 //			ObjectNode rootNode = mapToGeoJson(reportExecutionByReportId);

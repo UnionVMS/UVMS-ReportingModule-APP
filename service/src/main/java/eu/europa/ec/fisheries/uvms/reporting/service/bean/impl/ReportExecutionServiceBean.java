@@ -71,6 +71,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.MovementReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.comparator.GroupCriteriaFilterSequenceComparator;
 import eu.europa.ec.fisheries.uvms.reporting.service.enums.GroupCriteriaType;
@@ -120,16 +121,18 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
     @Transactional
     @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
     @Interceptors(TracingInterceptor.class)
-    public ExecutionResultDTO getReportExecutionByReportIdV2(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat, Long pageNumber, Long pageSize) throws ReportingServiceException {
+    public void getReportExecutionByReportIdV2(final Long id, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat, Long pageNumber, Long pageSize) throws ReportingServiceException {
         Report report = repository.findReportByReportId(id, username, scopeName, isAdmin);
         if (report == null) {
             final String error = "No report found with id " + id;
             log.error("No report found with id " + id);
             throw new ReportingServiceException(error);
         }
-        ExecutionResultDTO resultDTO = reportingDataService.executeReport(report, now, areaRestrictions, withActivity, displayFormat, pageNumber, pageSize);
+        List<MovementReportResult> movementReportResultList = reportingDataService.executeMovementReport(report, now, areaRestrictions, withActivity, displayFormat, pageNumber, pageSize);
+
         report.updateExecutionLog(username);
-        return resultDTO;
+
+        //return null;
     }
 
     @Override

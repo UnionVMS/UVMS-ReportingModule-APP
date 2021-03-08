@@ -14,11 +14,13 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.MovementRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.MovementDao;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Area;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Movement;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.MovementReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Segment;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Track;
 import eu.europa.ec.fisheries.uvms.reporting.service.exception.ApplicationException;
@@ -72,7 +74,7 @@ public class MovementRepositoryBean implements MovementRepository {
     }
 
     @Override
-    public Object executeQuery(String query) {
+    public List<MovementReportResult> executeQuery(String query) {
         return movementDao.executeQuery(query);
     }
 }

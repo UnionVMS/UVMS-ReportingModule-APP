@@ -13,13 +13,12 @@ import eu.europa.ec.fisheries.uvms.commons.domain.Range;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.MovementRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportingDataService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
-import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.CommonFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.DurationRange;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.MovementReportResult;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsPositionFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsSegmentFilter;
@@ -34,23 +33,17 @@ public class ReportingDataServiceImpl implements ReportingDataService {
     private MovementRepository movementRepository;
 
     @Override
-    public ExecutionResultDTO executeReport(Report report, DateTime now,
-                                            List<AreaIdentifierType> areaRestrictions,
-                                            Boolean withActivity,
-                                            DisplayFormat displayFormat,
-                                            Long pageNumber,
-                                            Long pageSize) {
+    public List<MovementReportResult> executeMovementReport(Report report, DateTime now,
+                                                            List<AreaIdentifierType> areaRestrictions,
+                                                            Boolean withActivity,
+                                                            DisplayFormat displayFormat,
+                                                            Long pageNumber,
+                                                            Long pageSize) {
 
         long offset = pageNumber != null ? pageNumber * pageSize : 0;
         long limit = pageSize != null ? pageSize : 1000;
 
-        StringBuilder query =
-                new StringBuilder()
-                        .append("SELECT DISTINCT m.id, m.movement_guid ")
-                        .append("FROM reporting.movement m ")
-                        .append("JOIN reporting.segment s ON s.movement_guid = m.movement_guid ")
-                        .append("JOIN reporting.track t ON t.id = s.track_id ")
-                        .append("JOIN reporting.asset a ON a.asset_hist_guid = m.connect_id ");
+        StringBuilder query = createBaseQuery();
 
         List<Filter> areaFilters = report.getFilters().stream()
                 .filter(f -> FilterType.areas.equals(f.getType()))
@@ -58,12 +51,7 @@ public class ReportingDataServiceImpl implements ReportingDataService {
 
         updateQueryWithJoinForAreaCriteria(query, areaFilters);
 
-        Optional<Filter> dateFilter = report.getFilters().stream().filter(f -> FilterType.common.equals(f.getType())).findFirst();
-        dateFilter.ifPresent(dF -> {
-            String startDate = ((CommonFilter) dF).getDateRange().getStartDate().toInstant().toString().replace("T", " ").replace("Z", " ");
-            String endDate = ((CommonFilter) dF).getDateRange().getEndDate().toInstant().toString().replace("T", " ").replace("Z", " ");
-            query.append("WHERE m.position_time >= '" + startDate + "' AND m.position_time  <= '" + endDate + "' ");
-        });
+        updateQueryWithDatePeriodCriteria(report, query);
 
         updateQueryWithAreaCriteria(query, areaFilters);
 
@@ -85,11 +73,36 @@ public class ReportingDataServiceImpl implements ReportingDataService {
         List<String> assets = report.getFilters().stream().filter(f -> FilterType.asset.equals(f.getType())).map(f -> ((AssetFilter) f).getGuid()).collect(Collectors.toList());
         updateQueryWithAssetCriteria(query, assets);
 
+        updatedQueryWithOrderByAndPagination(offset, limit, query);
+
+        List<MovementReportResult> result = movementRepository.executeQuery(query.toString());
+        return result;
+    }
+
+    private StringBuilder createBaseQuery() {
+        return new StringBuilder()
+                .append("SELECT DISTINCT m.id, m.position_coordinates, m.position_time, m.connect_id, m.movement_guid, m.source, m.movement_type, m.movement_activity_type, m.reported_course, m.reported_speed, m.calculated_speed, m.closest_country, m.closest_country_distance, m.closest_port, m.closest_port_distance, ")
+                .append("a.asset_hist_guid, a.asset_guid, a.asset_hist_active, a.uvi, a.iccat, a.cfr, a.ircs, a.name, a.ext_mark, a.gfcm, a.country_code, a.length_overall, a.main_gear_type, ")
+                .append("s.track_id, s.id AS segment_id, s.segment_coordinates, s.segment_category, s.calculated_speed AS segment_calculated_speed, s.speed_over_ground AS segment_speed_over_ground, s.course_over_ground AS segment_course_over_ground, s.duration AS segment_duration, s.distance AS segment_distance, ")
+                .append("t.nearest_point_coordinates, t.extent_coordinates, t.duration, t.distance, t.total_time_at_sea ")
+                .append("FROM reporting.movement m ")
+                .append("JOIN reporting.segment s ON s.movement_guid = m.movement_guid ")
+                .append("JOIN reporting.track t ON t.id = s.track_id ")
+                .append("JOIN reporting.asset a ON a.asset_hist_guid = m.connect_id ");
+    }
+
+    private void updateQueryWithDatePeriodCriteria(Report report, StringBuilder query) {
+        Optional<Filter> dateFilter = report.getFilters().stream().filter(f -> FilterType.common.equals(f.getType())).findFirst();
+        dateFilter.ifPresent(dF -> {
+            String startDate = ((CommonFilter) dF).getDateRange().getStartDate().toInstant().toString().replace("T", " ").replace("Z", " ");
+            String endDate = ((CommonFilter) dF).getDateRange().getEndDate().toInstant().toString().replace("T", " ").replace("Z", " ");
+            query.append("WHERE m.position_time >= '" + startDate + "' AND m.position_time  <= '" + endDate + "' ");
+        });
+    }
+
+    private void updatedQueryWithOrderByAndPagination(long offset, long limit, StringBuilder query) {
         query.append("ORDER BY m.id DESC ");
         query.append("OFFSET " + offset + " LIMIT " + limit);
-
-        movementRepository.executeQuery(query.toString());
-        return new ExecutionResultDTO();
     }
 
     private void updateQueryWithSegmentCriteria(StringBuilder query, VmsSegmentFilter f) {
