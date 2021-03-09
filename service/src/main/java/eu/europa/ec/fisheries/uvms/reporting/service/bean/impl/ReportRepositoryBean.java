@@ -18,9 +18,13 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ExecutionLogDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.FilterDAO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dao.ReportDAO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.merger.FilterMerger;
 import java.util.List;
@@ -30,6 +34,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -93,6 +99,11 @@ public class ReportRepositoryBean implements ReportRepository {
     @Override
     public Report findReportByReportId(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException {
         return reportDAO.findReportByReportId(reportId, username, scopeName, isAdmin);
+    }
+
+    @Override
+    public List<ActivityReportDTO> findActivityReportByReportId(Report report, int firstResult, int maxResults) {
+        return reportDAO.findActivityReportByReportId(report, firstResult, maxResults);
     }
 
     @Override

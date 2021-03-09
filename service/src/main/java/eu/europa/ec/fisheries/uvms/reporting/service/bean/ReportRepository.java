@@ -14,9 +14,11 @@ package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
+
 import java.util.List;
 
 public interface ReportRepository {
@@ -26,6 +28,8 @@ public interface ReportRepository {
     Report findReportByReportId(Long reportId, String username, String scopeName, Boolean isAdmin) throws ReportingServiceException;
 
     Report findReportByReportId(Long reportId) throws ReportingServiceException, ServiceException;
+
+    List<ActivityReportDTO> findActivityReportByReportId(Report report, int firstResult, int maxResults);
 
     List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent, Boolean isAdmin) throws ReportingServiceException;
 

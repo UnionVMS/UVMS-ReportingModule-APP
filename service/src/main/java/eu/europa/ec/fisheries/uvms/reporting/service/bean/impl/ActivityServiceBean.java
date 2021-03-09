@@ -40,6 +40,7 @@ import eu.europa.ec.fisheries.uvms.reporting.message.service.ReportingModuleRece
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ActivityService;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Trip;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -47,6 +48,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
+
+import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
 
 @Stateless
 @Local(ActivityService.class)
@@ -58,8 +62,6 @@ public class ActivityServiceBean implements ActivityService {
 
     @EJB
     private ReportingModuleReceiverBean reportingModule;
-
-    private ActivityRepositoryBean activityRepositoryBean;
 
     @Override
     @Interceptors(SimpleTracingInterceptor.class)

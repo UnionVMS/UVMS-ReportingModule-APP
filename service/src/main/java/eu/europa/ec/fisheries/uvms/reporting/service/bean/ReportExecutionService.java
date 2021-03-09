@@ -13,6 +13,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.bean;
 
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.Report;
@@ -25,5 +26,7 @@ public interface ReportExecutionService {
     ExecutionResultDTO getReportExecutionByReportId(Long id, String username, String scopeName, List<AreaIdentifierType> areaRestrictions, DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat format) throws ReportingServiceException;
 
     ExecutionResultDTO getReportExecutionWithoutSave(Report report, List<AreaIdentifierType> areaRestrictions, String userName, Boolean withActivity, DisplayFormat format) throws ReportingServiceException;
+
+    List<ActivityReportDTO> getActivityReportExecutionByReportId(Long reportId, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat, int pageNumber, int pageSize) throws ReportingServiceException;
 
 }

@@ -13,16 +13,29 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.reporting.service.dao;
 
 import static eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter.with;
+import static eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType.*;
 import static eu.europa.ec.fisheries.uvms.reporting.service.entities.Report.EXECUTED_BY_USER;
 
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceException;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.AssetFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FaFilter;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.FilterType;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.VmsTrackFilter;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
@@ -110,6 +123,101 @@ public class ReportDAO extends AbstractDAO<Report> {
             result = reports.get(0);
         }
         return result;
+    }
+
+    public List<ActivityReportDTO> findActivityReportByReportId(final Report report, int firstResult, int maxResults) {
+
+//        long offset = pageNumber != null ? pageNumber * pageSize : 0;
+//        long limit = pageSize != null ? pageSize : 1000;
+
+        StringBuilder query =
+                new StringBuilder()
+                        .append("SELECT DISTINCT a.id,a.act_id,a.fa_report_id,a.trip_id,a.report_type,a.activity_type,a.purpose_code,a.source,a.accepted_timestamp,a.calculated_timestamp," +
+                                " a.occurrence_timestamp,a.start_timestamp,a.end_timestamp,a.status,a.is_latest,a.activity_coordinates,a.activity_latitude,a.activity_longitude,a.master,a.reason_code,a.asset_hist_guid AS activity_assetHistGuid," +
+                                "ra.asset_hist_guid,ra.asset_guid,ra.asset_hist_active,ra.uvi,ra.iccat,ra.cfr,ra.ircs,ra.name,ra.ext_mark,ra.gfcm,ra.country_code,ra.length_overall,ra.main_gear_type," +
+                                "t.id AS trip_trip_id,t.trip_id AS trip_tripid,t.trip_id_scheme,t.trip_coordinates,t.first_fishing_activity,t.first_fishing_activity_timestamp,t.last_fishing_activity,t.last_fishing_activity_timestamp,t.trip_duration," +
+                                "t.number_of_corrections,t.number_of_positions,t.asset_hist_guid AS trip_assetHistGuid ")
+                        .append("FROM reporting.activity a ")
+                        .append("LEFT JOIN reporting.asset ra ON ra.asset_hist_guid = a.asset_hist_guid ")
+                        .append("LEFT JOIN reporting.trip t ON t.trip_id = a.trip_id ")
+                        .append("LEFT JOIN reporting.activity_catch ac ON ac.activity_id = a.act_id ")
+                        .append("LEFT JOIN reporting.activity_catch_location acl ON acl.activity_catch_id = ac.id ")
+                        .append("LEFT JOIN reporting.activity_catch_processing acp ON acp.activity_catch_id = ac.id ")
+                        .append("LEFT JOIN reporting.activity_gear ag ON ag.activity_id = a.act_id ")
+                        .append("LEFT JOIN reporting.activity_location al ON al.activity_id = a.act_id ");
+
+            if(!report.getFilters().isEmpty()){
+                query.append("WHERE ");
+
+                report.getFilters().stream().forEach(f -> {
+                    FaFilter faFilter;
+                    AssetFilter assetFilter;
+                    switch (f.getType()) {
+                        case fa:
+                            faFilter = (FaFilter) f;
+                            if(faFilter.getReportTypes() != null && !faFilter.getReportTypes().isEmpty()) {
+                                query.append(" a.report_type = '");
+                                query.append(faFilter.getReportTypes().get(0) + "'"+ " AND ");
+                            }
+
+                            if(faFilter.getFaPorts() != null && !faFilter.getFaPorts().isEmpty()) {
+                                query.append(" al.code = '");
+                                query.append(faFilter.getFaPorts().get(0) + "'"+ " AND ");
+                            }
+
+                            if(faFilter.getMasters() != null && !faFilter.getMasters().isEmpty()) {
+                                query.append(" a.master like '%");
+                                query.append(faFilter.getMasters().get(0) + "%'" + " AND ");
+                            }
+
+                            if(faFilter.getSpecies() != null && !faFilter.getSpecies().isEmpty()){
+                                query.append(" ac.species_code in ('");
+                                query.append( faFilter.getSpecies().get(0) + "')" +" AND ");
+                            }
+
+                            if(faFilter.getFaWeight() != null && faFilter.getFaWeight().getWeightMax() != null){
+                                query.append(" ac.weight_measure <= " + faFilter.getFaWeight().getWeightMax()+ " AND ");
+                            }
+
+                            if(faFilter.getFaWeight() != null && faFilter.getFaWeight().getWeightMin() != null){
+                                query.append(" ac.weight_measure >= " + faFilter.getFaWeight().getWeightMin() +" AND ");
+                            }
+
+                            if(faFilter.getFaGears() != null && !faFilter.getFaGears().isEmpty()){
+                                query.append(" ag.gear_code = '"+ faFilter.getFaGears().get(0) +"'" + " AND ");
+                            }
+
+                            if(faFilter.getActivityTypes() != null && !faFilter.getActivityTypes().isEmpty()){
+                                query.append(" a.activity_type = '"+ faFilter.getActivityTypes().get(0) +"'" + " AND ");
+                            }
+
+                            if(faFilter.getActivityTypes() != null && !faFilter.getActivityTypes().isEmpty()){
+                                query.append(" a.activity_type = '"+ faFilter.getActivityTypes().get(0) +"'" + " AND ");
+                            }
+
+                            break;
+
+                        case asset:
+                            assetFilter = (AssetFilter) f;
+                            if(assetFilter.getName() != null ) {
+                                query.append(" ra.guid = '");
+                                query.append(assetFilter.getGuid() + "'"+ " AND ");
+                            }
+                            break;
+                        default:
+                    }
+                });
+            }
+
+
+//        query.append("ORDER BY m.id DESC ");
+//        query.append("OFFSET " + offset + " LIMIT " + limit);
+        Query nativeQuery = em.createNativeQuery(query.toString().substring(0,query.toString().length() - 4),Activity.class);
+//        nativeQuery.setFirstResult(firstResult);
+//        nativeQuery.setMaxResults(maxResults);
+
+
+        return (List<ActivityReportDTO>) nativeQuery.getResultList();
     }
 
     public List<Report> listByUsernameAndScope(String username, String scopeName, Boolean existent, Boolean isAdmin) throws ReportingServiceException {

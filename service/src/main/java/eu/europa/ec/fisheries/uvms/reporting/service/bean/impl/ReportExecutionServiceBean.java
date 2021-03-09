@@ -59,6 +59,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportRepository;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.SpatialService;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.FACatchSummaryDTO;
@@ -68,6 +69,7 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.MovementData;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.SegmentDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TrackDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.TripDTO;
+import eu.europa.ec.fisheries.uvms.reporting.service.entities.Activity;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Filter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.GroupCriteriaFilter;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
@@ -124,6 +126,23 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
         }
         ExecutionResultDTO resultDTO = executeReport(reportByReportId, now, areaRestrictions, withActivity, displayFormat);
         reportByReportId.updateExecutionLog(username);
+        return resultDTO;
+    }
+
+    @Override
+    @Transactional
+    @IAuditInterceptor(auditActionType = AuditActionEnum.EXECUTE)
+    @Interceptors(TracingInterceptor.class)
+    public List<ActivityReportDTO> getActivityReportExecutionByReportId(Long reportId, final String username, final String scopeName, final List<AreaIdentifierType> areaRestrictions, final DateTime now, Boolean isAdmin, Boolean withActivity, DisplayFormat displayFormat, int firstResult, int maxResults) throws ReportingServiceException {
+        Report report = repository.findReportByReportId(reportId, username, scopeName, isAdmin);
+        if (report == null) {
+            final String error = "No report found with id: " + reportId;
+            log.error("No report found with id: " + reportId);
+            throw new ReportingServiceException(error);
+        }
+
+        List<ActivityReportDTO> resultDTO = repository.findActivityReportByReportId(report, firstResult, maxResults);
+        report.updateExecutionLog(username);
         return resultDTO;
     }
 

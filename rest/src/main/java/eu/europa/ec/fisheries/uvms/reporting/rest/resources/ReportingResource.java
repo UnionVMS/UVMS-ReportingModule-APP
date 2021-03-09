@@ -56,6 +56,7 @@ import eu.europa.ec.fisheries.uvms.reporting.model.exception.ReportingServiceExc
 import eu.europa.ec.fisheries.uvms.reporting.rest.utils.ReportingExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.ReportExecutionService;
 import eu.europa.ec.fisheries.uvms.reporting.service.bean.impl.ReportServiceBean;
+import eu.europa.ec.fisheries.uvms.reporting.service.dto.ActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.CriteriaFilterDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.DisplayFormat;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.ExecutionResultDTO;
@@ -453,6 +454,37 @@ public class ReportingResource extends UnionVMSResource {
 
 			ObjectNode rootNode = mapToGeoJson(reportExecutionByReportId);
 			return createSuccessResponse(rootNode);
+
+		} catch (Exception e) {
+			log.error("Report execution failed.", e);
+			return createErrorResponse(e.getMessage());
+		}
+	}
+
+	@POST
+	@Path("/execute/activity/{id}")
+	@Produces(APPLICATION_JSON)
+	@Consumes(APPLICATION_JSON)
+	public Response runActivityReport(@Context HttpServletRequest request, @PathParam("id") Long id,
+	                          @QueryParam("limit") int limit, @HeaderParam("after_id") int after_id,
+	                                  @HeaderParam("scopeName") String scopeName, @HeaderParam("roleName") String roleName,
+	                                  DisplayFormat format) {
+
+		String username = request.getRemoteUser();
+
+		log.debug("{} is requesting runReport(...), with a ID={}", username, id);
+
+		try {
+//			Map additionalProperties = (Map) format.getAdditionalProperties().get(ADDITIONAL_PROPERTIES);
+//			DateTime dateTime = DateUtils.UI_FORMATTER.parseDateTime((String) additionalProperties.get(TIMESTAMP));
+//			List<AreaIdentifierType> areaRestrictions = getRestrictionAreas(username, scopeName, roleName);
+//			Boolean isAdmin = request.isUserInRole(ReportFeatureEnum.MANAGE_ALL_REPORTS.toString());
+//			Boolean withActivity = request.isUserInRole(ActivityFeaturesEnum.ACTIVITY_ALLOWED.value());
+
+
+			List<ActivityReportDTO> activityReportExecution = reportExecutionService.getActivityReportExecutionByReportId(id, username, scopeName, null, null, false, null, format, after_id, limit);
+
+			return createSuccessResponse(activityReportExecution);
 
 		} catch (Exception e) {
 			log.error("Report execution failed.", e);
