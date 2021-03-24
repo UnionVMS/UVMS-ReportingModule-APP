@@ -73,9 +73,10 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 @Slf4j
 public class ActivityReportServiceBean implements ActivityReportService {
 
-    public static final String REPORT_TYPE_DECLARATION = "DECLARATION";
-    public static final String FISH_PRESERVATION = "FISH_PRESERVATION";
-    public static final String FISH_PRESENTATION = "FISH_PRESENTATION";
+    private static final String REPORT_TYPE_DECLARATION = "DECLARATION";
+    private static final String FISH_PRESERVATION = "FISH_PRESERVATION";
+    private static final String FISH_PRESENTATION = "FISH_PRESENTATION";
+    private static final String JOINT_FISHING_OPERATION = "JOINT_FISHING_OPERATION";
 
     @Inject
     private ActivityRepository activityRepository;
@@ -234,23 +235,23 @@ public class ActivityReportServiceBean implements ActivityReportService {
         return l;
     }
 
-    private String getCfrFromVesselTransportMeans(VesselTransportMeans vtm) {
-        Optional<IDType> cfr = vtm.getIDS().stream().filter(id -> id.getSchemeID().equals("CFR")).findAny();
-        return cfr.map(IDType::getValue).orElse(null);
+    private String getIdentifierFromVesselTransportMeans(VesselTransportMeans vtm, String identifierType) {
+        Optional<IDType> identifier = vtm.getIDS().stream().filter(id -> id.getSchemeID().equals(identifierType)).findAny();
+        return identifier.map(IDType::getValue).orElse(null);
     }
 
     private void mapCatches(FishingActivity fishingActivity, Activity activity, List<Asset> assets) {
         List<Catch> catches = new ArrayList<>();
         List<FACatch> catchesToProcess = fishingActivity.getSpecifiedFACatches();
 
-        if (fishingActivity.getTypeCode().getValue().equals("JOINT_FISHING_OPERATION")) {
+        if (fishingActivity.getTypeCode().getValue().equals(JOINT_FISHING_OPERATION)) {
             Optional<Asset> asset = assets.stream().findFirst();
-            final String cfrToMatch = asset.map(Asset::getCfr).orElse("");
-            List<FishingActivity> relatedFishingActivitiesForCfr = findRelatedFishingActivitiesForJFOwithCFR(fishingActivity, cfrToMatch);
-
-            Optional<FishingActivity> first = relatedFishingActivitiesForCfr.stream().findFirst();
+            List<FishingActivity> relatedFishingActivities = findRelatedFishingActivitiesForJfoWithPrecedenceOrder(fishingActivity, asset);
+            Optional<FishingActivity> first = relatedFishingActivities.stream().findFirst();
             if (first.isPresent()) {
                 catchesToProcess = first.get().getSpecifiedFACatches();
+            } else {
+                log.warn("Could not find catches for the given vessel with history guid (" + (asset.isPresent() ? asset.get().getAssetHistGuid() : "null asset") + ") for JFO with id (" + activity.getId() + ")");
             }
         }
 
@@ -296,17 +297,35 @@ public class ActivityReportServiceBean implements ActivityReportService {
         }
     }
 
-    private List<FishingActivity> findRelatedFishingActivitiesForJFOwithCFR(FishingActivity fishingActivity, String cfrToMatch) {
-        return fishingActivity.getRelatedFishingActivities().stream().filter(rfa -> {
-            boolean matches = false;
-            for (int i = 0; i < rfa.getRelatedVesselTransportMeans().size(); i++) {
-                if (getCfrFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i)).equals(cfrToMatch)) {
-                    matches = true;
-                    break;
+    private List<FishingActivity> findRelatedFishingActivitiesForJfoWithPrecedenceOrder(FishingActivity fishingActivity, Optional<Asset> asset) {
+        if (asset != null && asset.isPresent()) {
+            return fishingActivity.getRelatedFishingActivities().stream().filter(rfa -> {
+                boolean matches = false;
+                for (int i = 0; i < rfa.getRelatedVesselTransportMeans().size(); i++) {
+                    if (asset.get().getCfr() != null && getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "CFR") != null) {
+                        matches = getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "CFR").equals(asset.get().getCfr());
+                        break;
+                    } else if (asset.get().getUvi() != null && getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "UVI") != null) {
+                        matches = getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "UVI").equals(asset.get().getUvi());
+                        break;
+                    } else if (asset.get().getIrcs() != null && getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "IRCS") != null) {
+                        matches = getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "IRCS").equals(asset.get().getIrcs());
+                        break;
+                    } else if (asset.get().getExternalMarking() != null && getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "EXT_MARK") != null) {
+                        matches = getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "EXT_MARK").equals(asset.get().getExternalMarking());
+                        break;
+                    } else if (asset.get().getIccat() != null && getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "ICCAT") != null) {
+                        matches = getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "ICCAT").equals(asset.get().getIccat());
+                        break;
+                    } else if (asset.get().getGfcm() != null && getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "GFCM") != null) {
+                        matches = getIdentifierFromVesselTransportMeans(rfa.getRelatedVesselTransportMeans().get(i), "GFCM").equals(asset.get().getGfcm());
+                        break;
+                    }
                 }
-            }
-            return matches;
-        }).collect(Collectors.toList());
+                return matches;
+            }).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     private void setProcessingCatchInfo(Catch speciesCatch, FACatch rsc) {
