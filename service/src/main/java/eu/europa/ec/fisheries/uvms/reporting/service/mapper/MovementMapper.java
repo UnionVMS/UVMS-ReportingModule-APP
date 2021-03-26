@@ -75,7 +75,7 @@ public abstract class MovementMapper {
     }
 
     protected Point getPoint(MovementPoint movementPoint) {
-        return (Point) GeometryUtils.createPoint(movementPoint.getLatitude(), movementPoint.getLongitude());
+        return (Point) GeometryUtils.createPoint(movementPoint.getLongitude(),movementPoint.getLatitude());
     }
 
     @SneakyThrows

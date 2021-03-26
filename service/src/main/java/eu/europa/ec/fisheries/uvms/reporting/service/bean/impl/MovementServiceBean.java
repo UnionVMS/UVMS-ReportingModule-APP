@@ -120,6 +120,9 @@ public class MovementServiceBean {
      * @throws ReportingServiceException Thrown if error occurs
      */
     public void createMovementsSegmentsAndTracks(List<MovementType> movementTypes) throws ReportingServiceException {
+        if (movementTypes == null || movementTypes.size() == 0) { // duplicate movement from movement-module
+            return;
+        }
         Map<String, Asset> assetMap = getFromAssetIfNotAvailableLocally(movementTypes);
         Map<String, MovementTypeData> movementTypeDataMap = movementTypes.stream()
                 .map(movementType -> new MovementTypeData(movementType, assetMap.get(movementType.getConnectId())))
