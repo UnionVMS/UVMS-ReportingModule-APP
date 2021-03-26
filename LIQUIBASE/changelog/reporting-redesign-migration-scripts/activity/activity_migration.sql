@@ -6,12 +6,13 @@ DECLARE
    begin
    WHILE total_rows = row_batch loop
 			insert into reporting.activity(id,act_id,fa_report_id,trip_id,report_type,activity_type,purpose_code,"source",accepted_timestamp,calculated_timestamp,occurrence_timestamp,start_timestamp,end_timestamp,status,is_latest,activity_coordinates,master,reason_code,asset_hist_guid)
-			select fa.id,fa.id,fa.fa_report_document_id,fti.trip_id,fti.trip_scheme_id,fa.type_code,frt.purpose_code,sc.vessel_id,frd.accepted_datetime, frd.accepted_datetime,fa.occurence,dp.start_date,dp.end_date,null,fa.latest,fa.geom,vt.name,fa.reason_code,vt.guid
+			select fa.id,fa.id,afri.flux_report_identifier_id,fti.trip_id,fti.trip_scheme_id,fa.type_code,frt.purpose_code,sc.vessel_id,frd.accepted_datetime, frd.accepted_datetime,fa.occurence,dp.start_date,dp.end_date,null,fa.latest,fa.geom,vt.name,fa.reason_code,vt.guid
 			from activity.activity_fishing_activity fa
 			left join activity.activity_fishing_trip ft on ft.fishing_activity_id = fa.id
 			left join activity.activity_fishing_trip_identifier fti on ft.id = fti.fishing_trip_id and fti.trip_scheme_id = 'EU_TRIP_ID'
 			left join activity.activity_fa_report_document frd on fa.fa_report_document_id = frd.id
 			left join activity.activity_flux_report_document frt on frt.id = frd.flux_report_document_id
+			left join activity.activity_flux_report_identifier afri on afri.id = frd.flux_report_document_id
 			left join activity.activity_vessel_storage_characteristics sc on sc.id = fa.source_vessel_char_id
 			left join activity.activity_delimited_period dp on dp.fishing_activity_id =fa.id
 			left join activity.activity_vessel_transport_means vt on vt.fa_report_document_id = fa.fa_report_document_id
