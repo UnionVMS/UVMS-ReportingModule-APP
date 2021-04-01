@@ -117,7 +117,7 @@ public class ReportingDataServiceImpl implements ReportingDataService {
     }
 
     private void updatedQueryWithOrderByAndPagination(long offset, long limit, StringBuilder query) {
-        query.append("ORDER BY m.id DESC ");
+        query.append("ORDER BY m.position_time ASC ");
         query.append("OFFSET " + offset + " LIMIT " + limit);
     }
 
@@ -249,10 +249,10 @@ public class ReportingDataServiceImpl implements ReportingDataService {
 
 
     @Override
-    public List<ActivityReportResult> findActivityReportByReportId(final Report report, int firstResult, int maxResults) {
+    public List<ActivityReportResult> findActivityReportByReportId(final Report report, Long pageNumber, Long pageSize) {
 
-//        long offset = pageNumber != null ? pageNumber * pageSize : 0;
-//        long limit = pageSize != null ? pageSize : 1000;
+        long offset = pageNumber != null ? pageNumber * pageSize : 0;
+        long limit = pageSize != null ? pageSize : 1000;
 
         StringBuilder query =
                 new StringBuilder()
@@ -336,10 +336,7 @@ public class ReportingDataServiceImpl implements ReportingDataService {
 
         String substring = query.toString().substring(0, query.toString().length() - 4);
 
-        List<ActivityReportResult> activityReportResults = activityRepository.executeQuery(substring + " ORDER BY a.id desc ");
-//        nativeQuery.setFirstResult(firstResult);
-//        nativeQuery.setMaxResults(maxResults);
-
+        List<ActivityReportResult> activityReportResults = activityRepository.executeQuery(substring + " ORDER BY a.occurrence_timestamp ASC " + "OFFSET " + offset + " LIMIT " + limit);
 
         return activityReportResults;
     }

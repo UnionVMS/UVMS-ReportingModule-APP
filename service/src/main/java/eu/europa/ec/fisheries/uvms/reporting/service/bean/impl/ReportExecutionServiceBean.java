@@ -132,9 +132,8 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
             throw new ReportingServiceException(error);
         }
         List<MovementReportResult> movementReportResultList = reportingDataService.executeMovementReport(report, now, areaRestrictions, withActivity, displayFormat, pageNumber, pageSize);
-        List<ActivityReportResult> activityReportResult = reportingDataService.findActivityReportByReportId(report, 0, 0);
+        List<ActivityReportResult> activityReportResult = reportingDataService.findActivityReportByReportId(report, pageNumber, pageSize);
         report.updateExecutionLog(username);
-        //TODO count number of records in db
         return new ReportResult(activityReportResult,movementReportResultList,0,0,0,0);
     }
 

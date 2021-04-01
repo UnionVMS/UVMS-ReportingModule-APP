@@ -81,7 +81,9 @@ public class ReportResultMapper {
                 movementType.setSource(MovementSourceType.fromValue(m.getSource()));
 
                 MovementActivityType movementActivityType = new MovementActivityType();
-                movementActivityType.setMessageType(MovementActivityTypeType.fromValue(m.getMovementActivityType()));
+                if (m.getMovementActivityType() != null) {
+                    movementActivityType.setMessageType(MovementActivityTypeType.fromValue(m.getMovementActivityType()));
+                }
                 movementType.setActivity(movementActivityType);
 
                 movementType.setMovementType(MovementTypeType.fromValue(m.getMovementType()));

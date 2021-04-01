@@ -14,5 +14,5 @@ public interface ReportingDataService {
 
     List<MovementReportResult> executeMovementReport(Report report, DateTime now, List<AreaIdentifierType> areaRestrictions, Boolean withActivity, DisplayFormat displayFormat, Long pageNumber, Long pageSize);
 
-    List<ActivityReportResult> findActivityReportByReportId(final Report report, int firstResult, int maxResults);
+    List<ActivityReportResult> findActivityReportByReportId(final Report report, Long pageNumber, Long pageSize);
 }
