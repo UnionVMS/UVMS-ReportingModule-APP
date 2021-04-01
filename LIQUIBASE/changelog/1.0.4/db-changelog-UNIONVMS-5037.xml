@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="Indexes for reporting tables - UNIONVMS-5037" author="cpapatheodorou">
+
+<!--        movement idxs-->
+        <createIndex indexName="movement_idx_pos_time"
+                     tableName="movement">
+            <column name="position_time" type="timestamp"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="movement_idx_pos_time"
+                       tableName="movement"/>
+        </rollback>
+
+        <createIndex indexName="movement_idx_connect_id"
+                     tableName="movement">
+            <column name="connect_id" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="movement_idx_connect_id"
+                       tableName="movement"/>
+        </rollback>
+
+<!--        segment idxs-->
+        <createIndex indexName="segment_idx_movement_guid"
+                     tableName="segment">
+            <column name="movement_guid" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="segment_idx_movement_guid"
+                       tableName="segment"/>
+        </rollback>
+
+        <createIndex indexName="segment_idx_track_id"
+                     tableName="segment">
+            <column name="track_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="segment_idx_track_id"
+                       tableName="segment"/>
+        </rollback>
+
+        <createIndex indexName="segment_idx_asset_hist_guid"
+                     tableName="segment">
+            <column name="asset_hist_guid" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="segment_idx_asset_hist_guid"
+                       tableName="segment"/>
+        </rollback>
+
+<!--        track idxs-->
+        <createIndex indexName="track_idx_asset_hist_guid"
+                     tableName="track">
+            <column name="asset_hist_guid" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="track_idx_asset_hist_guid"
+                       tableName="track"/>
+        </rollback>
+
+<!--        movement area idxs-->
+        <createIndex indexName="area_idx_remote_id_and_type"
+                     tableName="area">
+            <column name="area_remote_id" type="varchar"/>
+            <column name="area_type" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="area_idx_remote_id_and_type"
+                       tableName="area"/>
+        </rollback>
+
+        <createIndex indexName="movement_area_idx_remote_id_and_type"
+                     tableName="movement_area">
+            <column name="movement_id" type="bigint"/>
+            <column name="area_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="movement_area_idx_remote_id_and_type"
+                       tableName="movement_area"/>
+        </rollback>
+
+<!--        activity idxs-->
+        <createIndex indexName="activity_idx_occ_time"
+                     tableName="activity">
+            <column name="occurrence_timestamp" type="timestamp"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="activity_idx_occ_time"
+                       tableName="activity"/>
+        </rollback>
+
+        <createIndex indexName="activity_idx_asset_hist_guid"
+                     tableName="activity">
+            <column name="asset_hist_guid" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="activity_idx_asset_hist_guid"
+                       tableName="activity"/>
+        </rollback>
+
+        <createIndex indexName="activity_idx_act_id"
+                     tableName="activity">
+            <column name="act_id" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="activity_idx_act_id"
+                       tableName="activity"/>
+        </rollback>
+
+        <createIndex indexName="activity_idx_trip_id"
+                     tableName="activity">
+            <column name="trip_id" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="activity_idx_trip_id"
+                       tableName="activity"/>
+        </rollback>
+
+<!--        activity location idxs-->
+        <createIndex indexName="activity_location_idx_activity_id"
+                     tableName="activity_location">
+            <column name="activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="activity_location_idx_activity_id"
+                       tableName="activity_location"/>
+        </rollback>
+
+<!--        activity catch idxs-->
+        <createIndex indexName="activity_catch_idx_activity_id"
+                     tableName="activity_catch">
+            <column name="activity_id" type="bigint"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="activity_catch_idx_activity_id"
+                       tableName="activity_catch"/>
+        </rollback>
+
+<!--        trip idxs-->
+        <createIndex indexName="trip_idx_trip_id"
+                     tableName="trip">
+            <column name="trip_id" type="varchar"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="trip_idx_trip_id"
+                       tableName="trip"/>
+        </rollback>
+
+    </changeSet>
+
+</databaseChangeLog>
