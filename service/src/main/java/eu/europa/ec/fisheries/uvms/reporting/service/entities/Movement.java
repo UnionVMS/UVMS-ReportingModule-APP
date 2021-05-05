@@ -11,27 +11,14 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Point;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "movement")
@@ -45,7 +32,6 @@ public class Movement {
     private Long id;
 
     @NotNull
-    @Type(type = "org.hibernate.spatial.GeometryType")
     @Column(name = "position_coordinates", columnDefinition = "Geometry")
     private Point position;
 

@@ -11,31 +11,15 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import com.vividsolutions.jts.geom.MultiPoint;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import com.vividsolutions.jts.geom.MultiPoint;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "activity")
@@ -95,7 +79,6 @@ public class Activity implements Serializable {
     @Column(name = "end_timestamp")
     private Date endDate;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
     @Column(name = "activity_coordinates", columnDefinition = "Geometry")
     private MultiPoint activityCoordinates;
 
