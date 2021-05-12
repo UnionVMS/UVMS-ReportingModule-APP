@@ -9,7 +9,7 @@
         <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect"/>
-            <property name="hibernate.id.optimizer.pooled.preferred" value="NONE"/>
+<!--            <property name="hibernate.id.optimizer.pooled.preferred" value="NONE"/>-->
         </properties>
     </persistence-unit>
 
