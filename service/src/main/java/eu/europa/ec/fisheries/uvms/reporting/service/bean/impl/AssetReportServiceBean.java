@@ -68,7 +68,7 @@ public class AssetReportServiceBean implements AssetReportService {
         asset.setName(a.getName());
         asset.setCountryCode(a.getCountryCode());
         asset.setMainGearType(a.getGearType());
-        asset.setLengthOverall(a.getLengthOverAll().doubleValue());
+        asset.setLengthOverall(Optional.ofNullable(a.getLengthOverAll()).map(BigDecimal::doubleValue).orElse(null));
         asset.setAssetGuid(a.getAssetId().getGuid());
         asset.setAssetHistGuid(a.getEventHistory().getEventId());
         asset.setAssetHistActive(a.isActive());
