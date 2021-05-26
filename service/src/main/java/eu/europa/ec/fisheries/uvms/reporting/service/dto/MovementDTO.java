@@ -46,6 +46,7 @@ public class MovementDTO {
     private static final String REPORTED_SPEED = "reportedSpeed", CALCULATED_SPEED = "calculatedSpeed";
     private static final String COUNTRY_CODE = "countryCode", IRCS = "ircs", EXTERNAL_MARKING = "externalMarking";
     private static final String MOVEMENT_GUID = "movementGuid", MOVEMENT = "movement", NAME = "name", CFR = "cfr";
+    private static final String TRIP_ID = "tripId";
 
     @Delegate(types = Include.class) private MovementType movementType;
     @Setter private UnitConverter velocityConverter = KNOT.getConverterTo(KNOT);
@@ -89,6 +90,7 @@ public class MovementDTO {
         sb.add(MOVEMENT_GUID, String.class);
         sb.add(EXTERNAL_MARKING, String.class);
         sb.add(SOURCE, String.class);
+        sb.add(TRIP_ID, String.class);
         return sb.buildFeatureType();
     }
 
