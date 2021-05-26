@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -119,6 +120,7 @@ public class MovementServiceBean {
      * @param movementTypes List of MovementType to be mapped to Movements
      * @throws ReportingServiceException Thrown if error occurs
      */
+    @Transactional
     public void createMovementsSegmentsAndTracks(List<MovementType> movementTypes) throws ReportingServiceException {
         if (movementTypes == null || movementTypes.size() == 0) { // duplicate movement from movement-module
             return;
