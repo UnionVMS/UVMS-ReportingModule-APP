@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>service</artifactId>
@@ -18,10 +19,10 @@
             <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
             <artifactId>activity-model</artifactId>
             <exclusions>
-            	<exclusion>
-            		<groupId>org.mockito</groupId>
-					<artifactId>mockito-all</artifactId>            	
-            	</exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-all</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -40,37 +41,38 @@
             <artifactId>usm4uvms</artifactId>
             <version>${usm4uvms.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>eu.europa.ec.fisheries.uvms</groupId>
-    				<artifactId>uvms-commons</artifactId>
-            	</exclusion>
-				<exclusion>
-					<groupId>org.jboss.resteasy</groupId>
-					<artifactId>resteasy-jaxrs</artifactId>
-				</exclusion>
-				<exclusion>
-				  <groupId>com.fasterxml.jackson.core</groupId>
-  				  <artifactId>jackson-databind</artifactId>
-				</exclusion>
-				<exclusion>
-				    <groupId>net.sf.ehcache</groupId>
-  					<artifactId>ehcache</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-		    <groupId>net.sf.ehcache.internal</groupId>
-		    <artifactId>ehcache-core</artifactId>
-            <version>2.10.4</version>
-            <exclusions>
-            	<exclusion>
-            		 <groupId>org.slf4j</groupId>
-    				 <artifactId>slf4j-api</artifactId>
-            	</exclusion>
-            </exclusions>   
-        </dependency>		
+                <exclusion>
+                    <groupId>eu.europa.ec.fisheries.uvms</groupId>
+                    <artifactId>uvms-commons</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
+        </dependency>
+        <!--		<dependency>-->
+        <!--		    <groupId>net.sf.ehcache.internal</groupId>-->
+        <!--		    <artifactId>ehcache-core</artifactId>-->
+        <!--            <version>2.10.4</version>-->
+        <!--            <exclusions>-->
+        <!--            	<exclusion>-->
+        <!--            		 <groupId>org.slf4j</groupId>-->
+        <!--    				 <artifactId>slf4j-api</artifactId>-->
+        <!--            	</exclusion>-->
+        <!--            </exclusions>   -->
+        <!--        </dependency>		-->
 
-    	<dependency>
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
             <artifactId>spatial-model</artifactId>
         </dependency>
@@ -85,13 +87,13 @@
             <artifactId>gt-epsg-wkt</artifactId>
             <version>${geotools.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>de.micromata.jak</groupId>
             <artifactId>JavaAPIforKml</artifactId>
             <version>2.2.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -131,7 +133,7 @@
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>config-library</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-date</artifactId>
@@ -157,11 +159,11 @@
             <artifactId>uvms-commons-geometry</artifactId>
             <version>${uvms.commons.version}</version>
             <exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts-core</artifactId>
-				</exclusion>
-			</exclusions>			            
+                <exclusion>
+                    <groupId>com.vividsolutions</groupId>
+                    <artifactId>jts-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
@@ -180,18 +182,18 @@
             <version>1.14.0</version>
         </dependency>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
@@ -236,7 +238,7 @@
             <scope>test</scope>
         </dependency>
 
-         <dependency>
+        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
         </dependency>
@@ -251,18 +253,18 @@
             <artifactId>hibernate-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
-        </dependency>
-        
+        <!--        <dependency>-->
+        <!--            <groupId>org.hibernate</groupId>-->
+        <!--            <artifactId>hibernate-validator</artifactId>-->
+        <!--            <version>4.2.0.Final</version>-->
+        <!--        </dependency>-->
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>uvms-test</artifactId>
@@ -273,12 +275,12 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>pl.pragmatists</groupId>
@@ -332,12 +334,12 @@
                 </excludes>
             </resource>
             <resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>**/logback.xml</include>
-				</includes>
-			</resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/logback.xml</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -358,10 +360,10 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -371,7 +373,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-          	<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ejb-plugin</artifactId>
                 <version>2.3</version>

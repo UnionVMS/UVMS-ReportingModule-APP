@@ -11,20 +11,11 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.reporting.service.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import com.vividsolutions.jts.geom.LineString;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "segment")
@@ -43,7 +34,6 @@ public class Segment {
     @Column(name = "track_id")
     private Long trackId;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
     @Column(name = "segment_coordinates", columnDefinition = "Geometry")
     private LineString segment;
 

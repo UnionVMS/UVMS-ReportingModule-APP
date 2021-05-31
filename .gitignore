@@ -9,3 +9,4 @@ model/*
 .classpath
 .settings/
 pom.xml.versionsBackup
+.idea
