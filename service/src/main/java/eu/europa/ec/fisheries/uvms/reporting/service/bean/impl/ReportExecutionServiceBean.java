@@ -21,13 +21,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -193,6 +196,38 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 FACatchSummaryDTO faCatchSummaryDTO = FACatchSummaryMapper.mapToFACatchSummaryDTO(faCatchSummaryReport);
                 resultDTO.setFaCatchSummaryDTO(faCatchSummaryDTO);
                 populateActivityesAsDefaultCollections(resultDTO);
+            }
+            try {
+                resultDTO.getMovements().forEach(e -> {
+                    Instant i = Instant.parse((String) e.getAttribute("positionTime") + "Z");
+                    String cfr = (String) e.getAttribute("cfr");
+                    String ircs = (String) e.getAttribute("ircs");
+                    String uvi = (String) e.getAttribute("uvi");
+                    String iccat = (String) e.getAttribute("iccat");
+                    List<String> movedAssetIdentifiers = Arrays.asList(cfr, ircs, uvi, iccat).stream().filter(v -> v != null).collect(Collectors.toList());
+
+                    String tId = resultDTO.getTrips().stream()
+                            .filter(t -> {
+                                List<String> tIden = t.getVesselIdLists().stream().map(k -> k.getValue()).collect(Collectors.toList());
+                                int j =0;
+                                boolean found = false;
+                                while (j < tIden.size()) {
+                                    if (movedAssetIdentifiers.contains(tIden.get(j))) {
+                                        found = true;
+                                        break;
+                                    }
+                                    j++;
+                                }
+                                return found;
+                            })
+                            .filter(pT -> !i.isAfter(pT.getLastFishingActivityDateTime().toInstant()) && !i.isBefore(pT.getFirstFishingActivityDateTime().toInstant()))
+                            .map(TripDTO::getTripId)
+                            .findFirst().orElse("not found");
+                    e.setAttribute("tripId", tId);
+
+                });
+            } catch (Exception e) {
+                log.warn("could not enrich movmenets with trip id", e);
             }
             return resultDTO;
         } catch (ProcessorException e) {
