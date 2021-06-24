@@ -243,13 +243,18 @@ public class ActivityReportServiceBean implements ActivityReportService {
     private void mapCatches(FishingActivity fishingActivity, Activity activity, List<Asset> assets) {
         List<Catch> catches = new ArrayList<>();
         List<FACatch> catchesToProcess = fishingActivity.getSpecifiedFACatches();
-
         if (fishingActivity.getTypeCode().getValue().equals(JOINT_FISHING_OPERATION)) {
             Optional<Asset> asset = assets.stream().findFirst();
             List<FishingActivity> relatedFishingActivities = findRelatedFishingActivitiesForJfoWithPrecedenceOrder(fishingActivity, asset);
             Optional<FishingActivity> first = relatedFishingActivities.stream().findFirst();
+
             if (first.isPresent()) {
-                catchesToProcess = first.get().getSpecifiedFACatches();
+                List<FACatch> catchesToProcessJFO = new ArrayList<>();
+
+                for( FishingActivity f : relatedFishingActivities) {
+                    catchesToProcessJFO.addAll(f.getSpecifiedFACatches());
+                }
+                catchesToProcess = catchesToProcessJFO;
             } else {
                 log.warn("Could not find catches for the given vessel with history guid (" + (asset.isPresent() ? asset.get().getAssetHistGuid() : "null asset") + ") for JFO with id (" + activity.getId() + ")");
             }
@@ -259,7 +264,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
             Catch speciesCatch = new Catch();
             activityRepository.createCatchEntity(speciesCatch);
             // get this from root specified catch
-            fishingActivity.getSpecifiedFACatches().stream().findFirst().ifPresent(rsc -> {
+            fishingActivity.getSpecifiedFACatches().stream().filter(sc -> sc.getSpeciesCode().getValue().equals(faCatch.getSpeciesCode().getValue())).findFirst().ifPresent(rsc -> {
                 setProcessingCatchInfo(speciesCatch, rsc);
             });
             setBaseCatchInfo(faCatch, speciesCatch);
