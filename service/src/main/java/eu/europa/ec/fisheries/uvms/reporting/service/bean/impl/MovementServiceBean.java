@@ -224,9 +224,9 @@ public class MovementServiceBean {
         List<eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset> assetsFromDb = new ArrayList<>();
         found = getAssetsFromDb(movementTypes, assetsFromDb);
 
-        List<Asset> assets;
+        Set<Asset> assets;
         if (found) {
-            assets = assetsFromDb.stream().map(this::mapFromAssetEntity).collect(Collectors.toList());
+            assets = assetsFromDb.stream().map(this::mapFromAssetEntity).collect(Collectors.toSet());
         } else {
             AssetListQuery query = new AssetListQuery();
             AssetListCriteria value = new AssetListCriteria();
@@ -242,7 +242,7 @@ public class MovementServiceBean {
             query.getPagination().setPage(1);
             query.getPagination().setListSize(100);
             query.setAssetSearchCriteria(value);
-            assets = assetServiceBean.getAssets(query);
+            assets = new HashSet<>(assetServiceBean.getAssets(query));
 
             assets.forEach(a -> {
                 eu.europa.ec.fisheries.uvms.reporting.service.entities.Asset asset = mapFromAsset(a);
