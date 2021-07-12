@@ -198,6 +198,13 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                 populateActivityesAsDefaultCollections(resultDTO);
             }
             try {
+                resultDTO.getTrips().stream().forEach(pT ->{
+                    long startT = pT.getFirstFishingActivityDateTime().toInstant().getEpochSecond()-1;
+                    pT.setFirstFishingActivityDateTime(Date.from(Instant.ofEpochSecond(startT)));
+                    long endT = pT.getLastFishingActivityDateTime().toInstant().getEpochSecond()+1;
+                    pT.setLastFishingActivityDateTime(Date.from(Instant.ofEpochSecond(endT)));
+                });
+
                 resultDTO.getMovements().forEach(e -> {
                     Instant i = Instant.parse((String) e.getAttribute("positionTime") + "Z");
                     String cfr = (String) e.getAttribute("cfr");
@@ -220,12 +227,18 @@ public class ReportExecutionServiceBean implements ReportExecutionService {
                                 }
                                 return found;
                             })
-                            .filter(pT -> !i.isAfter(pT.getLastFishingActivityDateTime().toInstant()) && !i.isBefore(pT.getFirstFishingActivityDateTime().toInstant()))
+                            .filter(pT ->{
+                                long iii = i.getEpochSecond();
+                                long startT = pT.getFirstFishingActivityDateTime().toInstant().getEpochSecond();
+                                long endT = pT.getLastFishingActivityDateTime().toInstant().getEpochSecond();
+                                return (iii >=startT && iii <= endT);
+                            })
                             .map(TripDTO::getTripId)
                             .findFirst().orElse("not found");
                     e.setAttribute("tripId", tId);
 
                 });
+
             } catch (Exception e) {
                 log.warn("could not enrich movmenets with trip id", e);
             }
