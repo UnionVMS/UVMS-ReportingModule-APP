@@ -8,12 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.awt.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
@@ -33,6 +32,8 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.kml.interfaces.Features
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.kml.interfaces.PositionFeatureDto;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.kml.interfaces.SegmentFeatureDTO;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @WebServlet(
 		asyncSupported = true,
@@ -40,15 +41,21 @@ import org.apache.commons.io.IOUtils;
 )
 public class KmlServlet extends HttpServlet {
 
-	private static final String FILE_OPENING = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+	private static final Logger LOGGER = LoggerFactory.getLogger(KmlServlet.class);
+	private static final String EMPTY_FILE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
 			"<ns2:kml xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:ns2=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:xal=\"urn:oasis:names:tc:ciq:xsdschema:xAL:2.0\">\n" +
-			"    <ns2:Document>\n";	
-	
-	private static final String FILE_ENDING = "    </ns2:Document>\n</ns2:kml>\n";
+			"    <ns2:Document></ns2:Document>\n</ns2:kml>\n";
 
-	private static final String OPENING_TAG = "<ns2:Document>";
-	
 	private Map<String, Consumer<String>> consumers = new ConcurrentHashMap<>();
+	private static JAXBContext jaxbContext;
+
+	static {
+		try {
+			jaxbContext  = JAXBContext.newInstance(new Class[] {Kml.class});
+		} catch (JAXBException e) {
+			LOGGER.error("Failed to initialize JAXBContext");
+		}
+	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -69,7 +76,6 @@ public class KmlServlet extends HttpServlet {
 			String uuid = pathInfo.substring(1);
 			resp.setContentType("text/xml");
 			resp.setHeader("Content-Disposition", "attachment; filename=\"" + uuid + ".kml\"");
-			resp.getWriter().print(FILE_OPENING);
 			AsyncContext asyncCtx = req.startAsync();
 			asyncCtx.addListener(new AsyncListener() {
 				@Override
@@ -104,17 +110,15 @@ public class KmlServlet extends HttpServlet {
 	private Consumer<String> makeConsumer(String uuid, AsyncContext asyncCtx) {
 		return message -> {
 			try {
-				if( message != null && message.length() > 0 ) {
-					PrintWriter out = asyncCtx.getResponse().getWriter();
-					message = exportFolderToKML(message);
-					out.print(message.substring(message.indexOf(OPENING_TAG) + OPENING_TAG.length(), message.lastIndexOf("</ns2:Document>")));
-					out.flush();
+				PrintWriter out = asyncCtx.getResponse().getWriter();
+				if (message != null && message.length() > 0) {
+					exportFolderToKML(message, out);
 				} else {
-					asyncCtx.getResponse().getWriter().println(FILE_ENDING);
-					asyncCtx.getResponse().getWriter().flush();
-					asyncCtx.complete();
-					consumers.remove(uuid);
+					out.println(EMPTY_FILE);
 				}
+				out.flush();
+				asyncCtx.complete();
+				consumers.remove(uuid);
 			} catch (IOException | JAXBException ioe) {
 				throw new RuntimeException(ioe);
 			}
@@ -222,7 +226,7 @@ public class KmlServlet extends HttpServlet {
 		return data;
 	}
 	
-	private String exportFolderToKML(String message) throws IOException, JAXBException {
+	private void exportFolderToKML(String message, PrintWriter out) throws IOException, JAXBException {
 		ObjectMapper mapper = new ObjectMapper();
 		FeaturesDTO features = mapper.readValue(message, FeaturesDTO.class);
 
@@ -246,8 +250,19 @@ public class KmlServlet extends HttpServlet {
 				}
 			}
 		}
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		kml.marshal(byteArrayOutputStream);
-		return byteArrayOutputStream.toString();
+
+		Marshaller marshaller = createMarshaller();
+		if (marshaller != null) {
+			marshaller.marshal(kml, out);
+		}
+	}
+
+	private Marshaller createMarshaller() throws JAXBException {
+		if (jaxbContext == null) {
+			return  null;
+		}
+		Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+		return marshaller;
 	}
 }
