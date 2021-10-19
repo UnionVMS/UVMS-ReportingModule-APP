@@ -13,49 +13,6 @@
         <version>${uvms.reporting.module.version}</version>
     </parent>
 
-    <profiles>
-        <profile>
-            <id>logging-default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <filtering>true</filtering>
-                        <directory>src/main/logging/default</directory>
-                        <targetPath>${project.build.outputDirectory}</targetPath>
-                        <includes>
-                            <include>logback.xml</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-        <profile>
-            <id>logging-cloud</id>
-            <build>
-                <resources>
-                    <resource>
-                        <filtering>true</filtering>
-                        <directory>src/main/logging/cloud</directory>
-                        <targetPath>${project.build.outputDirectory}</targetPath>
-                        <includes>
-                            <include>logback.xml</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>com.j256.cloudwatchlogbackappender</groupId>
-                    <artifactId>cloudwatchlogbackappender</artifactId>
-                    <version>2.0</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
@@ -315,19 +272,6 @@
                     <include>**/usmDeploymentDescriptor.xml</include>
                 </includes>
             </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/usmDeploymentDescriptor.xml</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/logback.xml</include>
-                </includes>
-            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -342,7 +286,7 @@
                         </goals>
                         <configuration>
                             <outputFile>
-                                ${basedir}/src/main/resources/logging.properties
+                                ${project.build.outputDirectory}/logging.properties
                             </outputFile>
                         </configuration>
                     </execution>
