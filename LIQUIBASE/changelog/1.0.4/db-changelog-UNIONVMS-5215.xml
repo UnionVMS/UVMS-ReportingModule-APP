@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="zoustam" id="UNIONVMS-5215">
+
+        <sql>
+            alter sequence  reporting.activity_catch_location_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.activity_catch_processing_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.activity_catch_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.activity_location_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.activity_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.area_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.movement_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.execution_log_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.filter_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.report_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.segment_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.track_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+            alter sequence  reporting.trip_seq INCREMENT  BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 NO CYCLE;
+        </sql>
+
+    </changeSet>
+
+
+
+</databaseChangeLog>
