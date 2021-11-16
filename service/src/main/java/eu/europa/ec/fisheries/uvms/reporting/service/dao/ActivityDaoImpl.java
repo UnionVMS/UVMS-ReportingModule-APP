@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class ActivityDaoImpl implements ActivityDao {
 
-    @PersistenceContext(unitName = "reportingPUposgres")
+    @PersistenceContext(unitName = "reporting")
     private EntityManager em;
 
     @Override

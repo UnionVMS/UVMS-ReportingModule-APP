@@ -134,12 +134,6 @@
                 <version>${audit.model.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.vividsolutions</groupId>
-                <artifactId>jts-core</artifactId>
-                <version>1.14.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.7</version>

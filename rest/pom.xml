@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rest</artifactId>
     <name>${project.parent.artifactId}-rest</name>
@@ -13,17 +14,17 @@
 
     <dependencies>
 
-<!--		<dependency>-->
-<!--		    <groupId>net.sf.ehcache.internal</groupId>-->
-<!--		    <artifactId>ehcache-core</artifactId>-->
-<!--            <version>2.10.4</version>-->
-<!--            <exclusions>-->
-<!--            	<exclusion>-->
-<!--            		 <groupId>org.slf4j</groupId>-->
-<!--    				 <artifactId>slf4j-api</artifactId>-->
-<!--            	</exclusion>-->
-<!--            </exclusions>   -->
-<!--        </dependency>		-->
+        <!--		<dependency>-->
+        <!--		    <groupId>net.sf.ehcache.internal</groupId>-->
+        <!--		    <artifactId>ehcache-core</artifactId>-->
+        <!--            <version>2.10.4</version>-->
+        <!--            <exclusions>-->
+        <!--            	<exclusion>-->
+        <!--            		 <groupId>org.slf4j</groupId>-->
+        <!--    				 <artifactId>slf4j-api</artifactId>-->
+        <!--            	</exclusion>-->
+        <!--            </exclusions>   -->
+        <!--        </dependency>		-->
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
             <artifactId>spatial-model</artifactId>
@@ -32,17 +33,17 @@
             <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
             <artifactId>activity-model</artifactId>
             <exclusions>
-            	<exclusion>
-            	  <groupId>org.mockito</groupId>
-  				  <artifactId>mockito-all</artifactId>
-  				</exclusion>            	
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-all</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
             <version>${usm4uvms.version}</version>
-            <type>jar</type>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.resteasy</groupId>
@@ -53,7 +54,6 @@
                     <artifactId>ehcache</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
@@ -96,41 +96,34 @@
             <version>${uvms.commons.version}</version>
             <scope>provided</scope>
         </dependency>
-
-
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts-core</artifactId>
+            <version>1.14.0</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>reporting-model</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>service</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -141,75 +134,66 @@
             <artifactId>jackson-annotations</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-core</artifactId>
             <version>3.4.2</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-mock</artifactId>
             <version>3.4.2</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-inject</artifactId>
             <version>3.4.2</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.test-framework.providers</groupId>
             <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
             <version>2.25.1</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.25.1</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>2.8.0</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxb-provider</artifactId>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>jaxrs-api</artifactId>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>message</artifactId>
@@ -262,39 +246,39 @@
             </plugin>
         </plugins>
         <pluginManagement>
-        	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        		<plugin>
-        			<groupId>org.eclipse.m2e</groupId>
-        			<artifactId>lifecycle-mapping</artifactId>
-        			<version>1.0.0</version>
-        			<configuration>
-        				<lifecycleMappingMetadata>
-        					<pluginExecutions>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>
-        									org.apache.maven.plugins
-        								</groupId>
-        								<artifactId>
-        									maven-javadoc-plugin
-        								</artifactId>
-        								<versionRange>
-        									[2.9.1,)
-        								</versionRange>
-        								<goals>
-        									<goal>javadoc</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-        								<ignore></ignore>
-        							</action>
-        						</pluginExecution>
-        					</pluginExecutions>
-        				</lifecycleMappingMetadata>
-        			</configuration>
-        		</plugin>
-        	</plugins>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.apache.maven.plugins
+                                        </groupId>
+                                        <artifactId>
+                                            maven-javadoc-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [2.9.1,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>javadoc</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
         </pluginManagement>
     </build>
 
@@ -326,7 +310,8 @@
                                     <useStandardDocletOptions>false</useStandardDocletOptions>
                                     <additionalparam>-apiVersion ${project.version}
                                         -docBasePath /${project.parent.artifactId}/apidocs
-                                        -apiBasePath /${project.parent.artifactId}/rest</additionalparam>
+                                        -apiBasePath /${project.parent.artifactId}/rest
+                                    </additionalparam>
                                 </configuration>
                                 <goals>
                                     <goal>javadoc</goal>

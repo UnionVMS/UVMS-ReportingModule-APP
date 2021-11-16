@@ -36,6 +36,7 @@
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
             <version>${usm4uvms.version}</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -54,7 +55,6 @@
                     <artifactId>ehcache</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.spatial</groupId>
@@ -150,6 +150,7 @@
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts-core</artifactId>
             <version>1.14.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -261,16 +262,6 @@
             <resource>
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/app-version.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/usmDeploymentDescriptor.xml</include>
-                </includes>
             </resource>
         </resources>
         <plugins>
