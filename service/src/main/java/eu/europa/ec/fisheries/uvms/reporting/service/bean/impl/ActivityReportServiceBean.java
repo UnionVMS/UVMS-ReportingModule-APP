@@ -254,7 +254,7 @@ public class ActivityReportServiceBean implements ActivityReportService {
                 for( FishingActivity f : relatedFishingActivities) {
                     catchesToProcessJFO.addAll(f.getSpecifiedFACatches());
                 }
-                catchesToProcess = catchesToProcessJFO;
+                catchesToProcess.addAll(catchesToProcessJFO);
             } else {
                 log.warn("Could not find catches for the given vessel with history guid (" + (asset.isPresent() ? asset.get().getAssetHistGuid() : "null asset") + ") for JFO with id (" + activity.getId() + ")");
             }
