@@ -39,7 +39,7 @@ public class ReportingConfigRegistration implements ConfigHelper {
     @Inject
     private PropertiesBean propertiesBean;
 
-    @PersistenceContext(unitName = "reportingPUposgres")
+    @PersistenceContext(unitName = "reporting")
     private EntityManager em;
 
     @Override

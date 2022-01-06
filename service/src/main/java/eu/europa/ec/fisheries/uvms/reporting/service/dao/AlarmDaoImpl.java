@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class AlarmDaoImpl implements AlarmDao {
 
-    @PersistenceContext(unitName = "reportingPUposgres")
+    @PersistenceContext(unitName = "reporting")
     private EntityManager em;
 
     @Override

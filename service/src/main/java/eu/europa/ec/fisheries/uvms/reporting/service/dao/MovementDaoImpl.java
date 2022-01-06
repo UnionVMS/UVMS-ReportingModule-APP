@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class MovementDaoImpl implements MovementDao {
 
-    @PersistenceContext(unitName = "reportingPUposgres")
+    @PersistenceContext(unitName = "reporting")
     private EntityManager em;
 
     public MovementDaoImpl(EntityManager em) {

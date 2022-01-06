@@ -23,15 +23,16 @@ import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.ReportDTO;
 import eu.europa.ec.fisheries.uvms.reporting.service.dto.report.VisibilityEnum;
 import eu.europa.ec.fisheries.uvms.reporting.service.entities.Report;
 import eu.europa.ec.fisheries.uvms.reporting.service.util.merger.FilterMerger;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.List;
 
 @Stateless
 @Local(ReportRepository.class)
@@ -42,26 +43,12 @@ public class ReportRepositoryBean implements ReportRepository {
     private FilterDAO filterDAO;
     private ExecutionLogDAO executionLogDAO;
     private FilterMerger filterMerger;
+
+    @PersistenceContext(unitName = "reporting")
     private EntityManager em;
 
-    @PersistenceContext(unitName = "reportingPUposgres")
-    private EntityManager postgres;
-
-    @PersistenceContext(unitName = "reportingPUoracle")
-    private EntityManager oracle;
-	
-    private void initEntityManager() {
-        String dbDialect = System.getProperty("db.dialect");
-        if ("oracle".equalsIgnoreCase(dbDialect)) {
-            em = oracle;
-        } else {
-            em = postgres;
-        }
-    }
-	
     @PostConstruct
-    public void postConstruct(){
-		initEntityManager();	
+    public void postConstruct() {
         reportDAO = new ReportDAO(em);
         filterDAO = new FilterDAO(em);
         executionLogDAO = new ExecutionLogDAO(em);
@@ -83,7 +70,7 @@ public class ReportRepositoryBean implements ReportRepository {
             List<FilterDTO> filters = reportDTO.getFilters();
             if (CollectionUtils.isNotEmpty(filters)) {
                 filterMerger.merge(filters);
-          }
+            }
         } catch (ServiceException e) {
             throw new ReportingServiceException("UPDATE FAILED", e);
         }
